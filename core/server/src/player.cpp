@@ -1245,6 +1245,10 @@ void Player::sendCancelMessage(ReturnValue message) const
 			sendCancel("You cannot add more items on this tile.");
 			break;
 
+		case RET_STARTINGBAGSTAYS:
+			sendCancel("Your starting bag can't be taken off.");
+			break;
+
 		case RET_DONTSHOWMESSAGE:
 			break;
 

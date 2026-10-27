@@ -5,7 +5,7 @@
 -- to this window (claimsContainer) while Pokegear is on.
 -- The server (systems/098-bag.lua, ExtendedIds.Bag) sends the item categories the rail filters by (the
 -- same as the PC's and the GTS's), and the quick call number of every belt ball, so the belt shows the
--- quick call bar's faces and keys.
+-- quick call bar's faces and keys. A tab renamed keeps its name on the bag item (Bag.rename on the server).
 Bag = {}
 
 local POSITION_SETTING = 'pokegearBagPosition'
@@ -15,14 +15,28 @@ local COLUMNS = 6
 local CELL, CELL_SPACING = 42, 3
 -- a bag asked for by the Bag; the server answers with an open container shortly after
 local PENDING_TIMEOUT = 3000
+-- bags opened as tabs on their own; the server keeps 16 open containers per trainer, and the belt,
+-- corpses and the PC need some of them. Right-clicking another bag opens it once a tab is closed.
+local MAX_TABS = 5
+local ARROW_WIDTH, TAB_SPACING = 18, 4
+local NAME_LENGTH = 20
+local NAME_WIDTH = 120 -- the open tab's name, in pixels
 
 local window, restorePosition, beltEvent
 local tabs = {} -- container ids in tab order; the first is the backpack
+-- container id -> the bag's slot in the backpack (-1 for the backpack), kept up as items come and go
+local tabSlot = {}
+local tabNames = {} -- container id -> the name the trainer just gave it
+local tabOffset = 1 -- the first tab shown when they don't all fit
 local selected
-local pending = {} -- { itemId, untilTime, select }
+local pending = {} -- { itemId, untilTime, select, slot }
 -- bags to open one at a time: an open without a previous container takes the first free id, so
 -- two asked for before the server answers would share one (and the second replaces the first)
 local queued = {}
+-- an open names a slot in the backpack; bags added together are opened once the server is done
+-- adding, or the slot has moved on by the time the open gets there
+local SETTLE_TIME = 300
+local settleEvent
 local active = false
 local beltId
 local categories = {} -- { name, icon } from the server, in rail order
@@ -31,7 +45,7 @@ local otherCategory -- where an item in no category goes
 local filter -- index in categories; nil shows everything
 local beltNumbers -- { ball = number, slots = { number, ... } }, 0 for none
 local beltRequest
-local fillGrid, requestBelt
+local fillGrid, requestBelt, sendBag
 
 local function slotItem(slot)
     local player = g_game.getLocalPlayer()
@@ -84,8 +98,10 @@ local function takePending(itemId)
     end
 end
 
+-- a bag of the same kind on the ground has no parent either, so once the backpack has its tab only
+-- that container is it
 local function isBackpack(container)
-    return isSlotContainer(container, backpackItem())
+    return isSlotContainer(container, backpackItem()) and (tabs[1] == nil or tabs[1] == container:getId())
 end
 
 local function isBelt(container)
@@ -94,19 +110,99 @@ end
 
 -- select: the trainer opened it, so its tab is shown
 local function openBag(item, select)
-    pending[#pending + 1] = { itemId = item:getId(), untilTime = g_clock.millis() + PENDING_TIMEOUT, select = select }
+    local pos = item:getPosition()
+    local slot
+    if pos and pos.x == 65535 and tabs[1] and pos.y == 64 + tabs[1] then
+        slot = pos.z
+    end
+    pending[#pending + 1] = { itemId = item:getId(), untilTime = g_clock.millis() + PENDING_TIMEOUT, select = select,
+        slot = slot }
     g_game.open(item)
+end
+
+-- the bag's slot in the backpack, checked against what's there now; a tab picked up when switching
+-- layouts is found by its item when only one bag in the backpack has it
+local function bagSlot(id)
+    if id == tabs[1] then
+        return -1
+    end
+    local backpack, container = containerById(tabs[1]), containerById(id)
+    local bag = container and container:getContainerItem()
+    if not backpack or not bag then
+        return nil
+    end
+    local slot = tabSlot[id]
+    local there = slot and backpack:getItem(slot)
+    if there and there:getId() == bag:getId() then
+        return slot
+    end
+    if slot ~= false then
+        return nil
+    end
+    local found
+    for index, item in ipairs(backpack:getItems()) do
+        if item:getId() == bag:getId() and item:isContainer() then
+            if found then
+                return nil
+            end
+            found = index - 1
+        end
+    end
+    tabSlot[id] = found
+    return found
+end
+
+local function tabsFull()
+    return #tabs - 1 >= MAX_TABS
+end
+
+-- a bag already shown as a tab, or gone from the backpack; the server closes a bag that's opened again
+local function isShown(item)
+    local pos = item:getPosition()
+    local backpack = containerById(tabs[1])
+    if not pos or not backpack or pos.x ~= 65535 or pos.y ~= 64 + tabs[1] then
+        return false
+    end
+    local there = backpack:getItem(pos.z)
+    if not there or there:getId() ~= item:getId() or not there:isContainer() then
+        return true
+    end
+    for id, slot in pairs(tabSlot) do
+        if slot == pos.z and id ~= tabs[1] then
+            return true
+        end
+    end
+    for _, entry in ipairs(pending) do
+        if entry.slot == pos.z then
+            return true
+        end
+    end
+    return false
 end
 
 local function pump()
     dropExpired()
-    if #pending > 0 then
+    if #pending > 0 or settleEvent then
+        return
+    end
+    if tabsFull() then
+        queued = {}
         return
     end
     local item = table.remove(queued, 1)
+    while item and isShown(item) do
+        item = table.remove(queued, 1)
+    end
     if item then
         openBag(item, false)
         scheduleEvent(pump, PENDING_TIMEOUT + 100)
+    end
+end
+
+local function cancelSettle()
+    if settleEvent then
+        removeEvent(settleEvent)
+        settleEvent = nil
     end
 end
 
@@ -115,7 +211,7 @@ local function queueBag(item)
 end
 
 local function titleOf(container)
-    local name = container:getName()
+    local name = tabNames[container:getId()] or container:getName()
     return name:sub(1, 1):upper() .. name:sub(2)
 end
 
@@ -124,7 +220,12 @@ local function onGridItemRelease(widget, mousePos, button)
     -- a bag opens as a tab of its own instead of taking the backpack's place
     if button == MouseRightButton and item and item:isContainer() and not g_keyboard.isCtrlPressed()
         and not g_keyboard.isShiftPressed() then
-        openBag(item, true)
+        if tabsFull() then
+            modules.game_textmessage.displayFailureMessage(tr('You have %d bags open as tabs. Close one to open another.',
+                MAX_TABS))
+        else
+            openBag(item, true)
+        end
         return true
     end
     return UIItem.onMouseRelease(widget, mousePos, button)
@@ -231,31 +332,244 @@ fillGrid = function()
     window:setHeight(8 + 24 + 16 + 36 + 10 + 24 + 8 + 16 + 4 + math.max(height, window.rail:getHeight()) + 10)
 end
 
-local function fillTabs()
+local fillTabs, layoutTabs
+
+-- what's dropped on a tab goes into that bag, in its first free slot
+local function dropInto(id, dragged)
+    local item = dragged and dragged.currentDragThing
+    local container = containerById(id)
+    if not item or not item.isItem or not item:isItem() or not container then
+        return false
+    end
+    if container:getItemsCount() >= container:getCapacity() then
+        modules.game_textmessage.displayFailureMessage(tr('That bag is full.'))
+        return true
+    end
+    g_game.move(item, container:getSlotPosition(container:getItemsCount()), item:getCount())
+    return true
+end
+
+local function startRename(id, tab)
+    local container = containerById(id)
+    if not container then
+        return
+    end
+    local edit = g_ui.createWidget('PokegearBagNameEdit', window.tabs)
+    window.tabs:moveChildToIndex(edit, window.tabs:getChildIndex(tab))
+    tab:hide()
+    edit:setMaxLength(NAME_LENGTH)
+    edit:setText(titleOf(container))
+    edit:selectAll()
+    edit:focus()
+    local done = false
+    local function finish(save)
+        if done then
+            return
+        end
+        done = true
+        local slot = bagSlot(id)
+        if save and slot then
+            sendBag({ action = 'rename', slot = slot, item = container:getContainerItem():getId(),
+                name = edit:getText() })
+        elseif save then
+            modules.game_textmessage.displayFailureMessage(tr('Only the bags in your bag can be renamed here.'))
+        end
+        scheduleEvent(fillTabs, 1)
+    end
+    edit.onKeyPress = function(widget, keyCode)
+        if keyCode == KeyEnter or keyCode == KeyReturn then
+            finish(true)
+            return true
+        elseif keyCode == KeyEscape then
+            finish(false)
+            return true
+        end
+        return false
+    end
+    edit.onFocusChange = function(widget, focused)
+        if not focused then
+            finish(true)
+        end
+    end
+end
+
+local function openAsWindow(id)
+    local container = containerById(id)
+    if not container then
+        return
+    end
+    for i, tabId in ipairs(tabs) do
+        if tabId == id then
+            table.remove(tabs, i)
+            break
+        end
+    end
+    tabSlot[id], tabNames[id] = nil, nil
+    container.pokegearClaimed = false
+    if selected == id then
+        selected = tabs[1]
+    end
+    fillTabs()
+    fillGrid()
+    if modules.game_containers then
+        modules.game_containers.onContainerOpen(container)
+    end
+end
+
+local function openTabMenu(id, tab, first, mousePos)
+    local container = containerById(id)
+    local menu = g_ui.createWidget('PopupMenu')
+    menu:setGameMenu(true)
+    menu:addOption(tr('Rename'), function() startRename(id, tab) end)
+    if not first then
+        menu:addOption(tr('Open as its own window'), function() openAsWindow(id) end)
+        menu:addOption(tr('Close tab'), function() if container then g_game.close(container) end end)
+    end
+    menu:display(mousePos)
+end
+
+local scrolling = false
+
+local function scrollTabs(by)
+    tabOffset = tabOffset + by
+    scrolling = true
+    fillTabs()
+    scrolling = false
+end
+
+-- the tabs that fit from tabOffset on, with arrows either side when some don't; the open one stays in view
+layoutTabs = function()
+    local bar = window.tabs
+    local entries = {}
+    for _, child in ipairs(bar:getChildren()) do
+        entries[#entries + 1] = child
+    end
+    local function widthOf(first, last)
+        local total = 0
+        for i = first, last do
+            total = total + entries[i]:getWidth() + (i > first and TAB_SPACING or 0)
+        end
+        return total
+    end
+    if #entries == 0 or widthOf(1, #entries) <= bar:getWidth() then
+        tabOffset = 1
+        return
+    end
+    local room = bar:getWidth() - 2 * (ARROW_WIDTH + TAB_SPACING)
+    local open = 1
+    for i, child in ipairs(entries) do
+        if child:isOn() then
+            open = i
+        end
+    end
+    tabOffset = math.max(1, math.min(tabOffset, #entries))
+    local function lastFrom(first)
+        local last = first
+        while last < #entries and widthOf(first, last + 1) <= room do
+            last = last + 1
+        end
+        return last
+    end
+    if not scrolling then
+        if open < tabOffset then
+            tabOffset = open
+        end
+        while lastFrom(tabOffset) < open do
+            tabOffset = tabOffset + 1
+        end
+    end
+    while tabOffset > 1 and lastFrom(tabOffset - 1) == #entries do
+        tabOffset = tabOffset - 1
+    end
+    local last = lastFrom(tabOffset)
+    for i, child in ipairs(entries) do
+        child:setVisible(i >= tabOffset and i <= last)
+    end
+    local left = g_ui.createWidget('PokegearBagArrow', bar)
+    left:setText('<')
+    bar:moveChildToIndex(left, 1)
+    left:setEnabled(tabOffset > 1)
+    left.onClick = function() scrollTabs(-1) end
+    local right = g_ui.createWidget('PokegearBagArrow', bar)
+    right:setText('>')
+    right:setEnabled(last < #entries)
+    right.onClick = function() scrollTabs(1) end
+end
+
+fillTabs = function()
     local bar = window.tabs
     bar:destroyChildren()
+    local backpack = containerById(tabs[1])
     for index, id in ipairs(tabs) do
         local container = containerById(id)
         if container then
+            local first = index == 1
             local tab = g_ui.createWidget('PokegearBagTab', bar)
-            tab:setText(index == 1 and tr('Bag') or titleOf(container))
+            local name = titleOf(container)
+            tab.bagName = name
+            -- the open bag shows its name; the others only their sprite, so six tabs fit
             tab:setOn(id == selected)
+            tab.name:setText(name)
+            tab.name:setVisible(id == selected)
+            if id == selected then
+                tab.name:setTextAutoResize(true)
+                local width = tab.name:getTextSize().width
+                if width > NAME_WIDTH then
+                    tab.name:setTextAutoResize(false)
+                    tab.name:setWidth(NAME_WIDTH)
+                    width = NAME_WIDTH
+                end
+                tab:setWidth(6 + 18 + 4 + width + 10)
+            else
+                tab:setWidth(30)
+            end
+            -- the bag itself, so dragging the icon takes the bag out like dragging it from the grid
+            local slot = bagSlot(id)
+            local item = first and backpackItem() or (slot and backpack and backpack:getItem(slot))
+            if item and not first then
+                tab.icon:setItem(item)
+            else
+                tab.icon:setVirtual(true)
+                tab.icon:setItemId(item and item:getId() or container:getContainerItem():getId())
+            end
             local space = string.format('%d / %d', container:getItemsCount(), container:getCapacity())
-            tab:setTooltip((index == 1 and tr('Your bag') or tr('Right-click to close this tab')) .. '\n' .. space)
-            tab.onClick = function()
+            tab:setTooltip(name .. '  ' .. space .. '\n' .. (first and tr('Your starting bag')
+                or tr('Drag the bag icon to take it out')) .. '\n' .. tr('Right-click to rename'))
+            local function select()
                 selected = id
                 fillTabs()
                 fillGrid()
             end
-            tab.onMouseRelease = function(widget, mousePos, button)
-                if button == MouseRightButton and index > 1 then
-                    g_game.close(container)
+            local function release(widget, mousePos, button)
+                if button == MouseRightButton then
+                    openTabMenu(id, tab, first, mousePos)
                     return true
                 end
                 return false
             end
+            tab.onClick = select
+            tab.onMouseRelease = release
+            tab.onDrop = function(widget, dragged) return dropInto(id, dragged) end
+            tab.icon.onClick = select
+            tab.icon.onMouseRelease = function(widget, mousePos, button)
+                if release(widget, mousePos, button) then
+                    return true
+                end
+                if button == MouseLeftButton and widget:containsPoint(mousePos) then
+                    select()
+                    return true
+                end
+                return false
+            end
+            tab.icon.onDrop = tab.onDrop
         end
     end
+    if backpack then
+        local add = g_ui.createWidget('PokegearBagAddTab', bar)
+        add:setTooltip(tr('Drop a bag here to add it as a tab'))
+        add.onDrop = function(widget, dragged) return dropInto(tabs[1], dragged) end
+    end
+    layoutTabs()
 end
 
 local function isOut()
@@ -274,7 +588,7 @@ local function refreshOut()
     end
 end
 
-local function sendBag(data)
+sendBag = function(data)
     local protocol = g_game.getProtocolGame()
     if protocol and g_game.isOnline() then
         protocol:sendExtendedJSONOpcode(ExtendedIds.Bag, data)
@@ -386,6 +700,17 @@ local function onBagMessage(protocol, opcode, buffer)
         end
         beltNumbers = { ball = tonumber(data.ball) or 0, slots = slots }
         refreshFaces()
+    elseif data.type == 'renamed' then
+        for id in pairs(tabSlot) do
+            if bagSlot(id) == tonumber(data.slot) then
+                tabNames[id] = tostring(data.name or '')
+            end
+        end
+        if window and window:isVisible() then
+            fillTabs()
+        end
+    elseif data.type == 'error' then
+        modules.game_textmessage.displayFailureMessage(tostring(data.text or ''))
     end
 end
 
@@ -423,6 +748,10 @@ local function build()
     window:hide()
     window.header.close.onClick = function()
         Bag.close()
+    end
+    window.tabs.onMouseWheel = function(widget, mousePos, direction)
+        scrollTabs(direction == MouseWheelUp and -1 or 1)
+        return true
     end
     restorePosition = Pokegear.makeMovable(window, window.header, POSITION_SETTING, function()
         -- left of the ring
@@ -482,6 +811,7 @@ function Bag.claimsContainer(container)
         local item = container:getContainerItem()
         local asked = item ~= nil and not isBackpack(container) and not isBelt(container) and takePending(item:getId())
         container.pokegearSelect = asked and asked.select or false
+        container.pokegearSlot = asked and asked.slot
         container.pokegearClaimed = isTab(container:getId()) or isBackpack(container) or isBelt(container)
             or asked ~= nil
     end
@@ -504,6 +834,12 @@ local function onContainerOpen(container, previousContainer)
         pump()
         return
     end
+    -- a tab's bag sent again after it moved out of the backpack
+    if previousContainer and previousContainer:getId() == id and id ~= tabs[1] and isTab(id)
+        and not container:hasParent() then
+        g_game.close(container)
+        return
+    end
     if previousContainer and isTab(previousContainer:getId()) and previousContainer:getId() ~= id then
         for i, tabId in ipairs(tabs) do
             if tabId == previousContainer:getId() then
@@ -520,6 +856,7 @@ local function onContainerOpen(container, previousContainer)
             end
         end
         table.insert(tabs, 1, id)
+        tabSlot[id] = -1
         selected = selected or id
         showWindow()
         openInnerBags(container)
@@ -528,6 +865,7 @@ local function onContainerOpen(container, previousContainer)
     if not isTab(id) then
         tabs[#tabs + 1] = id
     end
+    tabSlot[id] = container.pokegearSlot
     if container.pokegearSelect or not containerById(selected) then
         selected = id
     end
@@ -535,8 +873,14 @@ local function onContainerOpen(container, previousContainer)
     pump()
 end
 
+local closeAll
+
 local function onContainerClose(container)
     local id = container:getId()
+    if id == tabs[1] then
+        closeAll()
+        return
+    end
     if id == beltId then
         beltId = nil
         if window and window:isVisible() then
@@ -550,6 +894,7 @@ local function onContainerClose(container)
             break
         end
     end
+    tabSlot[id], tabNames[id] = nil, nil
     if selected == id then
         selected = tabs[1]
     end
@@ -594,22 +939,65 @@ local function onContainerUpdateItem(container, slot, item)
     end
 end
 
-local function onContainerAddItem(container, slot, item)
-    onContainerChange(container)
-    if container:getId() == tabs[1] and item and item:isContainer() then
-        queueBag(item)
-        pump()
+-- the backpack's items moved up or down a slot: so did the bags with tabs
+local function shiftTabSlots(container, slot, by)
+    if container:getId() ~= tabs[1] then
+        return
+    end
+    for id, tabSlotNow in pairs(tabSlot) do
+        if id ~= tabs[1] and tabSlotNow and tabSlotNow >= slot then
+            if by < 0 and tabSlotNow == slot then
+                -- the bag left the backpack (to the ground, the PC or another bag): so does its tab
+                tabSlot[id] = nil
+                local leaving = containerById(id)
+                if leaving then
+                    g_game.close(leaving)
+                end
+            else
+                tabSlot[id] = tabSlotNow + by
+            end
+        end
+    end
+    for _, entry in ipairs(pending) do
+        if entry.slot and entry.slot >= slot then
+            entry.slot = (by < 0 and entry.slot == slot) and nil or entry.slot + by
+        end
     end
 end
 
-local function closeAll()
+local function onContainerRemoveItem(container, slot, item)
+    shiftTabSlots(container, slot, -1)
+    if window and window:isVisible() and container:getId() == tabs[1] then
+        fillTabs()
+    end
+end
+
+local function onContainerAddItem(container, slot, item)
+    shiftTabSlots(container, slot, 1)
+    if window and window:isVisible() and container:getId() == tabs[1] then
+        fillTabs()
+    end
+    onContainerChange(container)
+    if container:getId() == tabs[1] and item and item:isContainer() then
+        queueBag(item)
+        if settleEvent then
+            removeEvent(settleEvent)
+        end
+        settleEvent = scheduleEvent(function()
+            settleEvent = nil
+            pump()
+        end, SETTLE_TIME)
+    end
+end
+
+closeAll = function()
     for i = #tabs, 1, -1 do
         local container = containerById(tabs[i])
         if container then
             g_game.close(container)
         end
     end
-    tabs, selected, beltId, queued = {}, nil, nil, {}
+    tabs, selected, beltId, queued, tabSlot, tabNames, tabOffset = {}, nil, nil, {}, {}, {}, 1
     hideWindow()
 end
 
@@ -628,6 +1016,10 @@ end
 
 function Bag.close()
     closeAll()
+end
+
+function Bag.backpackContainer()
+    return containerById(tabs[1])
 end
 
 function Bag.isOpen()
@@ -671,6 +1063,7 @@ function Bag.init()
         onSizeChange = onContainerChange,
         onUpdateItem = onContainerUpdateItem,
         onAddItem = onContainerAddItem,
+        onRemoveItem = onContainerRemoveItem,
     })
     connect(LocalPlayer, { onInventoryChange = onInventoryChange })
     connect(g_game, { onGameStart = onGameStart, onPokemonBarAdd = onQuickCallChange,
@@ -706,10 +1099,12 @@ local function adoptOpenContainers()
                 beltId = container:getId()
             elseif container ~= backpack then
                 tabs[#tabs + 1] = container:getId()
+                tabSlot[container:getId()] = false
             end
         end
     end
     table.insert(tabs, 1, backpack:getId())
+    tabSlot[backpack:getId()] = -1
     selected = backpack:getId()
     showWindow()
     if #tabs == 1 then
@@ -723,7 +1118,8 @@ local function releaseContainers()
         ids[#ids + 1] = id
     end
     ids[#ids + 1] = beltId
-    tabs, selected, beltId, pending, queued = {}, nil, nil, {}, {}
+    tabs, selected, beltId, pending, queued, tabSlot, tabNames = {}, nil, nil, {}, {}, {}, {}
+    cancelSettle()
     hideWindow()
     local containers = modules.game_containers
     for _, id in ipairs(ids) do
@@ -753,7 +1149,8 @@ end
 -- logging out: the containers are going away with the game
 function Bag.reset()
     active = false
-    tabs, selected, beltId, pending, queued = {}, nil, nil, {}, {}
+    tabs, selected, beltId, pending, queued, tabSlot, tabNames = {}, nil, nil, {}, {}, {}, {}
+    cancelSettle()
     filter, beltNumbers = nil, nil
     hideWindow()
 end
@@ -765,6 +1162,7 @@ function Bag.terminate()
         onSizeChange = onContainerChange,
         onUpdateItem = onContainerUpdateItem,
         onAddItem = onContainerAddItem,
+        onRemoveItem = onContainerRemoveItem,
     })
     disconnect(LocalPlayer, { onInventoryChange = onInventoryChange })
     disconnect(g_game, { onGameStart = onGameStart, onPokemonBarAdd = onQuickCallChange,
@@ -782,4 +1180,5 @@ function Bag.terminate()
         window = nil
     end
     tabs, selected, pending, queued = {}, nil, {}, {}
+    cancelSettle()
 end

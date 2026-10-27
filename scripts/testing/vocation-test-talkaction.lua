@@ -3342,6 +3342,46 @@ local function testBag(cid)
             problem or (belts and JSON.encode(belts)))
         doRemoveItem(belt.uid)
         doRemoveItem(ball.uid)
+
+        -- tabs: no limit on bags in the starting bag, and a bag's new name stays on the item
+        local backpack = getPlayerSlotItem(cid, PLAYER_SLOT_BACKPACK)
+        local added = {}
+        for _ = 1, 6 do
+            added[#added + 1] = doAddContainerItem(backpack.uid, 12282, 1)
+        end
+        local all = true
+        for _, uid in ipairs(added) do
+            all = all and uid and isContainer(uid)
+        end
+        check("bag: the starting bag takes six more bags", #added == 6 and all, #added)
+
+        local bag = getContainerItem(backpack.uid, 0)
+        local bagClient = getItemInfo(bag.itemid).clientId
+        local from = #sent
+        Bag.onClientMessage(cid, JSON.encode({ action = "rename", slot = 0, item = bagClient, name = "  Loot   bag!<" }))
+        check("bag: renaming keeps the cleaned name on the bag item", getItemAttribute(bag.uid, "name") == "Loot bag"
+            and sent[from + 1] and sent[from + 1].type == "renamed" and sent[from + 1].slot == 0,
+            tostring(getItemAttribute(bag.uid, "name")) .. " " .. JSON.encode(sent[from + 1] or {}))
+        Bag.onClientMessage(cid, JSON.encode({ action = "rename", slot = 0, item = bagClient + 1, name = "Other" }))
+        check("bag: renaming checks the bag is still in that slot", getItemAttribute(bag.uid, "name") == "Loot bag"
+            and sent[from + 2] and sent[from + 2].type == "error", JSON.encode(sent[from + 2] or {}))
+        Bag.onClientMessage(cid, JSON.encode({ action = "rename", slot = 0, item = bagClient,
+            name = string.rep("a", 21) }))
+        check("bag: a bag name is up to 20 letters", getItemAttribute(bag.uid, "name") == "Loot bag"
+            and sent[from + 3] and sent[from + 3].type == "error", JSON.encode(sent[from + 3] or {}))
+        Bag.onClientMessage(cid, JSON.encode({ action = "rename", slot = 0, item = bagClient, name = "" }))
+        check("bag: an empty name gives the bag its own back", getItemAttribute(bag.uid, "name") == nil
+            and sent[from + 4] and sent[from + 4].name == getItemInfo(bag.itemid).name, JSON.encode(sent[from + 4] or {}))
+        Bag.onClientMessage(cid, JSON.encode({ action = "rename", slot = -1, item = getItemInfo(backpack.itemid).clientId,
+            name = "Main" }))
+        check("bag: the starting bag can be renamed too", getItemAttribute(backpack.uid, "name") == "Main",
+            tostring(getItemAttribute(backpack.uid, "name")))
+        doItemEraseAttribute(backpack.uid, "name")
+        for _, uid in ipairs(added) do
+            if (isContainer(uid)) then
+                doRemoveItem(uid)
+            end
+        end
     end)
     doSendPlayerExtendedOpcode = original
     if (not ok) then
