@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+"""Writes core/server/data/lib/ps/config/itemCategories.lua: the Bag's categories beyond the GTS ones.
+
+    scripts/make-item-categories.py
+
+docs/concepts/side-panel (Categories for everything). The lists are candidates: at load the server
+keeps an item in its GTS category when it has one (Bag.CATEGORIES in systems/098-bag.lua), so the
+order here only decides between these four:
+  Key Items       what the key item slot takes (items.xml slotType ring, without the Tibia rings),
+                  the rods, the cases and the Mega Ring's parts
+  Dolls & Decor   dolls, statues, lamps, curtains, furniture kits and the like, by name
+  Event           the holiday tokens and everything the Event Token Shop sells that isn't decor
+  Drops           everything else in a Pokemon's loot
+Run it again after adding items to any of those.
+"""
+import glob
+import importlib.util
+import os
+import re
+import struct
+import xml.etree.ElementTree as ET
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA = os.path.join(ROOT, 'core/server/data')
+OUT = os.path.join(DATA, 'lib/ps/config/itemCategories.lua')
+
+FIRST_POKEVERSE_ID = 10000
+NOT_KEY_ITEMS = {10502, 10510}  # wedding rings
+KEY_ITEMS = [12292, 12293, 12294, 10223,  # fishing rods
+             12280, 18623, 23956, 23463,  # badge cases, coin case, doll case
+             30175, 30176]  # empty Mega Ring, Key Stone
+EVENT_TOKENS = [14461, 27935, 14632, 25270, 24549, 29132, 14438, 14439, 14440, 14441, 14442]
+DECOR = re.compile(r'\b(doll|dolls|statue|lamp|curtain|tapestry|chair|table|carpet|rug|trophy|figure|figurine|'
+                   r'plush|poster|painting|vase|clock|cushion|sofa|couch|bed|shelf|bookcase|pillow|ornament|'
+                   r'wreath|garland|decoration|stand|freezer|computer|flower kit|tree kit|showcase)\b')
+OUTFIT_KIT = re.compile(r' kit \d+$')
+EVENT_NAME = re.compile(r'easter egg|chocoegg|paint ticket|\btoken\b|halloween|christmas|pumpkin')
+FLAG_PICKUPABLE = 1 << 5
+# a representative item for each category's rail icon
+ICONS = {'Key Items': 30177, 'Dolls & Decor': 19088, 'Event': 14461, 'Drops': 12230}
+
+
+def item_names():
+    names = {}
+    for item in ET.parse(os.path.join(DATA, 'items/items.xml')).getroot():
+        name = (item.get('name') or '').lower()
+        attrs = {a.get('key', '').lower(): a.get('value') for a in item.findall('attribute')}
+        if item.get('id'):
+            ids = [int(item.get('id'))]
+        elif item.get('fromid'):
+            ids = range(int(item.get('fromid')), int(item.get('toid')) + 1)
+        else:
+            continue
+        for i in ids:
+            names[i] = (name, attrs.get('slottype'))
+    return names
+
+
+def pickupable_ids():
+    """Server ids items.otb lets a trainer carry."""
+    spec = importlib.util.spec_from_file_location('otb_add_item', os.path.join(ROOT, 'scripts/otb-add-item.py'))
+    otb = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(otb)
+    data = open(os.path.join(DATA, 'items/items.otb'), 'rb').read()
+    _, _, children, _ = otb.read_node(data, 4)
+    ids = set()
+    for start, _ in children:
+        _, props, _, _ = otb.read_node(data, start)
+        flags, attrs = otb.item_attrs(props)
+        if struct.unpack('<I', flags)[0] & FLAG_PICKUPABLE:
+            ids.update(struct.unpack('<H', v)[0] for a, v in attrs if a == otb.ATTR_SERVERID)
+    return ids
+
+
+def loot_items(names):
+    by_name = {}
+    for i, (name, _) in names.items():
+        by_name.setdefault(name, i)
+    found = set()
+    for path in glob.glob(os.path.join(DATA, 'monster/**/*.xml'), recursive=True):
+        text = open(path, encoding='latin-1').read()
+        start = text.find('<loot')
+        if start < 0:
+            continue
+        for kind, value in re.findall(r'<item (id|name)="([^"]+)"', text[start:]):
+            i = int(value) if kind == 'id' else by_name.get(value.lower())
+            if i:
+                found.add(i)
+    return found
+
+
+def event_shop_items():
+    text = open(os.path.join(DATA, 'lib/ps/systems/094-eventShop.lua')).read()
+    return {int(v) for v in re.findall(r'itemId = (\d+)', text)}
+
+
+def main():
+    names = item_names()
+    carried = pickupable_ids()
+    taken = set()
+
+    def pick(ids):
+        out = sorted(set(i for i in ids if i in names and names[i][0] and i in carried and i not in taken))
+        taken.update(out)
+        return out
+
+    key = pick([i for i, (_, slot) in names.items()
+                if slot == 'ring' and i > FIRST_POKEVERSE_ID and i not in NOT_KEY_ITEMS] + KEY_ITEMS)
+    shop = event_shop_items()
+    decor = pick([i for i, (name, _) in names.items()
+                  if (i > FIRST_POKEVERSE_ID or i in shop) and DECOR.search(name) and not OUTFIT_KIT.search(name)])
+    event = pick(list(shop) + EVENT_TOKENS +
+                 [i for i, (name, _) in names.items() if i > FIRST_POKEVERSE_ID and EVENT_NAME.search(name)])
+    drops = pick(loot_items(names))
+
+    lines = ['-- Generated by scripts/make-item-categories.py: the Bag\'s categories beyond the GTS ones',
+             '-- (server ids). An item with a GTS category stays in it (Bag.CATEGORIES, systems/098-bag.lua).',
+             '', 'ITEM_CATEGORIES_EXTRA = {']
+    for name, ids in (('Key Items', key), ('Dolls & Decor', decor), ('Event', event), ('Drops', drops)):
+        lines.append('    { name = "%s", icon = %d, items = {' % (name, ICONS[name]))
+        for row in range(0, len(ids), 16):
+            lines.append('        ' + ', '.join(str(i) for i in ids[row:row + 16]) + ',')
+        lines.append('    } },')
+    lines.append('}')
+    open(OUT, 'w').write('\n'.join(lines) + '\n')
+    print('%d key items, %d dolls and decor, %d event, %d drops' % (len(key), len(decor), len(event), len(drops)))
+
+
+if __name__ == '__main__':
+    main()
