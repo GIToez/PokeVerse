@@ -92,6 +92,11 @@ local function caseItems(container)
     return ids
 end
 
+-- the grey slot art of a badge with no item yet (data/images/pokeverse-ui/badges)
+function badgeArt(regionName, badgeName)
+    return '/images/pokeverse-ui/badges/' .. regionName:lower():gsub('%s+', '-') .. '-' .. badgeName:lower() .. '-slot'
+end
+
 local function refresh(container)
     local panel = window.panel
     panel.list:destroyChildren()
@@ -134,8 +139,9 @@ local function refresh(container)
         widget.name:setText(slot.name)
         if (slot.upcoming) then
             widget.item:hide()
-            widget.lock:show()
-            widget.slot:setOpacity(0.5)
+            widget.art:setImageSource(badgeArt(shown.name, slot.name))
+            widget.art:setOpacity(EMPTY_SLOT_OPACITY)
+            widget.art:show()
             widget.name:setColor('#5f6f8f')
             widget:setTooltip(tr('%s Badge (coming soon)', slot.name))
         else

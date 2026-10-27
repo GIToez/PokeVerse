@@ -114,6 +114,13 @@ TcBadgeSlot < UIWidget
     virtual: true
     phantom: true
 
+  UIWidget
+    id: art
+    size: 32 32
+    anchors.centerIn: parent
+    visible: false
+    phantom: true
+
 // One trophy Pokemon: portrait, level, sex and name; in edit mode a remove cross
 TcTrophy < UIButton
   height: 88

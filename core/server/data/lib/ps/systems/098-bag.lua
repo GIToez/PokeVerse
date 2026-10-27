@@ -33,17 +33,18 @@ local function clientId(id)
 end
 
 local SLOTP_RING = 256
+local LAST_ITEM_ID = 40000 -- past the last id in items.xml
 
--- the items that go in the equipment slot (PLAYER_SLOT_KEY_ITEM, the ring slot: bikes, running shoes,
--- the flashlight...), with their names: the client only knows market items' names, and the Pokegear
--- equipment socket lists them by name
+-- every item that goes in the equipment slot (PLAYER_SLOT_KEY_ITEM, the ring slot: bikes, running
+-- shoes, the flashlight, lanterns, sandboards...), the same ones Player::__queryAdd lets in, with their
+-- names: the client only knows market items' names, and the Pokegear equipment socket lists them
 local function equipmentItems()
     local list, taken = {}, {}
-    for _, category in ipairs(ItemCategories.LIST) do
-        for _, id in ipairs(category.items) do
-            local info = getItemInfo(id)
+    for id = 100, LAST_ITEM_ID do
+        local info = getItemInfo(id)
+        if (info and math.floor((info.slotPosition or 0) / SLOTP_RING) % 2 == 1) then
             local client = clientId(id)
-            if (info and client and not taken[client] and math.floor((info.slotPosition or 0) / SLOTP_RING) % 2 == 1) then
+            if (client and not taken[client]) then
                 taken[client] = true
                 list[#list + 1] = { id = client, name = getItemNameById(id) or "" }
             end
@@ -73,10 +74,12 @@ local function build()
 end
 
 Bag.CATEGORIES = build()
-Bag.EQUIPMENT = equipmentItems()
-Bag.MESSAGE = JSON.encode({ type = "categories", list = Bag.CATEGORIES, equipment = Bag.EQUIPMENT })
-
+-- built at the first login: this file loads once per script interface, and the equipment scan
+-- reads every item
 Bag.sendCategories = function(cid)
+    if (not Bag.MESSAGE) then
+        Bag.MESSAGE = JSON.encode({ type = "categories", list = Bag.CATEGORIES, equipment = equipmentItems() })
+    end
     doSendPlayerLongExtendedOpcode(cid, EXTENDED_IDS.BAG, Bag.MESSAGE)
 end
 
