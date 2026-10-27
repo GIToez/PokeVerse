@@ -67,6 +67,8 @@ main > section.wrap > h2:first-child { margin-top: 2rem; }
 .facts { margin-top: -2.5rem; position: relative; }
 .facts .panel { display: flex; flex-direction: column; }
 .big { font-size: 2.2rem; font-weight: 800; color: var(--gold); }
+.video { position: relative; aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: #000; }
+.video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .download { display: flex; flex-direction: column; gap: .3rem; color: var(--text); transition: transform .15s, border-color .15s; }
 .download strong { font-size: 1.2rem; }
 .download span { color: var(--muted); }

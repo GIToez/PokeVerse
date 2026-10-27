@@ -47,6 +47,7 @@ TYPE_COLORS = {
 }
 GENERATIONS = ((1, 151, "Kanto"), (152, 251, "Johto"), (252, 386, "Hoenn"))
 ABILITY_FIXES = {"Strenght": "Strength", "RockMSmash": "Rock Smash"}
+TRAILER_YOUTUBE_ID = "g5Fr0ctX77c"
 
 
 def esc(value):
@@ -343,6 +344,7 @@ class Site:
     <p class="tagline">A free Pokémon MMORPG. Catch, train and explore Kanto, Johto and Hoenn with other trainers.</p>
     <div class="actions">
       <a class="button" href="#download">Download</a>
+      <a class="button ghost" href="#trailer">Watch the trailer</a>
       <a class="button ghost" href="pokedex/index.html">Browse the Pokédex</a>
       {discord}
     </div>
@@ -353,6 +355,15 @@ class Site:
   <div class="panel"><span class="big">{species_count}</span><span>Pokémon from generations 1 to 3</span></div>
   <div class="panel"><span class="big">{move_count}</span><span>moves to learn, from Tackle to Hyper Beam</span></div>
   <div class="panel"><span class="big">3</span><span>clients: Windows, Linux and Android</span></div>
+</section>
+
+<section class="wrap" id="trailer">
+  <h2>Trailer</h2>
+  <div class="video">
+    <iframe src="https://www.youtube-nocookie.com/embed/{TRAILER_YOUTUBE_ID}" title="PokeVerse gameplay trailer"
+      loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  </div>
 </section>
 
 <section class="wrap" id="download">
@@ -388,7 +399,16 @@ class Site:
   </div>
 </section>
 """
-        self.page("index.html", "PokeVerse", body, "home")
+        # link previews (Discord and others) show the trailer's thumbnail
+        thumb = "https://i.ytimg.com/vi/%s/maxresdefault.jpg" % TRAILER_YOUTUBE_ID
+        head = (f'<meta property="og:type" content="website">\n'
+                f'<meta property="og:title" content="PokeVerse: a free Pokémon MMORPG">\n'
+                f'<meta property="og:description" content="Catch, train and explore Kanto, Johto and Hoenn with other '
+                f'trainers. Free on Windows, Linux and Android.">\n'
+                f'<meta property="og:image" content="{thumb}">\n'
+                f'<meta name="twitter:card" content="summary_large_image">\n'
+                f'<meta name="theme-color" content="#FFCB05">\n')
+        self.page("index.html", "PokeVerse", body, "home", head=head)
 
     def write_pokedex(self, cards):
         types = sorted({t for card in cards for t in card[2]})
