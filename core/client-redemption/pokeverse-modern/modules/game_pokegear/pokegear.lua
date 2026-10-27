@@ -47,6 +47,54 @@ local function applyTopBar()
     end
 end
 
+-- Pokegear hangs the right-hand windows (Inventory, Skills, Friends...) under the ring in the
+-- top-right corner, and under the Nearby card while it sits below the ring. Dragging either away
+-- lifts the column up to whatever is still in place.
+local COLUMN_SPACING = 4 -- GameSidePanel's layout spacing
+local COLUMN_GAP = 4
+local classicColumnHeight
+
+function Pokegear.fitColumn()
+    local column = modules.game_interface.getMainRightPanel()
+    if not column or classicColumnHeight == nil then
+        return
+    end
+    local height, count = column:getPaddingTop() + column:getPaddingBottom(), 0
+    for _, child in ipairs(column:getChildren()) do
+        if child:isVisible() then
+            height = height + child:getHeight() + child:getMarginTop() + child:getMarginBottom()
+            count = count + 1
+        end
+    end
+    column:setHeight(height + math.max(count - 1, 0) * COLUMN_SPACING)
+end
+
+function Pokegear.layoutColumn()
+    local column = modules.game_interface.getMainRightPanel()
+    if not column then
+        return
+    end
+    local on = active and g_game.isOnline()
+    local under = on and (Nearby.docked() or Hub.docked())
+    column:removeAnchor(AnchorTop)
+    if under then
+        column:addAnchor(AnchorTop, under:getId(), AnchorBottom)
+        column:setMarginTop(COLUMN_GAP)
+    else
+        column:addAnchor(AnchorTop, 'parent', AnchorTop)
+        column:setMarginTop(0)
+    end
+    if on then
+        if classicColumnHeight == nil then
+            classicColumnHeight = column:getHeight()
+        end
+        Pokegear.fitColumn()
+    elseif classicColumnHeight ~= nil then
+        column:setHeight(classicColumnHeight)
+        classicColumnHeight = nil
+    end
+end
+
 local function apply()
     if g_game.isOnline() then
         applyWalkLock()
@@ -55,6 +103,7 @@ local function apply()
     Hub.apply(active)
     Nearby.apply(active)
     Bag.apply(active)
+    Pokegear.layoutColumn()
 end
 
 function toggleNearby()
@@ -85,6 +134,7 @@ local function onGameEnd()
     Hub.apply(false)
     Nearby.apply(false)
     Bag.reset()
+    Pokegear.layoutColumn()
 end
 
 function init()
