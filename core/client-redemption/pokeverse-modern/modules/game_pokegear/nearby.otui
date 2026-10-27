@@ -1,0 +1,215 @@
+// Nearby: the Battle List as a Pokegear window. Filters are the Battle List's own; rows are built by
+// nearby.lua.
+PokegearPill < UIButton
+  height: 20
+  text-auto-resize: true
+  padding: 0 9
+  text-offset: 0 1
+  image-source: /modules/game_pokegear/images/pill
+  image-border: 9
+  image-smooth: true
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 11
+  color: #8fa0c4
+  text-align: center
+  $on:
+    image-source: /modules/game_pokegear/images/pill_on
+    color: #eef2ff
+  $hover:
+    color: #eef2ff
+
+PokegearNearbyRow < UIWidget
+  height: 38
+  image-source: /modules/game_pokegear/images/row
+  image-border: 11
+  image-smooth: true
+  $on:
+    image-source: /modules/game_pokegear/images/row_target
+
+  UIWidget
+    id: face
+    size: 32 32
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 3
+    image-source: /modules/game_pokegear/images/face
+    image-border: 15
+    phantom: true
+
+    UIWidget
+      id: portrait
+      size: 30 30
+      anchors.centerIn: parent
+      image-smooth: true
+      phantom: true
+
+    UILabel
+      id: initials
+      anchors.fill: parent
+      text-align: center
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 11
+      color: #eef2ff
+      phantom: true
+
+  UILabel
+    id: name
+    anchors.left: face.right
+    anchors.top: parent.top
+    margin-left: 7
+    margin-top: 4
+    text-auto-resize: true
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #eef2ff
+    phantom: true
+
+  UILabel
+    id: level
+    anchors.left: name.right
+    anchors.verticalCenter: name.verticalCenter
+    margin-left: 5
+    text-auto-resize: true
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 10
+    color: #8fa0c4
+    phantom: true
+
+  UILabel
+    id: tag
+    height: 14
+    anchors.left: level.right
+    anchors.verticalCenter: name.verticalCenter
+    margin-left: 5
+    text-auto-resize: true
+    padding: 0 5
+    image-source: /modules/game_pokegear/images/pill_on
+    image-border: 6
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 9
+    color: #eef2ff
+    phantom: true
+
+  UIWidget
+    id: bar
+    height: 6
+    anchors.left: face.right
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-left: 7
+    margin-right: 10
+    margin-bottom: 7
+    image-source: /modules/game_pokegear/images/bar
+    image-border: 3
+    phantom: true
+
+    UIWidget
+      id: fill
+      anchors.left: parent.left
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      image-source: /modules/game_pokegear/images/bar_fill
+      image-border: 3
+      phantom: true
+
+PokegearNearby < UIWidget
+  id: pokegearNearby
+  width: 300
+  height: 120
+  image-source: /modules/game_pokegear/images/card
+  image-border: 12
+  image-smooth: true
+  padding: 8 10 10 10
+  focusable: false
+
+  UIWidget
+    id: header
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 24
+    draggable: true
+    !tooltip: tr('Drag to move')
+
+    UILabel
+      id: title
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      text-auto-resize: true
+      !text: tr('Nearby')
+      ttf-font: /fonts/ttf/pixelify-sans.ttf
+      ttf-font-size: 18
+      color: #ffcb05
+      phantom: true
+
+    PokegearChip
+      id: keyChip
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+
+    UILabel
+      id: count
+      anchors.right: keyChip.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 6
+      text-auto-resize: true
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 11
+      color: #8fa0c4
+      phantom: true
+
+  UIWidget
+    id: filters
+    anchors.top: header.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 6
+    height: 20
+    layout:
+      type: horizontalBox
+      spacing: 5
+
+  UIWidget
+    id: sorts
+    anchors.top: filters.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 6
+    height: 20
+    layout:
+      type: horizontalBox
+      spacing: 5
+
+    UILabel
+      id: sortLabel
+      !text: tr('Sort')
+      text-auto-resize: true
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 11
+      color: #8fa0c4
+      margin-top: 3
+
+  UIWidget
+    id: list
+    anchors.top: sorts.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 8
+    layout:
+      type: verticalBox
+      spacing: 4
+      fit-children: true
+
+  UILabel
+    id: empty
+    anchors.top: sorts.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+    height: 18
+    text-align: center
+    !text: tr('Nobody around')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 11
+    color: #8fa0c4
+    phantom: true
