@@ -416,12 +416,136 @@ local function openAsWindow(id)
     end
 end
 
+-- sort rules: the server keeps them on the bag item; this edits one bag's at a time
+local MAX_PINS = 12
+local rulesWindow
+local rulesEdit -- { id, slot, item } of the bag being edited
+
+local function closeRules()
+    if rulesWindow then
+        rulesWindow:destroy()
+        rulesWindow = nil
+    end
+    rulesEdit = nil
+end
+
+local function setPin(pin, itemId)
+    pin.pinned = itemId
+    pin:setItemId(itemId or 0)
+    pin:setTooltip(itemId and tr('Right-click to unpin') or tr('Drop an item here to pin it'))
+end
+
+local function showRules(data)
+    local container = rulesEdit and containerById(rulesEdit.id)
+    if not container or tonumber(data.slot) ~= rulesEdit.slot then
+        return
+    end
+    if data.saved then
+        modules.game_textmessage.displayStatusMessage(tr('Sort rules saved for %s.', titleOf(container)))
+        closeRules()
+        return
+    end
+    if rulesWindow then
+        rulesWindow:destroy()
+    end
+    rulesWindow = g_ui.createWidget('PokegearBagRules', modules.game_interface.getRootPanel())
+    rulesWindow:addAnchor(AnchorTop, 'pokegearBag', AnchorTop)
+    rulesWindow:addAnchor(AnchorRight, 'pokegearBag', AnchorLeft)
+    rulesWindow:setMarginRight(6)
+    rulesWindow.title:setText(tr('Sort rules: %s', titleOf(container)))
+
+    local taken = {}
+    for _, name in ipairs(type(data.categories) == 'table' and data.categories or {}) do
+        taken[tostring(name)] = true
+    end
+    for _, category in ipairs(categories) do
+        if category.name ~= 'Other' then
+            local pill = g_ui.createWidget('PokegearBagRulePill', rulesWindow.categories)
+            pill:setText(category.name)
+            pill.categoryName = category.name
+            pill:setOn(taken[category.name] == true)
+            pill.onClick = function(widget) widget:setOn(not widget:isOn()) end
+        end
+    end
+
+    local pinned = type(data.pins) == 'table' and data.pins or {}
+    for index = 1, MAX_PINS do
+        local pin = g_ui.createWidget('PokegearBagPin', rulesWindow.pins)
+        local id = tonumber(pinned[index])
+        setPin(pin, id and id > 0 and id or nil)
+        pin.onDrop = function(widget, dragged)
+            local item = dragged and dragged.currentDragThing
+            if not item or not item.isItem or not item:isItem() or item:isContainer() then
+                return false
+            end
+            for _, other in ipairs(rulesWindow.pins:getChildren()) do
+                if other.pinned == item:getId() then
+                    return true
+                end
+            end
+            setPin(widget, item:getId())
+            return true
+        end
+        pin.onMouseRelease = function(widget, mousePos, button)
+            if button == MouseRightButton and widget.pinned then
+                setPin(widget, nil)
+                return true
+            end
+            return false
+        end
+    end
+
+    rulesWindow.close.onClick = closeRules
+    rulesWindow.cancel.onClick = closeRules
+    rulesWindow.clear.onClick = function()
+        for _, pill in ipairs(rulesWindow.categories:getChildren()) do
+            pill:setOn(false)
+        end
+        for _, pin in ipairs(rulesWindow.pins:getChildren()) do
+            setPin(pin, nil)
+        end
+    end
+    rulesWindow.save.onClick = function()
+        local names, pins = {}, {}
+        for _, pill in ipairs(rulesWindow.categories:getChildren()) do
+            if pill:isOn() then
+                names[#names + 1] = pill.categoryName
+            end
+        end
+        for _, pin in ipairs(rulesWindow.pins:getChildren()) do
+            if pin.pinned then
+                pins[#pins + 1] = pin.pinned
+            end
+        end
+        sendBag({ action = 'setRules', slot = rulesEdit.slot, item = rulesEdit.item, categories = names, pins = pins })
+    end
+    rulesWindow:setHeight(rulesWindow.save:getY() - rulesWindow:getY() + rulesWindow.save:getHeight() + 10)
+    scheduleEvent(function()
+        if rulesWindow then
+            rulesWindow:setHeight(rulesWindow.save:getY() - rulesWindow:getY() + rulesWindow.save:getHeight() + 10)
+        end
+    end, 1)
+end
+
+local function openRules(id)
+    local container = containerById(id)
+    local slot = bagSlot(id)
+    if not container or not slot or slot < 0 then
+        modules.game_textmessage.displayFailureMessage(tr('Only the bags in your bag can have sort rules.'))
+        return
+    end
+    closeRules()
+    rulesEdit = { id = id, slot = slot, item = container:getContainerItem():getId() }
+    sendBag({ action = 'rules', slot = slot, item = rulesEdit.item })
+end
+
 local function openTabMenu(id, tab, first, mousePos)
     local container = containerById(id)
     local menu = g_ui.createWidget('PopupMenu')
     menu:setGameMenu(true)
     menu:addOption(tr('Rename'), function() startRename(id, tab) end)
     if not first then
+        menu:addOption(tr('Sort rules...'), function() openRules(id) end)
         menu:addOption(tr('Open as its own window'), function() openAsWindow(id) end)
         menu:addOption(tr('Close tab'), function() if container then g_game.close(container) end end)
     end
@@ -709,6 +833,12 @@ local function onBagMessage(protocol, opcode, buffer)
         if window and window:isVisible() then
             fillTabs()
         end
+    elseif data.type == 'rules' then
+        showRules(data)
+    elseif data.type == 'sorted' then
+        local moved = tonumber(data.moved) or 0
+        modules.game_textmessage.displayStatusMessage(moved > 0 and tr('Sorted: %d items moved to their bags.', moved)
+            or tr('Everything is already in the bag its rules choose.'))
     elseif data.type == 'error' then
         modules.game_textmessage.displayFailureMessage(tostring(data.text or ''))
     end
@@ -749,6 +879,9 @@ local function build()
     window.header.close.onClick = function()
         Bag.close()
     end
+    window.header.sort.onClick = function()
+        sendBag({ action = 'sort' })
+    end
     window.tabs.onMouseWheel = function(widget, mousePos, direction)
         scrollTabs(direction == MouseWheelUp and -1 or 1)
         return true
@@ -779,6 +912,7 @@ local function showWindow()
 end
 
 local function hideWindow()
+    closeRules()
     if beltEvent then
         removeEvent(beltEvent)
         beltEvent = nil
@@ -895,6 +1029,9 @@ local function onContainerClose(container)
         end
     end
     tabSlot[id], tabNames[id] = nil, nil
+    if rulesEdit and rulesEdit.id == id then
+        closeRules()
+    end
     if selected == id then
         selected = tabs[1]
     end
@@ -1175,6 +1312,7 @@ function Bag.terminate()
     end
     Keybind.delete(KEY[1], KEY[2])
     active = false
+    closeRules()
     if window then
         window:destroy()
         window = nil

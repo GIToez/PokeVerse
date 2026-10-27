@@ -390,6 +390,12 @@ class Player : public Creature, public Cylinder
 		tradestate_t getTradeState() {return tradeState;}
 		Item* getTradeItem() {return tradeItem;}
 
+		// the Bag's sort rules: bags in the starting bag can take categories and pin items
+		Container* getStartingBag() const;
+		Container* getRuleBag(const Item* item) const;
+		Container* getSortDestination(const Item* item, int32_t& index, Item** destItem) const;
+		uint32_t sortBags();
+
 		//shop functions
 		void setShopOwner(Npc* owner, int32_t onBuy, int32_t onSell, ShopInfoList offer)
 		{

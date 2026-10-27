@@ -158,7 +158,7 @@ items in and out (to the ground, a hotkey, the PC, the GTS or another bag).
   - Up to 5 bags open as tabs at once, because the server keeps 16 open containers per trainer and
     the belt, corpses and the PC need some. Further bags show in the grid; right-click one to open it
     once a tab is closed.
-  - Right-click a tab to rename it, open it as its own window, or close it. Drag its sprite out to
+  - Right-click a tab to rename it, set its sort rules, open it as its own window, or close it. Drag its sprite out to
     take the bag out. Drop an item on a tab to put it in that bag, or on "+" for the starting bag.
   - The name is stored on the bag item, so it keeps the name in the PC or after a trade.
 - **The category rail** filters whichever tab is open: All, the GTS and PC categories, plus the new
@@ -173,9 +173,13 @@ items in and out (to the ground, a hotkey, the PC, the GTS or another bag).
   5. any bag with room;
   6. if everything is full, it stays on the body (or the NPC doesn't sell it), with a message.
 
-  Rules only decide where a *new* item goes; dragging by hand always wins. "Sort my bags now" applies
-  the rules to what you already carry. The server does the routing when the item is added, so it also
-  works for NPC shops and the Store.
+  Rules only decide where a *new* item goes; dragging by hand always wins. "Sort my bags now" (the
+  Sort button in the Bag's header) applies the rules to what you already carry: an item a bag's rules
+  don't take goes to the bag that does, or back to the starting bag. The server does the routing when
+  the item is added, so it also works for NPC shops and the Store.
+  - The rules panel ("Sort rules..." on a tab) has a pill per category and up to 12 pinned items:
+    drop an item on a slot to pin it, right-click to unpin.
+  - The rules are kept on the bag item, like its name, so they go with it to the PC or a trade.
 - **Categories for everything.** Today anything not on a list falls under Other. New categories fill
   the gaps:
   - Key Items: rods, the Mega Ring, the Badge Case.

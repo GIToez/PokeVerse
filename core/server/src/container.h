@@ -140,12 +140,14 @@ class Container : public Item, public Cylinder
 		virtual void __internalAddThing(uint32_t index, Thing* thing);
 		virtual void __startDecaying();
 
+		// a stack of the same item with room left, and its slot
+		Item* canAutoGroup(const Item* moveItem, int32_t& index) const;
+
 	private:
 		void onAddContainerItem(Item* item);
 		void onUpdateContainerItem(uint32_t index, Item* oldItem, const ItemType& oldType,
 			Item* newItem, const ItemType& newType);
 		void onRemoveContainerItem(uint32_t index, Item* item);
-		Item* canAutoGroup(const Item* moveItem, int32_t& index) const;
 
 		Container* getParentContainer();
 		void updateItemWeight(double diff);
