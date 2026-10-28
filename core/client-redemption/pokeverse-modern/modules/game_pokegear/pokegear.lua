@@ -58,6 +58,7 @@ end
 
 local function keepSkillsHidden(window)
     if active then
+        skillsWasOpen = true
         window:hide()
     end
 end
@@ -111,7 +112,10 @@ function Pokegear.layoutColumn()
         return
     end
     local on = active and g_game.isOnline()
-    local under = on and (Nearby.docked() or Hub.docked())
+    if on then
+        Tracking.follow()
+    end
+    local under = on and (Tracking.docked() or Nearby.docked() or Hub.docked())
     column:removeAnchor(AnchorTop)
     if under then
         column:addAnchor(AnchorTop, under:getId(), AnchorBottom)
@@ -138,6 +142,7 @@ local function apply()
     end
     Hub.apply(active)
     Nearby.apply(active)
+    Tracking.apply(active)
     Bag.apply(active)
     Sockets.apply(active)
     Experience.apply(active)
@@ -178,6 +183,7 @@ end
 local function onGameEnd()
     Hub.apply(false)
     Nearby.apply(false)
+    Tracking.apply(false)
     Bag.reset()
     Sockets.apply(false)
     Experience.apply(false)
@@ -187,6 +193,7 @@ end
 function init()
     g_ui.importStyle('hub')
     g_ui.importStyle('nearby')
+    g_ui.importStyle('tracking')
     Bag.init()
     Sockets.init()
     Experience.init()
@@ -205,6 +212,7 @@ function terminate()
     end
     Hub.terminate()
     Nearby.terminate()
+    Tracking.terminate()
     Bag.terminate()
     Sockets.terminate()
     Experience.terminate()

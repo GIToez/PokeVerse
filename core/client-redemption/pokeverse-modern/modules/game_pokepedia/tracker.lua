@@ -9,6 +9,10 @@ local trackedNames = {} -- ordered names
 local progress = {} -- name -> { number, level, points, next }
 local hidden, pinned = {}, {}
 local refreshEvent
+-- Pokegear's Tracking card (game_pokegear/tracking.lua) shows the same lines: it listens, and while
+-- it is on, opening the tracker opens the card instead
+local listeners = {}
+local delegate
 
 local IMAGES = '/modules/game_dailytasks/images/'
 local BOARD_ICONS = { daily = IMAGES .. 'icon_daily', weekly = IMAGES .. 'icon_weekly', hunting = IMAGES .. 'icon_hunting' }
@@ -166,6 +170,45 @@ local function collect()
     return shown
 end
 
+Tracker.getLines = collect
+
+function Tracker.isPinned(key)
+    return pinned[key] == true
+end
+
+function Tracker.setPinned(key, on)
+    pinned[key] = on or nil
+    Pp.save('pinned', pinned)
+    Tracker.refresh()
+end
+
+function Tracker.showHidden()
+    hidden = {}
+    Pp.save('hiddenTasks', hidden)
+    Tracker.refresh()
+end
+
+function Tracker.listen(callback)
+    listeners[#listeners + 1] = callback
+end
+
+function Tracker.unlisten(callback)
+    for index, listener in ipairs(listeners) do
+        if listener == callback then
+            table.remove(listeners, index)
+            return
+        end
+    end
+end
+
+function Tracker.setDelegate(value)
+    delegate = value
+end
+
+function Tracker.getWindow()
+    return miniWindow
+end
+
 local function draw()
     if not miniWindow then
         return
@@ -199,11 +242,7 @@ local function draw()
         widget.pin:setVisible(not line.noPin)
         widget.pin:setIcon(Pp.IMAGES .. (isPinned and 'icon_pinned' or 'icon_pin'))
         widget.pin:setTooltip(isPinned and tr('Unpin') or tr('Pin to the top'))
-        widget.pin.onClick = function()
-            pinned[line.key] = (not isPinned) or nil
-            Pp.save('pinned', pinned)
-            Tracker.refresh()
-        end
+        widget.pin.onClick = function() Tracker.setPinned(line.key, not isPinned) end
         widget.remove.onClick = line.onRemove
         widget.onClick = line.onClick
     end
@@ -214,6 +253,9 @@ function Tracker.refresh()
     refreshEvent = scheduleEvent(function()
         refreshEvent = nil
         draw()
+        for _, listener in ipairs(listeners) do
+            listener()
+        end
     end, 100)
 end
 
@@ -234,6 +276,10 @@ end
 -- the window
 
 function Tracker.open()
+    if delegate then
+        delegate.open()
+        return
+    end
     if not miniWindow then
         return
     end
@@ -248,6 +294,10 @@ function Tracker.open()
 end
 
 function Tracker.toggle()
+    if delegate then
+        delegate.toggle()
+        return
+    end
     if miniWindow and miniWindow:isVisible() then
         miniWindow:close()
     else
@@ -285,11 +335,7 @@ function Tracker.setup()
         contextMenuButton.onClick = function(widget, mousePos)
             local menu = g_ui.createWidget('PopupMenu')
             menu:setGameMenu(true)
-            menu:addOption(tr('Show the hidden tasks again'), function()
-                hidden = {}
-                Pp.save('hiddenTasks', hidden)
-                Tracker.refresh()
-            end)
+            menu:addOption(tr('Show the hidden tasks again'), Tracker.showHidden)
             menu:addOption(tr('Open the Pokepedia'), function() show() end)
             menu:display(mousePos)
         end

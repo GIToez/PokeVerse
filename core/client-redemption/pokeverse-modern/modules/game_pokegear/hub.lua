@@ -238,6 +238,23 @@ function Hub.docked()
     return Pokegear.isDocked(hub, POSITION_SETTING) and hub or nil
 end
 
+-- the ribbon under the map grows by extra pixels for a widget of another window (the folded Tracking
+-- chip); the ring grows with it, so what hangs under it moves down
+local RIBBON_HEIGHT, HUB_HEIGHT = 46, 400
+
+function Hub.ribbon()
+    return hub and hub.ribbon
+end
+
+function Hub.extendRibbon(extra)
+    if not hub then
+        return
+    end
+    hub.ribbon:setHeight(RIBBON_HEIGHT + extra)
+    hub:setHeight(HUB_HEIGHT + extra)
+    Pokegear.fitColumn()
+end
+
 function Hub.terminate()
     hide()
     if hub then
