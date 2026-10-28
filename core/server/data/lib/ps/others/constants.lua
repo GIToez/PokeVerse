@@ -87,7 +87,8 @@ EXTENDED_IDS = {
     MEGA_EVOLVE = 52, -- JSON from the client: {action = "hello"} at login, {action = "evolve"} for the R key and the Mega button (MegaEvolution)
     BAG = 53, -- JSON Pokegear Bag: the client sends {action = "hello"} at login, the server answers with the item categories (Bag)
     SOCIAL = 54, -- JSON Pokegear Social window: friends, guild roster and party (Social)
-    ACTIVITY = 55 -- JSON a milestone for the Pokegear Activity list, just before its text message (doPlayerSendActivity)
+    ACTIVITY = 55, -- JSON a milestone for the Pokegear Activity list, just before its text message (doPlayerSendActivity)
+    POKEMON_OUTFIT = 56 -- JSON Pokegear Pokemon Outfit window: the outfits the Pokemon out owns and could get (PokemonAddon)
 }
 
 TOURNAMENT_TYPES = {}

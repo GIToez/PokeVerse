@@ -139,5 +139,6 @@ playersStorages = {
     megaResearch = base + 136, -- "R<line>=<defeats>,...": Oak's Mega research, wild defeats per Mega Stone line
     beltDefense = base + 137, -- 1 while the Bag's Defense mode switch is on (BeltSwitches)
     beltAutoSwapOff = base + 138, -- 1 while the Bag's Auto swap switch is off; it starts on (BeltSwitches)
+    pokemonOutfitClient = base + 139, -- 1 while the trainer's client has the Pokemon Outfit window (it says hello at login)
     -- tournamentWeekWinnerStorage = base + 65
 }
