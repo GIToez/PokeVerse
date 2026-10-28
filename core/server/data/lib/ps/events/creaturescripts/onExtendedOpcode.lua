@@ -46,6 +46,8 @@ function onExtendedOpcode(cid, opcode, buffer)
         MegaEvolution.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.BAG) then
         Bag.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.SOCIAL) then
+        Social.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.AUTO_LOOT) then
         local enabled = buffer == "1"
         setPlayerAutoLoot(cid, enabled)

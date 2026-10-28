@@ -241,6 +241,7 @@ ExtendedIds.Analyser = 50
 ExtendedIds.Mega = 51
 ExtendedIds.MegaEvolve = 52
 ExtendedIds.Bag = 53
+ExtendedIds.Social = 54
 
 -- Long extended opcode messages arrive as "#id:index:count:" fragments (doSendPlayerLongExtendedOpcode
 -- on the server), and the server's output pool can deliver them out of order. Gives back the whole

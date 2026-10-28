@@ -1,0 +1,357 @@
+// Social: Friends (the VIP list), Guild, Party and Blocked (the ignore list) as one Pokegear window.
+// Rows are built by social.lua.
+PokegearSocialGroup < UILabel
+  height: 14
+  margin-top: 4
+  text-align: left
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 10
+  color: #8fa0c4
+  phantom: true
+
+PokegearSocialIcon < UIButton
+  size: 22 22
+  image-source: /modules/game_pokegear/images/pill
+  image-border: 9
+  image-smooth: true
+  $hover:
+    image-source: /modules/game_pokegear/images/pill_on
+  $disabled:
+    opacity: 0.4
+
+  UIWidget
+    id: icon
+    size: 14 14
+    anchors.centerIn: parent
+    image-smooth: true
+    phantom: true
+
+PokegearSocialRow < UIWidget
+  height: 38
+  image-source: /modules/game_pokegear/images/row
+  image-border: 11
+  image-smooth: true
+  $hover:
+    image-source: /modules/game_pokegear/images/row_target
+
+  UIWidget
+    id: face
+    size: 32 32
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 3
+    image-source: /modules/game_pokegear/images/face
+    image-border: 15
+    phantom: true
+
+    UICreature
+      id: creature
+      size: 30 30
+      anchors.centerIn: parent
+      phantom: true
+
+    UILabel
+      id: initials
+      anchors.fill: parent
+      text-align: center
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 11
+      color: #eef2ff
+      phantom: true
+
+  UIWidget
+    id: dot
+    size: 8 8
+    anchors.bottom: face.bottom
+    anchors.right: face.right
+    image-source: /modules/game_pokegear/images/bar_fill
+    image-border: 3
+    image-color: #4fd66a
+    phantom: true
+
+  UILabel
+    id: name
+    anchors.left: face.right
+    anchors.right: buttons.left
+    anchors.top: parent.top
+    margin-left: 7
+    margin-right: 4
+    margin-top: 4
+    height: 15
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #eef2ff
+    phantom: true
+
+  UILabel
+    id: detail
+    anchors.left: name.left
+    anchors.right: name.right
+    anchors.top: name.bottom
+    margin-top: 1
+    height: 14
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 10
+    color: #8fa0c4
+    phantom: true
+
+  UIWidget
+    id: buttons
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 6
+    height: 22
+    width: 0
+    layout:
+      type: horizontalBox
+      spacing: 3
+
+PokegearSocialAction < UIButton
+  height: 24
+  text-auto-resize: true
+  padding: 0 12
+  image-source: /modules/game_pokegear/images/pill
+  image-border: 9
+  image-smooth: true
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 11
+  color: #eef2ff
+  $hover:
+    image-source: /modules/game_pokegear/images/pill_on
+  $on:
+    image-source: /modules/game_pokegear/images/pill_on
+    color: #ffcb05
+  $disabled:
+    color: #4a5675
+
+PokegearSocialToggle < UIButton
+  size: 34 18
+  image-source: /modules/game_pokegear/images/pill
+  image-border: 9
+  image-smooth: true
+  $on:
+    image-source: /modules/game_pokegear/images/pill_on
+    image-color: #3fbf5a
+
+  UIWidget
+    id: knob
+    size: 12 12
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 3
+    image-source: /modules/game_pokegear/images/chip
+    image-border: 5
+    image-smooth: true
+    phantom: true
+
+PokegearSocialEdit < UITextEdit
+  height: 22
+  padding: 0 10
+  text-align: left
+  image-source: /modules/game_pokegear/images/pill
+  image-border: 9
+  image-smooth: true
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 11
+  color: #eef2ff
+  placeholder-color: #6f7fa3
+  $focus:
+    image-source: /modules/game_pokegear/images/pill_on
+
+PokegearSocial < UIWidget
+  id: pokegearSocial
+  width: 300
+  height: 440
+  image-source: /modules/game_pokegear/images/card
+  image-border: 12
+  image-smooth: true
+  padding: 8 10 10 10
+  focusable: false
+
+  UIWidget
+    id: header
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 24
+    draggable: true
+    !tooltip: tr('Drag to move')
+
+    UILabel
+      id: title
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      text-auto-resize: true
+      !text: tr('Social')
+      ttf-font: /fonts/ttf/pixelify-sans.ttf
+      ttf-font-size: 18
+      color: #ffcb05
+      phantom: true
+
+    PVCloseButton
+      id: close
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      !tooltip: tr('Close')
+
+    PokegearChip
+      id: keyChip
+      anchors.right: close.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 6
+
+  UIWidget
+    id: tabs
+    anchors.top: header.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 6
+    height: 20
+    layout:
+      type: horizontalBox
+      spacing: 4
+
+    PokegearPill
+      id: friends
+    PokegearPill
+      id: guild
+    PokegearPill
+      id: party
+    PokegearPill
+      id: blocked
+
+  PokegearSocialEdit
+    id: search
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 8
+    !placeholder: tr('Search friends')
+
+  UIWidget
+    id: banner
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 8
+    height: 40
+    image-source: /modules/game_pokegear/images/row
+    image-border: 11
+    image-smooth: true
+    visible: false
+
+    UIWidget
+      id: icon
+      size: 26 26
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 8
+      image-source: /modules/game_trainercard/images/icon_guild
+      image-smooth: true
+      phantom: true
+
+    UILabel
+      id: name
+      anchors.left: icon.right
+      anchors.right: parent.right
+      anchors.top: parent.top
+      margin-left: 8
+      margin-top: 5
+      height: 15
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 13
+      color: #eef2ff
+      phantom: true
+
+    UILabel
+      id: detail
+      anchors.left: name.left
+      anchors.right: parent.right
+      anchors.top: name.bottom
+      margin-top: 1
+      height: 14
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 10
+      color: #8fa0c4
+      phantom: true
+
+  UIScrollArea
+    id: list
+    anchors.top: search.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: footer.top
+    margin-top: 6
+    margin-right: 12
+    margin-bottom: 8
+    vertical-scrollbar: scroll
+    layout:
+      type: verticalBox
+      spacing: 4
+
+  VerticalScrollBar
+    id: scroll
+    anchors.top: list.top
+    anchors.bottom: list.bottom
+    anchors.left: list.right
+    margin-left: 4
+    width: 8
+    step: 42
+    pixels-scroll: true
+
+  UILabel
+    id: empty
+    anchors.top: list.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 20
+    height: 44
+    text-wrap: true
+    text-align: center
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 11
+    color: #8fa0c4
+    phantom: true
+    visible: false
+
+  UIWidget
+    id: shared
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: footer.top
+    margin-bottom: 8
+    height: 22
+    visible: false
+
+    UILabel
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      text-auto-resize: true
+      !text: tr('Shared experience')
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 11
+      color: #eef2ff
+      phantom: true
+
+    PokegearSocialToggle
+      id: toggle
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      !tooltip: tr('Share the experience your party earns (party leader only)')
+
+  UIWidget
+    id: footer
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    height: 24
+    layout:
+      type: horizontalBox
+      spacing: 6
+
+  PokegearSocialEdit
+    id: addEdit
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    visible: false

@@ -12,7 +12,7 @@ local POSITION_SETTING = 'pokegearHubPosition'
 -- the orbs, top to bottom down the left of the ring; each one presses a top bar button, so it
 -- opens the same window and keeps the same key
 local ORBS = {
-    { id = 'friends', button = 'vipListButton', tooltip = 'Friends', key = { 'Windows', 'Show/hide VIP list' } },
+    { id = 'friends', button = 'vipListButton', tooltip = 'Social', open = 'social', key = { 'Windows', 'Show/hide VIP list' } },
     { id = 'trainer', button = 'trainerCardButton', tooltip = 'Trainer card' },
     { id = 'quests', button = 'questLogButton', tooltip = 'Quests', key = { 'Windows', 'Show/hide the Quest Log' } },
     { id = 'pokepedia', button = 'pokepediaButton', tooltip = 'Pokepedia', key = { 'Minimap', 'Open full map' } },
@@ -66,6 +66,8 @@ local function refreshOrbs()
         orb.chip:setVisible(key ~= '')
         if def.open == 'bag' then
             orb:setOn(Bag.isOpen())
+        elseif def.open == 'social' then
+            orb:setOn(Social.isOpen())
         else
             orb:setOn(button ~= nil and button.isOn ~= nil and button:isOn())
         end
@@ -154,6 +156,8 @@ local function build()
         orb.onClick = function()
             if def.open == 'bag' then
                 Bag.toggle()
+            elseif def.open == 'social' then
+                Social.toggle()
             else
                 Pokegear.pressTopButton(def.button)
             end

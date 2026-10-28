@@ -85,7 +85,8 @@ EXTENDED_IDS = {
     ANALYSER = 50, -- JSON Analyser window: the catch chances of the last Pokemon defeated and the Pokemon's EXP (Analyser)
     MEGA = 51, -- JSON Mega HUD state: the ring, the gauge, whether the button is lit, the Mega form, its seconds left and boosted moves (MegaEvolution.state)
     MEGA_EVOLVE = 52, -- JSON from the client: {action = "hello"} at login, {action = "evolve"} for the R key and the Mega button (MegaEvolution)
-    BAG = 53 -- JSON Pokegear Bag: the client sends {action = "hello"} at login, the server answers with the item categories (Bag)
+    BAG = 53, -- JSON Pokegear Bag: the client sends {action = "hello"} at login, the server answers with the item categories (Bag)
+    SOCIAL = 54 -- JSON Pokegear Social window: friends, guild roster and party (Social)
 }
 
 TOURNAMENT_TYPES = {}
