@@ -18,6 +18,18 @@ PokegearPill < UIButton
   $hover:
     color: #eef2ff
 
+PokegearSortArrow < UIWidget
+  size: 8 6
+  anchors.right: parent.right
+  anchors.verticalCenter: parent.verticalCenter
+  // the pill's right padding makes room for it
+  margin-right: -13
+  margin-top: 1
+  image-smooth: true
+  image-color: #eef2ff
+  phantom: true
+  visible: false
+
 PokegearTypeDot < UIWidget
   size: 8 8
   image-source: /modules/game_pokegear/images/dot
