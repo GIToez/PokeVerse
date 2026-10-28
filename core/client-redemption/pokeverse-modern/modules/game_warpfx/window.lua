@@ -1,11 +1,12 @@
--- The Warp Styles window (Customise Trainer > Warp Styles): a slot for each moment (Log in, Log out,
--- Teleport, Victory, Defeat, Faint) with the styles that fit it, and the chosen one playing on the stage.
+-- The Warp Styles window (Customise Trainer > Warp Styles): a card for each moment (Log in, Log out,
+-- Teleport, Victory, Defeat, Faint), a scrolling grid of the styles that fit the chosen one, and the style
+-- playing on the stage. A style you don't own plays too, so you can see it before buying it.
 -- The server sends {type = "state", open = true, styles, triggers} (warpfx.lua passes it on) and takes
 -- {action = "equip", trigger, style} for each slot changed on Save.
 WarpWindow = {}
 
 local PREVIEW_KEY = 'warp-preview'
-local window, state, picks, selected, stopLoop
+local window, state, picks, selected, previewing, stopLoop
 local imported = false
 
 local function trigger(id)
@@ -37,7 +38,7 @@ function WarpWindow.close()
         window:destroy()
         window = nil
     end
-    state, picks, selected = nil, nil, nil
+    state, picks, selected, previewing = nil, nil, nil, nil
 end
 
 -- out, a moment hidden, in; Faint has no way back, the trainer just stands up again
@@ -99,26 +100,86 @@ function loopStyle(stage, creatureWidget, kind, styleId, key)
     end
 end
 
+local function shownStyle()
+    return previewing or picks[selected]
+end
+
 local function runPreview()
     stopPreview()
     local entry = window and trigger(selected)
     if entry then
-        stopLoop = loopStyle(window.stage, window.stage.creature, entry.kind, picks[selected], PREVIEW_KEY)
+        stopLoop = loopStyle(window.stage, window.stage.creature, entry.kind, shownStyle(), PREVIEW_KEY)
     end
 end
 
 local function refreshWindow()
     local entry = trigger(selected)
-    for _, row in ipairs(window.rows:getChildren()) do
-        row.name:setColor(row.triggerId == selected and '#ffcb05' or '#c9d3ee')
-        for _, pill in ipairs(row.styles:getChildren()) do
-            pill:setOn(picks[row.triggerId] == pill.styleId)
-        end
+    for _, card in ipairs(window.moments:getChildren()) do
+        local here = card.triggerId == selected
+        card:setOn(here)
+        card.name:setColor(here and '#ffcb05' or '#c9d3ee')
+        local pick = style(picks[card.triggerId])
+        card.pick:setText(pick and tr(pick.name) or '')
     end
-    local chosen = entry and style(picks[selected])
-    window.stage.name:setText(chosen and entry and (tr(entry.name) .. ': ' .. tr(chosen.name)) or '')
+    local owned, total = 0, 0
+    for _, tile in ipairs(window.styles:getChildren()) do
+        local s = style(tile.styleId)
+        local worn = picks[selected] == tile.styleId
+        tile:setOn(tile.styleId == shownStyle())
+        tile.name:setColor(worn and '#ffcb05' or '#eef2ff')
+        tile.how:setText(worn and tr('Equipped') or tr(s.how))
+        tile.how:setColor(worn and '#ffcb05' or '#8fa0c4')
+        total = total + 1
+        owned = owned + (s.owned and 1 or 0)
+    end
+    window.stylesLabel:setText(entry and tr('%s styles  \183  %d of %d owned', tr(entry.name), owned, total) or '')
+    local shown = entry and style(shownStyle())
+    local text = ''
+    if shown and shown.owned then
+        text = tr(entry.name) .. ': ' .. tr(shown.name)
+    elseif shown then
+        text = tr('%s (preview)', tr(shown.name))
+    end
+    window.stage.name:setText(text)
     window.hint:setText(tr('Everyone around sees your styles. Victory and Defeat play when you win or lose a duel or a trainer battle, Faint when your trainer faints. Beam comes with Premium; the others are in the Store.'))
     runPreview()
+end
+
+-- the styles that fit the chosen moment, as many as there are
+local function fillStyles()
+    window.styles:destroyChildren()
+    local entry = trigger(selected)
+    if not entry then
+        return
+    end
+    for _, s in ipairs(state.styles or {}) do
+        if s.kind == entry.kind then
+            local tile = g_ui.createWidget('WarpStylesTile', window.styles)
+            tile.styleId = s.id
+            tile.name:setText(tr(s.name))
+            tile.lock:setVisible(not s.owned)
+            tile:setTooltip(s.owned and tr(s.how) or tr('%s: %s. Click to watch it.', tr(s.name), tr(s.how)))
+            if not s.owned then
+                tile:setOpacity(0.6)
+            end
+            tile.onClick = function()
+                if s.owned then
+                    picks[selected] = s.id
+                    previewing = nil
+                else
+                    previewing = s.id
+                end
+                refreshWindow()
+            end
+        end
+    end
+end
+
+local function selectMoment(id)
+    selected = id
+    previewing = nil
+    fillStyles()
+    refreshWindow()
 end
 
 local function save()
@@ -204,35 +265,16 @@ local function open(data)
     stage.right.onClick = function() turn(-1) end
 
     for _, entry in ipairs(state.triggers or {}) do
-        local row = g_ui.createWidget('WarpStylesRow', window.rows)
-        row.triggerId = entry.id
-        row.name:setText(tr(entry.name))
-        row.onClick = function()
-            selected = entry.id
-            refreshWindow()
-        end
-        for _, s in ipairs(state.styles or {}) do
-            if s.kind == entry.kind then
-                local pill = g_ui.createWidget('PokegearPill', row.styles)
-                pill.styleId = s.id
-                pill:setText(tr(s.name))
-                pill:setTooltip(s.owned and tr(s.how) or tr('%s: %s', tr(s.name), tr(s.how)))
-                if not s.owned then
-                    pill:setOpacity(0.45)
-                end
-                pill.onClick = function()
-                    selected = entry.id
-                    if s.owned then
-                        picks[entry.id] = s.id
-                    end
-                    refreshWindow()
-                end
-            end
+        local card = g_ui.createWidget('WarpStylesMoment', window.moments)
+        card.triggerId = entry.id
+        card.name:setText(tr(entry.name))
+        card.onClick = function()
+            selectMoment(entry.id)
         end
     end
     window:raise()
     window:focus()
-    refreshWindow()
+    selectMoment(selected)
 end
 
 function WarpWindow.onState(data)
