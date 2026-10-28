@@ -1,7 +1,7 @@
 diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap.lua
 --- a/modules/game_minimap/minimap.lua
 +++ b/modules/game_minimap/minimap.lua
-@@ -5,6 +5,10 @@
+@@ -5,6 +5,11 @@
  local oldPos = nil
  local fullscreenWidget
  local virtualFloor = 7
@@ -9,10 +9,11 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
 +local minimapRef
 +-- where it lives outside the full map: nil for its side panel window
 +local minimapHome
++local minimapWasVisible -- the side panel window when Pokegear took the minimap
  local currentDayTime = {
      h = 12,
      m = 0
-@@ -26,7 +30,7 @@
+@@ -26,7 +31,7 @@
          return
      end
  
@@ -21,7 +22,7 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
      if not (minimapWidget) or minimapWidget:isDragging() then
          return
      end
-@@ -95,12 +99,52 @@
+@@ -95,12 +100,52 @@
      end
  end
  
@@ -79,7 +80,7 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
  end
  
  function mapController:onGameStart()
-@@ -108,6 +152,11 @@
+@@ -108,6 +153,11 @@
          onChangeWorldTime = onChangeWorldTime
      })
  
@@ -91,7 +92,7 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
      mapController:registerEvents(LocalPlayer, {
          onPositionChange = onPositionChange
      }):execute()
-@@ -130,21 +179,17 @@
+@@ -130,21 +180,17 @@
          loadFnc(minimapFile)
      end
  
@@ -118,7 +119,7 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
      if iconTopMenu then
          iconTopMenu:destroy()
          iconTopMenu = nil
-@@ -152,11 +197,11 @@
+@@ -152,11 +198,11 @@
  end
  
  function zoomIn()
@@ -132,7 +133,7 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
  end
  
  function openCyclopediaMap()
-@@ -168,7 +213,7 @@
+@@ -168,7 +214,7 @@
  end
  
  function fullscreen()
@@ -141,7 +142,7 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
      if not minimapWidget then
          minimapWidget = fullscreenWidget
      end
-@@ -180,9 +225,11 @@
+@@ -180,9 +226,11 @@
  
      if minimapWidget.fullMapView then
          fullscreenWidget = nil
@@ -155,7 +156,7 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
          zoom = minimapWidget.zoomMinimap
          g_keyboard.unbindKeyDown('Escape')
          minimapWidget.fullMapView = false
-@@ -200,6 +247,7 @@
+@@ -200,6 +248,7 @@
      oldPos = minimapWidget:getCameraPosition()
      minimapWidget:setZoom(zoom)
      minimapWidget:setCameraPosition(pos)
@@ -163,7 +164,7 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
  end
  
  function upLayer()
-@@ -207,7 +255,7 @@
+@@ -207,7 +256,7 @@
          return
      end
  
@@ -172,7 +173,7 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
      virtualFloor = virtualFloor - 1
      refreshVirtualFloors()
  end
-@@ -217,33 +265,33 @@
+@@ -217,33 +266,33 @@
          return
      end
  
@@ -216,7 +217,7 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
      local player = g_game.getLocalPlayer()
      if player then
          virtualFloor = player:getPosition().z
-@@ -252,7 +300,31 @@
+@@ -252,7 +301,36 @@
  end
  
  function getMiniMapUi()
@@ -238,9 +239,14 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
 +    widget:setParent(parent or mapController.ui.minimapBorder)
 +    widget:fill('parent')
 +    if parent then
++        if minimapWasVisible == nil then
++            minimapWasVisible = mapController.ui:isVisible()
++        end
 +        mapController.ui:hide()
 +    else
-+        mapController.ui:show()
++        -- the side panel window comes back as it was before Pokegear
++        mapController.ui:setVisible(minimapWasVisible ~= false)
++        minimapWasVisible = nil
 +    end
 +    -- the side panel sizes hidden windows to 0 and only resizes again when asked
 +    if modules.game_mainpanel and modules.game_mainpanel.reloadMainPanelSizes then
@@ -249,7 +255,7 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
  end
  
  function extendedView(extendedView)
-@@ -275,7 +347,9 @@
+@@ -275,7 +353,9 @@
          if not mainRightPanel:hasChild(mapController.ui) then
              mainRightPanel:insertChild(1, mapController.ui)
          end

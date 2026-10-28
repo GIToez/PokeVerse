@@ -618,41 +618,8 @@ function getTrackerLines()
     return lines
 end
 
--- messages over 8 KB arrive as "#id:index:count:" fragments, possibly out of order
-local fragments, fragmentIds = {}, {}
-
-local function join(buffer)
-    if buffer:sub(1, 1) ~= '#' then
-        return buffer
-    end
-    local id, index, count, piece = buffer:match('^#(%d+):(%d+):(%d+):(.*)$')
-    if not id then
-        return nil
-    end
-    index, count = tonumber(index), tonumber(count)
-    local entry = fragments[id]
-    if not entry then
-        entry = { count = count, got = 0, pieces = {} }
-        fragments[id] = entry
-        table.insert(fragmentIds, id)
-        if #fragmentIds > 8 then
-            fragments[table.remove(fragmentIds, 1)] = nil
-        end
-    end
-    if not entry.pieces[index] then
-        entry.pieces[index] = piece
-        entry.got = entry.got + 1
-    end
-    if entry.got < entry.count then
-        return nil
-    end
-    fragments[id] = nil
-    table.removevalue(fragmentIds, id)
-    return table.concat(entry.pieces)
-end
-
 local function onQuest(protocol, opcode, buffer)
-    buffer = join(buffer)
+    buffer = ProtocolGame.joinFragments(opcode, buffer)
     if not buffer then
         return
     end
@@ -711,7 +678,6 @@ local function onGameEnd()
     helloEvent = nil
     hide()
     quests, order, selected, loaded, updates = {}, {}, nil, false, {}
-    fragments, fragmentIds = {}, {}
     resetNotices()
     resetIcons()
 end

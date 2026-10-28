@@ -164,7 +164,7 @@ local function fillCard()
     if not module or not module.trainerRate then
         return
     end
-    local state, received = boostState()
+    local state = boostState()
     local minutes = stamina()
     local spiritRate = module.currentStaminaRate(minutes)
     local personal = state and state.personal and state.personal.rate or 0

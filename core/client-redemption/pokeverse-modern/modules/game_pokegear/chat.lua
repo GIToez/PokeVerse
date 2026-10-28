@@ -57,9 +57,7 @@ local function textEdit()
     return c and c.consoleTextEdit
 end
 
-local function myName()
-    return g_game.getCharacterName() or ''
-end
+local myName = Pokegear.myName
 
 local function openSetting()
     return OPEN_SETTING .. '_' .. myName()
@@ -104,19 +102,7 @@ local function chipText(tab)
     return tab:getText()
 end
 
-local function initials(name)
-    local letters = {}
-    for word in (name or ''):gmatch('[%w]+') do
-        letters[#letters + 1] = word:sub(1, 1):upper()
-        if #letters == 2 then
-            break
-        end
-    end
-    if #letters == 1 then
-        letters[2] = (name:match('^%w(%w)') or ''):upper()
-    end
-    return table.concat(letters)
-end
+local initials = Pokegear.initials
 
 local function clock()
     local hour = tonumber(os.date('%H'))

@@ -52,6 +52,10 @@ local function floorName(z)
 end
 
 local function refreshOrbs()
+    -- also runs just after a click, which can be after the ring is gone
+    if not hub then
+        return
+    end
     for _, def in ipairs(ORBS) do
         local orb = orbs[def.id]
         local button = def.button and Pokegear.topButton(def.button)
