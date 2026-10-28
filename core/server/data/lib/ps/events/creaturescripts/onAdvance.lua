@@ -4,6 +4,7 @@ function onAdvance(cid, skill, oldLevel, newLevel)
         doSendMagicEffect(getCreaturePosition(cid), EFFECT_LEVEL_UP)
         if (newLevel > oldLevel) then
             LevelUpBanner.sendTrainer(cid, oldLevel, newLevel)
+            doPlayerAddActivity(cid, "levelup", string.format(__L(cid, "You reached trainer level %d."), newLevel))
             Vocations.sendTrial(cid)
             Quests.onLevelUp(cid)
         end

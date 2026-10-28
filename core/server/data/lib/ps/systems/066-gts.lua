@@ -64,7 +64,7 @@ end
 local function notify(guid, text)
     local cid = getPlayerByGUID(guid)
     if (cid) then
-        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "GTS: " .. __L(cid, text))
+        doPlayerSendActivity(cid, "gts", MESSAGE_STATUS_CONSOLE_BLUE, "GTS: " .. __L(cid, text))
     end
 end
 

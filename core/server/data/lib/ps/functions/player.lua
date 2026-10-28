@@ -621,6 +621,8 @@ function doPlayerPokemonAddExperience(player, pokemon, expAmount, multiplier, re
                     LevelUpBanner.sendPokemon(player, ball.uid, pokemonName,
                         (pokemonNickname ~= nil and pokemonNickname ~= -1) and pokemonNickname or pokemonName,
                         newLevel - gainLevel, newLevel, newMoveNames)
+                    doPlayerAddActivity(player, "levelup", string.format(__L(player, "Your %s reached level %d."),
+                        (pokemonNickname ~= nil and pokemonNickname ~= -1) and pokemonNickname or pokemonName, newLevel))
 
                 else -- We are at Extra Point up mode
                     local pokemonPosition = getCreaturePosition(pokemon and pokemon or player)
@@ -1319,4 +1321,23 @@ end
 
 function setPlayerLastEliteFourTry(cid, value)
     doCreatureSetStorage(cid, playersStorages.lastEliteFourTry, value)
+end
+
+-- Milestones for the Pokegear Activity list (EXTENDED_IDS.ACTIVITY). kind is one of the client's kinds
+-- (game_pokegear activity.lua): gts, catch, evolve, levelup, quest, task, battle, egg.
+-- doPlayerSendActivity: a toast and a line in the list, then the usual text message for Classic and the
+-- console; in Pokegear the client hides that message, since the toast shows it.
+function doPlayerSendActivity(cid, kind, mode, text)
+    if (not isPlayer(cid)) then
+        return
+    end
+    doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.ACTIVITY, JSON.encode({ kind = kind, text = text }))
+    doPlayerSendTextMessage(cid, mode, text)
+end
+
+-- only a line in the list: a banner or notice of its own already shows it (level-ups, quests)
+function doPlayerAddActivity(cid, kind, text)
+    if (isPlayer(cid)) then
+        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.ACTIVITY, JSON.encode({ kind = kind, text = text, quiet = true }))
+    end
 end

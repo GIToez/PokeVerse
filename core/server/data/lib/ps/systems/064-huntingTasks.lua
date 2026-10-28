@@ -275,11 +275,11 @@ function HuntingTasks.claim(cid, slot)
     state.offers = newOffers(cid, state)
     save(cid, state)
     TaskBoards.giveReward(cid, money, {})
-    doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(
+    doPlayerSendActivity(cid, "task", MESSAGE_EVENT_ADVANCE, string.format(
         __L(cid, "Hunt complete! You received %d dollars and %d Hunt Points."), money, points))
     local newRank = rankOf(state.earned)
     if (newRank > oldRank) then
-        doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(
+        doPlayerSendActivity(cid, "task", MESSAGE_EVENT_ADVANCE, string.format(
             __L(cid, "Your hunting rank is now %s: +%d%% money on every hunt."),
             HuntingTasks.RANKS[newRank].name, HuntingTasks.RANKS[newRank].bonus))
     end

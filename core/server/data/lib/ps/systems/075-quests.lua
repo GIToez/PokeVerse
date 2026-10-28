@@ -543,6 +543,8 @@ Quests.onFinish = function(cid, quest)
         return
     end
     notice(cid, "complete", quest, { exp = quest.rewardExp, rewards = rewardsOf(quest), daily = quest.daily and true or nil })
+    local entry = Quests.getEntry(quest.storage)
+    doPlayerAddActivity(cid, "quest", string.format(__L(cid, "Quest complete: %s"), entry and entry.name or __L(cid, "Quest")))
     Quests.sendMarks(cid)
 end
 
