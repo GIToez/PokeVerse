@@ -38,6 +38,14 @@ local function nameOf(itemId)
     return name ~= '' and (name:gsub('^%l', string.upper)) or nil
 end
 
+-- game_lootlist (from the legacy client) draws its own fading icons; the list under the HUD takes over
+local function classicList(visible)
+    local classic = modules.game_lootlist
+    if classic and classic.lootList then
+        classic.lootList:setVisible(visible)
+    end
+end
+
 -- Feed -------------------------------------------------------------------------------------------
 
 local function removeRow(key)
@@ -135,6 +143,10 @@ end
 
 local function onLootList(list)
     lastListAt = g_clock.millis()
+    if active then
+        -- it shows itself again at every login
+        classicList(false)
+    end
     for itemId, count in pairs(list) do
         addRow(itemId, itemId, count)
     end
@@ -314,10 +326,12 @@ function Loot.apply(isActive)
     if active then
         placeFeed()
         feed:show()
+        classicList(false)
         adoptBodies()
     else
         clearFeed()
         feed:hide()
+        classicList(true)
         releaseBody()
     end
 end

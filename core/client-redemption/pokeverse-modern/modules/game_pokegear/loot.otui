@@ -39,15 +39,15 @@ PokegearLootRow < UIWidget
       color: #eef2ff
       phantom: true
 
+// four rows, always: the news banner goes below this space (game_newsbanner place)
 PokegearLootFeed < UIWidget
   id: pokegearLootFeed
-  width: 360
+  size: 360 113
   phantom: true
   focusable: false
   layout:
     type: verticalBox
     spacing: 3
-    fit-children: true
 
 PokegearLootItem < Item
   size: 38 38
