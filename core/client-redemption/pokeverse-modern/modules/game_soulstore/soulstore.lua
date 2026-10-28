@@ -10,7 +10,7 @@ local CATEGORY_ICONS = { featured = 'star', premium = 'crown', addons = 'heart',
                          warpstyles = 'ball', services = 'guide', items = 'up', guild = 'ranks', referral = 'heart' }
 local WARP_IMAGES = '/modules/game_warpfx/images/'
 local WARP_PREVIEW_KEY = 'store-preview'
-local SLOT_NOTES = { warp = 'For logging in, logging out and teleporting', victory = 'Plays when you win a battle',
+local SLOT_NOTES = { warp = 'Log in, log out and teleport', victory = 'Plays when you win a battle',
                      defeat = 'Plays when you lose a battle' }
 local KIND_ICONS = { premium = 'crown', sex = 'outfit', nickname = 'title', unnickname = 'back', vitamins = 'up',
                      guild = 'ranks', rank = 'ranks', referral = 'heart' }
@@ -237,11 +237,16 @@ end
 -- a Warp Style offer loops on the trainer's own look in the preview (game_warpfx)
 function showWarpPreview(offer)
     stopPreview()
+    local preview = window.detail.preview
     local warpfx = modules.game_warpfx
-    if offer.kind ~= 'warpstyle' or not warpfx or not warpfx.loopStyle then
+    local warp = offer.kind == 'warpstyle' and warpfx and warpfx.loopStyle
+    -- a taller frame with the trainer smaller and lower, so what plays over their head fits
+    preview:setHeight(warp and 170 or 120)
+    preview.creature:setSize(warp and { width = 76, height = 76 } or { width = 110, height = 110 })
+    preview.creature:setMarginTop(warp and 56 or 0)
+    if not warp then
         return
     end
-    local preview = window.detail.preview
     local player = g_game.getLocalPlayer()
     preview:setClipping(true)
     preview.icon:hide()

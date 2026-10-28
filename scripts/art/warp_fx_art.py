@@ -194,15 +194,15 @@ def pokeball(opened):
 
 def redray():
     """The capture light: a red ray, bright in the middle, lying flat (rotated in the game)."""
-    w, h = 64, 14
+    w, h = 64, 16
     img = Image.new('RGBA', (w, h), (0, 0, 0, 0))
     for y in range(h):
         v = 1 - abs(y - (h - 1) / 2) / ((h - 1) / 2)
         for x in range(w):
-            u = min(1.0, x / 6, (w - 1 - x) / 6)
-            core = v ** 3
-            col = (255, round(60 + 180 * core), round(70 + 170 * core))
-            img.putpixel((x, y), col + (round(235 * v ** 1.3 * u),))
+            u = min(1.0, x / 4, (w - 1 - x) / 4)
+            core = v ** 4
+            col = (255, round(50 + 200 * core), round(60 + 190 * core))
+            img.putpixel((x, y), col + (round(255 * min(1.0, v * 1.6) * u),))
     return img
 
 

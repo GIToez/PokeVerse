@@ -108,6 +108,18 @@ local function put(widget, x, y, width, height, opacity)
     widget:raise()
 end
 
+-- How far up and left of its tile the trainer shows, in pixels at 32 per tile: a 64 pixel outfit stands
+-- across four tiles with its tile at the bottom right, and the map adds the outfit's displacement
+local function displacement(play)
+    if not play.disp then
+        local thing = not play.host.widgets and g_things.getThingType(play.outfit.type or 0, ThingCategoryCreature)
+        local d = thing and thing:getDisplacement()
+        local big = (math.min(play.frame, 64) - 32) / 32
+        play.disp = { x = (d and d.x or 0) + 16 * big, y = (d and d.y or 0) + 8 * big }
+    end
+    return play.disp
+end
+
 -- A copy of the trainer: they are gone (out) or hidden (in, fx) while it plays
 local function copy(play, parent)
     local widget = g_ui.createWidget('WarpFxCreature', parent or play.host.parent)
@@ -201,20 +213,20 @@ STYLES.spin = {
     end,
     out = function(play, a, ms)
         local w, tile = play.w, a.tile
-        put(w.pad, a.x, a.y - tile * 0.12, tile * 1.3, tile * 0.5, window(ms, 0, 1100, 150, 250) * 0.9)
+        put(w.pad, a.fx, a.fy - tile * 0.12, tile * 1.3, tile * 0.5, window(ms, 0, 1100, 150, 250) * 0.9)
         local u = span(ms, 600, 850)
         putCopy(play, w.copy, a, { dir = spinDir(play, math.floor((math.min(ms, 850) / 850) ^ 2 * 14)),
             sx = 1 - 0.8 * u, sy = 1 + 0.7 * u, lift = tile * 1.2 * u * u, opacity = 1 - u })
         local v = span(ms, 600, 1100)
-        put(w.streak, a.x, a.y - tile * 1.2 - v * tile * 3, tile * 0.6 * (1 - 0.5 * v), tile * 3.2, ms >= 600 and (1 - v) or 0)
-        drift(w.sparkles, ms, 650, 1100, a.x, a.y - tile * 0.5, tile, 1.4)
+        put(w.streak, a.fx, a.fy - tile * 1.2 - v * tile * 3, tile * 0.6 * (1 - 0.5 * v), tile * 3.2, ms >= 600 and (1 - v) or 0)
+        drift(w.sparkles, ms, 650, 1100, a.fx, a.fy - tile * 0.5, tile, 1.4)
         return HIDDEN
     end,
     ['in'] = function(play, a, ms)
         local w, tile = play.w, a.tile
-        put(w.streak, a.x, a.y - tile * 1.2 - (1 - span(ms, 0, 320)) * tile * 3.5, tile * 0.6, tile * 3.2,
+        put(w.streak, a.fx, a.fy - tile * 1.2 - (1 - span(ms, 0, 320)) * tile * 3.5, tile * 0.6, tile * 3.2,
             window(ms, 0, 480, 80, 160))
-        put(w.pad, a.x, a.y - tile * 0.12, tile * 1.3, tile * 0.5, window(ms, 200, 1000, 120, 300) * 0.9)
+        put(w.pad, a.fx, a.fy - tile * 0.12, tile * 1.3, tile * 0.5, window(ms, 200, 1000, 120, 300) * 0.9)
         if ms >= 280 then
             local u = span(ms, 280, 480)
             local v = span(ms, 280, 1000)
@@ -223,7 +235,7 @@ STYLES.spin = {
         else
             w.copy:hide()
         end
-        drift(w.sparkles, ms, 300, 800, a.x, a.y - tile * 0.4, tile, 0.9)
+        drift(w.sparkles, ms, 300, 800, a.fx, a.fy - tile * 0.4, tile, 0.9)
         return HIDDEN
     end,
 }
@@ -231,14 +243,14 @@ STYLES.spin = {
 -- Beam: the trainer is scanned away from the feet up in a column of gold light, and built back from the feet
 local function beamDraw(play, a, ms, arriving)
     local w, tile = play.w, a.tile
-    put(w.beam, a.x, a.y - tile * 1.25, tile * 1.1, tile * 2.7, window(ms, 0, 1100, 200, 300) * 0.9)
+    put(w.beam, a.fx, a.fy - tile * 1.25, tile * 1.1, tile * 2.7, window(ms, 0, 1100, 200, 300) * 0.9)
     local u = span(ms, arriving and 200 or 250, arriving and 850 or 900)
-    local top = a.y - tile * 1.7
-    local scanY = a.y + tile * 0.1 - u * (tile * 1.8)
+    local top = a.fy - tile * 1.7
+    local scanY = a.fy + tile * 0.1 - u * (tile * 1.8)
     local rect = copyRect(play, a)
     local clipTop, clipBottom
     if arriving then
-        clipTop, clipBottom = math.floor(scanY), math.floor(a.y + tile * 0.25)
+        clipTop, clipBottom = math.floor(scanY), math.floor(a.fy + tile * 0.25)
     else
         clipTop, clipBottom = math.floor(math.min(rect.y, top)), math.floor(scanY)
     end
@@ -250,8 +262,8 @@ local function beamDraw(play, a, ms, arriving)
     else
         w.clip:hide()
     end
-    put(w.scan, a.x, scanY, tile * 1.25, math.max(3, tile * 0.12), (u > 0 and u < 1) and 1 or 0)
-    drift(w.sparkles, ms, 250, 1100, a.x, a.y - tile * 0.6, tile, 1.6)
+    put(w.scan, a.fx, scanY, tile * 1.25, math.max(3, tile * 0.12), (u > 0 and u < 1) and 1 or 0)
+    drift(w.sparkles, ms, 250, 1100, a.fx, a.fy - tile * 0.6, tile, 1.6)
     return HIDDEN
 end
 
@@ -280,9 +292,9 @@ STYLES.victory = {
     end,
     fx = function(play, a, ms)
         local w, tile = play.w, a.tile
-        local body, head = a.y - tile * 0.6, a.y - tile * 1.1
+        local body, head = a.fy - tile * 0.6, a.fy - tile * 1.1
         w.burst:setRotation(ms * 0.05)
-        put(w.burst, a.x, body, tile * (1.2 + 1.6 * span(ms, 150, 1000)), tile * (1.2 + 1.6 * span(ms, 150, 1000)),
+        put(w.burst, a.fx, body, tile * (1.2 + 1.6 * span(ms, 150, 1000)), tile * (1.2 + 1.6 * span(ms, 150, 1000)),
             window(ms, 150, 1000, 100, 450))
         local lift = ms < 900 and math.abs(math.sin(ms / 450 * math.pi)) * tile * 0.4 or 0
         putCopy(play, w.copy, a, { dir = Directions.South, lift = lift })
@@ -291,13 +303,13 @@ STYLES.victory = {
             local angle = math.pi * (0.15 + 0.7 * (i - 1) / (CONFETTI - 1))
             local speed = 1.3 + 0.5 * ((i * 7) % 5) / 4
             piece:setRotation(ms * (0.3 + i * 0.04))
-            put(piece, a.x + math.cos(angle) * tile * 1.5 * speed * u,
+            put(piece, a.fx + math.cos(angle) * tile * 1.5 * speed * u,
                 head - math.sin(angle) * tile * 2 * speed * u + tile * 3.2 * u * u,
                 tile * 0.22, tile * 0.22, (ms >= 200 and u < 1) and (1 - u ^ 3) or 0)
         end
         w.glint:setRotation(ms * 0.12)
         local beat = 1 + 0.15 * math.sin(ms / 70)
-        put(w.glint, a.x, a.y - tile * 1.65, tile * 0.7 * beat, tile * 0.7 * beat, window(ms, 700, 1650, 150, 300))
+        put(w.glint, a.fx, a.fy - tile * 1.65, tile * 0.7 * beat, tile * 0.7 * beat, window(ms, 700, 1650, 150, 300))
         return HIDDEN
     end,
 }
@@ -312,16 +324,16 @@ STYLES.defeat = {
     fx = function(play, a, ms)
         local w, tile = play.w, a.tile
         local shown = window(ms, 0, 2300, 250, 400)
-        local cloudY = a.y - tile * 1.95 + math.sin(ms / 300) * tile * 0.04
-        put(w.cloud, a.x, cloudY, tile * 1.1, tile * 0.55, shown)
+        local cloudY = a.fy - tile * 1.95 + math.sin(ms / 300) * tile * 0.04
+        put(w.cloud, a.fx, cloudY, tile * 1.1, tile * 0.55, shown)
         for i, drop in ipairs(w.drops) do
             local u = ((ms + i * 75) % 450) / 450
-            put(drop, a.x + (i - (DROPS + 1) / 2) * tile * 0.14, cloudY + tile * 0.15 + u * tile * 0.9, tile * 0.08,
+            put(drop, a.fx + (i - (DROPS + 1) / 2) * tile * 0.14, cloudY + tile * 0.15 + u * tile * 0.9, tile * 0.08,
                 tile * 0.2, ms > 250 and shown * (1 - u) or 0)
         end
         for i, star in ipairs(w.stars) do
             local angle = ms / 260 + (i - 1) * 2 * math.pi / STARS
-            put(star, a.x + math.cos(angle) * tile * 0.32, a.y - tile * 1.25 + math.sin(angle) * tile * 0.1,
+            put(star, a.fx + math.cos(angle) * tile * 0.32, a.fy - tile * 1.25 + math.sin(angle) * tile * 0.1,
                 tile * 0.3, tile * 0.3, shown)
         end
         return GREY
@@ -337,15 +349,15 @@ STYLES.faint = {
     end,
     out = function(play, a, ms)
         local w, tile = play.w, a.tile
-        local body = a.y - tile * 0.5
+        local body = a.fy - tile * 0.5
         local u = span(ms, 350, 800)
         copyShader(w.copy, (ms >= 350 or math.floor(ms / 70) % 2 == 0) and WHITE or nil)
         putCopy(play, w.copy, a, { sx = 1 - u, sy = 1 - u, lift = tile * 0.5 * u, opacity = 1 - 0.5 * u })
         local rise = span(ms, 800, 1500)
         local beat = 1 + 0.12 * math.sin(ms / 60)
         local size = tile * (0.4 + 0.6 * span(ms, 450, 800)) * beat
-        put(w.orb, a.x, body - rise * tile * 1.6, size, size, window(ms, 450, 1500, 100, 500))
-        drift(w.sparkles, ms, 800, 1500, a.x, body - rise * tile * 1.6, tile, 0.6)
+        put(w.orb, a.fx, body - rise * tile * 1.6, size, size, window(ms, 450, 1500, 100, 500))
+        drift(w.sparkles, ms, 800, 1500, a.fx, body - rise * tile * 1.6, tile, 0.6)
         return HIDDEN
     end,
 }
@@ -375,11 +387,11 @@ STYLES.pokeball = {
     end,
     out = function(play, a, ms)
         local w, tile = play.w, a.tile
-        local bx, by = a.x + tile * 0.75, a.y - tile * 0.2
+        local bx, by = a.fx + tile * 0.75, a.fy - tile * 0.2
         local x, y, size, turn = bx, by, tile * 0.5, 0
         if ms < 300 then
             local u = ms / 300
-            x, y = lerp(a.x + tile * 1.8, bx, u), lerp(a.y - tile * 1.6, by, u) - math.sin(math.pi * u) * tile * 0.5
+            x, y = lerp(a.fx + tile * 1.8, bx, u), lerp(a.fy - tile * 1.6, by, u) - math.sin(math.pi * u) * tile * 0.5
             turn = ms * 1.4
         elseif ms >= 850 and ms < 1360 then
             local t = ms - 850
@@ -393,11 +405,12 @@ STYLES.pokeball = {
         put(w.ball, x, y, size, size, opened and 0 or fade)
         put(w.open, x, y - tile * 0.04, size, size, opened and 1 or 0)
         local pull = span(ms, 420, 760)
-        stretch(w.ray, bx, by - tile * 0.1, lerp(a.x, bx, pull), lerp(a.y - tile * 0.5, by, pull), tile * 0.24,
-            window(ms, 330, 780, 60, 60))
+        stretch(w.ray, bx, by - tile * 0.1, lerp(a.fx, bx, pull), lerp(a.fy - tile * 0.5, by, pull),
+            tile * (0.4 + 0.08 * math.sin(ms / 30)), window(ms, 330, 780, 40, 60))
         if ms < 780 then
             copyShader(w.copy, ms >= 330 and RED or nil)
-            putCopy(play, w.copy, { x = lerp(a.x, bx, pull), y = lerp(a.y, by + tile * 0.1, pull), tile = tile },
+            putCopy(play, w.copy, { x = lerp(a.x, bx + a.x - a.fx, pull), y = lerp(a.y, by + tile * 0.1 + a.y - a.fy, pull),
+                                    tile = tile },
                 { sx = 1 - pull, sy = 1 - pull, opacity = 1 - 0.3 * pull })
         else
             w.copy:hide()
@@ -411,10 +424,10 @@ STYLES.pokeball = {
     end,
     ['in'] = function(play, a, ms)
         local w, tile = play.w, a.tile
-        local bx, by = a.x, a.y - tile * 0.22
+        local bx, by = a.fx, a.fy - tile * 0.22
         local y = by
         if ms < 350 then
-            y = lerp(a.y - tile * 2.6, by, (ms / 350) ^ 2)
+            y = lerp(a.fy - tile * 2.6, by, (ms / 350) ^ 2)
         elseif ms < 520 then
             y = by - math.sin(math.pi * (ms - 350) / 170) * tile * 0.25
         end
@@ -454,9 +467,9 @@ STYLES.fireworks = {
         local spots = { { -0.95, 2.2 }, { 0.95, 2.5 }, { 0.05, 3.0 } }
         for i = 1, ROCKETS do
             local start = 120 + (i - 1) * 380
-            local x, top = a.x + spots[i][1] * tile, a.y - spots[i][2] * tile
+            local x, top = a.fx + spots[i][1] * tile, a.fy - spots[i][2] * tile
             local up = span(ms, start, start + 380)
-            local y = lerp(a.y - tile * 0.3, top, 1 - (1 - up) ^ 2)
+            local y = lerp(a.fy - tile * 0.3, top, 1 - (1 - up) ^ 2)
             put(w.rockets[i], x, y + tile * 0.3, tile * 0.16, tile * 0.7, (ms >= start and up < 1) and 1 or 0)
             local u = span(ms, start + 380, start + 1100)
             for j, spark in ipairs(w.sparks[i]) do
@@ -487,7 +500,7 @@ STYLES.trophy = {
         putCopy(play, w.copy, a, { dir = Directions.South, lift = lift })
         local rise = span(ms, 100, 550)
         local pop = rise < 1 and rise * (1.25 - 0.25 * rise) or 1 + 0.04 * math.sin(ms / 120)
-        local x, y = a.x, a.y - tile * (1.1 + 0.75 * (1 - (1 - rise) ^ 2)) + math.sin(ms / 200) * tile * 0.04
+        local x, y = a.fx, a.fy - tile * (1.15 + 0.65 * (1 - (1 - rise) ^ 2)) + math.sin(ms / 200) * tile * 0.04
         local shown = window(ms, 100, 1900, 120, 400)
         w.burst:setRotation(ms * 0.04)
         put(w.burst, x, y, tile * 1.7 * pop, tile * 1.7 * pop, shown * 0.75)
@@ -509,10 +522,10 @@ STYLES.sweatdrop = {
     fx = function(play, a, ms)
         local w, tile = play.w, a.tile
         local shown = window(ms, 0, 2000, 350, 400)
-        put(w.gloom, a.x, a.y - tile * 1.3 + span(ms, 0, 400) * tile * 0.1, tile * 0.95, tile * 0.65, shown * 0.9)
+        put(w.gloom, a.fx, a.fy - tile * 1.25 + span(ms, 0, 400) * tile * 0.12, tile * 1.1, tile * 0.8, shown)
         local pop = span(ms, 200, 380)
         local slide = span(ms, 380, 1700)
-        put(w.sweat, a.x + tile * 0.36, a.y - tile * 1.3 + slide * tile * 0.3, tile * 0.3 * (0.6 + 0.4 * pop),
+        put(w.sweat, a.fx + tile * 0.36, a.fy - tile * 1.3 + slide * tile * 0.3, tile * 0.3 * (0.6 + 0.4 * pop),
             tile * 0.46 * (0.6 + 0.4 * pop), ms >= 200 and shown or 0)
     end,
 }
@@ -533,7 +546,7 @@ STYLES.ghost = {
         copyShader(w.copy, WHITE)
         putCopy(play, w.copy, { x = a.x + sway, y = a.y, tile = tile },
             { lift = height, opacity = ms >= 200 and 0.55 * (1 - back) or 0 })
-        drift(w.sparkles, ms, 1900, 2300, a.x, a.y - tile * 0.6, tile, 0.6)
+        drift(w.sparkles, ms, 1900, 2300, a.fx, a.fy - tile * 0.6, tile, 0.6)
         return GREY
     end,
 }
@@ -592,6 +605,9 @@ local function update()
             local a = ms >= 0 and play.host.anchor(play)
             local shader
             if a then
+                -- fx, fy: where the trainer's feet show; the map draws an outfit its displacement up and left
+                local d = displacement(play)
+                a.fx, a.fy = a.x - d.x * a.tile / 32, a.y - d.y * a.tile / 32
                 shader = STYLES[play.style][play.half](play, a, ms)
             else
                 for _, widget in ipairs(play.widgets) do

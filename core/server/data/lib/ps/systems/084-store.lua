@@ -76,7 +76,7 @@ Store.OFFERS = {
 
     { id = "warp_pokeball", category = "warpstyles", kind = "warpstyle", style = "pokeball", slot = "warp", price = 10,
       image = "pokeball", featured = true, name = "Poke Ball Warp",
-      description = "A Poke Ball's red light pulls you in, three wobbles and a click. For logging in, logging out and teleporting." },
+      description = "A Poke Ball's red light pulls you in, three wobbles and a click. Plays when you log in, log out and teleport." },
     { id = "warp_fireworks", category = "warpstyles", kind = "warpstyle", style = "fireworks", slot = "victory", price = 5,
       image = "spark-2", name = "Fireworks Victory", description = "Three rockets burst into coloured sparks when you win a duel or a trainer battle." },
     { id = "warp_trophy", category = "warpstyles", kind = "warpstyle", style = "trophy", slot = "victory", price = 5,
