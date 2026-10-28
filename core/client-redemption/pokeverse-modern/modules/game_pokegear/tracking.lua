@@ -110,6 +110,7 @@ local function refreshChip(count, ready)
         return
     end
     chip:setText(count > 0 and tr('Tracking  %d', count) or tr('Tracking'))
+    chip:setWidth(chip:getTextSize().width + 32)
     chip.dot:setImageColor(ready > 0 and GREEN or '#56627a')
     chip:setTooltip(ready > 0 and tr('%d ready to claim. Click to open Tracking.', ready) or tr('Click to open Tracking.'))
 end

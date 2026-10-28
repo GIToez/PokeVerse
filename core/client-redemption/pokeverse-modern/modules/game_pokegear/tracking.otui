@@ -46,8 +46,8 @@ PokegearTrackLine < UIWidget
     size: 12 12
     anchors.right: parent.right
     anchors.top: parent.top
-    margin-right: 6
-    margin-top: 4
+    margin-right: 3
+    margin-top: 2
     image-source: /modules/game_pokepedia/images/icon_pinned
     image-smooth: true
     visible: false
@@ -216,8 +216,7 @@ PokegearTracking < UIWidget
 PokegearTrackingChip < UIButton
   id: pokegearTrackingChip
   height: 20
-  text-auto-resize: true
-  padding: 0 10 0 22
+  text-offset: 22 0
   text-align: left
   image-source: /modules/game_pokegear/images/pill
   image-border: 9
