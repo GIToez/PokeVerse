@@ -34,7 +34,7 @@ GET_MONSTER_INFO_TEST = "Pikachu"
 EXTENDED_IDS = {
     ACTIVATE = 0,
     LOCALE = 1,
-    PING = 2,
+    -- 2 was the old ping; PING is 40
     SOUND = 3, -- "name:delayMs;name:delayMs": sounds the client plays from /sounds/effects (Sounds)
     GAME = 4,
     PARTICLES = 5,

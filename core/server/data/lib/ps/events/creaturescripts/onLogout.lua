@@ -104,6 +104,8 @@ function onLogout(cid, forceLogout)
         doCreatureSetStorage(cid, playersStorages.playSessionStart, 0)
     end
     Pokepedia.onLogout(cid)
+    Bag.onLogout(cid)
+    Social.onLogout(cid)
     Vocations.onLogout(cid)
     doPlayerRestoreForcedOutfit(cid)
 

@@ -3141,6 +3141,14 @@ bool Game::playerRequestTrade(uint32_t playerId, const Position& pos, int16_t st
 		return false;
 	}
 
+	// the same rule as moving it (playerMoveItem): the starting bag stays in its slot
+	if(tradeItem == player->getInventoryItem(SLOT_AMMO) && tradeItem->getContainer()
+		&& !player->hasCustomFlag(PlayerCustomFlag_CanPushAllItems))
+	{
+		player->sendCancelMessage(RET_STARTINGBAGSTAYS);
+		return false;
+	}
+
 	if(player->getPosition().z > tradeItem->getPosition().z)
 	{
 		player->sendCancelMessage(RET_FIRSTGOUPSTAIRS);

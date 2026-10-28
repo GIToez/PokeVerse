@@ -2560,15 +2560,6 @@ function setBallHeldLevel(uid, value)
     doItemSetAttribute(uid, ballsAttributes.heldLevel, value)
 end
 
-function getBallHeldLevel(uid)
-    local r = getItemAttribute(uid, ballsAttributes.heldLevel)
-    return r and r or 1
-end
-
-function setBallHeldLevel(uid, value)
-    doItemSetAttribute(uid, ballsAttributes.heldLevel, value)
-end
-
 function getBallHeldExperience(uid)
     local r = getItemAttribute(uid, ballsAttributes.heldExperience)
     return r and r or 1
