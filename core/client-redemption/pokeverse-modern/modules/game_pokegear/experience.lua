@@ -53,8 +53,13 @@ local function record()
     if not p then
         return
     end
+    -- logging in, the player exists before the server sends its experience
+    local exp = p:getExperience()
+    if exp <= 0 then
+        return
+    end
     local now = g_clock.seconds()
-    samples[#samples + 1] = { now, p:getExperience() }
+    samples[#samples + 1] = { now, exp }
     -- keep the newest sample from before the hour as the baseline
     while #samples > 2 and samples[2][1] <= now - HOUR do
         table.remove(samples, 1)

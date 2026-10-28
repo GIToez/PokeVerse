@@ -89,6 +89,9 @@ local function kindOf(tab)
     return 'dm'
 end
 
+-- the concept's chip order; other channels after NPCs, then the Server Log
+local CHIP_ORDER = { local_ = 1, global = 2, help = 3, npc = 4, channel = 5, log = 6, dm = 7 }
+
 local function chipText(tab)
     local c = console()
     if c and tab == c.defaultTab then
@@ -467,7 +470,19 @@ refreshChips = function()
     window.foldedFaces:destroyChildren()
     local current = currentTab()
     local faceCount = 0
-    for _, tab in ipairs(tabs()) do
+    local list = tabs()
+    local index = {}
+    for i, tab in ipairs(list) do
+        index[tab] = i
+    end
+    table.sort(list, function(a, b)
+        local ra, rb = CHIP_ORDER[kindOf(a)] or 5, CHIP_ORDER[kindOf(b)] or 5
+        if ra ~= rb then
+            return ra < rb
+        end
+        return index[a] < index[b]
+    end)
+    for _, tab in ipairs(list) do
         local kind = kindOf(tab)
         local count = unread[tab] or 0
         if kind == 'dm' then
@@ -577,6 +592,11 @@ end
 
 function Chat.setOpen(on)
     open = on
+    -- what came in while folded is in front of you once it opens
+    local tab = on and currentTab()
+    if tab then
+        unread[tab] = nil
+    end
     if g_game.isOnline() then
         g_settings.set(openSetting(), on)
     end

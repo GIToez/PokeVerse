@@ -69,7 +69,7 @@ end
 
 local function fillLine(widget, line, module)
     widget.icon:setImageSource(line.icon)
-    widget.name:setText(tostring(line.name))
+    Pokegear.fitText(widget.name, tostring(line.name))
     widget.name:setColor(line.done and '#8fe08f' or '#eef2ff')
     widget:setTooltip(line.tooltip or tostring(line.name))
     widget.pin:setVisible(module.isPinned(line.key))
