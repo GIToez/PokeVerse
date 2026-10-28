@@ -26,12 +26,14 @@ local TYPE_COLORS = {
     water = '#6890f0', grass = '#78c850', electric = '#f8c830', psychic = '#f85888', ice = '#98d8d8',
     dragon = '#7038f8', dark = '#705848', fairy = '#ee99ac'
 }
+-- descending is each sort's first direction; a second click on the lit pill flips it
 local SORTS = {
-    { id = 'distance', text = 'Distance' },
-    { id = 'health', text = 'HP' },
-    { id = 'name', text = 'Name' },
-    { id = 'level', text = 'Level' },
+    { id = 'distance', text = 'Distance', descending = false },
+    { id = 'health', text = 'HP', descending = false },
+    { id = 'name', text = 'Name', descending = false },
+    { id = 'level', text = 'Level', descending = true },
 }
+local DESCENDING_SETTING = 'pokegearNearbySortDescending'
 
 local window, rows, filterPills, sortPills = nil, {}, {}, {}
 local refreshEvent, restorePosition
@@ -88,26 +90,58 @@ local function sortType()
     return 'distance'
 end
 
+local function sortById(id)
+    for _, sort in ipairs(SORTS) do
+        if sort.id == id then
+            return sort
+        end
+    end
+end
+
+local function isDescending()
+    local saved = g_settings.getString(DESCENDING_SETTING)
+    if saved == 'true' or saved == 'false' then
+        return saved == 'true'
+    end
+    return sortById(sortType()).descending
+end
+
 local function distanceTo(creature, from)
     local pos = creature:getPosition()
     return math.max(math.abs(pos.x - from.x), math.abs(pos.y - from.y))
 end
 
+local function sortKey(creature, by, from)
+    if by == 'health' then
+        return creature:getHealthPercent()
+    elseif by == 'level' then
+        local _, level = splitName(creature)
+        return level or 0
+    elseif by == 'name' then
+        return (splitName(creature)):lower()
+    end
+    return distanceTo(creature, from)
+end
+
+-- ties go nearest first whichever way the list runs
 local function sortCreatures(list, from)
     local by = sortType()
+    local descending = isDescending()
+    local keys, distances = {}, {}
+    for _, creature in ipairs(list) do
+        keys[creature] = sortKey(creature, by, from)
+        distances[creature] = distanceTo(creature, from)
+    end
     table.sort(list, function(a, b)
-        local nameA, levelA = splitName(a)
-        local nameB, levelB = splitName(b)
-        if by == 'health' and a:getHealthPercent() ~= b:getHealthPercent() then
-            return a:getHealthPercent() < b:getHealthPercent()
-        elseif by == 'level' and (levelA or 0) ~= (levelB or 0) then
-            return (levelA or 0) > (levelB or 0)
-        elseif by == 'name' and nameA ~= nameB then
-            return nameA < nameB
+        local keyA, keyB = keys[a], keys[b]
+        if keyA ~= keyB then
+            if descending then
+                return keyA > keyB
+            end
+            return keyA < keyB
         end
-        local distA, distB = distanceTo(a, from), distanceTo(b, from)
-        if distA ~= distB then
-            return distA < distB
+        if distances[a] ~= distances[b] then
+            return distances[a] < distances[b]
         end
         return a:getId() < b:getId()
     end)
@@ -223,8 +257,17 @@ local function refreshPills()
         filterPills[filter.id].dot:setOpacity(on and 1 or 0.4)
     end
     local by = sortType()
+    local descending = isDescending()
     for _, sort in ipairs(SORTS) do
-        sortPills[sort.id]:setOn(sort.id == by)
+        local pill = sortPills[sort.id]
+        local lit = sort.id == by
+        pill:setOn(lit)
+        pill.arrow:setVisible(lit)
+        pill.arrow:setImageSource('/modules/game_pokegear/images/' .. (descending and 'sort_down' or 'sort_up'))
+        pill:setPaddingRight(lit and 21 or 9)
+        pill:setTextOffset({ x = lit and -6 or 0, y = 2 })
+        pill:setTooltip(lit and (descending and tr('Descending, click for ascending')
+            or tr('Ascending, click for descending')) or tr('Sort by %s', tr(sort.text)))
     end
     local key = Pokegear.boundKey({ 'Windows', 'Show/hide battle list' })
     window.header.keyChip:setText(key)
@@ -289,8 +332,14 @@ local function build()
     for _, sort in ipairs(SORTS) do
         local pill = g_ui.createWidget('PokegearPill', window.sorts)
         pill:setText(tr(sort.text))
+        pill.arrow = g_ui.createWidget('PokegearSortArrow', pill)
         pill.onClick = function()
-            g_settings.set(SORT_SETTING, sort.id)
+            if sortType() == sort.id then
+                g_settings.set(DESCENDING_SETTING, tostring(not isDescending()))
+            else
+                g_settings.set(SORT_SETTING, sort.id)
+                g_settings.set(DESCENDING_SETTING, tostring(sort.descending))
+            end
             Nearby.refresh()
         end
         sortPills[sort.id] = pill
