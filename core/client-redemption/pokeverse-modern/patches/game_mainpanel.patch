@@ -30,16 +30,20 @@ diff -ruN pristine/modules/game_mainpanel/mainpanel.lua modules/game_mainpanel/m
      end
  end
  
-@@ -263,6 +267,49 @@
+@@ -263,10 +267,82 @@
      return optionsController.ui.onPanel.options:recursiveGetChildById(id)
  end
  
-+-- PokeVerse top bar order in the extended view, in groups: adventure, side panels, system
++-- PokeVerse top bar order in the extended view, in groups: adventure, side panels, tools; then
++-- whatever else, the Store, and the settings and Exit last (topBarEnd)
 +local topBarGroups = {
-+    { 'pokepediaButton', 'dailyTasksButton', 'questLogButton', 'dailyLoginButton', 'pokepediaTrackerButton' },
++    { 'pokepediaButton', 'dailyTasksButton', 'questLogButton', 'dailyLoginButton', 'pokepediaTrackerButton',
++      'trainerCardButton', 'vocationButton', 'radarButton', 'fishingButton' },
 +    { 'miniMap', 'inventory', 'skillsButton', 'battleButton', 'vipListButton' },
-+    { 'hotkeysWindowButton', 'audioButton', 'optionsButton', 'terminalButton', 'logoutButton' },
++    { 'analyserButton', 'reportsButton', 'adminButton', 'hotkeysWindowButton', 'audioButton', 'terminalButton' },
 +}
++local topBarEnd = { 'Store shop', 'optionsButton', 'logoutButton' }
++local topBarExtended = false
 +
 +local function sortTopBar(panel)
 +    local rank = {}
@@ -57,11 +61,12 @@ diff -ruN pristine/modules/game_mainpanel/mainpanel.lua modules/game_mainpanel/m
 +                sep:setBackgroundColor('#2f4878')
 +                sep:setPhantom(true)
 +            end
-+            panel:getChildById(sepId):show()
 +            rank[sepId] = g * 100
 +        end
 +    end
-+    rank['Store shop'] = 1000
++    for i, id in ipairs(topBarEnd) do
++        rank[id] = 1000 + i
++    end
 +    local children = panel:getChildren()
 +    local position = {}
 +    for i, child in ipairs(children) do
@@ -75,12 +80,40 @@ diff -ruN pristine/modules/game_mainpanel/mainpanel.lua modules/game_mainpanel/m
 +        return position[a] < position[b]
 +    end)
 +    panel:reorderChildren(children)
++    tidyTopBar()
++end
++
++-- a divider only between two groups that still show something: Pokegear hides the side panel
++-- buttons, and some others only show once unlocked (call again after changing them)
++function tidyTopBar()
++    local panel = modules.client_topmenu.getRightGameButtonsPanel()
++    local before = false
++    for g, ids in ipairs(topBarGroups) do
++        local shows = false
++        for _, id in ipairs(ids) do
++            local button = panel:getChildById(id)
++            if button and button:isExplicitlyVisible() then
++                shows = true
++                break
++            end
++        end
++        local sep = panel:getChildById('topBarSeparator' .. g)
++        if sep then
++            sep:setVisible(topBarExtended and before and shows)
++        end
++        before = before or shows
++    end
 +end
 +
  function toggleExtendedViewButtons(extended)
      local optionsPanel = optionsController.ui.onPanel.options
      local specialsPanel = optionsController.ui.onPanel.store
-@@ -282,6 +329,7 @@
+     local rightGamePanel = modules.client_topmenu.getRightGameButtonsPanel()
++    topBarExtended = extended
+     if extended then
+         local optionChildren = optionsPanel:getChildren()
+         for _, button in ipairs(optionChildren) do
+@@ -282,6 +358,7 @@
                  rightGamePanel:addChild(button)
              end
          end
@@ -88,7 +121,7 @@ diff -ruN pristine/modules/game_mainpanel/mainpanel.lua modules/game_mainpanel/m
          optionsController.ui:hide()
          optionsController.ui:setHeight(0)
      else
-@@ -295,6 +343,12 @@
+@@ -295,6 +372,12 @@
                  end
              end
          end
