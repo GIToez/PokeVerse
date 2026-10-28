@@ -55,6 +55,51 @@ local function clampToScreen(window, pos)
     return pos
 end
 
+-- The map's width depends on the right column and the column hangs under the ring and Tracking, so
+-- those hang from the map's top edge by a margin read from it: an anchor would close a loop that
+-- crashes the layout (seen on logout).
+local hung = {}
+local hangConnected = false
+
+local function mapTop()
+    return modules.game_interface.getMapPanel():getY() - modules.game_interface.getRootPanel():getY()
+end
+
+local function rehang()
+    local top = mapTop()
+    for widget in pairs(hung) do
+        if widget:isDestroyed() or widget.pokegearHangMargin == nil then
+            hung[widget] = nil
+        else
+            widget:setMarginTop(top + widget.pokegearHangMargin)
+        end
+    end
+end
+
+function Pokegear.hangFromMapTop(widget, margin)
+    if not hangConnected then
+        connect(modules.game_interface.getMapPanel(), { onGeometryChange = rehang })
+        hangConnected = true
+    end
+    widget.pokegearHangMargin = margin
+    hung[widget] = true
+    widget:addAnchor(AnchorTop, 'parent', AnchorTop)
+    widget:setMarginTop(mapTop() + margin)
+end
+
+function Pokegear.unhang(widget)
+    widget.pokegearHangMargin = nil
+    hung[widget] = nil
+end
+
+function Pokegear.terminateHang()
+    if hangConnected then
+        disconnect(modules.game_interface.getMapPanel(), { onGeometryChange = rehang })
+        hangConnected = false
+    end
+    hung = {}
+end
+
 -- whether window is showing in its own spot: never dragged, or put back with a double click
 function Pokegear.isDocked(window, setting)
     if not window or not window:isVisible() or window.pokegearDragging then
@@ -69,17 +114,18 @@ end
 function Pokegear.makeMovable(window, handle, setting, placeDefault)
     local function restore()
         local saved = g_settings.getPoint(setting)
+        Pokegear.unhang(window)
+        window:breakAnchors()
         if saved and (saved.x ~= 0 or saved.y ~= 0) then
-            window:breakAnchors()
             window:setPosition(clampToScreen(window, saved))
         else
-            window:breakAnchors()
             placeDefault()
         end
     end
     handle.onDragEnter = function(widget, mousePos)
         local pos = window:getPosition()
         widget.dragOffset = { x = mousePos.x - pos.x, y = mousePos.y - pos.y }
+        Pokegear.unhang(window)
         window:breakAnchors()
         window.pokegearDragging = true
         Pokegear.layoutColumn()
@@ -98,6 +144,7 @@ function Pokegear.makeMovable(window, handle, setting, placeDefault)
     end
     handle.onDoubleClick = function()
         g_settings.set(setting, { x = 0, y = 0 })
+        Pokegear.unhang(window)
         window:breakAnchors()
         placeDefault()
         Pokegear.layoutColumn()
