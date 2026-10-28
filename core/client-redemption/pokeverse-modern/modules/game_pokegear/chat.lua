@@ -664,19 +664,87 @@ local function bottomPanel()
     return modules.game_interface.getBottomPanel()
 end
 
-local function sendLine()
-    local c = console()
+-- One line at a time, the Pokegear way: Enter, Send or a click on the line opens it (WASD types),
+-- Enter sends it and you walk again, Escape or an empty Enter drops it. game_console's own Enter
+-- lives on the hidden bottom panel, so the card binds its own.
+
+local function lineOpen()
     local edit = textEdit()
+    return edit ~= nil and edit:isExplicitlyVisible()
+end
+
+-- key events only reach the edit when every parent up to the root has it as its focused child
+local function focusEdit(edit)
+    local child, parent = edit, edit:getParent()
+    while parent do
+        parent:focusChild(child, KeyboardFocusReason)
+        child, parent = parent, parent:getParent()
+    end
+end
+
+local function openLine()
+    local c, edit = console(), textEdit()
+    local toggle = c and c.consoleToggleChat
+    if not toggle or not edit or not window then
+        return
+    end
+    if toggle.isChecked then
+        c.toggleChat()
+        if toggle.isChecked then
+            return -- the interface is locked (cutscenes)
+        end
+    end
+    focusEdit(edit)
+end
+
+local function closeLine()
+    local c = console()
+    local toggle = c and c.consoleToggleChat
+    if toggle and not toggle.isChecked then
+        c.toggleChat()
+    end
+end
+
+local function sendLine()
+    local c, edit = console(), textEdit()
     if not c or not edit then
         return
     end
-    if edit:isExplicitlyVisible() and edit:getText() ~= '' then
+    if lineOpen() and edit:getText() ~= '' then
         c.sendCurrentMessage()
-    elseif not edit:isExplicitlyVisible() and c.toggleChat then
-        c.toggleChat()
-        edit:focus()
+        closeLine()
+    else
+        openLine()
     end
 end
+
+local function onEnter()
+    local hotkeys = modules.game_hotkeys
+    if not active or not g_game.isOnline() or (hotkeys and hotkeys.areHotkeysDisabled and hotkeys.areHotkeysDisabled()) then
+        return false
+    end
+    local edit = textEdit()
+    if not edit then
+        return false
+    end
+    if not lineOpen() or not edit:isActive() then
+        openLine()
+    elseif edit:getText() ~= '' then
+        sendLine()
+    else
+        closeLine()
+    end
+    return true
+end
+
+local function onEscape()
+    if active and lineOpen() then
+        closeLine()
+        return true
+    end
+    return false
+end
+
 
 local function build()
     window = g_ui.createWidget('PokegearChat', modules.game_interface.getRootPanel())
@@ -688,12 +756,16 @@ local function build()
     floats:hide()
     window.header.fold.onClick = function() Chat.setOpen(false) end
     window.send.onClick = sendLine
-    window.input:setTooltip(tr('Click to open the chat'))
+    window.input:setTooltip(tr('Click to chat'))
     window.input.onMouseRelease = function(widget, mousePos, button)
-        if button == MouseLeftButton and not open then
-            Chat.setOpen(true)
-            return true
+        if button ~= MouseLeftButton then
+            return false
         end
+        if not open then
+            Chat.setOpen(true)
+        end
+        openLine()
+        return true
     end
     window.header.chips.onMouseWheel = function(widget, mousePos, direction)
         local c = console()
@@ -724,6 +796,9 @@ local function show()
         panel:hide()
     end
     adoptEdit()
+    local root = modules.game_interface.getRootPanel()
+    g_keyboard.bindKeyDown('Enter', onEnter, root)
+    g_keyboard.bindKeyDown('Escape', onEscape, root)
     local c = console()
     tabBar = c and c.consoleTabBar
     if tabBar then
@@ -740,6 +815,11 @@ local function hide()
     if tabBar then
         disconnect(tabBar, { onTabChange = onTabChange })
         tabBar = nil
+    end
+    local root = modules.game_interface.getRootPanel()
+    if root then
+        g_keyboard.unbindKeyDown('Enter', onEnter, root)
+        g_keyboard.unbindKeyDown('Escape', onEscape, root)
     end
     releaseEdit()
     local panel = bottomPanel()
