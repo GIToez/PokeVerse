@@ -207,7 +207,16 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      return tab
  end
  
-@@ -1459,7 +1413,7 @@
+@@ -1262,6 +1216,8 @@
+     if not tab or tab.locked or not text or #text == 0 then
+         return
+     end
++    -- PokeVerse: the Pokegear chat card mirrors every line (game_pokegear/chat.lua)
++    signalcall(onTabText, tab, text, speaktype, creatureName)
+ 
+     if modules.client_options.getOption('showTimestampsInConsole') then
+         text = os.date('%H:%M') .. ' ' .. text
+@@ -1459,7 +1415,7 @@
          menu:addSeparator()
      end
  
@@ -216,7 +225,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
          menu:addOption(tr('Close'), function()
              removeTab(channelName)
          end)
-@@ -1519,12 +1473,12 @@
+@@ -1519,12 +1475,12 @@
                          addIgnoredPlayer(creatureName)
                      end)
                  end
@@ -235,7 +244,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
                  menu:addSeparator()
              end
  
-@@ -1733,6 +1687,9 @@
+@@ -1733,6 +1689,9 @@
          local speaktype = SpeakTypesSettings[speaktypedesc]
          local player = g_game.getLocalPlayer()
          g_game.talkPrivate(speaktype.speakType, name, message)
@@ -245,7 +254,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
          if not dontAdd then
              message = applyMessagePrefixies(g_game.getCharacterName(), player:getLevel(), message)
              addPrivateText(message, speaktype, tabname, isPrivateCommand, g_game.getCharacterName())
-@@ -1796,6 +1753,8 @@
+@@ -1796,6 +1755,8 @@
      return message
  end
  
@@ -254,7 +263,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
  function onTalk(name, level, mode, message, channelId, creaturePos)
      if mode == MessageModes.GamemasterBroadcast then
          modules.game_textmessage.displayBroadcastMessage(name .. ': ' .. message)
-@@ -1837,25 +1796,25 @@
+@@ -1837,25 +1798,25 @@
          local staticText = StaticText.create()
          local staticMessage = message
          if isNpcMode then
@@ -296,7 +305,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      end
  
      local defaultMessage = mode <= 3 and true or false
-@@ -2337,20 +2296,37 @@
+@@ -2337,20 +2298,37 @@
      end
  end
  
@@ -344,7 +353,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      if clientVersion > 1100 then
          local active = g_game.canExivaOptions()
          local widget = consolePanel:getChildById('exivaOption')
-@@ -2504,8 +2480,8 @@
+@@ -2504,8 +2482,8 @@
          end
      end
      consoleTabBar:getCurrentTab().tabPanel:getChildById('consoleBuffer'):setImageSource(
@@ -355,7 +364,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      gameBottomPanel:setPhantom(false)
  end
  
-@@ -2530,19 +2506,22 @@
+@@ -2530,19 +2508,22 @@
      if extendedViewButtonToggleChat then
          return
      end
@@ -388,7 +397,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      else
          extendedViewButtonToggleChat:setIcon("/images/game/npcicons/icon_chat")
          extendedViewButtonToggleChat:setMarginBottom(10)
-@@ -2553,19 +2532,22 @@
+@@ -2553,19 +2534,22 @@
      extendedViewButtonToggleChat.onClick = function(a, b)
          extendedViewHide(modules.game_interface.currentViewMode ~= 2)
      end
@@ -419,7 +428,7 @@ diff -ruN pristine/modules/game_console/console.lua modules/game_console/console
      extendedViewButtonShowAlphaChat.onClick = function(a, b)
          if extendedViewButtonShowAlphaChat:isOn() then
              extendedViewButtonShowAlphaChat:setOn(false)
-@@ -2574,6 +2556,10 @@
+@@ -2574,6 +2558,10 @@
          end
          extendedViewCanSee(extendedViewButtonShowAlphaChat:isOn())
      end
