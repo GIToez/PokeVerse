@@ -18,6 +18,12 @@ PokegearPill < UIButton
   $hover:
     color: #eef2ff
 
+PokegearTypeDot < UIWidget
+  size: 8 8
+  image-source: /modules/game_pokegear/images/dot
+  image-smooth: true
+  phantom: true
+
 PokegearNearbyRow < UIWidget
   height: 38
   image-source: /modules/game_pokegear/images/row
@@ -42,6 +48,20 @@ PokegearNearbyRow < UIWidget
       anchors.centerIn: parent
       image-smooth: true
       phantom: true
+
+    UIWidget
+      id: clip
+      anchors.fill: parent
+      margin: 4
+      clipping: true
+      phantom: true
+
+      UICreature
+        id: outfit
+        anchors.fill: parent
+        creature-center: true
+        phantom: true
+        visible: false
 
     UILabel
       id: initials
@@ -75,13 +95,26 @@ PokegearNearbyRow < UIWidget
     color: #8fa0c4
     phantom: true
 
+  UIWidget
+    id: types
+    height: 8
+    width: 0
+    anchors.left: level.right
+    anchors.verticalCenter: name.verticalCenter
+    margin-left: 0
+    phantom: true
+    layout:
+      type: horizontalBox
+      spacing: 3
+
   UILabel
     id: tag
     height: 14
-    anchors.left: level.right
+    anchors.left: types.right
     anchors.verticalCenter: name.verticalCenter
     margin-left: 5
     text-auto-resize: true
+    text-align: center
     padding: 0 5
     image-source: /modules/game_pokegear/images/pill_on
     image-border: 6

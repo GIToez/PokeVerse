@@ -1003,6 +1003,28 @@ Pokepedia.onLogout = function(cid)
     discovered[guid], dex[guid] = nil, nil
 end
 
+-- the types of the species Nearby lists; a Pokemon's types are no secret once it's on screen
+Pokepedia.sendTypes = function(cid, names)
+    if (type(names) ~= "table") then
+        return
+    end
+    local types = {}
+    for i = 1, math.min(#names, 30) do
+        local name = tostring(names[i])
+        local species = speciesOf(name)
+        if (species) then
+            local list = {}
+            for _, id in ipairs(getPokemonTypes(nil, species) or {}) do
+                if (ELEMENT_NAMES[id]) then
+                    list[#list + 1] = ELEMENT_NAMES[id]:lower()
+                end
+            end
+            types[name] = JSON.array(list)
+        end
+    end
+    send(cid, { type = "types", types = types })
+end
+
 Pokepedia.onClientMessage = function(cid, buffer)
     local ok, data = pcall(JSON.decode, buffer)
     if (not ok or type(data) ~= "table") then
@@ -1051,6 +1073,8 @@ Pokepedia.onClientMessage = function(cid, buffer)
         Pokepedia.sendDex(cid, data.name and tostring(data.name) or getPokemonNameByNumber(tonumber(data.number) or 0))
     elseif (action == "track") then
         Pokepedia.setTracked(cid, data.list)
+    elseif (action == "types") then
+        Pokepedia.sendTypes(cid, data.names)
     elseif (action == "pokedex") then
         doPokedexStatusSend(cid)
         doPlayerSendPokedexOpen(cid)

@@ -394,6 +394,32 @@ function Handlers.transferOffer(data)
     }, function() answer(true) end, function() answer(false) end)
 end
 
+-- a species' types, for Nearby's type dots: asked for in one batch, then kept for the session
+local speciesTypes, typesAsked, typesQueue, typesEvent = {}, {}, {}, nil
+
+function getSpeciesTypes(name)
+    if speciesTypes[name] then
+        return speciesTypes[name]
+    end
+    if not typesAsked[name] and g_game.isOnline() then
+        typesAsked[name] = true
+        typesQueue[#typesQueue + 1] = name
+        typesEvent = typesEvent or scheduleEvent(function()
+            typesEvent = nil
+            local names = typesQueue
+            typesQueue = {}
+            Pp.send({ action = 'types', names = names })
+        end, 100)
+    end
+    return {}
+end
+
+Handlers.types = function(data)
+    for name, list in pairs(type(data.types) == 'table' and data.types or {}) do
+        speciesTypes[name] = type(list) == 'table' and list or {}
+    end
+end
+
 local function onPokepedia(protocol, opcode, buffer)
     buffer = ProtocolGame.joinFragments(opcode, buffer)
     if not buffer then
@@ -426,6 +452,8 @@ end
 local function onGameEnd()
     removeEvent(helloEvent)
     helloEvent = nil
+    removeEvent(typesEvent)
+    typesEvent, typesAsked, typesQueue = nil, {}, {}
     if offerBox then
         offerBox:destroy()
         offerBox = nil

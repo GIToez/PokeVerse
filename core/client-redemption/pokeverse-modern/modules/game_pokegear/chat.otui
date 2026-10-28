@@ -82,6 +82,27 @@ PokegearChatFace < UIButton
   color: #eef2ff
 
   UIWidget
+    id: portrait
+    anchors.fill: parent
+    image-smooth: true
+    phantom: true
+    visible: false
+
+  UIWidget
+    id: clip
+    anchors.fill: parent
+    margin: 4
+    clipping: true
+    phantom: true
+
+    UICreature
+      id: creature
+      anchors.fill: parent
+      creature-center: true
+      phantom: true
+      visible: false
+
+  UIWidget
     id: ring
     anchors.fill: parent
     image-source: /modules/game_pokegear/images/face_ring
