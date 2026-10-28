@@ -13,8 +13,9 @@ local POSITION_SETTING = 'pokegearHubPosition'
 -- opens the same window and keeps the same key
 local ORBS = {
     { id = 'friends', button = 'vipListButton', tooltip = 'Social', open = 'social', key = { 'Windows', 'Show/hide VIP list' } },
-    { id = 'trainer', button = 'trainerCardButton', tooltip = 'Trainer card' },
-    { id = 'quests', button = 'questLogButton', tooltip = 'Quests', key = { 'Windows', 'Show/hide the Quest Log' } },
+    { id = 'trainer', button = 'trainerCardButton', tooltip = 'Trainer card', key = { 'Windows', 'Show/hide your Trainer Card' } },
+    { id = 'quests', button = 'questLogButton', tooltip = 'Quests', key = { 'Windows', 'Show/hide the Quest Log' },
+      badge = function() return modules.game_quests and modules.game_quests.getUpdateCount and modules.game_quests.getUpdateCount() or 0 end },
     { id = 'pokepedia', button = 'pokepediaButton', tooltip = 'Pokepedia', key = { 'Minimap', 'Open full map' } },
     { id = 'bag', image = '/modules/game_pokegear/images/button_bag', tooltip = 'Bag', open = 'bag', key = { 'Windows', 'Show/hide the Bag' } },
 }
@@ -64,6 +65,9 @@ local function refreshOrbs()
         local key = Pokegear.boundKey(def.key)
         orb.chip:setText(key)
         orb.chip:setVisible(key ~= '')
+        local count = def.badge and def.badge() or 0
+        orb.badge:setText(count > 9 and '9+' or tostring(count))
+        orb.badge:setVisible(count > 0)
         if def.open == 'bag' then
             orb:setOn(Bag.isOpen())
         elseif def.open == 'social' then

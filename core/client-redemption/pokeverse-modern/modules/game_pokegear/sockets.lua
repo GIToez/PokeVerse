@@ -62,7 +62,29 @@ local function carriedEquipment()
     return list
 end
 
+local showEquipMenu
+
+-- the client only sees what's in open bags: a closed Bag opens first, and the menu waits for it
 local function openEquipMenu(mousePos)
+    if Bag.backpackContainer() or not slotItem(InventorySlotAmmo) then
+        showEquipMenu(mousePos)
+        return
+    end
+    Bag.open()
+    local tries = 0
+    local function wait()
+        tries = tries + 1
+        if Bag.backpackContainer() then
+            -- the bags inside it open as tabs right after
+            scheduleEvent(function() showEquipMenu(mousePos) end, 300)
+        elseif tries < 20 then
+            scheduleEvent(wait, 100)
+        end
+    end
+    scheduleEvent(wait, 100)
+end
+
+showEquipMenu = function(mousePos)
     local menu = g_ui.createWidget('PopupMenu')
     menu:setGameMenu(true)
     local list = carriedEquipment()
@@ -145,6 +167,11 @@ local function refreshBadgeSocket()
     badgeSocket:setOpacity(item and 1 or 0.5)
 end
 
+-- game_inventory's top bar toggle, only there in the extended view
+local function inventoryButton()
+    return modules.client_topmenu and modules.client_topmenu.getButton('inventory')
+end
+
 local function inventoryWindow()
     local inventory = modules.game_inventory
     return inventory and inventory.inventoryController and inventory.inventoryController.ui
@@ -157,6 +184,10 @@ local function follow()
     local inventory = inventoryWindow()
     if inventory and inventory:isVisible() then
         inventory:hide()
+    end
+    local button = inventoryButton()
+    if button and button:isVisible() then
+        button:hide()
     end
     local bar = modules.game_pokebar
     local slot = bar and bar.getActiveSlot and bar.getActiveSlot()
@@ -282,6 +313,11 @@ local function hide()
         local inventory = inventoryWindow()
         if inventory and g_game.isOnline() then
             inventory:show()
+        end
+        local button = inventoryButton()
+        if button then
+            button:show()
+            button:setOn(inventory ~= nil and inventory:isVisible())
         end
     end
     shown = false

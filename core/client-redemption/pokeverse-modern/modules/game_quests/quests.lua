@@ -17,6 +17,7 @@ local button
 local helloEvent
 local quests = {} -- id -> row
 local order = {} -- ids in the server's order
+local updates = {} -- id -> true: news since the log was last opened
 local tab = 'active'
 local selected -- id
 local tracked = {} -- id -> true
@@ -479,8 +480,18 @@ function show(questId)
     if button then
         button:setOn(true)
     end
+    updates = {}
     drawList()
     send({ action = 'list' })
+end
+
+-- the quests with news (started, progress, done) since the log was last opened: the Pokegear ring's badge
+function getUpdateCount()
+    local count = 0
+    for _ in pairs(updates) do
+        count = count + 1
+    end
+    return count
 end
 
 function hide()
@@ -568,6 +579,8 @@ function onNotice(data)
     end
     if isVisible() then
         drawList()
+    else
+        updates[id] = true
     end
     refreshTracker()
 end
@@ -684,7 +697,7 @@ local function onToggleKey()
 end
 
 local function onGameStart()
-    quests, order, selected, loaded = {}, {}, nil, false
+    quests, order, selected, loaded, updates = {}, {}, nil, false, {}
     loadTracked()
     removeEvent(helloEvent)
     helloEvent = scheduleEvent(function()
@@ -697,7 +710,7 @@ local function onGameEnd()
     removeEvent(helloEvent)
     helloEvent = nil
     hide()
-    quests, order, selected, loaded = {}, {}, nil, false
+    quests, order, selected, loaded, updates = {}, {}, nil, false, {}
     fragments, fragmentIds = {}, {}
     resetNotices()
     resetIcons()

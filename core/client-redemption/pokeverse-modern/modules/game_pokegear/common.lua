@@ -13,6 +13,26 @@ function Pokegear.boundKey(key)
     return keys.primary ~= '' and keys.primary or (keys.secondary or '')
 end
 
+-- the text, cut short with "..." when it's wider than the label; again whenever the label resizes
+function Pokegear.fitText(label, text)
+    label.fullText = text
+    local function fit()
+        local full = label.fullText
+        local width = label:getWidth() - label:getPaddingLeft() - label:getPaddingRight()
+        label:setText(full)
+        if width <= 0 or label:getTextSize().width <= width then
+            return
+        end
+        local cut = #full
+        repeat
+            cut = cut - 1
+            label:setText(full:sub(1, cut):gsub('%s+$', '') .. '...')
+        until cut <= 1 or label:getTextSize().width <= width
+    end
+    label.onGeometryChange = fit
+    fit()
+end
+
 -- the top bar's own panel: other widgets share some of these ids
 function Pokegear.topButton(id)
     local mainPanel = modules.game_mainpanel
