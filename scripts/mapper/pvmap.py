@@ -266,14 +266,17 @@ def encode_areas(tiles):
     return bytes(out)
 
 
-def write_map(data, out_path, new_tiles, remove=(), towns=()):
+def write_map(data, out_path, new_tiles, remove=(), towns=(), town_moves=None):
     """Writes `data` (an OTBM file's bytes) to out_path with tiles added, replaced and towns added.
 
     new_tiles: {(x, y, z): RawTile}. Existing tiles at those positions, and at any position in
     `remove`, are dropped. towns: (id, name, x, y, z) tuples appended to the town list.
+    town_moves: {town id: (x, y, z)}, a new temple position for towns already on the map.
     """
     drop = set(new_tiles) | set(remove)
+    town_moves = dict(town_moves or {})
     cuts = []
+    moved = {}
     towns_start = towns_end = None
     area = None
     pos = None
@@ -286,25 +289,39 @@ def write_map(data, out_path, new_tiles, remove=(), towns=()):
                 pos = (area[0] + p[0], area[1] + p[1], area[2])
             elif t == TOWNS:
                 towns_start = a - 2
+            elif t == TOWN:
+                p = unescape(data[a:b])
+                town_id = struct.unpack_from('<I', p)[0]
+                if town_id in town_moves:
+                    n = struct.unpack_from('<H', p, 4)[0]
+                    moved[a - 2] = encode_town(town_id, p[6:6 + n].decode('latin-1'), *town_moves.pop(town_id))
         else:
             if t in (TILE, HOUSETILE) and depth == 3 and pos in drop:
                 cuts.append((a, b))
             elif t == TOWNS:
                 towns_end = b - 1
+            elif t == TOWN and a in moved:
+                cuts.append((a, b))
     if towns_start is None:
         raise ValueError('map has no town list')
+    if town_moves:
+        raise ValueError('no such towns: %s' % sorted(town_moves))
     with open(out_path, 'wb') as f:
         i = 0
-        for a, b in cuts:
+        for a, b in sorted(c for c in cuts if c[0] < towns_start):
             f.write(data[i:a])
             i = b
         f.write(data[i:towns_start])
         f.write(encode_areas(new_tiles))
-        f.write(data[towns_start:towns_end])
+        i = towns_start
+        for a, b in sorted(c for c in cuts if c[0] >= towns_start):
+            f.write(data[i:a] + moved[a])
+            i = b
+        f.write(data[i:towns_end])
         for town in towns:
             f.write(encode_town(*town))
         f.write(data[towns_end:])
-    return len(cuts)
+    return len(cuts) - len(moved)
 
 
 class Otb:
