@@ -54,7 +54,7 @@ QUESTS_CONFIG = {
             questRequest = { 12124, 10 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 2152, count = 3 } },
             rewardExp = 2000,
-            requiredLevel = 10,
+            requiredLevel = 12,
         }
     },
     ["Mary Vinn"] = {
@@ -86,7 +86,7 @@ QUESTS_CONFIG = {
             questRequest = { 12096, 10 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 2152, count = 3 } },
             rewardExp = 1200,
-            requiredLevel = 10,
+            requiredLevel = 14,
         }
     },
     ["Mary Nady"] = {
@@ -102,7 +102,7 @@ QUESTS_CONFIG = {
             questRequest = { 12100, 50, 12104, 50 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 2152, count = 4 } },
             rewardExp = 1500,
-            requiredLevel = 10,
+            requiredLevel = 18,
         }
     },
     ["Joe Tiff"] = {
@@ -118,7 +118,7 @@ QUESTS_CONFIG = {
             questRequest = { 12113, 13 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 2152, count = 5 } },
             rewardExp = 2000,
-            requiredLevel = 10,
+            requiredLevel = 16,
         }
     },
     ["Bob Lop"] = {
@@ -134,7 +134,7 @@ QUESTS_CONFIG = {
             questRequest = { 12149, 10 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 2152, count = 3 } },
             rewardExp = 1750,
-            requiredLevel = 10,
+            requiredLevel = 12,
         }
     },
     ["Eric Garinson"] = {
@@ -334,7 +334,7 @@ QUESTS_CONFIG = {
                 { type = REWARD_TYPE.ADDON, female = { looktype = 2543, addons = 0 }, male = { looktype = 2544, addons = 0 } },
             },
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 82,
             canStart = function(cid) return getCreatureStorage(cid, 8368) == QUEST_STATUS.STARTED end
         },
         -- Mega Evolution (097-megaEvolution.lua): also started and ended by saying "mega" to Oak
@@ -516,7 +516,7 @@ QUESTS_CONFIG = {
             questRequest = { 2553, 1, 13219, 1, 2120, 1 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 2553, count = 1 }, { type = REWARD_TYPE.ITEM, id = 13219, count = 1 }, { type = REWARD_TYPE.ITEM, id = 2120, count = 1 } },
             rewardExp = 0,
-            requiredLevel = 40,
+            requiredLevel = 25,
         },
         {
             storage = 8026,
@@ -530,7 +530,7 @@ QUESTS_CONFIG = {
             questRequest = { 5880, 10, 2553, 1 },
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 40,
+            requiredLevel = 26,
         },
         {
             storage = 8027,
@@ -544,7 +544,7 @@ QUESTS_CONFIG = {
             questRequest = { 1956, 1, 1957, 1, 5091, 1 },
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 40,
+            requiredLevel = 28,
         },
         {
             storage = 8028,
@@ -558,7 +558,7 @@ QUESTS_CONFIG = {
             questRequest = { 13972, 1 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 17374, count = 1, unique = true } }, -- TM 38 (Move Softboiled)
             rewardExp = 0,
-            requiredLevel = 40,
+            requiredLevel = 30,
             onEnd = function(cid) doCreatureSetStorage(cid, 8665, QUEST_STATUS.FINISHED) end -- New players doesnt need the next quest, cuz this exists only to make old-players take the new reward
         },
         {
@@ -573,7 +573,7 @@ QUESTS_CONFIG = {
             questRequest = function(cid) return true end,
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 17374, count = 1, unique = true } }, -- TM 38 (Move Softboiled)
             rewardExp = 0,
-            requiredLevel = 40,
+            requiredLevel = 30,
         }
     },
     -- storage 8029 reserved to get George Carter quest reward
@@ -3525,7 +3525,7 @@ QUESTS_CONFIG = {
             questRequest = function(cid) return getPlayerItemCount(cid, 18246) >= 1 end,
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
             canStart = function(cid) return getCreatureStorage(cid, 8231) == QUEST_STATUS.FINISHED and
                     getCreatureStorage(cid, 8213) == QUEST_STATUS.FINISHED
             end
@@ -3542,7 +3542,7 @@ QUESTS_CONFIG = {
             questRequest = { 18245, 1 },
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
             onEnd = function(cid) doCreatureSetStorage(cid, 8293, os.time()) end,
             canStart = function(cid) return getCreatureStorage(cid, 8214) == QUEST_STATUS.FINISHED end
         },
@@ -3578,7 +3578,7 @@ QUESTS_CONFIG = {
             end,
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
             questStartItems = { 18164, 6 }
         },
     },
@@ -3595,7 +3595,7 @@ QUESTS_CONFIG = {
             questRequest = { 18246, 1, 18163, 1 },
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
             onEnd = function(cid) doCreatureSetStorage(cid, 8217, os.time()) end,
             canStart = function(cid) return getCreatureStorage(cid, 8215) == QUEST_STATUS.STARTED end
         },
@@ -3615,7 +3615,7 @@ QUESTS_CONFIG = {
             questRequest = "Sunkern",
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
             canStart = function(cid) return getCreatureStorage(cid, 8218) == QUEST_STATUS.FINISHED end
         },
     },
@@ -3632,7 +3632,7 @@ QUESTS_CONFIG = {
             questRequest = function(cid) return getCreatureStorage(cid, 8222) == QUEST_STATUS.FINISHED end,
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
             canStart = function(cid) return getCreatureStorage(cid, 8220) == QUEST_STATUS.FINISHED end
         },
     },
@@ -3649,7 +3649,7 @@ QUESTS_CONFIG = {
             questRequest = { 14500, 20, 12130, 10, 17802, 10, 14515, 10 },
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
             canStart = function(cid) return getCreatureStorage(cid, 8221) == QUEST_STATUS.STARTED end
         },
         {
@@ -3664,7 +3664,7 @@ QUESTS_CONFIG = {
             questRequest = { 18165, 1 },
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
             canStart = function(cid) return getCreatureStorage(cid, 8222) == QUEST_STATUS.FINISHED end
         },
     },
@@ -3681,7 +3681,7 @@ QUESTS_CONFIG = {
             questRequest = { 18166, 1 },
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
             canStart = function(cid) return getCreatureStorage(cid, 8223) == QUEST_STATUS.FINISHED end,
             onEnd = function(cid)
                 setPlayerOrangeArchipelagoAccess(cid, 3)
@@ -3703,7 +3703,7 @@ QUESTS_CONFIG = {
             questRequest = { 18167, 1 },
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 75,
             canStart = function(cid) return getCreatureStorage(cid, 8224) == QUEST_STATUS.FINISHED end
         },
         {
@@ -3718,7 +3718,7 @@ QUESTS_CONFIG = {
             questRequest = { 18168, 1 },
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 75,
             canStart = function(cid) return getCreatureStorage(cid, 8226) == QUEST_STATUS.FINISHED end
         },
         {
@@ -3733,7 +3733,7 @@ QUESTS_CONFIG = {
             questRequest = { 18169, 1 },
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 75,
             canStart = function(cid) return getCreatureStorage(cid, 8227) == QUEST_STATUS.FINISHED end
         },
         {
@@ -3748,7 +3748,7 @@ QUESTS_CONFIG = {
             questRequest = { 18171, 1 },
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 75,
             canStart = function(cid) return getCreatureStorage(cid, 8228) == QUEST_STATUS.FINISHED end,
             onEnd = function(cid)
                 setPlayerOrangeArchipelagoAccess(cid, 4)
@@ -3769,7 +3769,7 @@ QUESTS_CONFIG = {
             questRequest = "Heracross",
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 18168, count = 1, unique = true } },
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 75,
             canStart = function(cid) return getCreatureStorage(cid, 8227) == QUEST_STATUS.STARTED end
         },
     },
@@ -3790,7 +3790,7 @@ QUESTS_CONFIG = {
             questRequest = function(cid) return getCreatureStorage(cid, 8241) == QUEST_STATUS.FINISHED end,
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 78,
         },
     },
     -- storage 8241 in Prophecy Slab Stone
@@ -3807,7 +3807,7 @@ QUESTS_CONFIG = {
             questRequest = function(cid) return getCreatureStorage(cid, 8243) == QUEST_STATUS.FINISHED end,
             rewardItems = {},
             rewardExp = 174350,
-            requiredLevel = 70,
+            requiredLevel = 78,
             onEnd = function(cid)
                 setPlayerOrangeArchipelagoAccess(cid, 5)
                 doPlayerAchievementCheck(cid, ACHIEVEMENT_IDS.ORANGE_ARCHIPELAGO_MAIN4)
@@ -3825,7 +3825,7 @@ QUESTS_CONFIG = {
             questRequest = { 18173, 1 },
             rewardItems = {},
             rewardExp = 174350,
-            requiredLevel = 100,
+            requiredLevel = 90,
             onEnd = function(cid)
                 setPlayerOrangeArchipelagoAccess(cid, 6)
                 doPlayerAchievementCheck(cid, ACHIEVEMENT_IDS.ORANGE_ARCHIPELAGO_MAIN5)
@@ -3846,7 +3846,7 @@ QUESTS_CONFIG = {
             questRequest = function(cid) return getPlayerItemCount(cid, 18172) >= 2 end,
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 78,
         },
     },
     ["Gord Scottie"] = {
@@ -3862,7 +3862,7 @@ QUESTS_CONFIG = {
             questRequest = { 18247, 20 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 18247, count = 10, unique = true } },
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 76,
             onEnd = function(cid) doCreatureSetStorage(cid, 8246, QUEST_STATUS.STARTED) end
         },
         {
@@ -3877,7 +3877,7 @@ QUESTS_CONFIG = {
             questRequest = { 18249, 1 },
             rewardItems = {},
             rewardExp = 34870,
-            requiredLevel = 70,
+            requiredLevel = 76,
             blockStart = true
         },
     },
@@ -3894,7 +3894,7 @@ QUESTS_CONFIG = {
             questRequest = { 18256, 20 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 18247, count = 20, unique = true } },
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 76,
             onEnd = function(cid) doPlayerRemoveItem(cid, 18256, getPlayerItemCount(cid, 18256)) end
         },
     },
@@ -3911,7 +3911,7 @@ QUESTS_CONFIG = {
             questRequest = { 18247, 10 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 18249, count = 1, unique = true } },
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 76,
             onEnd = function(cid) doCreatureSetStorage(cid, 8247, QUEST_STATUS.STARTED) end,
             blockStart = true
         },
@@ -3930,7 +3930,7 @@ QUESTS_CONFIG = {
             questRequest = function(cid) return getCreatureStorage(cid, 8249) == QUEST_STATUS.FINISHED end,
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 74,
             canStart = function(cid) return getCreatureStorage(cid, 8345) == QUEST_STATUS.FINISHED end
         },
     },
@@ -3947,7 +3947,7 @@ QUESTS_CONFIG = {
             questRequest = { 18181, 1 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 18640, count = 1 } },
             rewardExp = 34870,
-            requiredLevel = 70,
+            requiredLevel = 74,
             canStart = function(cid) return getCreatureStorage(cid, 8248) == QUEST_STATUS.STARTED end
         },
     },
@@ -3972,7 +3972,7 @@ QUESTS_CONFIG = {
             end,
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 18641, count = 1 } },
             rewardExp = 17435,
-            requiredLevel = 70,
+            requiredLevel = 78,
         },
     },
     -- storage 8251 - 8255 Pepper Denis hidden and seek NPCs
@@ -4006,7 +4006,7 @@ QUESTS_CONFIG = {
             questRequest = { 18284, 1 },
             rewardItems = {--[[TODO: reward]] },
             rewardExp = 34870,
-            requiredLevel = 70,
+            requiredLevel = 74,
         },
     },
     ["Saruman"] = {
@@ -4022,7 +4022,7 @@ QUESTS_CONFIG = {
             questRequest = { 18188, 1 },
             rewardItems = {--[[TODO: reward]] },
             rewardExp = 17435,
-            requiredLevel = 70,
+            requiredLevel = 72,
         },
     },
     ["Gollum"] = {
@@ -4038,7 +4038,7 @@ QUESTS_CONFIG = {
             questRequest = { 2674, 15, 2675, 15, 2677, 15, 2682, 15, 2673, 15, 2680, 15 },
             rewardItems = {--[[TODO: reward]] },
             rewardExp = 17435,
-            requiredLevel = 70,
+            requiredLevel = 78,
         },
     },
     ["Slash"] = {
@@ -4054,7 +4054,7 @@ QUESTS_CONFIG = {
             questRequest = { 12103, 300, 12118, 50 },
             rewardItems = {--[[TODO: reward]] },
             rewardExp = 17435,
-            requiredLevel = 70,
+            requiredLevel = 80,
         },
     },
     ["Ernest Upper"] = {
@@ -4070,7 +4070,7 @@ QUESTS_CONFIG = {
             questRequest = { 18286, 1 },
             rewardItems = {--[[TODO: reward]] },
             rewardExp = 17435,
-            requiredLevel = 70,
+            requiredLevel = 76,
             questStartItems = { 18285, 1 }
         },
     },
@@ -4503,7 +4503,7 @@ QUESTS_CONFIG = {
             questRequest = { 14464, 20 },
             rewardItems = {--[[TODO]] },
             rewardExp = 17435,
-            requiredLevel = 70,
+            requiredLevel = 74,
         },
     },
     ["Flavia"] = {
@@ -4519,7 +4519,7 @@ QUESTS_CONFIG = {
             questRequest = { 18196, 1, 18195, 1 },
             rewardItems = {--[[TODO]] },
             rewardExp = 17435,
-            requiredLevel = 70,
+            requiredLevel = 72,
             questStartItems = { 18195, 1 },
         },
     },
@@ -4539,7 +4539,7 @@ QUESTS_CONFIG = {
             questRequest = function(cid) return getCreatureStorage(cid, 8299) >= 10 end,
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 2152, count = 5 } },
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
             questStartItems = { 18190, 10, 18323, 1 },
             onStart = function(cid)
                 local storages = { 8299, 8300, 8301, 8302, 8303, 8304, 8305, 8306, 8307, 8308, 8309 }
@@ -4571,7 +4571,7 @@ QUESTS_CONFIG = {
             questRequest = function(cid) return getCreatureStorage(cid, 8297) == QUEST_STATUS.FINISHED end,
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 18089, count = 1 } },
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 74,
             questStartItems = { 18190, 1 },
             canStart = function(cid) return getCreatureStorage(cid, 8298) >= 10 end
         },
@@ -4592,7 +4592,7 @@ QUESTS_CONFIG = {
             questRequest = function(cid) return getCreatureStorage(cid, 8337) >= 10 end,
             rewardItems = {--[[TODO]] },
             rewardExp = 52305,
-            requiredLevel = 70,
+            requiredLevel = 78,
             onStart = function(cid) doCreatureSetStorage(cid, 8337, 0) end
         },
         {
@@ -4625,7 +4625,7 @@ QUESTS_CONFIG = {
             questRequest = { 12248, 6 },
             rewardItems = {--[[TODO]] },
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 74,
         },
         {
             storage = 8314,
@@ -4639,7 +4639,7 @@ QUESTS_CONFIG = {
             questRequest = { 18304, 1 },
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 75,
             onEnd = function(cid)
                 doCreatureSetStorage(cid, 8350, QUEST_STATUS.STARTED)
                 doItemSetAttribute(doPlayerAddUniqueItem(cid, 18636, 1, true), "aid", 1000)
@@ -4657,7 +4657,7 @@ QUESTS_CONFIG = {
             questRequest = { 18184, 1 },
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 76,
             blockStart = true
         },
     },
@@ -4674,7 +4674,7 @@ QUESTS_CONFIG = {
             questRequest = { 18189, 1 },
             rewardItems = {--[[TODO]] },
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
         },
         {
             storage = 8319,
@@ -4688,7 +4688,7 @@ QUESTS_CONFIG = {
             questRequest = { 18189, 1 },
             rewardItems = {--[[TODO]] },
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
         },
         {
             storage = 8322,
@@ -4702,7 +4702,7 @@ QUESTS_CONFIG = {
             questRequest = { 18189, 1 },
             rewardItems = {--[[TODO]] },
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
         },
         {
             storage = 8324,
@@ -4716,7 +4716,7 @@ QUESTS_CONFIG = {
             questRequest = { 2675, 50 },
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
             onEnd = function(cid)
                 if (getRandom(0, 200) > 10) then
                     selfSay("No eggs was generated... try again tomorrow!", cid)
@@ -4758,7 +4758,7 @@ QUESTS_CONFIG = {
             questRequest = { 18302, 5, 18301, 1 },
             rewardItems = {--[[TODO]] },
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
             questStartItems = { 18301, 1 },
             onEnd = function(cid) doPlayerRemoveItem(cid, 18302, getPlayerItemCount(cid, 18302)) end, -- Just to prevent abuse
             canStart = function(cid) return getCreatureStorage(cid, 8315) == QUEST_STATUS.STARTED end
@@ -4775,7 +4775,7 @@ QUESTS_CONFIG = {
             questRequest = function(cid) return getCreatureStorage(cid, 8318) == QUEST_STATUS.FINISHED end,
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 18189, count = 1, unique = true } },
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
             questStartItems = { 18306, 1 },
             canStart = function(cid) return getCreatureStorage(cid, 8316) == QUEST_STATUS.FINISHED end
         },
@@ -4791,7 +4791,7 @@ QUESTS_CONFIG = {
             questRequest = function(cid) return getCreatureStorage(cid, 8323) >= 5 end,
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 18189, count = 1, unique = true } },
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
             questStartItems = { 18303, 5 },
             onStart = function(cid) doCreatureSetStorage(cid, 8323, 0) end,
             canStart = function(cid) return getCreatureStorage(cid, 8317) == QUEST_STATUS.FINISHED end
@@ -4809,7 +4809,7 @@ QUESTS_CONFIG = {
             questRequest = { "Murkrow", 30 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 18189, count = 1, unique = true } },
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 72,
             canStart = function(cid) return getCreatureStorage(cid, 8320) == QUEST_STATUS.FINISHED end
         },
     },
@@ -4829,7 +4829,7 @@ QUESTS_CONFIG = {
             questRequest = { 18309, 1, 18182, 1 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 18310, count = 1 } },
             rewardExp = 52305,
-            requiredLevel = 70,
+            requiredLevel = 78,
             questStartItems = { 18182, 1 },
             canStart = function(cid) return getCreatureStorage(cid, 8224) == QUEST_STATUS.FINISHED end
         },
@@ -4848,7 +4848,7 @@ QUESTS_CONFIG = {
             questRequest = function(cid) return getCreatureStorage(cid, 8330) == QUEST_STATUS.FINISHED end,
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 2152, count = 10 }, { type = REWARD_TYPE.ITEM, id = 18639, count = 1 } },
             rewardExp = 52305,
-            requiredLevel = 70
+            requiredLevel = 82
         },
     },
     -- storage 8330 Kimberly key
@@ -4979,7 +4979,7 @@ QUESTS_CONFIG = {
             questRequest = { 18634, 1 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 18632, count = 1, unique = true } },
             rewardExp = 0,
-            requiredLevel = 70
+            requiredLevel = 76
         },
     },
     -- storage 8340 Arold talk
@@ -5141,7 +5141,7 @@ QUESTS_CONFIG = {
             questRequest = function(cid) return getCreatureStorage(cid, 8371) == QUEST_STATUS.FINISHED end, -- Defeat Ancients
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 70,
+            requiredLevel = 82,
             canStart = function(cid) return getCreatureStorage(cid, 8328) == QUEST_STATUS.STARTED end
         }
     },
@@ -5218,7 +5218,7 @@ QUESTS_CONFIG = {
             questRequest = { 18756, 1, 18755, 1 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 18754, count = 1, unique = true } },
             rewardExp = 0,
-            requiredLevel = 60,
+            requiredLevel = 46,
             canStart = function(cid) return getCreatureStorage(cid, 8378) == QUEST_STATUS.FINISHED end,
             onEnd = function(cid) doCreatureSetStorage(cid, 8377, QUEST_STATUS.FINISHED) end, -- AutoEnd Delia Ketchum 8377
             startPosition = { x = 3898, y = 625, z = 7 },
@@ -5638,7 +5638,7 @@ QUESTS_CONFIG = {
                 { type = REWARD_TYPE.ADDON, female = { looktype = 1382, addons = 0 }, male = { looktype = 1383, addons = 0 } },
             },
             rewardExp = 0,
-            requiredLevel = 10,
+            requiredLevel = 46,
             questStartItems = { 25056, 1 },
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid) return getCreatureStorage(cid, 8525) == QUEST_STATUS.FINISHED end, -- Ash Ketchum following
@@ -5692,7 +5692,7 @@ QUESTS_CONFIG = {
             talk_questDone = "",
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 10,
+            requiredLevel = 12,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid) return getCreatureStorage(cid, 8422) == QUEST_STATUS.FINISHED end, -- Officer Jenny quest #1
             canStart = function(cid) return getCreatureStorage(cid, 8419) ~= QUEST_STATUS.UNSTARTED end, -- Gary Oak quest #4
@@ -5711,7 +5711,7 @@ QUESTS_CONFIG = {
                 { type = REWARD_TYPE.ITEM, id = 12246, count = 20 }, -- pokemon ultra health potion
             },
             rewardExp = 1000,
-            requiredLevel = 10,
+            requiredLevel = 12,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid) return getCreatureStorage(cid, 8432) == QUEST_STATUS.FINISHED end, -- Bill signal device used
             canStart = function(cid) return getCreatureStorage(cid, 8421) == QUEST_STATUS.FINISHED end, -- Bill quest #4
@@ -5726,7 +5726,7 @@ QUESTS_CONFIG = {
             talk_questDone = "",
             rewardItems = {},
             rewardExp = 2000,
-            requiredLevel = 10,
+            requiredLevel = 42,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid) return getCreatureStorage(cid, 8511) == QUEST_STATUS.FINISHED end, -- Mr Fuji
             canStart = function(cid) return getCreatureStorage(cid, 60026) == QUEST_STATUS.FINISHED end, -- Bill quest #4
@@ -5743,7 +5743,7 @@ QUESTS_CONFIG = {
                 { type = REWARD_TYPE.ITEM, id = 23463, count = 1, unique = true }, -- doll case
             },
             rewardExp = 0,
-            requiredLevel = 10,
+            requiredLevel = 44,
             questType = QUEST_TYPE.BRING_ITEMS,
             questRequest = { 25052, 1, 25053, 1 },
             canStart = function(cid) return getCreatureStorage(cid, 8510) == QUEST_STATUS.FINISHED end,
@@ -5781,7 +5781,7 @@ QUESTS_CONFIG = {
             talk_questDone = "",
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 10,
+            requiredLevel = 46,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid) return true end, -- There is nothing really to do
         },
@@ -5795,7 +5795,7 @@ QUESTS_CONFIG = {
             talk_questDone = "",
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 10,
+            requiredLevel = 48,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid) return getCreatureStorage(cid, 8529) == QUEST_STATUS.FINISHED end,
             canStart = function(cid) return getCreatureStorage(cid, 8526) == QUEST_STATUS.FINISHED end, -- Bill quest
@@ -5810,7 +5810,7 @@ QUESTS_CONFIG = {
             talk_questDone = "",
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 10,
+            requiredLevel = 50,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid)
                 return getCreatureStorage(cid, 8546) == QUEST_STATUS.FINISHED and isItem(getPlayerItemById(cid, true, 25191))
@@ -5858,7 +5858,7 @@ QUESTS_CONFIG = {
             talk_questDone = "",
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 10,
+            requiredLevel = 50,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid)
                 local diff = (getCreatureStorage(cid, 8549) + (60 * 60) - os.time())
@@ -5880,7 +5880,7 @@ QUESTS_CONFIG = {
             talk_questDone = "",
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 17364, count = 1, unique = true }, { type = REWARD_TYPE.ITEM, id = 27774, count = 1, unique = true } }, -- TM 28 (Move Mimic), Small Asteroid Fragment
             rewardExp = 0,
-            requiredLevel = 10,
+            requiredLevel = 50,
             questType = QUEST_TYPE.BRING_ITEMS,
             questRequest = { 27425, 1 },
             onEnd = function(cid)
@@ -5902,7 +5902,7 @@ QUESTS_CONFIG = {
                 { type = REWARD_TYPE.ADDON, female = { looktype = 1703, addons = 0 }, male = { looktype = 1704, addons = 0 } }
             },
             rewardExp = 0,
-            requiredLevel = 10,
+            requiredLevel = 50,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid)
                 return getCreatureStorage(cid, 8561) == QUEST_STATUS.FINISHED
@@ -5964,7 +5964,7 @@ QUESTS_CONFIG = {
                 { type = REWARD_TYPE.ITEM, id = 2152, count = 15 }, -- 1500 dollars
             },
             rewardExp = 500,
-            requiredLevel = 10,
+            requiredLevel = 12,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid)
                 for storage = 8423, 8430 do -- Check if all posters were placeds
@@ -6021,7 +6021,7 @@ QUESTS_CONFIG = {
             talk_questDone = "",
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 40,
+            requiredLevel = 35,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid)
                 for storage = 9675, 9679 do
@@ -6043,7 +6043,7 @@ QUESTS_CONFIG = {
             talk_questDone = "",
             rewardItems = {},
             rewardExp = 15000, -- 20% from level 40 to 41
-            requiredLevel = 40,
+            requiredLevel = 35,
             questType = QUEST_TYPE.BRING_ITEMS,
             questRequest = { 23542, 1 }, -- ignition key
             canStart = function(cid) return getCreatureStorage(cid, 8434) == QUEST_STATUS.FINISHED end, -- Captain Neil Pace trunk opened
@@ -6060,7 +6060,7 @@ QUESTS_CONFIG = {
             talk_questDone = "",
             rewardItems = {},
             rewardExp = 15000, -- 12% from level 50 to 51
-            requiredLevel = 50,
+            requiredLevel = 40,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid)
                 for _, storage in pairs({ 8437, 8438, 8483, 8484, 8485, 8486, 8487 }) do
@@ -6515,7 +6515,7 @@ QUESTS_CONFIG = {
             talk_questDone = "",
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 20,
+            requiredLevel = 30,
             questType = QUEST_TYPE.BRING_ITEMS,
             questRequest = { 23595, 1 }, -- good bow
             blockStart = true, -- Auto started
@@ -6572,7 +6572,7 @@ QUESTS_CONFIG = {
             talk_questDone = "",
             rewardItems = {}, -- todo
             rewardExp = 0,
-            requiredLevel = 15,
+            requiredLevel = 30,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid)
                 local bag = getPlayerItemById(cid, true, 23589) -- shopping bag
@@ -6619,7 +6619,7 @@ QUESTS_CONFIG = {
             talk_questDone = "",
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 23595, count = 1, unique = true } }, -- good bow, to use on the misty quest
             rewardExp = 0,
-            requiredLevel = 20,
+            requiredLevel = 30,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid)
                 local diff = (getCreatureStorage(cid, 8470) + (2 * 60 * 60) - os.time())
@@ -7098,7 +7098,7 @@ QUESTS_CONFIG = {
             talk_questFinishFail = "Looks like you don't have it yet.",
             talk_questDone = "",
             rewardExp = 0,
-            requiredLevel = 0,
+            requiredLevel = 42,
             questType = QUEST_TYPE.CUSTOM,
             questStartItems = { 25050, 5 },
             questRequest = function(cid)
@@ -7127,7 +7127,7 @@ QUESTS_CONFIG = {
             talk_questFinishFail = "Looks like you haven't.",
             talk_questDone = "",
             rewardExp = 0,
-            requiredLevel = 0,
+            requiredLevel = 44,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid) return getCreatureStorage(cid, 8522) == QUEST_STATUS.FINISHED end,
             canStart = function(cid) return getCreatureStorage(cid, 8517) == QUEST_STATUS.STARTED end,
@@ -7150,7 +7150,7 @@ QUESTS_CONFIG = {
             talk_questFinishFail = "Looks like you didn't.",
             talk_questDone = "",
             rewardExp = 0,
-            requiredLevel = 0,
+            requiredLevel = 44,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid) return getPlayerDefeatedNPC(cid, 9697) end,
             rewardItems = {},
@@ -7164,7 +7164,7 @@ QUESTS_CONFIG = {
             talk_questFinishFail = "Looks like you didn't.",
             talk_questDone = "",
             rewardExp = 0,
-            requiredLevel = 0,
+            requiredLevel = 50,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid) return getCreatureStorage(cid, 8547) == QUEST_STATUS.FINISHED end, -- todo
             canStart = function(cid) return getCreatureStorage(cid, 8545) == QUEST_STATUS.FINISHED end,
@@ -7184,7 +7184,7 @@ QUESTS_CONFIG = {
             talk_questFinishFail = "Looks like you don't have it yet.",
             talk_questDone = "",
             rewardExp = 0,
-            requiredLevel = 0,
+            requiredLevel = 48,
             questType = QUEST_TYPE.CUSTOM,
             questStartItems = { 25058, 1 },
             questRequest = function(cid)
@@ -7209,7 +7209,7 @@ QUESTS_CONFIG = {
             talk_questFinishFail = "Looks like you didn't.",
             talk_questDone = "",
             rewardExp = 0,
-            requiredLevel = 0,
+            requiredLevel = 50,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid) return getCreatureStorage(cid, 8547) == QUEST_STATUS.FINISHED end,
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 25191, count = 1, unique = true }, { type = REWARD_TYPE.ITEM, id = 17353, count = 1, unique = true } },
@@ -7284,7 +7284,7 @@ QUESTS_CONFIG = {
             talk_questFinishFail = "Looks like you won't.",
             talk_questDone = "",
             rewardExp = 0,
-            requiredLevel = 0,
+            requiredLevel = 50,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid)
                 return doPlayerRemoveMoney(cid, 130000)
@@ -7304,7 +7304,7 @@ QUESTS_CONFIG = {
             talk_questFinishFail = "Looks like you didn't.",
             talk_questDone = "",
             rewardExp = 0,
-            requiredLevel = 0,
+            requiredLevel = 50,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid)
                 local diff = (getCreatureStorage(cid, 8554) + (2 * 60 * 60) - os.time())
