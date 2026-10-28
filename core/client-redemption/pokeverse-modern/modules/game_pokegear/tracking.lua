@@ -157,6 +157,7 @@ function Tracking.refresh()
     window.header.count:setText(#lines > 0 and tostring(#lines) or '')
     local listHeight = #lines == 0 and 34 or math.min(height, MAX_LIST)
     list:setHeight(listHeight)
+    window.scroll:setHeight(listHeight)
     local scrolls = height > MAX_LIST
     window.scroll:setVisible(scrolls)
     window.scroll:setWidth(scrolls and 10 or 0)
