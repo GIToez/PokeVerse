@@ -29,8 +29,61 @@ local function applyWalkLock()
     end
 end
 
--- the top bar buttons for the side windows Pokegear replaces
-local REPLACED_BUTTONS = { 'miniMap', 'battleButton', 'skillsButton', 'vipListButton' }
+-- the top bar buttons for the side windows Pokegear replaces: these have no window of their own in
+-- Pokegear (the ring, the HUD and the Trainer card took them over)
+local REPLACED_BUTTONS = { 'miniMap', 'skillsButton' }
+-- and these open the Pokegear window that took over, with its key
+local REDIRECTED_BUTTONS = {
+    battleButton = { name = 'Nearby', key = { 'Windows', 'Show/hide battle list' },
+                     toggle = function() Nearby.toggle() end, isOpen = function() return Nearby.isOpen() end },
+    vipListButton = { name = 'Social', key = { 'Windows', 'Show/hide VIP list' },
+                      toggle = function() Social.toggle() end, isOpen = function() return Social.isOpen() end },
+    inventory = { name = 'Bag', key = { 'Windows', 'Show/hide the Bag' },
+                  toggle = function() Bag.toggle() end, isOpen = function() return Bag.isOpen() end },
+}
+local REDIRECT_REFRESH_MS = 300
+local redirectEvent
+
+local function refreshRedirected()
+    for id, redirect in pairs(REDIRECTED_BUTTONS) do
+        local button = Pokegear.topButton(id)
+        if button and button.pokegearClassic then
+            button:setOn(redirect.isOpen())
+            local key = Pokegear.boundKey(redirect.key)
+            button:setTooltip(key ~= '' and tr('%s (%s)', tr(redirect.name), key) or tr(redirect.name))
+        end
+    end
+end
+
+local function applyRedirected()
+    for id, redirect in pairs(REDIRECTED_BUTTONS) do
+        local button = Pokegear.topButton(id)
+        if button and active and not button.pokegearClassic then
+            button.pokegearClassic = { onMouseRelease = button.onMouseRelease, tooltip = button:getTooltip() }
+            button.onMouseRelease = function(widget, mousePos, mouseButton)
+                if widget:containsPoint(mousePos) and mouseButton ~= MouseMidButton then
+                    redirect.toggle()
+                    refreshRedirected()
+                    return true
+                end
+            end
+        elseif button and not active and button.pokegearClassic then
+            button.onMouseRelease = button.pokegearClassic.onMouseRelease
+            button:setTooltip(button.pokegearClassic.tooltip)
+            button:setOn(false)
+            button.pokegearClassic = nil
+        end
+        if button then
+            button:show()
+        end
+    end
+    removeEvent(redirectEvent)
+    redirectEvent = nil
+    if active then
+        refreshRedirected()
+        redirectEvent = cycleEvent(refreshRedirected, REDIRECT_REFRESH_MS)
+    end
+end
 
 local function applyTopBar()
     for _, id in ipairs(REPLACED_BUTTONS) do
@@ -39,6 +92,7 @@ local function applyTopBar()
             button:setVisible(not active)
         end
     end
+    applyRedirected()
 end
 
 -- The Skills window goes away in Pokegear: experience and Trainer Spirit are on the HUD (experience.lua)
@@ -190,6 +244,8 @@ end
 local function onGameEnd()
     removeEvent(startEvent)
     startEvent = nil
+    removeEvent(redirectEvent)
+    redirectEvent = nil
     Hub.apply(false)
     Nearby.apply(false)
     Tracking.apply(false)

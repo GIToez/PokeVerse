@@ -183,10 +183,6 @@ local function follow()
     if inventory and inventory:isVisible() then
         inventory:hide()
     end
-    local button = inventoryButton()
-    if button and button:isVisible() then
-        button:hide()
-    end
     local bar = modules.game_pokebar
     local slot = bar and bar.getActiveSlot and bar.getActiveSlot()
     local item = slotItem(InventorySlotHead)
@@ -316,9 +312,9 @@ local function hide()
         if inventory and g_game.isOnline() then
             inventory:setVisible(inventoryWasVisible ~= false)
         end
+        -- its top bar button opened the Bag meanwhile (pokegear.lua)
         local button = inventoryButton()
         if button then
-            button:show()
             button:setOn(inventory ~= nil and inventory:isVisible())
         end
     end
