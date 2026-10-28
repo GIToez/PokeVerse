@@ -146,7 +146,7 @@ pokemonSpecialAbilitie, wastedBallsMsg, tries)
         return
     end
 
-    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Gotcha! You caught a %s %s (level %s)."), getSexDescription(pokemonSex), pokemonName, pokemonLevel))
+    doPlayerSendActivity(cid, "catch", MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Gotcha! You caught a %s %s (level %s)."), getSexDescription(pokemonSex), pokemonName, pokemonLevel))
     Sounds.onCatch(cid)
     local ballUid = doCreatePokemonBall(cid, newBall, pokemonName, pokemonLevel, pokemonSex, nil, 0, nil, getSafariZone(cid), nil,
         nil, pokemonSpecialAbilitie, nil, nil, nil, nil, nil, getPlayerTown(cid) ~= TOWN_IDS.TUTORIAL_ISLAND)
@@ -169,7 +169,7 @@ pokemonSpecialAbilitie, wastedBallsMsg, tries)
         return
     end
 
-    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Gotcha! You caught a %s %s (level %s)."), getSexDescription(pokemonSex), pokemonName, pokemonLevel))
+    doPlayerSendActivity(cid, "catch", MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Gotcha! You caught a %s %s (level %s)."), getSexDescription(pokemonSex), pokemonName, pokemonLevel))
     Sounds.onCatch(cid)
     local ballUid = doCreatePokemonBall(cid, "safari", pokemonName, pokemonLevel, pokemonSex, nil, 0, nil, true, nil, nil, pokemonSpecialAbilitie)
 	doSendMagicEffect(getCreaturePosition(cid), EFFECT_EMOTION_EXCLAMATION)
@@ -190,7 +190,7 @@ pokemonSpecialAbilitie, wastedBallsMsg)
         return
     end
 
-    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Gotcha! You caught a %s %s."), getSexDescription(pokemonSex), pokemonName))
+    doPlayerSendActivity(cid, "catch", MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Gotcha! You caught a %s %s."), getSexDescription(pokemonSex), pokemonName))
     Sounds.onCatch(cid)
     local ballUid = doCreatePokemonBall(cid, "soul", pokemonName, 8, pokemonSex, nil, 0, cid, false, nil, nil, pokemonSpecialAbilitie)
 	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Now you need to talk with Professor Tommy to start your journey, speak about 'journey'.")

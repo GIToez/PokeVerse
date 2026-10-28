@@ -3,10 +3,9 @@
 -- connect(modules.game_pokegear, { onLayoutChange = function(active) end }).
 local active = false
 
--- phones stay on Classic until Pokegear has its compact size (docs/concepts/side-panel)
 function isActive()
     local options = modules.client_options
-    return options ~= nil and not g_platform.isMobile() and options.getOption('uiLayout') == 'pokegear'
+    return options ~= nil and options.getOption('uiLayout') == 'pokegear'
 end
 
 -- Pokegear has no Chat On / Chat Off: WASD always walks, and Enter opens one line (game_console
@@ -29,8 +28,61 @@ local function applyWalkLock()
     end
 end
 
--- the top bar buttons for the side windows Pokegear replaces
-local REPLACED_BUTTONS = { 'miniMap', 'battleButton', 'skillsButton', 'vipListButton' }
+-- the top bar buttons for the side windows Pokegear replaces: these have no window of their own in
+-- Pokegear (the ring, the HUD and the Trainer card took them over)
+local REPLACED_BUTTONS = { 'miniMap', 'skillsButton' }
+-- and these open the Pokegear window that took over, with its key
+local REDIRECTED_BUTTONS = {
+    battleButton = { name = 'Nearby', key = { 'Windows', 'Show/hide battle list' },
+                     toggle = function() Nearby.toggle() end, isOpen = function() return Nearby.isOpen() end },
+    vipListButton = { name = 'Social', key = { 'Windows', 'Show/hide VIP list' },
+                      toggle = function() Social.toggle() end, isOpen = function() return Social.isOpen() end },
+    inventory = { name = 'Bag', key = { 'Windows', 'Show/hide the Bag' },
+                  toggle = function() Bag.toggle() end, isOpen = function() return Bag.isOpen() end },
+}
+local REDIRECT_REFRESH_MS = 300
+local redirectEvent
+
+local function refreshRedirected()
+    for id, redirect in pairs(REDIRECTED_BUTTONS) do
+        local button = Pokegear.topButton(id)
+        if button and button.pokegearClassic then
+            button:setOn(redirect.isOpen())
+            local key = Pokegear.boundKey(redirect.key)
+            button:setTooltip(key ~= '' and tr('%s (%s)', tr(redirect.name), key) or tr(redirect.name))
+        end
+    end
+end
+
+local function applyRedirected()
+    for id, redirect in pairs(REDIRECTED_BUTTONS) do
+        local button = Pokegear.topButton(id)
+        if button and active and not button.pokegearClassic then
+            button.pokegearClassic = { onMouseRelease = button.onMouseRelease, tooltip = button:getTooltip() }
+            button.onMouseRelease = function(widget, mousePos, mouseButton)
+                if widget:containsPoint(mousePos) and mouseButton ~= MouseMidButton then
+                    redirect.toggle()
+                    refreshRedirected()
+                    return true
+                end
+            end
+        elseif button and not active and button.pokegearClassic then
+            button.onMouseRelease = button.pokegearClassic.onMouseRelease
+            button:setTooltip(button.pokegearClassic.tooltip)
+            button:setOn(false)
+            button.pokegearClassic = nil
+        end
+        if button then
+            button:show()
+        end
+    end
+    removeEvent(redirectEvent)
+    redirectEvent = nil
+    if active then
+        refreshRedirected()
+        redirectEvent = cycleEvent(refreshRedirected, REDIRECT_REFRESH_MS)
+    end
+end
 
 local function applyTopBar()
     for _, id in ipairs(REPLACED_BUTTONS) do
@@ -39,6 +91,7 @@ local function applyTopBar()
             button:setVisible(not active)
         end
     end
+    applyRedirected()
 end
 
 -- The Skills window goes away in Pokegear: experience and Trainer Spirit are on the HUD (experience.lua)
@@ -147,8 +200,13 @@ local function apply()
     Loot.apply(active)
     Sockets.apply(active)
     Experience.apply(active)
+    Activity.apply(active)
     applySkills()
     Pokegear.layoutColumn()
+    local mainPanel = modules.game_mainpanel
+    if mainPanel and mainPanel.tidyTopBar then
+        mainPanel.tidyTopBar()
+    end
 end
 
 function toggleNearby()
@@ -159,6 +217,11 @@ end
 local function isBadgeCase(container)
     local badgeCase = modules.game_badgecase
     return active and badgeCase ~= nil and badgeCase.isDexContainer ~= nil and badgeCase.isDexContainer(container)
+end
+
+-- game_textmessage hands server notices over in Pokegear (activity.lua)
+function takeMessage(mode, text, msgtype, bannered)
+    return Activity.takeMessage(mode, text, msgtype, bannered)
 end
 
 function claimsContainer(container)
@@ -177,6 +240,26 @@ function refresh()
 end
 
 local startEvent
+local compact
+
+-- a window resize (or a phone turning) across the compact size re-fits every Pokegear window
+local function onRootGeometryChange()
+    local now = Pokegear.isCompact()
+    if now == compact then
+        return
+    end
+    compact = now
+    if not active or not g_game.isOnline() then
+        return
+    end
+    Hub.relayout()
+    Chat.relayout()
+    Nearby.relayout()
+    Bag.relayout()
+    Social.relayout()
+    Pokegear.layoutColumn()
+    scheduleEvent(Tracking.refresh, 50)
+end
 
 local function onGameStart()
     -- after game_console has restored the saved Chat On / Chat Off
@@ -190,6 +273,8 @@ end
 local function onGameEnd()
     removeEvent(startEvent)
     startEvent = nil
+    removeEvent(redirectEvent)
+    redirectEvent = nil
     Hub.apply(false)
     Nearby.apply(false)
     Tracking.apply(false)
@@ -199,6 +284,7 @@ local function onGameEnd()
     Loot.reset()
     Sockets.apply(false)
     Experience.apply(false)
+    Activity.reset()
     Pokegear.layoutColumn()
 end
 
@@ -212,7 +298,10 @@ function init()
     Loot.init()
     Sockets.init()
     Experience.init()
+    Activity.init()
     active = isActive()
+    compact = Pokegear.isCompact()
+    connect(rootWidget, { onGeometryChange = onRootGeometryChange })
     connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     if g_game.isOnline() then
         onGameStart()
@@ -220,6 +309,7 @@ function init()
 end
 
 function terminate()
+    disconnect(rootWidget, { onGeometryChange = onRootGeometryChange })
     disconnect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     removeEvent(startEvent)
     startEvent = nil
@@ -237,4 +327,5 @@ function terminate()
     Loot.terminate()
     Sockets.terminate()
     Experience.terminate()
+    Activity.terminate()
 end

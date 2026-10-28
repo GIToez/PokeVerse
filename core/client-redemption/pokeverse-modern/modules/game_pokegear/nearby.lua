@@ -6,7 +6,8 @@ Nearby = {}
 local POSITION_SETTING = 'pokegearNearbyPosition'
 local HIDDEN_SETTING = 'pokegearNearbyHidden'
 local SORT_SETTING = 'pokegearNearbySort'
-local MAX_ROWS = 8
+local MAX_ROWS, COMPACT_ROWS = 8, 4 -- fewer on small screens (Pokegear.isCompact)
+local FULL_WIDTH, COMPACT_WIDTH = 300, 280
 local ROW_HEIGHT, ROW_SPACING = 38, 4
 -- the portraits are 96x96 with the Pokemon in the middle
 local PORTRAIT_INSET = 18
@@ -234,8 +235,19 @@ function Nearby.refresh()
     if not window or not window:isVisible() then
         return
     end
+    local compact = Pokegear.isCompact()
+    window:setWidth(compact and COMPACT_WIDTH or FULL_WIDTH)
+    -- tighter filter pills, so the four still fit the narrower card
+    for _, pill in pairs(filterPills) do
+        pill:setPaddingLeft(compact and 17 or 21)
+        pill:setPaddingRight(compact and 6 or 9)
+    end
     local list, total = collect()
-    local count = math.min(#list, MAX_ROWS)
+    local most = Pokegear.isCompact() and COMPACT_ROWS or MAX_ROWS
+    -- and no more than fit the room left under it
+    local room = rootWidget:getHeight() - window:getY() - CHROME_HEIGHT - 8
+    most = math.max(1, math.min(most, math.floor((room + ROW_SPACING) / (ROW_HEIGHT + ROW_SPACING))))
+    local count = math.min(#list, most)
     for i = 1, count do
         local row = rowFor(i)
         row:show()
@@ -284,11 +296,11 @@ local function build()
         sortPills[sort.id] = pill
     end
     restorePosition = Pokegear.makeMovable(window, window.header, POSITION_SETTING, function()
-        -- centred under the ring
+        -- centred under the ring; the small ring is narrower than the card, so it lines up on the right
         window:addAnchor(AnchorTop, 'pokegearHub', AnchorBottom)
         window:addAnchor(AnchorRight, 'pokegearHub', AnchorRight)
         window:setMarginTop(2)
-        window:setMarginRight(25)
+        window:setMarginRight(Pokegear.isCompact() and 2 or 25)
     end)
 end
 
@@ -368,6 +380,18 @@ function Nearby.toggle()
         openWindow()
     end
     Pokegear.layoutColumn()
+end
+
+function Nearby.isOpen()
+    return window ~= nil and window:isVisible()
+end
+
+-- the screen crossed the compact size
+function Nearby.relayout()
+    if window and window:isVisible() then
+        restorePosition()
+        Nearby.refresh()
+    end
 end
 
 -- its own spot is under the ring, so it only counts while the ring is in its spot too

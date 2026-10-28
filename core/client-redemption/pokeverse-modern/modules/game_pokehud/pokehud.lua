@@ -290,6 +290,12 @@ function init()
         end
         ball:addAnchor(AnchorVerticalCenter, 'parent', AnchorVerticalCenter)
     end
+    hud.portrait:setTooltip(tr('Trainer Card (P)'))
+    hud.portrait.onClick = function()
+        if modules.game_trainercard then
+            modules.game_trainercard.toggle()
+        end
+    end
 
     connect(LocalPlayer, {
         onHealthChange = onHealthChange,

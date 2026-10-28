@@ -201,7 +201,7 @@ function doPokemonEvolve(cid, toPokemon)
 
 		addEvent(function(pokemonMaster, cidName, toPokemon, pokemonPosition)
             if (isCreature(pokemonMaster)) then
-                doPlayerSendTextMessage(pokemonMaster, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(pokemonMaster, "Congratulations! Your %s evolved into %s!"), cidName, __L(pokemonMaster, getMonsterInfo(toPokemon).description)))
+                doPlayerSendActivity(pokemonMaster, "evolve", MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(pokemonMaster, "Congratulations! Your %s evolved into %s!"), cidName, __L(pokemonMaster, getMonsterInfo(toPokemon).description)))
                 doSendPlayerExtendedOpcode(pokemonMaster, EXTENDED_IDS.EVOLUTION, JSON.encode({state = "done"}))
                 doCreatureSetStorage(pokemonMaster, playersStorages.isEvolving, -1)
                 doPokemonUpdate(toPokemon, pokemonMaster, pokemonPosition)

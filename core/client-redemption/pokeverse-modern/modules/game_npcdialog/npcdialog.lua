@@ -141,7 +141,17 @@ local function place()
     local rootRect, mapRect = root:getRect(), map:getRect()
     local width = math.min(WIDTH, mapRect.width - 16)
     window:setWidth(width)
-    window:setMarginLeft(mapRect.x - rootRect.x + math.floor((mapRect.width - width) / 2))
+    local x = mapRect.x + math.floor((mapRect.width - width) / 2)
+    -- Pokegear's chat card sits in the bottom-left corner: on a narrow screen the dialogue moves right
+    -- of it, so the chat line you type your answer in stays in view
+    local card = root:getChildById('pokegearChat')
+    if card and card:isVisible() then
+        local cardRect = card:getRect()
+        if x < cardRect.x + cardRect.width + 8 then
+            x = math.min(cardRect.x + cardRect.width + 8, mapRect.x + mapRect.width - width - 8)
+        end
+    end
+    window:setMarginLeft(x - rootRect.x)
     -- the console can sit over the bottom of the map
     local bottom = mapRect.y + mapRect.height
     local console = modules.game_interface.getBottomPanel()

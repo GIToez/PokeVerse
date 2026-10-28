@@ -514,7 +514,7 @@ if (RocketBattle == nil) then
 
             if (self.rewardBaseExp > 0 or self.rewardBadge ~= nil or #self.rewardItems > 0 or
                     #self.rewardUniqueItems > 0 or self.currentBet > 0) then
-                doPlayerSendTextMessage(pid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(pid, "You won %s and received your reward."), self.name))
+                doPlayerSendActivity(pid, "battle", MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(pid, "You won %s and received your reward."), self.name))
             else
                 doPlayerSendTextMessage(pid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(pid, "You won %s."), self.name))
             end

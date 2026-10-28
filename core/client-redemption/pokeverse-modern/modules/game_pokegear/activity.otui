@@ -1,0 +1,163 @@
+// Activity: milestones pop up as toasts over the bottom of the map and stay in the list behind the
+// bell on the top bar. Built by activity.lua.
+PokegearToast < UIWidget
+  height: 30
+  phantom: true
+
+  UIWidget
+    id: pill
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    width: 60
+    image-source: /modules/game_pokegear/images/row
+    image-border: 11
+    image-smooth: true
+    phantom: true
+
+    PokegearTypeDot
+      id: dot
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 12
+
+    UILabel
+      id: text
+      anchors.left: dot.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 8
+      text-auto-resize: true
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 13
+      color: #eef2ff
+      phantom: true
+
+// newest at the bottom, nearest the action bar; anchored by its bottom, so it grows upwards
+PokegearToasts < UIWidget
+  id: pokegearToasts
+  width: 640
+  phantom: true
+  focusable: false
+  layout:
+    type: verticalBox
+    spacing: 3
+    fit-children: true
+
+PokegearActivityRow < UIWidget
+  height: 20
+  padding: 3 6 3 6
+  image-source: /modules/game_pokegear/images/round_s
+  image-border: 8
+  image-color: #00000000
+  $hover:
+    image-color: #1a274288
+
+  PokegearTypeDot
+    id: dot
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-top: 4
+
+  UILabel
+    id: time
+    anchors.left: dot.right
+    anchors.top: parent.top
+    margin-left: 6
+    width: 38
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 11
+    color: #8fa0c4
+    phantom: true
+
+  UILabel
+    id: text
+    anchors.left: time.right
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-left: 4
+    text-wrap: true
+    text-auto-resize: true
+    text-align: topLeft
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #e6ecfa
+    phantom: true
+
+PokegearActivity < UIWidget
+  id: pokegearActivity
+  width: 380
+  height: 360
+  image-source: /modules/game_pokegear/images/card
+  image-border: 12
+  image-smooth: true
+  padding: 8 10 10 10
+  focusable: false
+
+  UIWidget
+    id: header
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 24
+
+    UILabel
+      id: title
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      text-auto-resize: true
+      !text: tr('Activity')
+      ttf-font: /fonts/ttf/pixelify-sans.ttf
+      ttf-font-size: 18
+      color: #ffcb05
+      phantom: true
+
+    PVCloseButton
+      id: close
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      !tooltip: tr('Close')
+
+    PokegearPill
+      id: clear
+      anchors.right: close.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 8
+      !text: tr('Clear')
+      !tooltip: tr('Empty the list')
+
+  UIScrollArea
+    id: list
+    anchors.top: header.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 8
+    margin-right: 12
+    vertical-scrollbar: scroll
+    layout:
+      type: verticalBox
+      spacing: 1
+
+  VerticalScrollBar
+    id: scroll
+    anchors.top: list.top
+    anchors.bottom: list.bottom
+    anchors.left: list.right
+    margin-left: 4
+    width: 8
+    step: 22
+    pixels-scroll: true
+
+  UILabel
+    id: empty
+    anchors.top: header.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 24
+    height: 16
+    text-align: center
+    !text: tr('Nothing yet. Sales, catches, level-ups and the like land here.')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 11
+    color: #8fa0c4
+    phantom: true

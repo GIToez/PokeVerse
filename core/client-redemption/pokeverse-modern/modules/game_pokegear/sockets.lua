@@ -175,17 +175,40 @@ local function inventoryWindow()
     return inventory and inventory.inventoryController and inventory.inventoryController.ui
 end
 
+local function pokeHud()
+    return modules.game_interface.getRootPanel():getChildById('pokeHud')
+end
+
+-- on a narrow screen the sockets right of the HUD would run under the ring: the HUD slides left
+-- just enough, keeping the equipment socket on the screen
+local function dodgeRing()
+    local hud = pokeHud()
+    local hub = Hub.docked()
+    if not hud then
+        return
+    end
+    local shift = 0
+    if hub then
+        local map = modules.game_interface.getMapPanel():getRect()
+        local center = map.x + map.width / 2
+        local right = center + hud:getWidth() / 2 + 2 * (HUD_GAP + dexSocket:getWidth())
+        local left = center - hud:getWidth() / 2 - HUD_GAP - equipSocket:getWidth()
+        shift = math.max(0, math.min(right + HUD_GAP - hub:getX(), left - map.x - HUD_GAP))
+    end
+    shift = math.floor(shift + 0.5)
+    if hud:getMarginRight() ~= shift then
+        hud:setMarginRight(shift)
+    end
+end
+
 -- the Order button rides beside the Pokemon that's out: to its right on a standing swap bar, above
 -- it on a lying one. game_inventory shows its box again whenever the view mode changes, so it is
 -- put away here too.
 local function follow()
+    dodgeRing()
     local inventory = inventoryWindow()
     if inventory and inventory:isVisible() then
         inventory:hide()
-    end
-    local button = inventoryButton()
-    if button and button:isVisible() then
-        button:hide()
     end
     local bar = modules.game_pokebar
     local slot = bar and bar.getActiveSlot and bar.getActiveSlot()
@@ -316,13 +339,17 @@ local function hide()
         if inventory and g_game.isOnline() then
             inventory:setVisible(inventoryWasVisible ~= false)
         end
+        -- its top bar button opened the Bag meanwhile (pokegear.lua)
         local button = inventoryButton()
         if button then
-            button:show()
             button:setOn(inventory ~= nil and inventory:isVisible())
         end
     end
     shown = false
+    local hud = pokeHud()
+    if hud then
+        hud:setMarginRight(0)
+    end
     for _, widget in ipairs({ equipSocket, dexSocket, badgeSocket, orderButton }) do
         if widget then
             widget:hide()

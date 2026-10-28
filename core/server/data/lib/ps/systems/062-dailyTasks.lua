@@ -361,7 +361,7 @@ local function newBoard(config)
                 task.progress = task.progress + 1
                 changed = true
                 if (isComplete(task)) then
-                    doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(
+                    doPlayerSendActivity(cid, "task", MESSAGE_EVENT_ADVANCE, string.format(
                         __L(cid, config.text.complete), taskTitle(cid, task)))
                 end
             end
