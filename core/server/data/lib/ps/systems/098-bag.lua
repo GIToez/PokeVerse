@@ -146,9 +146,12 @@ end
 
 Bag.MAX_PINS = 12
 
+-- "Other" is every item without a category, which a sort rule can't name (the Bag doesn't offer it)
 local CATEGORY_NAMES = {}
 for _, category in ipairs(ItemCategories.LIST) do
-    CATEGORY_NAMES[category.name] = true
+    if (category.name ~= "Other") then
+        CATEGORY_NAMES[category.name] = true
+    end
 end
 
 -- {categories = {names}, pins = {server ids}} from the bag's "sortrules"
@@ -234,6 +237,10 @@ Bag.onSort = function(cid)
     end
     lastSort[cid] = now
     doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.BAG, JSON.encode({ type = "sorted", moved = doPlayerSortBags(cid) or 0 }))
+end
+
+Bag.onLogout = function(cid)
+    lastSort[cid] = nil
 end
 
 Bag.onClientMessage = function(cid, buffer)

@@ -178,6 +178,10 @@ local function sendError(cid, text)
 end
 
 -- the same rule as "!leave" in the guild channel (Chat::parseGuildCommand)
+Social.onLogout = function(cid)
+    lastRefresh[cid] = nil
+end
+
 Social.leaveGuild = function(cid)
     local guildId = getPlayerGuildId(cid)
     if (not guildId or guildId == 0) then

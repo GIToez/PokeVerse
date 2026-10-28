@@ -394,22 +394,42 @@ function Handlers.transferOffer(data)
     }, function() answer(true) end, function() answer(false) end)
 end
 
--- a species' types, for Nearby's type dots: asked for in one batch, then kept for the session
+-- a species' types, for Nearby's type dots: asked for in batches, then kept for the session. The server
+-- answers 30 names a request and drops requests over its per-second limit, so batches go out a second
+-- apart, and a name without an answer is asked for once more.
+local TYPES_BATCH, TYPES_GAP, TYPES_TRIES = 30, 1000, 2
 local speciesTypes, typesAsked, typesQueue, typesEvent = {}, {}, {}, nil
+
+local function sendTypes()
+    typesEvent = nil
+    if not g_game.isOnline() or #typesQueue == 0 then
+        return
+    end
+    local names = {}
+    while #names < TYPES_BATCH and #typesQueue > 0 do
+        local name = table.remove(typesQueue, 1)
+        typesAsked[name] = typesAsked[name] + 1
+        names[#names + 1] = name
+    end
+    Pp.send({ action = 'types', names = names })
+    typesEvent = scheduleEvent(function()
+        for _, name in ipairs(names) do
+            if not speciesTypes[name] and (typesAsked[name] or 0) < TYPES_TRIES then
+                typesQueue[#typesQueue + 1] = name
+            end
+        end
+        sendTypes()
+    end, TYPES_GAP)
+end
 
 function getSpeciesTypes(name)
     if speciesTypes[name] then
         return speciesTypes[name]
     end
     if not typesAsked[name] and g_game.isOnline() then
-        typesAsked[name] = true
+        typesAsked[name] = 0 -- queued; counts the requests sent
         typesQueue[#typesQueue + 1] = name
-        typesEvent = typesEvent or scheduleEvent(function()
-            typesEvent = nil
-            local names = typesQueue
-            typesQueue = {}
-            Pp.send({ action = 'types', names = names })
-        end, 100)
+        typesEvent = typesEvent or scheduleEvent(sendTypes, 100)
     end
     return {}
 end
