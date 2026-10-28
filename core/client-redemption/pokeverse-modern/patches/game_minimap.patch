@@ -216,7 +216,7 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
      local player = g_game.getLocalPlayer()
      if player then
          virtualFloor = player:getPosition().z
-@@ -252,7 +300,27 @@
+@@ -252,7 +300,31 @@
  end
  
  function getMiniMapUi()
@@ -242,10 +242,14 @@ diff -ruN pristine/modules/game_minimap/minimap.lua modules/game_minimap/minimap
 +    else
 +        mapController.ui:show()
 +    end
++    -- the side panel sizes hidden windows to 0 and only resizes again when asked
++    if modules.game_mainpanel and modules.game_mainpanel.reloadMainPanelSizes then
++        modules.game_mainpanel.reloadMainPanelSizes()
++    end
  end
  
  function extendedView(extendedView)
-@@ -275,7 +343,9 @@
+@@ -275,7 +347,9 @@
          if not mainRightPanel:hasChild(mapController.ui) then
              mainRightPanel:insertChild(1, mapController.ui)
          end
