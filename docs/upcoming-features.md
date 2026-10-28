@@ -3590,6 +3590,9 @@ Running shoes (item 18754, from the Ash Ketchum quest) become a light alternativ
 
 ## 28. Warp Styles (planned, not built)
 
+**On hold until the Pokegear UI is finished and tested.** The plan and concepts below are
+approved; building starts after that.
+
 Cosmetic animations for a trainer's big moments: **logging in, logging out, teleporting, and
 winning or losing a duel** against a player or an NPC. Today the warps all play the same Tibia
 teleport effect (magic effect 10: `login.lua`, the travel NPCs in `npcsystem/modules.lua`, the
@@ -3612,6 +3615,10 @@ show every style over a real Route 1 screenshot.
 - **Equipped in the Customise Character window:** a **Warp Styles** entry in its list (next to
   Outfit, Mount, Wings, Aura, Effects and Shader), with a picker for each trigger and a looping
   preview on your own trainer.
+- **The concepts are approved.** The finished art uses the game's real Pokemon sprites (Abra,
+  Diglett, Pidgeot, Koffing, Gengar) rather than drawn stand-ins, with shading and depth so the
+  effects don't look flat.
+- **More Victory and Defeat effects** come later, beyond the two defaults.
 
 ### Triggers
 
@@ -3680,8 +3687,9 @@ and Defeat effects (fireworks, a trophy, a Pokemon cheering, a sweat drop).
    trainer, the departure copy, and the Settings option.
 3. The hooks: login, logout, teleport tiles, travel NPCs and boats, and the duel endings.
 4. The Warp Styles entry in the Customise Character window.
-5. The other styles, with art at the game's scale (Poke Ball first, then Psychic, Dig, Fly, Smoke
-   Bomb, Shadow), checked in the 4K harness.
+5. The other styles, with art at the game's scale using the real Pokemon sprites, shaded so it
+   isn't flat (Poke Ball first, then Psychic, Dig, Fly, Smoke Bomb, Shadow), checked in the 4K
+   harness.
 6. The Store category, the quest and event rewards, the wiki page and the changelog.
 
 ### To decide

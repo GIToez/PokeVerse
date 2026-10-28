@@ -7,7 +7,8 @@ trigger in the Customise Character window, and everyone nearby sees it. The plan
 
 These are concept animations, not game art. They were drawn over a real Route 1 screenshot from the
 client, using the game's own trainer and Pokemon sprites, to show the timing and the idea of each
-style. The finished art will be pixel sprite sheets drawn at the game's scale.
+style. The concepts are approved. The finished art will be pixel sprite sheets drawn at the
+game's scale, using the real Pokemon sprites and shaded with more depth than these flat drafts.
 
 ## Warps: log in, log out and teleport
 
