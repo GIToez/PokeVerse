@@ -75,6 +75,8 @@ local ballsAttributes = {
     pokemonIvs = base + 74, -- "hp,atk,def,spAtk,spDef,speed", see systems/059-pokemonStats.lua
     pokemonEvs = base + 75,
     pokemonNature = base + 76,
+    cardTag = base + 77, -- the Trainer Card favorite's tag, so it follows the ball through level-ups and evolutions
+    timesCalled = base + 78, -- how often the Pokemon was sent out; the Trainer Card's default favorite is the most called
 }
 
 local SKETCH_MOVES_DELIMITER = ";"
@@ -1937,6 +1939,22 @@ end
 
 function setBallPokemonNatureId(uid, natureId)
     doItemSetAttribute(uid, ballsAttributes.pokemonNature, natureId)
+end
+
+function getBallCardTag(uid)
+    return tonumber(getItemAttribute(uid, ballsAttributes.cardTag))
+end
+
+function setBallCardTag(uid, tag)
+    doItemSetAttribute(uid, ballsAttributes.cardTag, tag)
+end
+
+function getBallTimesCalled(uid)
+    return math.max(0, tonumber(getItemAttribute(uid, ballsAttributes.timesCalled)) or 0)
+end
+
+function addBallTimesCalled(uid)
+    doItemSetAttribute(uid, ballsAttributes.timesCalled, getBallTimesCalled(uid) + 1)
 end
 
 function setBallStatsPoisonDamage(uid, damage)

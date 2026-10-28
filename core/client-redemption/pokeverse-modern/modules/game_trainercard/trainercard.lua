@@ -453,6 +453,8 @@ local function fillLeft()
     if drafted() and not draft.favorite then
         favorite = card.favorite
     end
+    -- with none picked, the server sends the Pokemon the trainer sends out most (default = true)
+    panel.heading:setText(favorite and favorite.default and tr('Most used Pokemon') or tr('Favorite Pokemon'))
     panel.empty:setVisible(favorite == nil)
     panel.creature:setVisible(favorite ~= nil and favorite.look ~= nil)
     panel.name:setVisible(favorite ~= nil)

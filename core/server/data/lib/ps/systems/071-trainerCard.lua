@@ -83,12 +83,17 @@ local function keyOf(name, level, sex)
     return string.format("%s|%d|%d", name, level, sex or POKEMON_SEX_UNKNOWN)
 end
 
+-- the favorite storage adds the ball's tag: "name|level|sex|tag"
 local function parseKey(key)
-    local name, level, sex = tostring(key or ""):match("^([^|;]+)|(%d+)|(%d+)$")
+    local text = tostring(key or "")
+    local name, level, sex, tag = text:match("^([^|;]+)|(%d+)|(%d+)|(%d+)$")
+    if (not name) then
+        name, level, sex = text:match("^([^|;]+)|(%d+)|(%d+)$")
+    end
     if (not name) then
         return nil
     end
-    return name, tonumber(level), tonumber(sex)
+    return name, tonumber(level), tonumber(sex), tonumber(tag)
 end
 
 local function types(name)
@@ -164,6 +169,60 @@ local function owns(cid, key)
     return false
 end
 
+local function ballKey(ball)
+    return keyOf(getBallPokemonName(ball.uid), getBallPokemonLevel(ball.uid), getBallPokemonSex(ball.uid))
+end
+
+-- The favorite's ball while the trainer carries it, found by its tag so level-ups and evolutions
+-- keep it. A favorite saved without a tag (picked from the PC) gets one the first time it's carried.
+-- Keeps the stored name and level up to date for the PC check and the offline card.
+local function favoriteBall(cid)
+    local stored = storageText(cid, FAVORITE)
+    local name, level, sex, tag = parseKey(stored)
+    if (not name) then
+        return nil
+    end
+    local key = keyOf(name, level, sex)
+    local found
+    for _, ball in ipairs(getPlayerAllBallsWithPokemon(cid)) do
+        if (tag and getBallCardTag(ball.uid) == tag) then
+            found = ball
+            break
+        elseif (not tag and not found and ballKey(ball) == key) then
+            found = ball
+        end
+    end
+    if (found) then
+        if (not tag) then
+            -- item attributes are floats: whole numbers stay exact below 2^24
+            tag = math.random(1, 16000000)
+            setBallCardTag(found.uid, tag)
+        end
+        local current = ballKey(found) .. "|" .. tag
+        if (current ~= stored) then
+            setPlayerStorageValue(cid, FAVORITE, current)
+        end
+    end
+    return found
+end
+
+local function ownsFavorite(cid)
+    local name, level, sex = parseKey(storageText(cid, FAVORITE))
+    return name ~= nil and (favoriteBall(cid) ~= nil or owns(cid, keyOf(name, level, sex)))
+end
+
+-- No favorite picked: the Pokemon the trainer sends out most, then the highest level
+local function mostCalledBall(cid)
+    local best, bestCalls, bestLevel
+    for _, ball in ipairs(getPlayerAllBallsWithPokemon(cid)) do
+        local calls, level = getBallTimesCalled(ball.uid), getBallPokemonLevel(ball.uid)
+        if (not best or calls > bestCalls or (calls == bestCalls and level > bestLevel)) then
+            best, bestCalls, bestLevel = ball, calls, level
+        end
+    end
+    return best
+end
+
 local function getTrophyKeys(cid)
     local keys = {}
     for key in storageText(cid, TROPHIES):gmatch("[^;]+") do
@@ -176,8 +235,7 @@ end
 
 -- Drops the favorite and trophies the trainer doesn't have anymore
 TrainerCard.prune = function(cid)
-    local favorite = storageText(cid, FAVORITE)
-    if (favorite ~= "" and not owns(cid, favorite)) then
+    if (storageText(cid, FAVORITE) ~= "" and not ownsFavorite(cid)) then
         setPlayerStorageValue(cid, FAVORITE, -1)
     end
     local kept, changed = {}, false
@@ -327,11 +385,15 @@ local function skill(cid, id)
 end
 
 local function favoriteOf(cid)
+    local carried = favoriteBall(cid)
+    if (carried) then
+        return TrainerCard.pokemon(getBallPokemonName(carried.uid), getBallPokemonLevel(carried.uid), getBallPokemonSex(carried.uid))
+    end
     local name, level, sex = parseKey(storageText(cid, FAVORITE))
     if (name) then
         return TrainerCard.pokemon(name, level, sex)
     end
-    local ball = getPlayerAllBallsWithPokemon(cid)[1]
+    local ball = mostCalledBall(cid)
     if (ball) then
         local data = TrainerCard.pokemon(getBallPokemonName(ball.uid), getBallPokemonLevel(ball.uid), getBallPokemonSex(ball.uid))
         data.default = true
@@ -617,8 +679,16 @@ TrainerCard.save = function(cid, data)
                 trophies[#trophies + 1] = key
             end
         end
+        local storedName, storedLevel, storedSex = parseKey(storageText(cid, FAVORITE))
+        if (favorite and storedName and favorite == keyOf(storedName, storedLevel, storedSex)) then
+            favorite = nil -- the same Pokemon: keep its tag
+        end
         if (favorite) then
             setPlayerStorageValue(cid, FAVORITE, favorite ~= "" and favorite or -1)
+            if (favorite ~= "") then
+                -- tags the carried ball now, so a level-up right after keeps it
+                favoriteBall(cid)
+            end
         end
         if (trophies) then
             setPlayerStorageValue(cid, TROPHIES, #trophies > 0 and table.concat(trophies, ";") or -1)
