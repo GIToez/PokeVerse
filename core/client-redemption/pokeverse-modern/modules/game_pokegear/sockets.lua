@@ -19,12 +19,10 @@ local FOLLOW_MS = 200
 
 local equipSocket, dexSocket, badgeSocket, orderButton
 local shown = false
+local inventoryWasVisible -- the Inventory window when Pokegear put it away, for Classic
 local followEvent
 
-local function slotItem(slot)
-    local player = g_game.isOnline() and g_game.getLocalPlayer()
-    return player and player:getInventoryItem(slot)
-end
+local slotItem = Pokegear.slotItem
 
 local function nameOf(item)
     local name = Bag.equipmentName(item:getId()) or (getItemNameByClientId and getItemNameByClientId(item:getId())) or ''
@@ -285,6 +283,12 @@ local function show()
     if not equipSocket then
         build()
     end
+    if not shown then
+        local inventory = inventoryWindow()
+        inventoryWasVisible = inventory ~= nil and inventory:isVisible()
+        connect(LocalPlayer, { onInventoryChange = onInventoryChange })
+        connect(Keybind, { onBind = refreshKeys })
+    end
     shown = true
     for _, widget in ipairs({ equipSocket, dexSocket, badgeSocket }) do
         widget:show()
@@ -294,8 +298,6 @@ local function show()
     refreshEquipSocket()
     refreshDexSocket()
     refreshBadgeSocket()
-    connect(LocalPlayer, { onInventoryChange = onInventoryChange })
-    connect(Keybind, { onBind = refreshKeys })
     if not followEvent then
         followEvent = cycleEvent(follow, FOLLOW_MS)
     end
@@ -312,7 +314,7 @@ local function hide()
         disconnect(Keybind, { onBind = refreshKeys })
         local inventory = inventoryWindow()
         if inventory and g_game.isOnline() then
-            inventory:show()
+            inventory:setVisible(inventoryWasVisible ~= false)
         end
         local button = inventoryButton()
         if button then

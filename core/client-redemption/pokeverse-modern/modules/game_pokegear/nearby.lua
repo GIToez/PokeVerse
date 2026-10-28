@@ -66,19 +66,7 @@ local function portraitOf(name)
     return number and ('/images/staticPortraits/' .. number) or nil
 end
 
-local function initials(name)
-    local letters = {}
-    for word in name:gmatch('%S+') do
-        letters[#letters + 1] = word:sub(1, 1):upper()
-        if #letters == 2 then
-            break
-        end
-    end
-    if #letters == 1 then
-        letters[2] = name:sub(2, 2):upper()
-    end
-    return table.concat(letters)
-end
+local initials = Pokegear.initials
 
 local function hpColor(percent)
     if percent > 50 then
@@ -353,6 +341,8 @@ function Nearby.apply(active)
     shown = active and g_game.isOnline()
     if shown then
         hideBattleWindow(true)
+        -- apply runs again on every refresh; connect stacks a handler each time
+        disconnect(g_game, { onAttackingCreatureChange = onAttackingCreatureChange })
         connect(g_game, { onAttackingCreatureChange = onAttackingCreatureChange })
         if g_settings.getBoolean(HIDDEN_SETTING) then
             closeWindow()

@@ -52,19 +52,9 @@ local beltRequest
 local switches = { defense = false, autoSwap = true } -- the belt switches; the server keeps them and does both
 local fillGrid, requestBelt, sendBag
 
-local function slotItem(slot)
-    local player = g_game.getLocalPlayer()
-    return player and player:getInventoryItem(slot)
-end
+local slotItem = Pokegear.slotItem
 
-local function backpackItem()
-    for _, slot in ipairs({ InventorySlotAmmo, InventorySlotBack }) do
-        local item = slotItem(slot)
-        if item and item:isContainer() then
-            return item
-        end
-    end
-end
+local backpackItem = Pokegear.backpackItem
 
 local function isSlotContainer(container, equipped)
     local item = container:getContainerItem()
@@ -1321,25 +1311,31 @@ local function releaseContainers()
                 -- opened by the Bag; Classic gets back the windows it had, and always the backpack and the belt
                 g_game.close(container)
             elseif containers then
-                containers.onContainerOpen(container)
-                if spot and container.window then
-                    reopened[#reopened + 1] = { window = container.window, spot = spot }
-                end
+                reopened[#reopened + 1] = { container = container, spot = spot }
             end
         end
     end
-    table.sort(reopened, function(a, b) return a.spot.index < b.spot.index end)
-    -- after the whole switch: until the right column has its Classic size, a side panel closes what
-    -- doesn't fit
+    table.sort(reopened, function(a, b) return (a.spot and a.spot.index or 1000) < (b.spot and b.spot.index or 1000) end)
+    -- after the whole switch: until the right column has its Classic size, a side panel closes what doesn't
+    -- fit. A container without a window to go back to (Pokegear since login) goes where game_containers puts it.
     addEvent(function()
+        if active then
+            return
+        end
         for _, entry in ipairs(reopened) do
-            local w, spot = entry.window, entry.spot
-            if not w:isDestroyed() and not spot.panel:isDestroyed() then
-                if w:getParent() ~= spot.panel then
-                    w:getParent():removeChild(w)
-                    spot.panel:insertChild(math.min(spot.index, spot.panel:getChildCount() + 1), w)
+            local container, spot = entry.container, entry.spot
+            if containerById(container:getId()) == container then
+                if not container.window then
+                    containers.onContainerOpen(container)
                 end
-                w:setHeight(spot.height)
+                local w = container.window
+                if w and spot and not w:isDestroyed() and not spot.panel:isDestroyed() then
+                    if w:getParent() ~= spot.panel then
+                        w:getParent():removeChild(w)
+                        spot.panel:insertChild(math.min(spot.index, spot.panel:getChildCount() + 1), w)
+                    end
+                    w:setHeight(spot.height)
+                end
             end
         end
     end)
@@ -1388,7 +1384,7 @@ function Bag.terminate()
     end
     Keybind.delete(KEY[1], KEY[2])
     active = false
-    closeRules()
+    hideWindow()
     if window then
         window:destroy()
         window = nil

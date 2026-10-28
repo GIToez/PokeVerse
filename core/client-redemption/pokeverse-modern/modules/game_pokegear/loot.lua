@@ -212,23 +212,11 @@ local function showWindow()
     refreshWindow()
 end
 
--- the Bag's own bag: the back slot, or the ammo slot where PokeVerse keeps it
-local function backpackSlot()
-    local player = g_game.getLocalPlayer()
-    for _, slot in ipairs({ InventorySlotBack, InventorySlotAmmo }) do
-        local item = player and player:getInventoryItem(slot)
-        if item and item:isContainer() then
-            return slot
-        end
-    end
-    return InventorySlotBack
-end
-
 local function takeAll()
     if not body then
         return
     end
-    local to = { x = 65535, y = backpackSlot(), z = 0 }
+    local to = { x = 65535, y = Pokegear.backpackSlot() or InventorySlotAmmo, z = 0 }
     for slot = body:getCapacity() - 1, 0, -1 do
         local item = body:getItem(slot)
         if item then

@@ -1,5 +1,46 @@
--- What the Pokegear windows share: key chips, the top bar's buttons and dragging a window around.
+-- What the Pokegear windows share: key chips, the top bar's buttons, dragging a window around, and the
+-- trainer's name, equipment slots and backpack.
 Pokegear = {}
+
+function Pokegear.myName()
+    return g_game.getCharacterName() or ''
+end
+
+-- two letters for a face without a picture: "Misty" is MI, "Team Rocket" is TR
+function Pokegear.initials(name)
+    local letters = {}
+    for word in (name or ''):gmatch('[%w]+') do
+        letters[#letters + 1] = word:sub(1, 1):upper()
+        if #letters == 2 then
+            break
+        end
+    end
+    if #letters == 1 then
+        letters[2] = (name:match('^%w(%w)') or ''):upper()
+    end
+    return table.concat(letters)
+end
+
+function Pokegear.slotItem(slot)
+    local player = g_game.isOnline() and g_game.getLocalPlayer()
+    return player and player:getInventoryItem(slot)
+end
+
+-- the PokeVerse backpack sits in the ammo slot; the back slot is the fallback
+function Pokegear.backpackSlot()
+    for _, slot in ipairs({ InventorySlotAmmo, InventorySlotBack }) do
+        local item = Pokegear.slotItem(slot)
+        if item and item:isContainer() then
+            return slot, item
+        end
+    end
+    return nil
+end
+
+function Pokegear.backpackItem()
+    local _, item = Pokegear.backpackSlot()
+    return item
+end
 
 -- the key bound now, in the current preset (empty when nothing is bound)
 function Pokegear.boundKey(key)

@@ -22,18 +22,10 @@ local function applyWalkLock()
         if not toggle.isChecked and not (textEdit and textEdit:isVisible() and textEdit:getText() ~= '') then
             console.toggleChat()
         end
+        -- the line itself lives in the chat card meanwhile (chat.lua moves it and puts it back)
         toggle:hide()
-        -- in Pokegear the line lives in the chat card (chat.lua)
-        if textEdit and textEdit:getParent() == console.consolePanel then
-            textEdit:removeAnchor(AnchorRight)
-            textEdit:addAnchor(AnchorRight, 'parent', AnchorRight)
-        end
     else
         toggle:show()
-        if textEdit and textEdit:getParent() == console.consolePanel then
-            textEdit:removeAnchor(AnchorRight)
-            textEdit:addAnchor(AnchorRight, 'toggleChat', AnchorLeft)
-        end
     end
 end
 
@@ -184,12 +176,20 @@ function refresh()
     apply()
 end
 
+local startEvent
+
 local function onGameStart()
     -- after game_console has restored the saved Chat On / Chat Off
-    scheduleEvent(apply, 100)
+    removeEvent(startEvent)
+    startEvent = scheduleEvent(function()
+        startEvent = nil
+        apply()
+    end, 100)
 end
 
 local function onGameEnd()
+    removeEvent(startEvent)
+    startEvent = nil
     Hub.apply(false)
     Nearby.apply(false)
     Tracking.apply(false)
@@ -221,6 +221,8 @@ end
 
 function terminate()
     disconnect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
+    removeEvent(startEvent)
+    startEvent = nil
     if active then
         active = false
         apply()

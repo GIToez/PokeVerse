@@ -59,7 +59,8 @@ void UIMinimap::drawChildren(const Rect& visibleRect, const DrawPoolType drawPan
     const float radius = std::min(area.width(), area.height()) / 2.f;
     const auto& center = area.center();
     for (const auto& child : m_children) {
-        if (!child || !child->isExplicitlyVisible() || child->getOpacity() <= Fw::MIN_ALPHA || !child->getRect().isValid())
+        if (!child || !child->isExplicitlyVisible() || child->getOpacity() <= Fw::MIN_ALPHA ||
+            child->getDisplay() == DisplayType::None || !child->getRect().isValid())
             continue;
 
         const auto& childCenter = child->getRect().center();

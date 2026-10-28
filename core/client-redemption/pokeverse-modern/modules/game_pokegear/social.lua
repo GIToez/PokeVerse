@@ -52,23 +52,9 @@ local function localPlayer()
     return g_game.getLocalPlayer()
 end
 
-local function myName()
-    return g_game.getCharacterName() or ''
-end
+local myName = Pokegear.myName
 
-local function initials(name)
-    local letters = {}
-    for word in name:gmatch('%S+') do
-        letters[#letters + 1] = word:sub(1, 1):upper()
-        if #letters == 2 then
-            break
-        end
-    end
-    if #letters == 1 then
-        letters[2] = name:sub(2, 2):upper()
-    end
-    return table.concat(letters)
-end
+local initials = Pokegear.initials
 
 local function placeName(pos)
     local environment = modules.game_environment

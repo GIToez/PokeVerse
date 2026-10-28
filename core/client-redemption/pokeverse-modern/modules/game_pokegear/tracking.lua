@@ -133,7 +133,8 @@ function Tracking.refresh()
         end
     end
     refreshChip(#lines, ready)
-    if not window:isVisible() then
+    -- folded since login: the card is built the first time it opens
+    if not window or not window:isVisible() then
         return
     end
 
