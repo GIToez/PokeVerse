@@ -13,10 +13,17 @@ local PORTRAIT_INSET = 18
 local CHROME_HEIGHT = 8 + 24 + 6 + 20 + 6 + 20 + 8 + 10
 
 local FILTERS = {
-    { id = 'hideMonsters', text = 'Wild' },
-    { id = 'hidePlayers', text = 'Trainers' },
-    { id = 'hideNPCs', text = 'NPCs' },
-    { id = 'hideParty', text = 'Party' },
+    { id = 'hideMonsters', text = 'Wild', color = '#5fd36a' },
+    { id = 'hidePlayers', text = 'Trainers', color = '#5aa0ff' },
+    { id = 'hideNPCs', text = 'NPCs', color = '#42e0c4' },
+    { id = 'hideParty', text = 'Party', color = '#ffcb05' },
+}
+-- the radar's colours (game_radar)
+local TYPE_COLORS = {
+    normal = '#a8a878', fight = '#c03028', flying = '#a890f0', poison = '#a040a0', ground = '#e0c068',
+    rock = '#b8a038', bug = '#a8b820', ghost = '#705898', steel = '#b8b8d0', fire = '#f08030',
+    water = '#6890f0', grass = '#78c850', electric = '#f8c830', psychic = '#f85888', ice = '#98d8d8',
+    dragon = '#7038f8', dark = '#705848', fairy = '#ee99ac'
 }
 local SORTS = {
     { id = 'distance', text = 'Distance' },
@@ -139,6 +146,25 @@ local function collect()
     return list, total
 end
 
+-- a dot per type after the level; the Pokepedia asks the server for a species' types once
+local function fillTypes(row, name)
+    local pokepedia = modules.game_pokepedia
+    local types = name and pokepedia and pokepedia.getSpeciesTypes
+        and pokepedia.getSpeciesTypes((name:gsub('^Shiny ', ''))) or {}
+    local key = table.concat(types, ',')
+    if row.typesKey == key then
+        return
+    end
+    row.typesKey = key
+    row.types:destroyChildren()
+    for _, kind in ipairs(types) do
+        local dot = g_ui.createWidget('PokegearTypeDot', row.types)
+        dot:setImageColor(TYPE_COLORS[kind] or '#8899aa')
+    end
+    row.types:setWidth(#types > 0 and (#types * 11 - 3) or 0)
+    row.types:setMarginLeft(#types > 0 and 6 or 0)
+end
+
 local function fillRow(row, creature)
     local name, level = splitName(creature)
     row.creature = creature
@@ -149,6 +175,7 @@ local function fillRow(row, creature)
     local tag = creature:isNpc() and tr('NPC') or (creature:isPlayer() and tr('TRAINER') or '')
     row.tag:setText(tag)
     row.tag:setVisible(tag ~= '')
+    fillTypes(row, creature:isMonster() and name)
     local portrait = creature:isMonster() and portraitOf(name)
     row.face.portrait:setVisible(portrait ~= nil and portrait ~= false)
     if portrait then
@@ -156,7 +183,12 @@ local function fillRow(row, creature)
         row.face.portrait:setImageClip({ x = PORTRAIT_INSET, y = PORTRAIT_INSET,
             width = 96 - 2 * PORTRAIT_INSET, height = 96 - 2 * PORTRAIT_INSET })
     end
-    row.face.initials:setText(portrait and '' or initials(name))
+    local outfit = not portrait and not creature:isMonster()
+    row.face.outfit:setVisible(outfit)
+    if outfit then
+        row.face.outfit:setOutfit(creature:getOutfit())
+    end
+    row.face.initials:setText((portrait or outfit) and '' or initials(name))
     local percent = creature:getHealthPercent()
     row.bar.fill:setWidth(math.max(0, math.floor((row.bar:getWidth()) * percent / 100)))
     row.bar.fill:setVisible(percent > 0)
@@ -187,7 +219,11 @@ end
 local function refreshPills()
     for _, filter in ipairs(FILTERS) do
         local box = filterBox(filter.id)
-        filterPills[filter.id]:setOn(not (box and box:isChecked()))
+        local on = not (box and box:isChecked())
+        filterPills[filter.id]:setOn(on)
+        -- the text centres across the whole pill, padding or not, and a state change resets the offset
+        filterPills[filter.id]:setTextOffset({ x = 6, y = 2 })
+        filterPills[filter.id].dot:setOpacity(on and 1 or 0.4)
     end
     local by = sortType()
     for _, sort in ipairs(SORTS) do
@@ -225,7 +261,14 @@ local function build()
     window:hide()
     for _, filter in ipairs(FILTERS) do
         local pill = g_ui.createWidget('PokegearPill', window.filters)
+        pill:setPaddingLeft(21)
         pill:setText(tr(filter.text))
+        pill.dot = g_ui.createWidget('PokegearTypeDot', pill)
+        pill.dot:setSize({ width = 7, height = 7 })
+        pill.dot:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+        pill.dot:addAnchor(AnchorVerticalCenter, 'parent', AnchorVerticalCenter)
+        pill.dot:setMarginLeft(-12)
+        pill.dot:setImageColor(filter.color)
         pill.onClick = function()
             local box = filterBox(filter.id)
             if box then

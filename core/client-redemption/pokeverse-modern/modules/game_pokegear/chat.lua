@@ -177,8 +177,34 @@ local function pill(parent, style, text, kind)
     return widget
 end
 
-local function setFace(face, name, color)
-    face:setText(initials(name))
+-- the client only knows an outfit while its creature is on screen, so the last one seen is kept
+local outfits = {}
+
+local function outfitOf(name)
+    if not name or name == '' then
+        return nil
+    end
+    local player = g_game.getLocalPlayer()
+    if player and player:getName() == name then
+        outfits[name] = player:getOutfit()
+        return outfits[name]
+    end
+    for _, creature in ipairs(getCreaturesAroundPlayer(false)) do
+        if creature:getName() == name and not creature:isMonster() then
+            outfits[name] = creature:getOutfit()
+            break
+        end
+    end
+    return outfits[name]
+end
+
+local function setFace(face, name, color, fallback)
+    local outfit = outfitOf(name)
+    face.creature:setVisible(outfit ~= nil)
+    if outfit then
+        face.creature:setOutfit(outfit)
+    end
+    face:setText(outfit and '' or (fallback or initials(name)))
     face:setColor(color)
     face.ring:setImageColor(color)
 end
@@ -210,12 +236,7 @@ local function fillRow(row, line)
     head:destroyChildren()
     local color = nameColor(line)
     if line.name then
-        if line.npc then
-            setFace(row.face, '', color)
-            row.face:setText('+')
-        else
-            setFace(row.face, line.name, color)
-        end
+        setFace(row.face, line.name, color, line.npc and '+' or nil)
         if line.staff then
             pill(head, 'PokegearChatHeadPill', tr('GM'), 'staff')
         end
@@ -226,8 +247,7 @@ local function fillRow(row, line)
             pill(head, 'PokegearChatHeadPill', tr('NPC'), 'npc')
         end
     else
-        setFace(row.face, '', COLORS.log)
-        row.face:setText('i')
+        setFace(row.face, nil, COLORS.log, 'i')
     end
     local time = g_ui.createWidget('PokegearChatTime', head)
     time:setText(line.time)
@@ -359,6 +379,7 @@ local function onTabText(tab, text, speaktype, creatureName)
     local line = { name = name, text = message, raw = text, kind = kind, tab = tab, time = clock(),
         own = name ~= nil and name == myName(), staff = isStaff(speaktype),
         npc = speaktype ~= nil and speaktype.npcChat == true and name ~= nil and name ~= myName() }
+    outfitOf(name)
     remember(tab, line)
     local c = console()
     if line.npc and c and c.defaultTab and tab ~= c.defaultTab then
