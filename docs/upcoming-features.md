@@ -145,6 +145,9 @@ email, login security and the Store are built, and the Soul Coin NPCs are off th
 [news banner, call-out bubbles and Discord announcements](#25-announcements-news-banner-call-out-bubbles-discord-and-the-calendar), and putting Johto in
 `scripts/mapper/hidden-regions.txt` while it is built, so the map doesn't show it before launch.
 
+Next after the Pokegear UI: [Warp Styles](#28-warp-styles-planned-not-built), with animated concepts
+of all eight styles.
+
 ## 1. New depot
 
 **Built** (`lib/ps/systems/067-pc.lua`, client `game_pc`): one PC window with Poké boxes,
@@ -3584,6 +3587,82 @@ Running shoes (item 18754, from the Ash Ketchum quest) become a light alternativ
   from Groudon and Kyogre (`MegaEvolution.ORB_DROP_CHANCE`, also 1 in 250,000 for now).
 - Whether trainers should choose between the Mega Ring and running shoes (same slot, as
   decided), or the shoes should move elsewhere later.
+
+## 28. Warp Styles (planned, not built)
+
+Cosmetic animations for when a trainer **logs in, logs out, faints or teleports**. Today every
+one of these plays the same Tibia teleport effect (magic effect 10: `login.lua`, the travel NPCs
+in `npcsystem/modules.lua`, the teleport talkactions). Warp Styles swap that for a Pokemon
+moment that everyone nearby sees. The [animated concepts](concepts/warp-styles/README.md) show all
+eight styles over a real Route 1 screenshot.
+
+![All eight Warp Styles](concepts/warp-styles/warp-styles-board.gif)
+
+### The idea
+
+- **Four slots:** Log in, Log out, Faint and Teleport. Each slot takes any style you own, so you
+  can arrive by Fly and leave in a Poke Ball.
+- **Purely cosmetic:** nothing gets slower. Logging out, teleporting and fainting happen exactly
+  when they do today. The client plays the animation on its own around that moment, using a
+  copy of the trainer's sprite for the leaving half.
+- **Everyone sees it:** the server tells every client in view which style played. A Settings ›
+  Interface option, **Warp Styles: Everyone / Only mine / Off**, lets slow phones show plain
+  Classic for other players.
+- **One art set per style:** leaving plays the animation forwards and arriving plays it
+  backwards or mirrored, so each style is one sprite sheet, not four.
+
+### The styles
+
+| Style | What happens | How you get it (proposal) |
+|---|---|---|
+| Classic | Today's blue teleport sparkle | Free, the default for every slot |
+| Beam | A column of light scans the trainer away from the feet up | Free |
+| Poke Ball | A Poke Ball's red light pulls the trainer in; three wobbles and a click | A catching milestone quest |
+| Psychic (Abra) | Abra blinks in, the trainer ripples purple and folds into a line | Store |
+| Dig (Diglett) | Diglett digs a hole and the trainer drops into it | Diglett's Cave quest |
+| Fly (Pidgeot) | Pidgeot swoops in and carries the trainer off the screen | Store |
+| Smoke Bomb (Koffing) | A smoke ball, Koffing in the cloud, and nobody there when it clears | A Team Rocket event |
+| Shadow (Gengar) | The shadow becomes a pool, Gengar grins and the trainer sinks into it | Halloween (from next year) |
+
+Later ideas, not drawn yet: Surf (a wave washes the trainer away), Vine Whip (Bulbasaur pulls them
+into the grass), Rapid Spin (Squirtle spins off), Fire Spin (a ring of flame).
+
+### How it works
+
+- **Server (`lib/ps/systems/warpstyles.lua`):** the catalogue (id, name, how long the in and out
+  halves run), a `player_warp_styles` table of owned styles, the four slots, and one call,
+  `WarpStyles.play(cid, moment, fromPos, toPos)`. It sends an extended opcode to every
+  spectator with the creature, the positions, the style and the half. Clients that don't
+  have the module get the plain magic effect 10 as they do now.
+- **Hooks:** `login.lua` (in), logout (out at the last spot), death (out where the trainer fell,
+  in at the Pokemon Center), teleport tiles (`teleport.cpp` through a Lua event), the travel NPCs
+  and boats in `npcsystem/modules.lua`, and the travel picker when it's built. Staff teleports
+  keep Classic.
+- **Client (`game_warpfx`):** draws each style as widgets anchored to the map tile, like the
+  battle text bubbles, so the sprite files (`.dat`/`.spr`) don't change. For an arrival it
+  hides the trainer until the animation reveals them. For a departure it draws the trainer's last
+  outfit while the real creature is already gone.
+- **Choosing:** an **Effects** tab in the outfit window with a looping preview on your own
+  trainer and the four slot pickers. The Store gets a Warp Styles category with the same
+  previews.
+
+### Stages
+
+1. Server: catalogue, ownership, slots, the opcode and the plain fallback, plus a staff test
+   command (`/warpstyle <style> <moment>`).
+2. Client `game_warpfx` with Classic and Beam, hiding and revealing the trainer, the
+   departure copy, and the Settings option.
+3. The hooks: login, logout, fainting, teleport tiles, travel NPCs and boats.
+4. The Effects tab in the outfit window.
+5. The other styles, with art at the game's scale (Poke Ball first, then Psychic, Dig, Fly, Smoke
+   Bomb, Shadow), checked in the 4K harness.
+6. The Store category, the quest and event rewards, the wiki page and the changelog.
+
+### To decide
+
+- Whether owned styles are per account (like Store items) or per character.
+- The sources in the table above, and which styles are Store-only.
+- Whether fainting gets its own slot or uses the Log out style.
 
 ## Going private
 
