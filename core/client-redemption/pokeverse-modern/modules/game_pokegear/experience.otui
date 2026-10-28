@@ -1,0 +1,128 @@
+// Experience on the HUD (experience.lua): Trainer Spirit left of the XP bar, the boost chip right of it
+// and the card shown while hovering your XP. The pills use the HUD's own panel art.
+PokegearXpPill < UIWidget
+  image-source: /modules/game_pokehud/images/panel
+  image-border: 9
+  height: 22
+  padding: 0 10 0 10
+
+PokegearSpiritPill < PokegearXpPill
+  width: 128
+
+  Label
+    id: name
+    font: Verdana Bold-11px
+    color: #e8ecec
+    text-auto-resize: true
+    !text: tr('Spirit')
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  Label
+    id: hours
+    font: Verdana Bold-11px
+    color: #e8ecec
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+
+  UIWidget
+    id: bar
+    height: 6
+    anchors.left: name.right
+    anchors.right: hours.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 7
+    margin-right: 7
+    image-source: /modules/game_pokegear/images/bar
+    image-border: 3
+    phantom: true
+
+    UIWidget
+      id: fill
+      anchors.left: parent.left
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      image-source: /modules/game_pokegear/images/bar_fill
+      image-border: 3
+      phantom: true
+
+PokegearBoostChip < PokegearXpPill
+  padding: 0 9 0 9
+
+  Label
+    id: text
+    font: Verdana Bold-11px
+    color: #4fd66a
+    text-auto-resize: true
+    anchors.centerIn: parent
+    phantom: true
+
+PokegearXpRow < UIWidget
+  height: 15
+  phantom: true
+
+  Label
+    id: label
+    font: Verdana Bold-11px
+    color: #c9d3ea
+    text-auto-resize: true
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  Label
+    id: value
+    font: Verdana Bold-11px
+    color: #eef2ff
+    text-auto-resize: true
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+
+PokegearXpGap < UIWidget
+  height: 7
+  phantom: true
+
+PokegearXpCard < UIWidget
+  width: 270
+  image-source: /modules/game_pokegear/images/card
+  image-border: 12
+  image-smooth: true
+  padding: 10 12 10 12
+  phantom: true
+  focusable: false
+  layout:
+    type: verticalBox
+    fit-children: true
+
+  Label
+    id: title
+    font: Verdana Bold-11px
+    color: #ffcb05
+    text-auto-resize: true
+    phantom: true
+
+  Label
+    id: progress
+    font: Verdana Bold-11px
+    color: #8a9ab8
+    text-auto-resize: true
+    margin-bottom: 7
+    phantom: true
+
+  UIWidget
+    id: rows
+    phantom: true
+    layout:
+      type: verticalBox
+      fit-children: true
+
+  Label
+    id: note
+    font: Verdana Bold-11px
+    color: #8a9ab8
+    text-wrap: true
+    text-auto-resize: true
+    margin-top: 7
+    phantom: true
