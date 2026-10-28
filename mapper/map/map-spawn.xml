@@ -61782,15 +61782,6 @@
   <spawn centerx="2561" centery="824" centerz="7" radius="1">
     <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2512" centery="556" centerz="7" radius="1">
-    <npc name="Nurse Joy's Chansey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2513" centery="556" centerz="7" radius="1">
-    <npc name="Nurse Joy" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2526" centery="555" centerz="7" radius="1">
-    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
   <spawn centerx="2390" centery="1030" centerz="7" radius="1">
     <npc name="Nurse Joy's Chansey" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
@@ -61800,42 +61791,6 @@
   <spawn centerx="2376" centery="1029" centerz="7" radius="1">
     <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2282" centery="720" centerz="7" radius="1">
-    <npc name="Nurse Joy's Chansey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2283" centery="720" centerz="7" radius="1">
-    <npc name="Nurse Joy" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2295" centery="719" centerz="7" radius="1">
-    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2289" centery="401" centerz="7" radius="1">
-    <npc name="Nurse Joy's Chansey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2290" centery="401" centerz="7" radius="1">
-    <npc name="Nurse Joy" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2302" centery="400" centerz="7" radius="1">
-    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2110" centery="491" centerz="7" radius="1">
-    <npc name="Nurse Joy's Chansey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2111" centery="491" centerz="7" radius="1">
-    <npc name="Nurse Joy" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2123" centery="490" centerz="7" radius="1">
-    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="1901" centery="631" centerz="7" radius="1">
-    <npc name="Nurse Joy's Chansey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="1902" centery="631" centerz="7" radius="1">
-    <npc name="Nurse Joy" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="1915" centery="630" centerz="7" radius="1">
-    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
   <spawn centerx="2531" centery="383" centerz="7" radius="1">
     <npc name="Nurse Joy's Chansey" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
@@ -61843,15 +61798,6 @@
     <npc name="Nurse Joy" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2543" centery="382" centerz="7" radius="1">
-    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2722" centery="379" centerz="7" radius="1">
-    <npc name="Nurse Joy's Chansey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2723" centery="379" centerz="7" radius="1">
-    <npc name="Nurse Joy" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2735" centery="378" centerz="7" radius="1">
     <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2925" centery="522" centerz="7" radius="1">
@@ -75902,5 +75848,47 @@
   </spawn>
   <spawn centerx="2895" centery="636" centerz="8" radius="1">
     <monster name="Goldeen" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2518" centery="557" centerz="7" radius="1">
+    <npc name="Nurse Joy's Chansey" x="0" y="-1" z="7" spawntime="60" level="0"/>
+    <npc name="Nurse Joy" x="1" y="-1" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2286" centery="720" centerz="7" radius="1">
+    <npc name="Nurse Joy's Chansey" x="0" y="-1" z="7" spawntime="60" level="0"/>
+    <npc name="Nurse Joy" x="1" y="-1" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2294" centery="401" centerz="7" radius="1">
+    <npc name="Nurse Joy's Chansey" x="0" y="-1" z="7" spawntime="60" level="0"/>
+    <npc name="Nurse Joy" x="1" y="-1" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2113" centery="491" centerz="7" radius="1">
+    <npc name="Nurse Joy's Chansey" x="0" y="-1" z="7" spawntime="60" level="0"/>
+    <npc name="Nurse Joy" x="1" y="-1" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2727" centery="379" centerz="7" radius="1">
+    <npc name="Nurse Joy's Chansey" x="0" y="-1" z="7" spawntime="60" level="0"/>
+    <npc name="Nurse Joy" x="1" y="-1" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="1908" centery="632" centerz="7" radius="1">
+    <npc name="Nurse Joy's Chansey" x="0" y="-1" z="7" spawntime="60" level="0"/>
+    <npc name="Nurse Joy" x="1" y="-1" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2538" centery="553" centerz="7" radius="1">
+    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2252" centery="714" centerz="7" radius="1">
+    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2278" centery="364" centerz="7" radius="1">
+    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2153" centery="474" centerz="7" radius="1">
+    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="1913" centery="657" centerz="7" radius="1">
+    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2755" centery="343" centerz="7" radius="1">
+    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
 </spawns>
