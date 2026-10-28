@@ -236,7 +236,7 @@ local function drawDetails()
         tr('Nowhere to go for this one.'))
     details.actions.viewMap.onClick = function()
         if canMap then
-            pokepedia.MapTab.showPosition({ x = row.place.x, y = row.place.y, z = row.place.z }, row.npc, true)
+            pokepedia.MapTab.showPosition({ x = row.place.x, y = row.place.y, z = row.place.z }, row.npc)
             hide()
         end
     end
