@@ -70,6 +70,7 @@ Module
     - game_weather
     - game_creaturefx
     - game_megafx
+    - game_warpfx
     - game_calendar
     - game_eventcards
     - game_legendaryflight

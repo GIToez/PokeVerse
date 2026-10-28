@@ -3,7 +3,7 @@
 Warp Styles are cosmetic animations for a trainer's big moments: logging in, logging out,
 teleporting, and winning or losing a duel against a player or an NPC. You equip one for each
 trigger in the Customise Character window, and everyone nearby sees it. The plan is
-[section 28 of upcoming features](../../upcoming-features.md#28-warp-styles-planned-not-built).
+[section 28 of upcoming features](../../upcoming-features.md#28-warp-styles-first-styles-built).
 
 These are concept animations, not game art. They were drawn over a real Route 1 screenshot from the
 client, using the game's own trainer and Pokemon sprites, to show the timing and the idea of each

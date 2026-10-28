@@ -88,7 +88,8 @@ EXTENDED_IDS = {
     BAG = 53, -- JSON Pokegear Bag: the client sends {action = "hello"} at login, the server answers with the item categories (Bag)
     SOCIAL = 54, -- JSON Pokegear Social window: friends, guild roster and party (Social)
     ACTIVITY = 55, -- JSON a milestone for the Pokegear Activity list, just before its text message (doPlayerSendActivity)
-    POKEMON_OUTFIT = 56 -- JSON Pokegear Pokemon Outfit window: the outfits the Pokemon out owns and could get (PokemonAddon)
+    POKEMON_OUTFIT = 56, -- JSON Pokegear Pokemon Outfit window: the outfits the Pokemon out owns and could get (PokemonAddon)
+    WARP_STYLES = 57 -- JSON Warp Styles: the animations trainers play when they warp, duel and faint, and the trainer's slots (WarpStyles)
 }
 
 TOURNAMENT_TYPES = {}

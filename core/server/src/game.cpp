@@ -5858,6 +5858,43 @@ bool Game::broadcastAnnouncement(const std::string& text, MessageClasses type, c
 	return broadcastMessage(text, type);
 }
 
+bool Game::playWarpStyle(Player* player, const std::string& half, const Position& pos)
+{
+	bool handled = false;
+	LuaScriptInterface& interface = g_globalEvents->getScriptInterface();
+	lua_State* L = interface.getState();
+	if(!L || !interface.reserveEnv())
+		return false;
+
+	lua_getglobal(L, "WarpStyles");
+	if(lua_istable(L, -1))
+	{
+		lua_getfield(L, -1, "fromEngine");
+		if(lua_isfunction(L, -1))
+		{
+			lua_pushnumber(L, player->getID());
+			lua_pushstring(L, half.c_str());
+			LuaScriptInterface::pushPosition(L, pos, 0);
+			if(lua_pcall(L, 3, 1, 0))
+			{
+				std::cout << "[Error - Game::playWarpStyle] " << lua_tostring(L, -1) << std::endl;
+				lua_pop(L, 1);
+			}
+			else
+			{
+				handled = lua_toboolean(L, -1) != 0;
+				lua_pop(L, 1);
+			}
+		}
+		else
+			lua_pop(L, 1);
+	}
+
+	lua_pop(L, 1);
+	interface.releaseEnv();
+	return handled;
+}
+
 Position Game::getClosestFreeTile(Creature* creature, Position pos, bool extended/* = false*/, bool ignoreHouse/* = true*/)
 {
 	PairVector relList;

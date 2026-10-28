@@ -145,8 +145,8 @@ built and tested against a fake PayPal, waiting for the sandbox test and then th
 [news banner, call-out bubbles and Discord announcements](#25-announcements-news-banner-call-out-bubbles-discord-and-the-calendar), and putting Johto in
 `scripts/mapper/hidden-regions.txt` while it is built, so the map doesn't show it before launch.
 
-Next after the Pokegear UI: [Warp Styles](#28-warp-styles-planned-not-built), with animated concepts
-of all eight warp styles and the duel Victory and Defeat effects.
+[Warp Styles](#28-warp-styles-first-styles-built): the defaults, Beam and the window are built;
+the six other styles, the Store category and the rewards are next.
 
 ## 1. New depot
 
@@ -3599,10 +3599,42 @@ Running shoes (item 18754, from the Ash Ketchum quest) become a light alternativ
 - Whether trainers should choose between the Mega Ring and running shoes (same slot, as
   decided), or the shoes should move elsewhere later.
 
-## 28. Warp Styles (planned, not built)
+## 28. Warp Styles (first styles built)
 
-**On hold until the Pokegear UI is finished and tested.** The plan and concepts below are
-approved; building starts after that.
+**Built (stages 1 to 4, plus Faint):** Warp Spin, Beam, Victory, Defeat and Faint, the six slots,
+the hooks, the Settings option and the Warp Styles window. Server
+`lib/ps/systems/102-warpStyles.lua` (opcode 57, `EXTENDED_IDS.WARP_STYLES`), engine hooks
+`Game::playWarpStyle` (teleport tiles and logouts), client `game_warpfx` (art:
+`scripts/art/warp_fx_art.py`). The window opens from **Customise Trainer › Warp Styles** (the
+Pokegear layout's outfit window). Staff test any style on themselves with
+`/warpstyle <style> <trigger>`; `/warpstyle` alone lists them. The server test checks the
+messages (scripts/test-server-linux.sh, "Warp Styles"). Still to do: stages 5 and 6.
+
+**Built next (the first Store styles):** **Poke Ball** for the Log in, Log out and Teleport slots,
+**Fireworks** and **Trophy** for Victory, **Sweat Drop** and **Ghost** for Defeat. They are sold in
+the Store's new **Warp Styles** category (Poke Ball 10 Soul Coins, the others 5 each), where the
+chosen style loops on your own trainer, and bought ones are kept in `player_warp_styles`. The
+Store's Trainer Outfits also sell the two Pokemon costumes (15 each, Featured): Azurill (female) /
+Blastoise (male), and Pikachu (female) / Charizard (male).
+
+- **Poke Ball:** the ball is thrown beside the trainer, opens, and its red light pulls them in;
+  three wobbles and a click. Arriving, it drops at their feet, bursts open in white light and the
+  trainer grows out of it.
+- **Fireworks:** three rockets go up around the trainer and burst into rings of coloured sparks.
+- **Trophy:** a gold cup rises over the trainer's head in a ring of light.
+- **Sweat Drop:** gloom lines over the head and a big sweat drop running down beside it.
+- **Ghost:** the trainer goes grey while their spirit floats up, sways and is pulled back in.
+
+As built, differing from the plan below:
+
+- **A sixth slot, Faint:** when your trainer faints, a white flash shrinks into a glowing orb
+  that floats away. Its own list, like Victory and Defeat.
+- **The window is in Customise Trainer** (a Warp Styles button there), not an entry in a list:
+  the six slots with the styles that fit each, locked ones dimmed with how to get them, and the
+  chosen style looping on your trainer. Classic layout players don't have that window yet.
+- **Victory and Defeat** play on duels and NPC battles alike: on the duel and battle win and
+  loss counts going up (`onAdvance`). A timed-out duel is a loss for both trainers.
+- **Defeat** turns the trainer grey (without their outfit colours) under the cloud and stars.
 
 Cosmetic animations for a trainer's big moments: **logging in, logging out, teleporting, and
 winning or losing a duel** against a player or an NPC. Today the warps all play the same Tibia
@@ -3650,7 +3682,7 @@ Victory and Defeat effects are their own two lists, so a Victory effect can't be
 |---|---|---|
 | Warp Spin | A Poke Ball pad, a spin that speeds up, and a zip into the sky | Everyone (the default) |
 | Beam | A column of light scans the trainer away from the feet up | Premium |
-| Poke Ball | A Poke Ball's red light pulls the trainer in; three wobbles and a click | Store, quest or event (to decide) |
+| Poke Ball | A Poke Ball's red light pulls the trainer in; three wobbles and a click | Store, 10 Soul Coins (built) |
 | Psychic (Abra) | Abra blinks in, the trainer ripples purple and folds into a line | Store, quest or event (to decide) |
 | Dig (Diglett) | Diglett digs a hole and the trainer drops into it | Store, quest or event (to decide) |
 | Fly (Pidgeot) | Pidgeot swoops in and carries the trainer off the screen | Store, quest or event (to decide) |
@@ -3661,6 +3693,10 @@ Victory and Defeat effects are their own two lists, so a Victory effect can't be
 |---|---|---|
 | Victory | Two hops, a gold burst, Poke Ball confetti and a badge glint | Everyone (the default) |
 | Defeat | The trainer slumps grey, with dizzy stars and a little rain cloud | Everyone (the default) |
+| Fireworks (Victory) | Three rockets burst into rings of coloured sparks | Store, 5 Soul Coins (built) |
+| Trophy (Victory) | A gold cup rises over the head in a ring of light | Store, 5 Soul Coins (built) |
+| Sweat Drop (Defeat) | Gloom lines and a big sweat drop | Store, 5 Soul Coins (built) |
+| Ghost (Defeat) | The trainer goes grey and their spirit floats out and back | Store, 5 Soul Coins (built) |
 
 Later ideas, not drawn yet: Surf (a wave washes the trainer away), Vine Whip (Bulbasaur pulls them
 into the grass), Rapid Spin (Squirtle spins off), Fire Spin (a ring of flame), and more Victory

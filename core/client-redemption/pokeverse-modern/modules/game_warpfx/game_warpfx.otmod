@@ -1,0 +1,8 @@
+Module
+  name: game_warpfx
+  description: PokeVerse Warp Styles: how trainers appear, vanish, win, lose and faint, and the window that picks them
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ warpfx, window ]
+  @onLoad: init()
+  @onUnload: terminate()

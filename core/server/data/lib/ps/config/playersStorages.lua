@@ -140,5 +140,7 @@ playersStorages = {
     beltDefense = base + 137, -- 1 while the Bag's Defense mode switch is on (BeltSwitches)
     beltAutoSwapOff = base + 138, -- 1 while the Bag's Auto swap switch is off; it starts on (BeltSwitches)
     pokemonOutfitClient = base + 139, -- 1 while the trainer's client has the Pokemon Outfit window (it says hello at login)
+    warpStylesClient = base + 140, -- 1 once the trainer's client has drawn Warp Styles (it says hello at login); others get the old effects
+    warpStyles = base + 141, -- "login=beam;teleport=spin": the Warp Styles the trainer equipped where they differ from the defaults (WarpStyles)
     -- tournamentWeekWinnerStorage = base + 65
 }

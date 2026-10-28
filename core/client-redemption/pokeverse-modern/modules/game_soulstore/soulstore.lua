@@ -7,7 +7,11 @@
 -- held is how many of the balance's coins were bought in the last days and can't be withdrawn yet.
 local ICONS = '/modules/game_vocation/images/perk_'
 local CATEGORY_ICONS = { featured = 'star', premium = 'crown', addons = 'heart', outfits = 'outfit',
-                         services = 'guide', items = 'up', guild = 'ranks', referral = 'heart' }
+                         warpstyles = 'ball', services = 'guide', items = 'up', guild = 'ranks', referral = 'heart' }
+local WARP_IMAGES = '/modules/game_warpfx/images/'
+local WARP_PREVIEW_KEY = 'store-preview'
+local SLOT_NOTES = { warp = 'Log in, log out and teleport', victory = 'Plays when you win a battle',
+                     defeat = 'Plays when you lose a battle' }
 local KIND_ICONS = { premium = 'crown', sex = 'outfit', nickname = 'title', unnickname = 'back', vitamins = 'up',
                      guild = 'ranks', rank = 'ranks', referral = 'heart' }
 local MAX_COUNT = 100
@@ -26,6 +30,7 @@ local category = 'featured'
 local selected -- offer id
 local count = 1
 local wantOpen = false
+local stopWarpPreview
 
 local function center(widget)
     local root = rootWidget:getSize()
@@ -143,6 +148,9 @@ local function setPicture(frame, offer)
     elseif offer.looks then
         frame.creature:setOutfit(outfitLook(offer))
         frame.creature:show()
+    elseif offer.image then
+        frame.icon:setImageSource(WARP_IMAGES .. offer.image)
+        frame.icon:show()
     elseif not (offer.item and offer.item > 0) then
         frame.icon:setImageSource(ICONS .. (KIND_ICONS[offer.kind] or CATEGORY_ICONS[offer.category] or 'star'))
         frame.icon:show()
@@ -151,7 +159,9 @@ end
 
 local function offerNote(offer)
     if offer.owned then
-        return tr('You have this outfit')
+        return offer.kind == 'warpstyle' and tr('You have this Warp Style') or tr('You have this outfit')
+    elseif offer.kind == 'warpstyle' then
+        return tr(SLOT_NOTES[offer.slot] or 'Warp Style')
     elseif offer.kind == 'premium' then
         return tr('%d days for the whole account', offer.days or 0)
     elseif offer.pokemon then
@@ -195,6 +205,8 @@ local function infoFor(offer)
         return guild.leader and tr('You lead %s.', guild.name) or tr('You are in %s.', guild.name)
     elseif offer.kind == 'outfit' then
         return tr('Yours for good once bought: pick it in the outfit window.')
+    elseif offer.kind == 'warpstyle' then
+        return tr('Everyone around sees it. Yours for good once bought: put it on in Customise Trainer > Warp Styles.')
     elseif offer.points then
         return tr('You have %s referral points. A friend who reaches level 30 and buys Premium gives you 5.',
             thousands(state.points or 0))
@@ -215,9 +227,44 @@ local function canAfford(offer, price)
     return price <= (state.balance or 0) + (state.bag or 0)
 end
 
+local function stopPreview()
+    if stopWarpPreview then
+        stopWarpPreview()
+        stopWarpPreview = nil
+    end
+end
+
+-- a Warp Style offer loops on the trainer's own look in the preview (game_warpfx)
+function showWarpPreview(offer)
+    stopPreview()
+    local preview = window.detail.preview
+    local warpfx = modules.game_warpfx
+    local warp = offer.kind == 'warpstyle' and warpfx and warpfx.loopStyle
+    -- a taller frame with the trainer smaller and lower, so what plays over their head fits
+    preview:setHeight(warp and 170 or 120)
+    preview.creature:setSize(warp and { width = 76, height = 76 } or { width = 110, height = 110 })
+    preview.creature:setMarginTop(warp and 56 or 0)
+    if not warp then
+        return
+    end
+    local player = g_game.getLocalPlayer()
+    preview:setClipping(true)
+    preview.icon:hide()
+    preview.creature:setOutfit(player and player:getOutfit() or { type = 0 })
+    preview.creature:show()
+    local creature = preview.creature:getCreature()
+    if creature then
+        creature:setDirection(Directions.South)
+    end
+    stopWarpPreview = warpfx.loopStyle(preview, preview.creature, offer.slot, offer.style, WARP_PREVIEW_KEY)
+end
+
 local function refreshDetail()
     local pane = window.detail
     local offer = selected and findOffer(selected)
+    if not offer then
+        stopPreview()
+    end
     pane:setVisible(offer ~= nil)
     if not offer then
         return
@@ -225,6 +272,7 @@ local function refreshDetail()
     pane.title:setText(offer.name)
     pane.subtitle:setText(offerNote(offer))
     setPicture(pane.preview, offer)
+    showWarpPreview(offer)
     pane.description:setText(offer.description or '')
     pane.info:setText(infoFor(offer))
 
@@ -480,6 +528,7 @@ end
 function close()
     closeDialog()
     closeHistory()
+    stopPreview()
     wantOpen = false
     if window then
         window:hide()

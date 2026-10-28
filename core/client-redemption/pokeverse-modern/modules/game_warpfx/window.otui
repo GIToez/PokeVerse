@@ -1,0 +1,67 @@
+// The Warp Styles window (window.lua), on the Pokegear window styles: imported when it first opens
+WarpStylesRow < UIWidget
+  height: 26
+
+  UILabel
+    id: name
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    width: 74
+    height: 16
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 11
+    color: #c9d3ee
+    phantom: true
+
+  UIWidget
+    id: styles
+    anchors.left: name.right
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    height: 20
+    layout:
+      type: horizontalBox
+      spacing: 4
+
+WarpStylesWindow < PokegearOutfitWindow
+  id: warpStylesWindow
+  size: 520 324
+
+  PokegearOutfitStage
+    id: stage
+    anchors.top: header.bottom
+    anchors.left: parent.left
+    margin-top: 8
+    size: 200 250
+
+  PokegearOutfitLabel
+    id: slotsLabel
+    anchors.top: header.bottom
+    anchors.left: stage.right
+    margin-top: 8
+    margin-left: 12
+    !text: tr('Pick a style for each moment. Click a row to watch it.')
+
+  UIWidget
+    id: rows
+    anchors.top: slotsLabel.bottom
+    anchors.left: slotsLabel.left
+    anchors.right: parent.right
+    margin-top: 6
+    height: 170
+    layout:
+      type: verticalBox
+      spacing: 3
+
+  UILabel
+    id: hint
+    anchors.left: rows.left
+    anchors.right: parent.right
+    anchors.top: rows.bottom
+    anchors.bottom: stage.bottom
+    margin-top: 6
+    text-wrap: true
+    text-align: topLeft
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 10
+    color: #8fa0c4

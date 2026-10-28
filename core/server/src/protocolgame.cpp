@@ -382,7 +382,7 @@ bool ProtocolGame::logout(bool displayEffect, bool forceLogout)
 	else
 		displayEffect = false;
 
-	if(displayEffect && !player->isGhost())
+	if(displayEffect && !player->isGhost() && !g_game.playWarpStyle(player, "logout", player->getPosition()))
 		g_game.addMagicEffect(player->getPosition(), MAGIC_EFFECT_POFF);
 
 	if(Connection_ptr connection = getConnection())

@@ -33,15 +33,17 @@ Store.CATEGORIES = {
     { id = "premium", name = "Premium", icon = "premium" },
     { id = "addons", name = "Pokemon Addons", icon = "addons" },
     { id = "outfits", name = "Trainer Outfits", icon = "outfits" },
+    { id = "warpstyles", name = "Warp Styles", icon = "warpstyles" },
     { id = "services", name = "Services", icon = "services" },
     { id = "items", name = "Consumables", icon = "items" },
     { id = "guild", name = "Guild", icon = "guild" },
     { id = "referral", name = "Referral Rewards", icon = "referral" },
 }
 
--- kind: "premium" (days), "item" (itemId), "outfit" (outfitId from XML/outfits.xml), "sex", "nickname",
--- "unnickname", "vitamins", "guild", "rank" and "referral" (below). look/looks are what the window draws:
--- a Pokemon or one look per sex (female, male). use is the datalog_coin_uses id the NPCs logged the same thing with.
+-- kind: "premium" (days), "item" (itemId), "outfit" (outfitId from XML/outfits.xml), "warpstyle" (a style from
+-- WarpStyles.STYLES; slot is the kind of slot it goes in), "sex", "nickname", "unnickname", "vitamins", "guild",
+-- "rank" and "referral" (below). look/looks are what the window draws: a Pokemon or one look per sex (female,
+-- male); image is a game_warpfx picture; names, one name per sex (female, male). use is the datalog_coin_uses id the NPCs logged the same thing with.
 Store.OFFERS = {
     { id = "premium30", category = "premium", kind = "premium", days = 30, price = 15, use = 1, name = "30 days Premium",
       description = "Premium for the whole account, shared by its 3 characters. Added to the days you have left." },
@@ -65,6 +67,24 @@ Store.OFFERS = {
       name = "Rider", description = "Biker leathers for the open road." },
     { id = "outfit_shinymaniac", category = "outfits", kind = "outfit", outfitId = 50, price = 15, looks = { 1370, 1370 },
       name = "Shiny Poke Maniac", description = "The Poke Maniac costume in its rare shiny colours." },
+    { id = "outfit_costume_water", category = "outfits", kind = "outfit", outfitId = 78, price = 15, looks = { 2560, 2554 },
+      featured = true, name = "Pokemon Costume", names = { "Azurill Costume", "Blastoise Costume" },
+      description = "Dress up as a Pokemon: Azurill for female trainers, Blastoise for male trainers." },
+    { id = "outfit_costume_classic", category = "outfits", kind = "outfit", outfitId = 79, price = 15, looks = { 2553, 2548 },
+      featured = true, name = "Pokemon Costume", names = { "Pikachu Costume", "Charizard Costume" },
+      description = "Dress up as a Pokemon: Pikachu for female trainers, Charizard for male trainers." },
+
+    { id = "warp_pokeball", category = "warpstyles", kind = "warpstyle", style = "pokeball", slot = "warp", price = 10,
+      image = "pokeball", featured = true, name = "Poke Ball Warp",
+      description = "A Poke Ball's red light pulls you in, three wobbles and a click. Plays when you log in, log out and teleport." },
+    { id = "warp_fireworks", category = "warpstyles", kind = "warpstyle", style = "fireworks", slot = "victory", price = 5,
+      image = "spark-2", name = "Fireworks Victory", description = "Three rockets burst into coloured sparks when you win a duel or a trainer battle." },
+    { id = "warp_trophy", category = "warpstyles", kind = "warpstyle", style = "trophy", slot = "victory", price = 5,
+      image = "trophy", name = "Trophy Victory", description = "A gold cup rises over your head when you win a duel or a trainer battle." },
+    { id = "warp_sweatdrop", category = "warpstyles", kind = "warpstyle", style = "sweatdrop", slot = "defeat", price = 5,
+      image = "sweat", name = "Sweat Drop Defeat", description = "Gloom lines and a big sweat drop when you lose a duel or a trainer battle." },
+    { id = "warp_ghost", category = "warpstyles", kind = "warpstyle", style = "ghost", slot = "defeat", price = 5,
+      image = "orb", name = "Ghost Defeat", description = "Your spirit floats out of you and gets pulled back in when you lose a duel or a trainer battle." },
 
     { id = "nickname", category = "services", kind = "nickname", price = 1, use = 5, name = "Pokemon Nickname",
       description = "Names the Pokemon in your ball slot. 4 to 20 letters and spaces; it can't be a Pokemon's name or contain \"shiny\"." },
@@ -237,13 +257,25 @@ local function hasOutfit(cid, offer)
     return look ~= nil and canPlayerWearOutfit(cid, look, 0)
 end
 
+local function offerName(cid, offer)
+    local name = offer.names and offer.names[getPlayerSex(cid) == PLAYERSEX_FEMALE and 1 or 2] or offer.name
+    return __L(cid, name)
+end
+
+local function owned(cid, offer)
+    if (offer.kind == "warpstyle") then
+        return WarpStyles.bought(cid, offer.style)
+    end
+    return (offer.kind == "outfit" or (offer.kind == "referral" and offer.looks)) and hasOutfit(cid, offer)
+end
+
 local function offerList(cid)
     local list = JSON.array()
     for _, offer in ipairs(Store.OFFERS) do
         local entry = { id = offer.id, category = offer.category, featured = offer.featured or nil, kind = offer.kind,
-                        name = __L(cid, offer.name), price = offer.price, was = offer.was, look = offer.look,
+                        name = offerName(cid, offer), price = offer.price, was = offer.was, look = offer.look,
                         looks = offer.looks, pokemon = offer.pokemon, stack = offer.stack or nil, days = offer.days,
-                        points = offer.points }
+                        points = offer.points, image = offer.image, style = offer.style, slot = offer.slot }
         entry.description = __L(cid, offer.description)
         if (offer.kind == "guild") then
             entry.description = string.format(entry.description, getConfigValue("levelToFormGuild"))
@@ -251,7 +283,7 @@ local function offerList(cid)
         if (offer.itemId) then
             entry.item = getItemClientId(offer.itemId) or 0
         end
-        if ((offer.kind == "outfit" or (offer.kind == "referral" and offer.looks)) and hasOutfit(cid, offer)) then
+        if (owned(cid, offer)) then
             entry.owned = true
         end
         list[#list + 1] = entry
@@ -317,7 +349,9 @@ end
 -- Why this purchase can't happen, or nil. text is the name the offer asks for.
 local function blocker(cid, offer, text)
     local kind = offer.kind
-    if ((kind == "outfit" or (kind == "referral" and offer.looks)) and hasOutfit(cid, offer)) then
+    if (kind == "warpstyle" and owned(cid, offer)) then
+        return "You already have this Warp Style."
+    elseif ((kind == "outfit" or (kind == "referral" and offer.looks)) and hasOutfit(cid, offer)) then
         return "You already have this outfit."
     elseif (kind == "referral" and Referral.getPoints(cid) < offer.price) then
         return string.format(__L(cid, "You need %d referral points for this."), offer.price)
@@ -368,6 +402,8 @@ local function deliver(cid, offer, count, text)
         return doPlayerSafeAddItem(cid, offer.itemId, count, false) ~= false
     elseif (kind == "outfit") then
         doPlayerAddOutfitId(cid, offer.outfitId, 0)
+    elseif (kind == "warpstyle") then
+        return WarpStyles.give(cid, offer.style) and true or false
     elseif (kind == "sex") then
         doPlayerSetSex(cid, getPlayerSex(cid) == PLAYERSEX_FEMALE and PLAYERSEX_MALE or PLAYERSEX_FEMALE)
     elseif (kind == "nickname" or kind == "unnickname") then
@@ -395,6 +431,7 @@ local DONE = {
     premium = "%d days of Premium were added to your account.",
     item = "You got %s. It is in your bag, or in your depot if the bag was full.",
     outfit = "The %s outfit is yours. Pick it in the outfit window.",
+    warpstyle = "%s is yours. Put it on in Customise Trainer > Warp Styles.",
     sex = "Your trainer's sex has been changed.",
     referral = "You got the %s for referral points.",
     nickname = "Your Pokemon is now called %s.",
@@ -438,7 +475,7 @@ Store.buy = function(cid, id, count, text)
     if (offer.use and price > 0) then
         doDatalogCoinUse(os.time(), getPlayerGUID(cid), offer.use, price)
     end
-    local label = (offer.stack and count > 1) and string.format("%dx %s", count, offer.name) or offer.name
+    local label = (offer.stack and count > 1) and string.format("%dx %s", count, offer.name) or (offer.names and offerName(cid, offer)) or offer.name
     if (offer.kind == "nickname" or offer.kind == "guild" or offer.kind == "rank") then
         label = string.format("%s: %s", offer.name, text)
     end
@@ -448,7 +485,7 @@ Store.buy = function(cid, id, count, text)
 
     local done = DONE[offer.kind]
     local arg = offer.kind == "premium" and offer.days or (offer.kind == "item" and label) or
-        (offer.kind == "outfit" and offer.name) or text
+        ((offer.kind == "outfit" or offer.kind == "warpstyle") and offerName(cid, offer)) or text
     Store.sendState(cid)
     return result(cid, true, done, arg)
 end

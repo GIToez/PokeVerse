@@ -545,6 +545,9 @@ class Game
 		bool broadcastMessage(const std::string& text, MessageClasses type);
 		// broadcastMessage that also gets the news banner and Discord (Announcements.fromEngine, 092-announcements.lua)
 		bool broadcastAnnouncement(const std::string& text, MessageClasses type, const std::string& source);
+		// Warp Styles (lib/ps/systems/102-warpStyles.lua): half is "out"/"in" around a teleport tile, or "logout";
+		// false when the script is missing, so the caller plays the old magic effect
+		bool playWarpStyle(Player* player, const std::string& half, const Position& pos);
 		void showHotkeyUseMessage(Player* player, Item* item);
 
 		int32_t getMotdId();

@@ -14,6 +14,7 @@ function onAdvance(cid, skill, oldLevel, newLevel)
 
     elseif (skill >= PLAYER_SKILL_DUEL_WIN and skill <= PLAYER_SKILL_BATTLE_LOSS) then
         onPlayerEndDuel(cid)
+        WarpStyles.onDuelSkill(cid, skill)
     end
 	return true
 end

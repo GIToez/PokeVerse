@@ -219,9 +219,7 @@ function onLogin(cid)
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_ORANGE, "Hello, type 'account' to create an account or type 'recover' to recover an account.")
 	end
 
-	if (not isPlayerGhost(cid, true)) then
-		doSendMagicEffect(getCreaturePosition(cid), CONST_ME_TELEPORT)
-	end
+	WarpStyles.play(cid, "login")
 	
 	if (isTutor(cid)) then
 		ONLINE_TUTORS[getPlayerGUID(cid)] = true

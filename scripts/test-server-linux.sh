@@ -333,6 +333,44 @@ news = [json.loads(line.split("extended opcode 47: ", 1)[1]) for line in sys.std
 assert {"c": "staff", "h": "Admin", "x": "Test broadcast", "f": "Admin: Test broadcast"} in news, news'
 echo "News banner: /b is a Staff announcement with the staff name"
 
+step "Warp Styles"
+$db -upokeverse -ppokeverse pokeverse -e "UPDATE accounts SET soulcoins = 12 WHERE name = 'admin'; DELETE w FROM player_warp_styles w JOIN players p ON p.id = w.player_id WHERE p.name = 'Admin'"
+warp=$(python3 "$root/scripts/protocol-test.py" --account admin --password admin --character Admin --walk "" \
+  --send-opcode '57:{"action":"hello"}' \
+  --send-opcode '57:{"action":"equip","trigger":"logout","style":"beam"}' \
+  --send-opcode '57:{"action":"equip","trigger":"login","style":"victory"}' \
+  --send-opcode '41:{"action":"buy","offer":"warp_pokeball"}' \
+  --send-opcode '41:{"action":"buy","offer":"warp_pokeball"}' \
+  --say "/warpstyle beam teleport" --say "/warpstyle defeat defeat" \
+  --say "/warpstyle pokeball teleport" --say "/warpstyle ghost defeat" --say "/warpstyle fireworks victory" || true)
+bought=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT CONCAT(a.soulcoins, ',', COUNT(w.style)) FROM accounts a JOIN players p ON p.account_id = a.id LEFT JOIN player_warp_styles w ON w.player_id = p.id AND w.style = 'pokeball' WHERE p.name = 'Admin' GROUP BY a.id")
+[ "$bought" = "2,1" ] || { echo "$warp" | grep "opcode 41" | tail -5; echo "FAIL: buying the Poke Ball Warp once should leave 2 Soul Coins and one owned row (coins,rows: $bought)"; exit 1; }
+echo "$warp" | grep -q "You already have this Warp Style" || { echo "FAIL: buying an owned Warp Style again should be refused"; exit 1; }
+echo "$warp" | grep "extended opcode 57" || true
+echo "$warp" | python3 -c '
+import json, sys
+msgs = [json.loads(line.split("extended opcode 57: ", 1)[1]) for line in sys.stdin if "extended opcode 57: " in line]
+states = [m for m in msgs if m["type"] == "state"]
+plays = [m for m in msgs if m["type"] == "play"]
+assert len(states) >= 3, msgs
+first = states[0]
+assert [t["id"] for t in first["triggers"]] == ["login", "logout", "teleport", "victory", "defeat", "faint"], first
+assert {s["id"] for s in first["styles"]} == {"spin", "beam", "pokeball", "victory", "fireworks", "trophy", "defeat",
+                                             "sweatdrop", "ghost", "faint"}, first
+assert all(s["owned"] for s in first["styles"]), "staff own every style"
+slots = {t["id"]: t["style"] for t in states[-1]["triggers"]}
+assert slots["logout"] == "beam", slots
+assert slots["login"] == "spin", "a victory style must not go in the login slot"
+halves = [(p["s"], p["h"], p["t"]) for p in plays]
+assert ("beam", "out", "teleport") in halves and ("beam", "in", "teleport") in halves, halves
+assert ("defeat", "fx", "defeat") in halves, halves
+assert ("pokeball", "out", "teleport") in halves and ("pokeball", "in", "teleport") in halves, halves
+assert ("ghost", "fx", "defeat") in halves and ("fireworks", "fx", "victory") in halves, halves
+p = plays[0]
+assert p["o"]["type"] > 0 and set(p["p"]) == {"x", "y", "z"}, p
+print("Warp Styles: %d states, plays %s" % (len(states), halves))
+' || { echo "$warp" | tail -30; echo "FAIL: Warp Styles messages are wrong"; exit 1; }
+
 step "Server log errors"
 grep -E "^\[Error|ERROR|MYSQL ERROR" "$work/server.log" | sort | uniq -c | sort -rn || true
 if grep -q "MYSQL ERROR" "$work/server.log"; then echo "FAIL: database errors in server log"; exit 1; fi
