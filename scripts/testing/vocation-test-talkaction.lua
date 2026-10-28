@@ -3058,6 +3058,87 @@ local function testBallSlotUse(cid)
     end
 end
 
+local function testPokemonOutfit(cid)
+    local seen, twice = {}, nil
+    for name, id in pairs(PokemonAddon.IDS) do
+        twice = twice or (seen[id] and (seen[id] .. " and " .. name))
+        seen[id] = name
+    end
+    check("Pokemon outfit: every addon has its own id", twice == nil, twice)
+
+    if (isPokemonOnline(cid) or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
+        check("Pokemon outfit: ball slot free for the test", false)
+        return
+    end
+    local ball = newBall(cid, "Charizard", 50, POKEMON_SEX_MALE)
+    doMovePlayerItem(cid, ball.uid, { y = PLAYER_SLOT_BALL, z = 0 })
+    doRemoveConditions(cid, false)
+    doPlayerUseBallOnSlot(cid)
+    local pokemon = getPlayerPokemon(cid)
+    if (not isPokemonOnline(cid) or not isCreature(pokemon)) then
+        check("Pokemon outfit: Charizard comes out", false)
+        return
+    end
+    local ballUid = getPlayerBall(cid).uid
+    doBallAddAddon(ballUid, PokemonAddon.IDS.BEAUTIFUL_FLOWER)
+    local default = getMonsterInfo("Charizard").outfit
+    local FLOWER, ARMOR = 2112, 2382 -- Beautiful Flower (owned now) and Charizard Battle Armor (not owned)
+
+    local sent = {}
+    local sendOpcode = doSendPlayerExtendedOpcode
+    doSendPlayerExtendedOpcode = function(target, opcode, buffer)
+        if (target == cid and opcode == EXTENDED_IDS.POKEMON_OUTFIT) then
+            sent[#sent + 1] = buffer
+            return true
+        end
+        return sendOpcode(target, opcode, buffer)
+    end
+    local ok, err = pcall(function()
+        PokemonAddon.onClientMessage(cid, JSON.encode({ action = "hello" }))
+        PokemonAddon.onClientMessage(cid, JSON.encode({ action = "open" }))
+        local window = sent[1] and JSON.decode(sent[1])
+        local wearable, locked = {}, {}
+        for _, entry in ipairs(window and window.outfits or {}) do
+            wearable[entry.lookType] = entry.name
+        end
+        for _, entry in ipairs(window and window.locked or {}) do
+            locked[entry.lookType] = entry.name
+        end
+        check("Pokemon outfit: the window lists Default and the owned addon",
+            window and window.type == "window" and window.outfits[1].name == "Default"
+            and wearable[default.lookType] and wearable[FLOWER] == "Beautiful flower", sent[1])
+        check("Pokemon outfit: addons it doesn't own are listed locked", locked[ARMOR] ~= nil and not wearable[ARMOR],
+            sent[1])
+
+        PokemonAddon.onClientMessage(cid, JSON.encode({ action = "choose", lookType = ARMOR }))
+        check("Pokemon outfit: an addon it doesn't own can't be put on",
+            getCreatureOutfit(pokemon).lookType ~= ARMOR and not getBallCurrentAddon(ballUid),
+            getCreatureOutfit(pokemon).lookType)
+
+        PokemonAddon.onChooseAddon(cid, { lookType = FLOWER, lookHead = 50, lookBody = 60, lookLegs = 70, lookFeet = 80 })
+        local now, saved = getCreatureOutfit(pokemon), getBallCurrentAddon(ballUid)
+        check("Pokemon outfit: the owned addon goes on in the Pokemon's own colours",
+            now.lookType == FLOWER and now.lookHead == default.lookHead and now.lookBody == default.lookBody
+            and saved and saved.lookType == FLOWER,
+            string.format("%d %d/%d", now.lookType, now.lookHead or -1, now.lookBody or -1))
+
+        PokemonAddon.onClientMessage(cid, JSON.encode({ action = "choose", lookType = default.lookType }))
+        check("Pokemon outfit: choosing Default takes it off", getCreatureOutfit(pokemon).lookType == default.lookType
+            and not getBallCurrentAddon(ballUid), getCreatureOutfit(pokemon).lookType)
+    end)
+    doSendPlayerExtendedOpcode = sendOpcode
+    check("Pokemon outfit: ran without errors", ok, err)
+
+    PokemonAddon.onLogin(cid)
+    doRemoveConditions(cid, false)
+    doPlayerUseBallOnSlot(cid)
+    doRemoveConditions(cid, false)
+    local slot = getPlayerSlotItem(cid, PLAYER_SLOT_BALL)
+    if (isItem(slot)) then
+        doRemoveItem(slot.uid)
+    end
+end
+
 local function testPokemonHabitat(cid)
     check("Habitat: the empty stand is a habitat",
         getItemNameById(PokemonHabitat.EMPTY_ID):lower():find("habitat", 1, true) ~= nil)
@@ -5342,7 +5423,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "bag", testBag }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "pokemon outfit", testPokemonOutfit }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "bag", testBag }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then

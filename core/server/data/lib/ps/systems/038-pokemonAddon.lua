@@ -267,7 +267,10 @@ PokemonAddon.IDS = {
     NINJA_CLOTHES = 259,
     MECHANICAL_CLOTHES = 260,
     GENTLEMAN_CLOTHES = 261,
-    IRON_JAW = 258,
+    IRON_JAW = 262,
+    NINJA_MASK_CHARMANDER = 263,
+    GREEN_SCARF_PIDGEOT = 264,
+    NURSE_COSTUME_CHANSEY = 265,
 }
 
 local ADDONS = {}
@@ -348,7 +351,7 @@ ADDONS[PokemonAddon.IDS.MUMMY_PACK] = {
     itemId = 29569,
 }
 
-ADDONS[PokemonAddon.IDS.NINJA_MASK] = {
+ADDONS[PokemonAddon.IDS.NINJA_MASK_CHARMANDER] = {
     outfits = {
         ["Charmander"] = { lookType = 2098 }
     },
@@ -516,7 +519,7 @@ ADDONS[PokemonAddon.IDS.PURPLE_SCARF] = {
     itemId = 29599,
 }
 
-ADDONS[PokemonAddon.IDS.GREEN_SCARF] = {
+ADDONS[PokemonAddon.IDS.GREEN_SCARF_PIDGEOT] = {
     outfits = {
         ["Pidgeot"] = { lookType = 2151, fly = 2152 }
     },
@@ -1184,7 +1187,7 @@ ADDONS[PokemonAddon.IDS.RED_STRIPES] = {
     itemId = 29702,
 }
 
-ADDONS[PokemonAddon.IDS.NURSE_COSTUME] = {
+ADDONS[PokemonAddon.IDS.NURSE_COSTUME_CHANSEY] = {
     outfits = {
         ["Chansey"] = { lookType = 2075 }
     },
@@ -2150,11 +2153,56 @@ local function canPokemonWearAddon(pokemon, addonId, ballUid)
     return ADDONS[addonId].outfits[getCreatureName(pokemon)] and not table.find(getBallAddons(ballUid), addonId)
 end
 
+-- The look types this Pokemon may wear (its own and the addons in its ball), and the addons it could
+-- still get, for the client's Pokemon Outfit window
+local function outfitChoices(ballUid, pokemonName, defaultOutfit)
+    local owned, wearable, locked = {}, {}, {}
+    for _, addonId in pairs(getBallAddons(ballUid)) do
+        owned[addonId] = true
+    end
+    wearable[#wearable + 1] = { lookType = defaultOutfit.lookType, name = "Default" }
+    for addonId, addon in pairs(ADDONS) do
+        local look = addon.outfits and addon.outfits[pokemonName]
+        if (look and look.lookType and look.lookType > 0 and (addon.itemId or 0) > 0) then
+            -- item names aren't loaded yet when some script interfaces load this file
+            addon.name = addon.name or getItemNameById(addon.itemId) or "Addon"
+            local entry = { lookType = look.lookType, name = (string.gsub(addon.name, "^%l", string.upper)) }
+            if (owned[addonId]) then
+                wearable[#wearable + 1] = entry
+            else
+                locked[#locked + 1] = entry
+            end
+        end
+    end
+    local byName = function(a, b) return a.name < b.name end
+    table.sort(locked, byName)
+    local default = table.remove(wearable, 1)
+    table.sort(wearable, byName)
+    table.insert(wearable, 1, default)
+    return wearable, locked
+end
+
+local function clientHasWindow(cid)
+    return getPlayerStorageValue(cid, playersStorages.pokemonOutfitClient) == 1
+end
+
 -- Methods Global
 PokemonAddon.doPlayerSendWindow = function(cid)
     if (not isPokemonOnline(cid)) then
         doPlayerSendCancel(cid, "You must call your Pokemon first.")
         return
+    end
+
+    if (clientHasWindow(cid)) then
+        local ballUid = getPlayerBall(cid).uid
+        local pokemonName = getBallPokemonName(ballUid)
+        local defaultOutfit = getMonsterInfo(getPlayerPokemonName(cid)).outfit
+        local current = getBallCurrentAddon(ballUid)
+        local wearable, locked = outfitChoices(ballUid, pokemonName, defaultOutfit)
+        doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.POKEMON_OUTFIT, JSON.encode({ type = "window",
+            name = getCreatureName(getPlayerPokemon(cid)), current = current and current.lookType or defaultOutfit.lookType,
+            outfits = wearable, locked = locked }))
+        return true
     end
 
     local ballUid = getPlayerBall(cid).uid
@@ -2198,20 +2246,59 @@ PokemonAddon.onPlayerUseAddon = function(cid, item, fromPosition, itemEx, toPosi
     return true
 end
 
-PokemonAddon.onChooseAddon = function(cid, outfit)
-    if (not isPokemonOnline(cid)) then
+-- Pokemon wear their own colours: only the look type is taken from the choice, and only one the Pokemon owns
+PokemonAddon.onChooseAddon = function(cid, chosen)
+    if (not isPokemonOnline(cid) or type(chosen) ~= "table") then
         return false
     end
 
     local pokemon = getPlayerPokemon(cid)
+    local ballUid = getPlayerBall(cid).uid
+    local defaultOutfit = getMonsterInfo(getCreatureName(pokemon)).outfit
+    local lookType = tonumber(chosen.lookType)
+    local allowed = false
+    for _, entry in ipairs((outfitChoices(ballUid, getBallPokemonName(ballUid), defaultOutfit))) do
+        if (entry.lookType == lookType) then
+            allowed = true
+            break
+        end
+    end
+    if (not allowed) then
+        return false
+    end
+
+    local outfit = table.copy(defaultOutfit)
+    outfit.lookType = lookType
+    outfit.lookAddons = 0
     doSendMagicEffect(getCreaturePosition(pokemon), EFFECT_POFF)
     doSetCreatureOutfit(pokemon, outfit, -1)
 
-    local defaultOutfit = getMonsterInfo(getCreatureName(pokemon)).outfit
     if (outfit.lookType == defaultOutfit.lookType) then
         doBallSaveAddon(getPlayerBall(cid).uid, nil, true)
     else
         doBallSaveAddon(getPlayerBall(cid).uid, outfit)
+    end
+end
+
+PokemonAddon.onLogin = function(cid)
+    setPlayerStorageValue(cid, playersStorages.pokemonOutfitClient, -1)
+end
+
+-- EXTENDED_IDS.POKEMON_OUTFIT from the client: {action = "hello"} at login, {action = "open"},
+-- {action = "choose", lookType = n}
+PokemonAddon.onClientMessage = function(cid, buffer)
+    local ok, data = pcall(JSON.decode, buffer)
+    if (not ok or type(data) ~= "table") then
+        return
+    end
+    if (data.action == "hello") then
+        setPlayerStorageValue(cid, playersStorages.pokemonOutfitClient, 1)
+    elseif (data.action == "open") then
+        PokemonAddon.doPlayerSendWindow(cid)
+    elseif (data.action == "choose") then
+        if (PokemonAddon.onChooseAddon(cid, { lookType = data.lookType }) == false) then
+            doPlayerSendDefaultCancel(cid, RETURNVALUE_NOTPOSSIBLE)
+        end
     end
 end
 
