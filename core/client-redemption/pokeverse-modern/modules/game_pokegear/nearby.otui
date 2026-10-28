@@ -49,12 +49,19 @@ PokegearNearbyRow < UIWidget
       image-smooth: true
       phantom: true
 
-    UICreature
-      id: outfit
-      size: 28 28
-      anchors.centerIn: parent
+    UIWidget
+      id: clip
+      anchors.fill: parent
+      margin: 4
+      clipping: true
       phantom: true
-      visible: false
+
+      UICreature
+        id: outfit
+        anchors.fill: parent
+        creature-center: true
+        phantom: true
+        visible: false
 
     UILabel
       id: initials

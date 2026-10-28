@@ -81,12 +81,26 @@ PokegearChatFace < UIButton
   ttf-font-size: 11
   color: #eef2ff
 
-  UICreature
-    id: creature
-    size: 24 24
-    anchors.centerIn: parent
+  UIWidget
+    id: portrait
+    anchors.fill: parent
+    image-smooth: true
     phantom: true
     visible: false
+
+  UIWidget
+    id: clip
+    anchors.fill: parent
+    margin: 4
+    clipping: true
+    phantom: true
+
+    UICreature
+      id: creature
+      anchors.fill: parent
+      creature-center: true
+      phantom: true
+      visible: false
 
   UIWidget
     id: ring

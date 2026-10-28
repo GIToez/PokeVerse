@@ -177,18 +177,26 @@ local function fillRow(row, creature)
     row.tag:setVisible(tag ~= '')
     fillTypes(row, creature:isMonster() and name)
     local portrait = creature:isMonster() and portraitOf(name)
-    row.face.portrait:setVisible(portrait ~= nil and portrait ~= false)
+    -- famous NPCs have a drawn portrait (game_npcdialog), already round
+    local dialog = modules.game_npcdialog
+    local drawn = creature:isNpc() and dialog and dialog.getPortrait and dialog.getPortrait(name)
+    local picture = row.face.portrait
+    picture:setVisible((portrait or drawn) and true or false)
     if portrait then
-        row.face.portrait:setImageSource(portrait)
-        row.face.portrait:setImageClip({ x = PORTRAIT_INSET, y = PORTRAIT_INSET,
+        picture:setImageSource(portrait)
+        picture:setImageClip({ x = PORTRAIT_INSET, y = PORTRAIT_INSET,
             width = 96 - 2 * PORTRAIT_INSET, height = 96 - 2 * PORTRAIT_INSET })
+    elseif drawn then
+        picture:setImageSource(drawn)
+        picture:setImageClip({ x = 0, y = 0, width = 168, height = 168 })
     end
-    local outfit = not portrait and not creature:isMonster()
-    row.face.outfit:setVisible(outfit)
+    picture:setSize(drawn and { width = 32, height = 32 } or { width = 30, height = 30 })
+    local outfit = not portrait and not drawn and not creature:isMonster()
+    row.face.clip.outfit:setVisible(outfit)
     if outfit then
-        row.face.outfit:setOutfit(creature:getOutfit())
+        row.face.clip.outfit:setOutfit(creature:getOutfit())
     end
-    row.face.initials:setText((portrait or outfit) and '' or initials(name))
+    row.face.initials:setText((portrait or drawn or outfit) and '' or initials(name))
     local percent = creature:getHealthPercent()
     row.bar.fill:setWidth(math.max(0, math.floor((row.bar:getWidth()) * percent / 100)))
     row.bar.fill:setVisible(percent > 0)

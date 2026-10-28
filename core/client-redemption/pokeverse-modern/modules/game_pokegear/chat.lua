@@ -178,7 +178,7 @@ local function pill(parent, style, text, kind)
 end
 
 -- the client only knows an outfit while its creature is on screen, so the last one seen is kept
-local outfits = {}
+local outfits, npcs = {}, {}
 
 local function outfitOf(name)
     if not name or name == '' then
@@ -192,19 +192,32 @@ local function outfitOf(name)
     for _, creature in ipairs(getCreaturesAroundPlayer(false)) do
         if creature:getName() == name and not creature:isMonster() then
             outfits[name] = creature:getOutfit()
+            npcs[name] = creature:isNpc() or nil
             break
         end
     end
     return outfits[name]
 end
 
-local function setFace(face, name, color, fallback)
-    local outfit = outfitOf(name)
-    face.creature:setVisible(outfit ~= nil)
-    if outfit then
-        face.creature:setOutfit(outfit)
+-- famous NPCs have a drawn portrait (game_npcdialog); a player who shares the name doesn't get it
+local function portraitOf(name, npc)
+    local dialog = modules.game_npcdialog
+    return npc and name and dialog and dialog.getPortrait and dialog.getPortrait(name) or nil
+end
+
+local function setFace(face, name, color, fallback, npc)
+    local portrait = portraitOf(name, npc)
+    local outfit = not portrait and outfitOf(name) or nil
+    face.portrait:setVisible(portrait ~= nil)
+    if portrait then
+        face.portrait:setImageSource(portrait)
     end
-    face:setText(outfit and '' or (fallback or initials(name)))
+    local creature = face.clip.creature
+    creature:setVisible(outfit ~= nil)
+    if outfit then
+        creature:setOutfit(outfit)
+    end
+    face:setText((portrait or outfit) and '' or (fallback or initials(name)))
     face:setColor(color)
     face.ring:setImageColor(color)
 end
@@ -236,7 +249,7 @@ local function fillRow(row, line)
     head:destroyChildren()
     local color = nameColor(line)
     if line.name then
-        setFace(row.face, line.name, color, line.npc and '+' or nil)
+        setFace(row.face, line.name, color, line.npc and '+' or nil, line.npc)
         if line.staff then
             pill(head, 'PokegearChatHeadPill', tr('GM'), 'staff')
         end
@@ -380,6 +393,8 @@ local function onTabText(tab, text, speaktype, creatureName)
         own = name ~= nil and name == myName(), staff = isStaff(speaktype),
         npc = speaktype ~= nil and speaktype.npcChat == true and name ~= nil and name ~= myName() }
     outfitOf(name)
+    -- an NPC talking aloud comes as a plain say
+    line.npc = line.npc or (name ~= nil and name ~= myName() and npcs[name] == true)
     remember(tab, line)
     local c = console()
     if line.npc and c and c.defaultTab and tab ~= c.defaultTab then
