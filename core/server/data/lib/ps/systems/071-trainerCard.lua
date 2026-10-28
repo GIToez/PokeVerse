@@ -8,6 +8,7 @@
 --                     {action = "save", favorite, trophies = {keys}, title, about, privacy},
 --                     {action = "achievements", name}, {action = "duel", name}
 --   server -> client  {type = "card", own, name, sex, level, town = {id, name}, guild, mastery, playTime, since, duels,
+--                      battles = {won, lost} (NPC battles), skills = {catching, fishing, headbutting = {level, percent}} (with stats),
 --                      respect, vocation = {key, name, rank, maxRank, title}, title, titleKey, outfit, favorite,
 --                      trophies = {pokemon...}, badges = {{region, list = {{name, client, earned, upcoming}}}}, stats, about, privacy, hidden}
 --                     {type = "titles", list = {{key, text, group, detail}}}
@@ -313,6 +314,18 @@ local function badges(cid)
     return regions
 end
 
+-- a trainer skill's level and the percent of the way to the next one
+local function skill(cid, id)
+    local level = math.max(0, getPlayerSkillLevel(cid, id) or 0)
+    local tries = tonumber(getPlayerSkillTries(cid, id)) or 0
+    local needed = tonumber(getPlayerRequiredSkillTries(cid, id, level + 1)) or 0
+    local percent = needed > 0 and math.min(99, math.floor(tries * 100 / needed)) or 0
+    if (id == PLAYER_SKILL_CATCHING and level >= PLAYER_SKILL_CATCHING_MAX) then
+        level, percent = PLAYER_SKILL_CATCHING_MAX, 100
+    end
+    return { level = level, percent = percent }
+end
+
 local function favoriteOf(cid)
     local name, level, sex = parseKey(storageText(cid, FAVORITE))
     if (name) then
@@ -350,6 +363,8 @@ TrainerCard.data = function(cid, target)
         since = math.max(0, tonumber(getPlayerStorageValue(target, SINCE)) or 0),
         duels = { won = math.max(0, getPlayerSkillLevel(target, PLAYER_SKILL_DUEL_WIN)),
                   lost = math.max(0, getPlayerSkillLevel(target, PLAYER_SKILL_DUEL_LOSS)) },
+        battles = { won = math.max(0, getPlayerSkillLevel(target, PLAYER_SKILL_BATTLE_WIN)),
+                    lost = math.max(0, getPlayerSkillLevel(target, PLAYER_SKILL_BATTLE_LOSS)) },
         respect = getPlayerRespect(target),
         title = title, titleKey = titleKey,
         outfit = { type = outfit.lookType, head = outfit.lookHead, body = outfit.lookBody, legs = outfit.lookLegs,
@@ -376,6 +391,8 @@ TrainerCard.data = function(cid, target)
                        tournaments = statistic(target, PLAYER_STATISTIC_IDS.WIN_TOURNAMENT),
                        achievements = achievementCount(target), achievementsTotal = achievementsTotal(),
                        trainers = statistic(target, PLAYER_STATISTIC_IDS.DEFEAT_NPC) }
+        data.skills = { catching = skill(target, PLAYER_SKILL_CATCHING), fishing = skill(target, PLAYER_SKILL_FISHING),
+                        headbutting = skill(target, PLAYER_SKILL_HEADBUTTING) }
     else
         hidden[#hidden + 1] = "stats"
     end
