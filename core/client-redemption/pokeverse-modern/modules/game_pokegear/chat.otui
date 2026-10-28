@@ -155,14 +155,19 @@ PokegearChatRow < UIWidget
 
 // a floating line while the chat is folded: the channel tag, then the line
 PokegearChatFloat < UIWidget
-  height: 18
+  height: 22
+  padding: 4 8 4 6
+  image-source: /modules/game_pokegear/images/card
+  image-border: 12
+  image-smooth: true
+  opacity: 0.85
   phantom: true
 
   PokegearChatTag
     id: tag
     anchors.left: parent.left
     anchors.top: parent.top
-    margin-top: 2
+    margin-top: 1
 
   UILabel
     id: text

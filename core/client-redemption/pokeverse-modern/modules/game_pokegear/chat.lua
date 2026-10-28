@@ -234,10 +234,10 @@ local function addFloat(line)
     local text = line.name and (line.name .. ': ' .. line.text) or line.text
     float.text:setText(text)
     float.text:setColor(line.npc and COLORS.npc or (line.own and COLORS.you or '#eef2ff'))
-    float:setHeight(math.max(18, float.text:getHeight() + 2))
+    float:setHeight(math.max(22, float.text:getHeight() + 8))
     scheduleEvent(function()
         if float and not float:isDestroyed() then
-            float:setHeight(math.max(18, float.text:getHeight() + 2))
+            float:setHeight(math.max(22, float.text:getHeight() + 8))
         end
     end, 1)
     while #floats:getChildren() > MAX_FLOATS do
