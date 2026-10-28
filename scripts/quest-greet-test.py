@@ -27,6 +27,7 @@ HINT = "{task}"
 # level, NPC, what it must say, what it must not say, and what to say after hi (optional)
 CASES = [
     (5, "Andy", ["You can buy bikes here"], [HINT], None),
+    (5, "Eric Garinson", [HINT], [], None),
     (5, "Jack Simps", ["can I help you?"], [HINT], None),
     (10, "Jack Simps", ["can I help you?", HINT], [], None),
     (20, "George Carter", ["plenty of stories to tell"], [HINT, "{research}"], None),

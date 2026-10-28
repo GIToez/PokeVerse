@@ -38,7 +38,7 @@ QUESTS_CONFIG = {
             questRequest = { 12115, 25 }, -- The request of the quest
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 2152, count = 5 } }, -- The player reward after finish the quest
             rewardExp = 2000, -- The player exp reward after finish the quest
-            requiredLevel = 10, -- Required level to do the quest
+            requiredLevel = 8, -- Required level to do the quest
         }
     },
     ["John Rouver"] = {
@@ -54,7 +54,7 @@ QUESTS_CONFIG = {
             questRequest = { 12124, 10 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 2152, count = 3 } },
             rewardExp = 2000,
-            requiredLevel = 12,
+            requiredLevel = 10,
         }
     },
     ["Mary Vinn"] = {
@@ -70,7 +70,7 @@ QUESTS_CONFIG = {
             questRequest = { 12117, 15 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 2152, count = 4 } },
             rewardExp = 1000,
-            requiredLevel = 10,
+            requiredLevel = 6,
         }
     },
     ["Rock Jhonson"] = {
@@ -86,7 +86,7 @@ QUESTS_CONFIG = {
             questRequest = { 12096, 10 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 2152, count = 3 } },
             rewardExp = 1200,
-            requiredLevel = 14,
+            requiredLevel = 12,
         }
     },
     ["Mary Nady"] = {
@@ -102,7 +102,7 @@ QUESTS_CONFIG = {
             questRequest = { 12100, 50, 12104, 50 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 2152, count = 4 } },
             rewardExp = 1500,
-            requiredLevel = 18,
+            requiredLevel = 16,
         }
     },
     ["Joe Tiff"] = {
@@ -118,7 +118,7 @@ QUESTS_CONFIG = {
             questRequest = { 12113, 13 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 2152, count = 5 } },
             rewardExp = 2000,
-            requiredLevel = 16,
+            requiredLevel = 14,
         }
     },
     ["Bob Lop"] = {
@@ -134,7 +134,7 @@ QUESTS_CONFIG = {
             questRequest = { 12149, 10 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 2152, count = 3 } },
             rewardExp = 1750,
-            requiredLevel = 12,
+            requiredLevel = 10,
         }
     },
     ["Eric Garinson"] = {
@@ -150,7 +150,7 @@ QUESTS_CONFIG = {
             questRequest = "Pidgey",
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 2152, count = 5 } },
             rewardExp = 500,
-            requiredLevel = 10,
+            requiredLevel = 5,
         }
     },
     ["Professor Oak"] = {
@@ -208,9 +208,11 @@ QUESTS_CONFIG = {
 --            onEnd = function(cid) doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "004-sewer") end,
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 12115, count = 5 } },
         },
-        -- Beginner Quest - A work for Oak
+        -- Beginner Quest - A work for Oak: the Pallet Town start for trainers who skipped Tutorial Island.
+        -- Every trainer starts there now, so it is no longer offered; ones who started it can still finish it.
         {
             storage = 8498,
+            blockStart = true,
             talk_questStarting = "Good to know that you are busy with your journey. I need a hand with some things. Can you help me?",
             talk_questStarted = "I placed an order at the Pallet PokeMart. Please pick it up for me. We will see if you are a good trainer.",
             talk_questFinishing = "Did my order arrive?",
@@ -5500,7 +5502,7 @@ QUESTS_CONFIG = {
                 { type = REWARD_TYPE.ITEM, id = 2152, count = 5 }, -- 500 dollars
             },
             rewardExp = 500,
-            requiredLevel = 10,
+            requiredLevel = 5,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid) return getCreatureStorage(cid, 8412) == QUEST_STATUS.FINISHED end, -- Daisy Oak quest #2
         },
@@ -5516,7 +5518,7 @@ QUESTS_CONFIG = {
             talk_questDone = "",
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 10,
+            requiredLevel = 5,
             questType = QUEST_TYPE.CUSTOM,
             canStart = function(cid) return getCreatureStorage(cid, 8410) ~= QUEST_STATUS.UNSTARTED end, -- Guyli's Assitant quest #1
             questRequest = function(cid) return getCreatureStorage(cid, 8413) == QUEST_STATUS.FINISHED end, -- Gary Oak quest #1
@@ -5531,7 +5533,7 @@ QUESTS_CONFIG = {
             talk_questDone = "",
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 10,
+            requiredLevel = 8,
             questType = QUEST_TYPE.BRING_ITEMS,
             questRequest = { 23532, 1 }, -- a acid foxglove extraction (the knife is taken when the player cut the plant)
             canStart = function(cid) return getCreatureStorage(cid, 8411) ~= QUEST_STATUS.UNSTARTED end, -- Daisy Oak quest #1
@@ -5549,7 +5551,7 @@ QUESTS_CONFIG = {
             talk_questDone = "",
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 10,
+            requiredLevel = 6,
             questType = QUEST_TYPE.CUSTOM,
             canStart = function(cid) return getCreatureStorage(cid, 8411) ~= QUEST_STATUS.UNSTARTED end, -- Guyli's Assitant quest #1
             questRequest = function(cid) return getCreatureStorage(cid, 8415) == QUEST_STATUS.FINISHED and
@@ -5572,7 +5574,7 @@ QUESTS_CONFIG = {
             talk_questDone = "",
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 10,
+            requiredLevel = 8,
             questType = QUEST_TYPE.CUSTOM,
             canStart = function(cid) return getCreatureStorage(cid, 8413) == QUEST_STATUS.FINISHED end, -- Gary Oak quest #1
             questRequest = function(cid) return getPlayerDefeatedNPC(cid, 9674) end,

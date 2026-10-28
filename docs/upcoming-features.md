@@ -1461,11 +1461,12 @@ Breeder perks).
 
 **Quest levels (spread out):** the level 70 group was the Orange Archipelago: every quest there
 needed 70, the level it opens at, and Kanto's main story jumped from 10 to 40 to 50 with a third
-of it at 10 behind a level 50 part. 91 quests moved so each part follows the story and the map:
+of it at 10 behind a level 50 part. 96 quests moved so each part follows the story and the map:
 
 | Quests | Before | Now |
 | --- | --- | --- |
-| Around the continent (Jack Simps, John Rouver, Mary Vinn and the others) | 10 | 10 to 18, by what they ask for |
+| Kanto Main #01 (Guyli, Daisy, Gary and his battle) | 10 | 5 to 8, from the level 5 start |
+| Around the continent (Jack Simps, John Rouver, Mary Vinn and the others) | 10 | 5 to 16, by what they ask for |
 | Kanto Main #03 | 10 | 12 |
 | Kanto Main #04 (S.S. Anne), with Lt. Surge's town | 40 | 35 |
 | Kanto Main #05 (Celadon), with Erika's town | 50 | 40 |
@@ -1482,7 +1483,8 @@ Kept: the gyms (15 to 50), the After Kanto quests that open the archipelago (70)
 Upgrade and Chansey quests in Kanto (70), and everything from 80 up. An NPC also offers the first
 of its quests the trainer can start at their level, so a quest the trainer is too low for no
 longer holds back an easier one behind it in the NPC's list (Ash Ketchum's Running Shoes quests
-were behind his level 60 one).
+were behind his level 60 one). Professor Oak no longer offers "A work for Oak" in Pallet Town, the start for
+trainers who skipped Tutorial Island; everyone starts there now.
 
 ## 13. Switch off the old PSoul and anniversary content
 
