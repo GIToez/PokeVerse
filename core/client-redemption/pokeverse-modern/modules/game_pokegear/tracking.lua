@@ -156,10 +156,16 @@ function Tracking.refresh()
     height = math.max(0, height - LINE_SPACING)
     window.empty:setVisible(#lines == 0)
     window.header.count:setText(#lines > 0 and tostring(#lines) or '')
-    local listHeight = #lines == 0 and 34 or math.min(height, MAX_LIST)
+    -- no taller than the room left under it, so on a small screen it scrolls instead of running off
+    local maxList = MAX_LIST
+    if window:isVisible() then
+        local room = rootWidget:getHeight() - window:getY() - CHROME_HEIGHT - 8
+        maxList = math.max(LINE_HEIGHT, math.min(MAX_LIST, room))
+    end
+    local listHeight = #lines == 0 and 34 or math.min(height, maxList)
     list:setHeight(listHeight)
     window.scroll:setHeight(listHeight)
-    local scrolls = height > MAX_LIST
+    local scrolls = height > maxList
     window.scroll:setVisible(scrolls)
     window.scroll:setWidth(scrolls and 10 or 0)
     list:setMarginRight(scrolls and 4 or 0)
@@ -270,6 +276,8 @@ function Tracking.setFolded(on)
     end
     g_settings.set(FOLDED_SETTING, on)
     layout()
+    -- once it has its spot, so the list knows the room under it
+    scheduleEvent(Tracking.refresh, 50)
 end
 
 -- the column hangs under the card while it is in its spot

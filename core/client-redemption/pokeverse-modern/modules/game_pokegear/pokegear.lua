@@ -195,6 +195,7 @@ local function onRootGeometryChange()
     Bag.relayout()
     Social.relayout()
     Pokegear.layoutColumn()
+    scheduleEvent(Tracking.refresh, 50)
 end
 
 local function onGameStart()

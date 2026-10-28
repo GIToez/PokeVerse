@@ -243,7 +243,11 @@ function Nearby.refresh()
         pill:setPaddingRight(compact and 6 or 9)
     end
     local list, total = collect()
-    local count = math.min(#list, Pokegear.isCompact() and COMPACT_ROWS or MAX_ROWS)
+    local most = Pokegear.isCompact() and COMPACT_ROWS or MAX_ROWS
+    -- and no more than fit the room left under it
+    local room = rootWidget:getHeight() - window:getY() - CHROME_HEIGHT - 8
+    most = math.max(1, math.min(most, math.floor((room + ROW_SPACING) / (ROW_HEIGHT + ROW_SPACING))))
+    local count = math.min(#list, most)
     for i = 1, count do
         local row = rowFor(i)
         row:show()
