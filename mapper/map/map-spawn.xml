@@ -75879,16 +75879,16 @@
   <spawn centerx="2252" centery="714" centerz="7" radius="1">
     <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2278" centery="364" centerz="7" radius="1">
+  <spawn centerx="2317" centery="384" centerz="7" radius="1">
     <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2153" centery="474" centerz="7" radius="1">
+  <spawn centerx="2131" centery="466" centerz="7" radius="1">
     <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="1913" centery="657" centerz="7" radius="1">
+  <spawn centerx="1915" centery="658" centerz="7" radius="1">
     <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2755" centery="343" centerz="7" radius="1">
+  <spawn centerx="2760" centery="342" centerz="7" radius="1">
     <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
 </spawns>
