@@ -303,28 +303,29 @@ bell, the gear and the Store on the right.
     Training and Regeneration.
 - Classic keeps the tracker window, the VIP box and the Skills window.
 
-### Compact Pokegear for small screens (its own project, after the default flips)
+### Small screens and the default (built)
 
-At phone size Pokegear doesn't fit: on a screen 1200x509 points across, the ring alone is 400 tall,
-Nearby is cut off and the Bag and chat cover the middle of the map. A typical phone is smaller still
-(about 914x411).
+Pokegear is the default layout on every client, Windows, Linux and Android. Every install moves to it
+once (Settings: `pokeverseLayoutVersion` 6), also the ones that had Classic saved as the old default;
+Classic stays a choice in Settings > Interface > Layout, on Android too.
 
-- **Until it's built, Android stays on Classic.** The Layout option is hidden on Android, and Pokegear
-  becoming the default is for Windows and Linux only.
-- **When the screen is small, everything scales down to about 60%.** Small means fewer than about 600
-  points high, checked again when the window resizes or the phone rotates. The ring, Nearby, Tracking,
-  the Bag, the Social window, the chat card, the HUD and its sockets all shrink by the same factor;
-  text stays readable (no smaller than the Classic windows' font).
-- **Nearby, Tracking and chat start folded.** Nearby and Tracking show as chips under the map's
-  name, and the chat card as its one-line input with the channel chips. Tapping a chip opens it; it
-  folds again on its own after a while without a touch. What the player unfolds is kept per
-  character, like on desktop.
-- **The Bag and the Social window open over the map** (centred, with a close button big enough for a
-  thumb) instead of beside the ring, and only one of them at a time.
-- **Touch:** dragging a window by its header works as on desktop; a long press stands for right
-  click (use an item, the Nearby menu), as the Android touch controls already do.
-- **Tested** with the harness at phone and tablet sizes (914x411, 1200x509, 1280x800), on both
-  layouts, plus a switch back and forth like the desktop audit.
+Phones lay out at the HUD Scale Android starts with (1.5): a 1080p phone is 1280x720 to 1600x720
+points, a 720p phone about 1066x480.
+
+- **Compact Pokegear** below 1500x860 points (a 1366x768 or 1280x720 laptop, a phone): the ring at
+  75% (the place ribbon keeps its size), the chat card 480x230, Nearby 280 wide with at most 4 rows,
+  4 rows in the Bag, Social 330 high and at the left edge when the Bag is open by the ring, and the HUD
+  slides left until its sockets clear the ring. Nearby and Tracking stop at the bottom of the screen.
+  A resize or a phone turning across that size re-fits everything.
+- **Every window fits the screen** (`game_screenfit`, both layouts): a window bigger than the screen
+  shrinks to it and its lists scroll the rest; one off an edge moves back on. It gets its own size
+  again once the screen has room.
+- **Red's tutorial balloon** stands above the chat card (beside it when the HUD leaves no room), the
+  tutorial picture left of the ring, and the NPC dialogue right of the chat card when they'd overlap.
+- **Tested** with the harness window audit (every top bar window, the guide and an NPC dialogue) at
+  1280x720 in both layouts and at 1066x480: nothing runs off the screen.
+- **Still cramped at 1066x480:** the Trainer Card, the Reports form's side column and Red's balloon
+  next to Nearby. Touch for right-click menus (the equipment socket) is next.
 
 ## To decide
 

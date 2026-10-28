@@ -3,10 +3,9 @@
 -- connect(modules.game_pokegear, { onLayoutChange = function(active) end }).
 local active = false
 
--- phones stay on Classic until Pokegear has its compact size (docs/concepts/side-panel)
 function isActive()
     local options = modules.client_options
-    return options ~= nil and not g_platform.isMobile() and options.getOption('uiLayout') == 'pokegear'
+    return options ~= nil and options.getOption('uiLayout') == 'pokegear'
 end
 
 -- Pokegear has no Chat On / Chat Off: WASD always walks, and Enter opens one line (game_console
