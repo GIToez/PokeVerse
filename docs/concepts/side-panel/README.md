@@ -96,7 +96,7 @@ Coordinates move to a tooltip on the map (or the staff view). Level and experien
 - **The swap bar stays exactly as it is.** The only addition is the Order button next to the Pokemon that's out.
 - **Nearby** is its own window, separate from your Pokemon, and keeps the Battle List's filters.
 - **Every window can be dragged**, and every box can be split out into its own window and moved anywhere.
-- **Default keys:** B Bag, E Order, F key item, X Pokedex, R Mega Evolution.
+- **Default keys:** B Bag, E Order, F equipment, X Pokedex, R Mega Evolution.
 - **The Bag, the PC stash and the GTS share the same categories**, each in its own look. The categories
   get filled in properly, so far less ends up in Other.
 
@@ -231,8 +231,8 @@ items in and out (to the ground, a hotkey, the PC, the GTS or another bag).
 | --- | --- |
 | Pokemon (the one that's out) | The swap bar, as it is today: the gold ring marks the one that's out |
 | Order (helmet) | A button next to the Pokemon that's out (E). It follows whichever one that is |
-| Key item | A socket left of the HUD (F): click to use, right-click to pick another key item. The Ranger radar and the Fishing guide go here too |
-| Pokedex (sword) | Its own socket right of the HUD (X). Not a key item |
+| Equipment (bikes, running shoes, the flashlight, the Mega Ring...) | A socket left of the HUD (F): click to use, right-click to equip something else from the Bag, or drop one on it |
+| Pokedex (sword) | Its own socket right of the HUD (X) |
 | Badges (shield), Balls, Respect | The Trainer card |
 | Belt | The Trainer belt at the top of the Bag |
 | Bag | The Bag (B, also on the Pokegear ring) |

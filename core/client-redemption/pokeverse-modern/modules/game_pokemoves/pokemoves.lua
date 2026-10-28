@@ -527,7 +527,7 @@ local function useMove(index)
 end
 
 -- the order icon the server keeps in the head slot; using it starts the crosshair like a click on it
-local function useOrder()
+function useOrder()
     local player = g_game.isOnline() and g_game.getLocalPlayer()
     local item = player and player:getInventoryItem(InventorySlotHead)
     if item then
@@ -536,7 +536,7 @@ local function useOrder()
 end
 
 -- the Pokedex the server keeps in the left hand slot, used on the attacked (or followed) creature; without one, the crosshair
-local function useDexOnTarget()
+function useDexOnTarget()
     local player = g_game.isOnline() and g_game.getLocalPlayer()
     local item = player and player:getInventoryItem(InventorySlotLeft)
     if not item then

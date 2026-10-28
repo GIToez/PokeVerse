@@ -33,6 +33,14 @@ BcBadge < UIWidget
     virtual: true
     phantom: true
 
+  // Johto and Hoenn have no badge items yet: their art (scripts/art/badge_art.py) is an image
+  UIWidget
+    id: art
+    size: 32 32
+    anchors.centerIn: slot
+    visible: false
+    phantom: true
+
   UIWidget
     id: lock
     size: 16 16

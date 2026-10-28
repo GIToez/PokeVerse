@@ -271,9 +271,10 @@ local function fillBadges()
         slot:setMarginLeft(left + (i - 1) * step)
         if badge.upcoming then
             slot.item:setVisible(false)
-            slot:setIcon(IMAGES .. 'icon_lock')
-            slot:setIconRect({ x = 12, y = 12, width = 16, height = 16 })
-            slot:setOpacity(0.5)
+            slot.art:setImageSource('/images/pokeverse-ui/badges/' .. (region.region or ''):lower():gsub('%s+', '-')
+                .. '-' .. (badge.name or ''):lower() .. '-slot')
+            slot.art:setOpacity(0.35)
+            slot.art:show()
             slot:setTooltip(tr('%s Badge  (coming soon)', badge.name or ''))
         else
             slot.item:setItemId(tonumber(badge.client) or 0)
