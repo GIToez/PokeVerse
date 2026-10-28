@@ -3,9 +3,10 @@
 -- connect(modules.game_pokegear, { onLayoutChange = function(active) end }).
 local active = false
 
+-- phones stay on Classic until Pokegear has its compact size (docs/concepts/side-panel)
 function isActive()
     local options = modules.client_options
-    return options ~= nil and options.getOption('uiLayout') == 'pokegear'
+    return options ~= nil and not g_platform.isMobile() and options.getOption('uiLayout') == 'pokegear'
 end
 
 -- Pokegear has no Chat On / Chat Off: WASD always walks, and Enter opens one line (game_console
@@ -133,6 +134,10 @@ function Pokegear.layoutColumn()
     elseif classicColumnHeight ~= nil then
         column:setHeight(classicColumnHeight)
         classicColumnHeight = nil
+        -- the side panel sized the windows Pokegear hid to 0; this is after they're all back
+        if modules.game_mainpanel and modules.game_mainpanel.reloadMainPanelSizes then
+            modules.game_mainpanel.reloadMainPanelSizes()
+        end
     end
 end
 
@@ -218,6 +223,7 @@ function terminate()
         apply()
     end
     Hub.terminate()
+    Pokegear.terminateHang()
     Nearby.terminate()
     Tracking.terminate()
     Social.terminate()

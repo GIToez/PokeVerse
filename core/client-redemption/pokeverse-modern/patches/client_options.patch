@@ -414,7 +414,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
          setOption('soundMaster', 1)
      end
  end
-@@ -184,20 +172,44 @@
+@@ -184,20 +172,50 @@
      local crosshairCombo = panels.interface:recursiveGetChildById('crosshair')
      local antialiasingModeCombobox = panels.graphicsPanel:recursiveGetChildById('antialiasingMode')
      local floorViewModeCombobox = panels.graphicsEffectsPanel:recursiveGetChildById('floorViewMode')
@@ -450,6 +450,12 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 +    layoutCombo.onOptionChange = function(comboBox, option)
 +        setOption('uiLayout', comboBox:getCurrentOption().data)
 +    end
++    -- phones stay on Classic until Pokegear has its compact size (docs/concepts/side-panel)
++    if g_platform.isMobile() then
++        local row = layoutCombo:getParent()
++        row:hide()
++        row:setHeight(0)
++    end
 +
 +    local battleTextCombo = panels.interface:recursiveGetChildById('battleText')
 +    for _, v in ipairs({ { 'New', 'new' }, { 'Classic', 'classic' } }) do
@@ -462,7 +468,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      mouseControlModeCombobox:addOption('Regular Controls', 0)
      mouseControlModeCombobox:addOption('Classic Controls', 1)
      mouseControlModeCombobox:addOption('Left Smart-Click', 2)
-@@ -235,12 +247,12 @@
+@@ -235,12 +253,12 @@
          setOption('floorViewMode', comboBox:getCurrentOption().data)
      end
  
@@ -480,7 +486,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      end
  
      local profileCombobox = panels.misc:recursiveGetChildById('profile')
-@@ -293,6 +305,81 @@
+@@ -293,6 +311,81 @@
  
      setupComboBox()
  
@@ -562,7 +568,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      -- load options
      for k, obj in pairs(options) do
          -- an option may either be a bare value or a table with an 'action'
-@@ -522,6 +609,7 @@
+@@ -522,6 +615,7 @@
  end
  
  function controller:onGameStart()
@@ -570,7 +576,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      if g_settings.getBoolean("autoSwitchPreset") then
          local name = g_game.getCharacterName()
          if Keybind.selectPreset(name) then
-@@ -631,6 +719,7 @@
+@@ -631,6 +725,7 @@
  end
  
  function hide()
@@ -578,7 +584,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      controller.ui:hide()
      if extraWidgets.optionsButton then
          extraWidgets.optionsButton:setOn(false)
-@@ -646,16 +735,10 @@
+@@ -646,16 +741,10 @@
          hide()
          return
      end
@@ -598,7 +604,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      show()
      updateKeybinds()
  end
-@@ -672,182 +755,166 @@
+@@ -672,182 +761,166 @@
      -- TODO: Implement Show Advanced Options functionality in the near future
  end
  
@@ -746,11 +752,11 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 +    local pages = button and pagesOf(button) or {}
 +    if not pages[index] then
 +        return
-+    end
+     end
 +    selectedPage = index
 +    for i, widget in ipairs(controller.ui.optionsSubTabBar:getChildren()) do
 +        widget:setChecked(i == index)
-     end
++    end
 +    showPage(pages[index])
 +end
  
@@ -787,11 +793,11 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 +    local count = bar:getChildCount()
 +    if count == 0 then
 +        return
-+    end
+     end
 +    local width = math.floor((bar:getWidth() - 8 * (count - 1)) / count)
 +    for _, tab in ipairs(bar:getChildren()) do
 +        tab:setWidth(width)
-     end
++    end
 +end
  
 -    return subWidget
@@ -916,7 +922,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
  end
  
  function createCategory(text, icon, openPanel, subCategories)
-@@ -930,13 +997,17 @@
+@@ -930,13 +1003,17 @@
      end
  end
  
@@ -935,7 +941,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
  end
  
  function addSubcategoryToCategory(categoryText, newSubcategory)
-@@ -951,19 +1022,15 @@
+@@ -951,19 +1028,15 @@
      if not controller.ui:isVisible() then
          show()
      end

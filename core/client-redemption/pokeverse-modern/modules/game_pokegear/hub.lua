@@ -184,9 +184,8 @@ local function build()
     buttons.floorDown.onClick = function() modules.game_minimap.downLayer() refreshFloor() end
 
     restorePosition = Pokegear.makeMovable(hub, hub.grip, POSITION_SETTING, function()
-        hub:addAnchor(AnchorTop, 'gameMapPanel', AnchorTop)
+        Pokegear.hangFromMapTop(hub, 0)
         hub:addAnchor(AnchorRight, 'parent', AnchorRight)
-        hub:setMarginTop(0)
         hub:setMarginRight(0)
     end)
 end

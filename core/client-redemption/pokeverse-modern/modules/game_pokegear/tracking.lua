@@ -171,6 +171,7 @@ end
 
 -- under Nearby while it's in its spot, else under the ring, else in the top-right corner
 local function placeDefault()
+    Pokegear.unhang(window)
     window:breakAnchors()
     local under = Nearby.docked() or Hub.docked()
     if under then
@@ -179,9 +180,8 @@ local function placeDefault()
         window:setMarginTop(4)
         window:setMarginRight(under == Nearby.docked() and 0 or 25)
     else
-        window:addAnchor(AnchorTop, 'gameMapPanel', AnchorTop)
+        Pokegear.hangFromMapTop(window, 4)
         window:addAnchor(AnchorRight, 'parent', AnchorRight)
-        window:setMarginTop(4)
         window:setMarginRight(4)
     end
 end

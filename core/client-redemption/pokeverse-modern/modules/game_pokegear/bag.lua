@@ -27,6 +27,9 @@ local tabs = {} -- container ids in tab order; the first is the backpack
 -- container id -> the bag's slot in the backpack (-1 for the backpack), kept up as items come and go
 local tabSlot = {}
 local tabNames = {} -- container id -> the name the trainer just gave it
+-- container id -> where its Classic window was (panel, index, height) when Pokegear took it; nil when
+-- Pokegear started without Classic windows, then switching back opens every bag as before
+local classicWindows
 local tabOffset = 1 -- the first tab shown when they don't all fit
 local selected
 local pending = {} -- { itemId, untilTime, select, slot }
@@ -1264,9 +1267,16 @@ local function adoptOpenContainers()
     if not backpack then
         return
     end
+    classicWindows = nil
     for _, container in pairs(g_game.getContainers()) do
         local belt = isBelt(container)
         if belt or container == backpack or container:hasParent() then
+            local w = container.window
+            if w and not w:isDestroyed() and w:getParent() then
+                classicWindows = classicWindows or {}
+                classicWindows[container:getId()] = { panel = w:getParent(), index = w:getParent():getChildIndex(w),
+                    height = w:getHeight() }
+            end
             if containers then
                 containers.destroy(container)
             end
@@ -1294,19 +1304,46 @@ local function releaseContainers()
         ids[#ids + 1] = id
     end
     ids[#ids + 1] = beltId
+    local keep = { [tabs[1] or -1] = true, [beltId or -1] = true }
     tabs, selected, beltId, pending, queued, tabSlot, tabNames = {}, nil, nil, {}, {}, {}, {}
     cancelSettle()
     hideWindow()
     local containers = modules.game_containers
+    local restore = classicWindows
+    classicWindows = nil
+    local reopened = {}
     for _, id in ipairs(ids) do
         local container = containerById(id)
         if container then
             container.pokegearClaimed = nil
-            if containers then
+            local spot = restore and restore[id]
+            if (restore and not spot) or (not restore and not keep[id]) then
+                -- opened by the Bag; Classic gets back the windows it had, or the backpack and the belt
+                -- when Pokegear started without any
+                g_game.close(container)
+            elseif containers then
                 containers.onContainerOpen(container)
+                if spot and container.window then
+                    reopened[#reopened + 1] = { window = container.window, spot = spot }
+                end
             end
         end
     end
+    table.sort(reopened, function(a, b) return a.spot.index < b.spot.index end)
+    -- after the whole switch: until the right column has its Classic size, a side panel closes what
+    -- doesn't fit
+    addEvent(function()
+        for _, entry in ipairs(reopened) do
+            local w, spot = entry.window, entry.spot
+            if not w:isDestroyed() and not spot.panel:isDestroyed() then
+                if w:getParent() ~= spot.panel then
+                    w:getParent():removeChild(w)
+                    spot.panel:insertChild(math.min(spot.index, spot.panel:getChildCount() + 1), w)
+                end
+                w:setHeight(spot.height)
+            end
+        end
+    end)
 end
 
 function Bag.apply(isActive)
@@ -1326,6 +1363,7 @@ end
 function Bag.reset()
     active = false
     tabs, selected, beltId, pending, queued, tabSlot, tabNames = {}, nil, nil, {}, {}, {}, {}
+    classicWindows = nil
     cancelSettle()
     filter, beltNumbers = nil, nil
     hideWindow()
