@@ -472,16 +472,21 @@ CAVES = [
      'path': [(2585, 609), (2595, 596), (2620, 590), (2648, 598), (2675, 590), (2690, 610)],
      'rooms': [(2620, 592, 7), (2650, 598, 8), (2676, 592, 6)],
      'pond': (2650, 598, 4)},
-    # Tohjo Falls, under the ridge where the Tohjo river comes out: in from the river's west bank
-    # (Route 27's side) and out on its east (Route 26's), the underground river across the way (Surf),
-    # and at its head the falls themselves (`waterfalls`, the rock tiles that take Waterfall), up to
-    # TOHJO_LEDGE on the floor above
-    {'name': 'Tohjo Falls', 'box': (2868, 620, 2945, 676), 'rate': 1 / 10.0,
-     'faces': [(2888, 667, 6), (2924, 667, 6)],
-     'mouths': [(2888, 670, 'south', [(2888, 684), (2888, 668)]), (2924, 670, 'south', [(2924, 684), (2924, 668)])],
-     'path': [(2888, 669), (2888, 656), (2896, 652), (2905, 654), (2914, 652), (2924, 656), (2924, 669)],
-     'rooms': [(2887, 659, 7), (2905, 647, 9), (2925, 659, 7)],
-     'pond': (2905, 644, 5), 'stream': ([(2905, 646), (2904, 668)], 1.6),
+    # Tohjo Falls, a lake cavern under the ridge, entered down the hole behind the falls (the gap
+    # between them, edit_tohjo_falls.py): dry ground loops round the lake (the hunting ground) with
+    # halls and rock pillars off it, and Surf takes you to its head, the falls (`waterfalls`, the rock
+    # tiles that take Waterfall) up to TOHJO_LEDGE on the floor above
+    {'name': 'Tohjo Falls', 'box': (2850, 606, 2962, 678), 'rate': 1 / 10.0, 'water_spawns': 14,
+     'mouths': [(2901, 665, 'south')],
+     'path': [(2901, 664), (2896, 663), (2884, 661), (2873, 650), (2870, 636), (2880, 623),
+              (2896, 618), (2914, 618), (2930, 624), (2938, 637), (2934, 652), (2916, 662), (2903, 663)],
+     'rooms': [(2895, 645, 10), (2913, 645, 10), (2904, 637, 9), (2904, 654, 9), (2886, 653, 8), (2922, 653, 8),
+               (2888, 632, 8), (2920, 632, 8), (2900, 661, 5), (2872, 642, 11), (2934, 642, 11),
+               (2882, 622, 7), (2926, 622, 7), (2896, 628, 7), (2912, 628, 7), (2904, 616, 6), (2862, 656, 6),
+               (2946, 655, 6)],
+     'lakes': [(2905, 644, 10), (2892, 648, 8), (2917, 648, 8), (2904, 653, 6.5), (2884, 642, 5), (2925, 642, 5)],
+     'islands': [(2895, 646, 2.0), (2914, 651, 1.6)],
+     'pillars': [(2880, 646, 2.2), (2864, 634, 1.8), (2928, 633, 2.4), (2942, 648, 1.8), (2861, 657, 1.4)],
      'waterfalls': [(2902, 637), (2903, 637), (2907, 637), (2908, 637)]},
 ]
 # The Ruins of Alph's four chambers, each a room under its rock mound, entered from its court.
@@ -2471,6 +2476,8 @@ def build_cave(cave, brushes, present, rng):
     floor = (path_d + n1 * 3 < 2.6) | (path_d < 2.5)
     for x, y, r in cave['rooms']:
         floor |= f.disc(x, y, r, n2, 0.5)
+    for x, y, r in cave.get('pillars', []):
+        floor &= ~(f.disc(x, y, r, n1, 0.3) & (path_d > 3))
     up = {}
     near_stairs = np.zeros((f.h, f.w), bool)
     no_optional = set()
@@ -2503,6 +2510,15 @@ def build_cave(cave, brushes, present, rng):
     water = np.zeros((f.h, f.w), bool)
     if cave.get('pond'):
         water = f.disc(*cave['pond'], n1, 0.3) & erode(floor, 3) & ~near_stairs & ~(path_d < 2.6)
+    # lakes carve their own shore (an eroded floor would square them off), islands stand in them
+    lake = np.zeros((f.h, f.w), bool)
+    for x, y, r in cave.get('lakes', []):
+        lake |= f.disc(x, y, r, n1, 0.4)
+    lake &= ~near_stairs & ~(path_d < 3.5)
+    floor |= dilate(lake, 7)
+    water |= lake
+    for x, y, r in cave.get('islands', []):
+        water &= ~f.disc(x, y, r, n2, 0.4)
     # a stream across the way, to Surf over (the lane goes on either side of it)
     if cave.get('stream'):
         line, width = cave['stream']
@@ -2608,7 +2624,7 @@ def build_cave(cave, brushes, present, rng):
     if water.any() and water_table and not cave.get('free_water'):
         edge = dilate(water, 5) & ~dilate(water, 3) & erode(floor, 3) & reached
         cells = np.argwhere(edge)
-        for iy, ix in cells[rng.permutation(len(cells))[:min(6, max(2, len(cells) // 8))]]:
+        for iy, ix in cells[rng.permutation(len(cells))[:min(cave.get('water_spawns', 6), max(2, len(cells) // 8))]]:
             spawns.append((pick(rng, water_table), ix + f.x0, iy + f.y0, z))
     return tiles, spawns
 

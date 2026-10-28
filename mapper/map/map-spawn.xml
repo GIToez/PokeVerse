@@ -61782,15 +61782,6 @@
   <spawn centerx="2561" centery="824" centerz="7" radius="1">
     <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2512" centery="556" centerz="7" radius="1">
-    <npc name="Nurse Joy's Chansey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2513" centery="556" centerz="7" radius="1">
-    <npc name="Nurse Joy" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2526" centery="555" centerz="7" radius="1">
-    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
   <spawn centerx="2390" centery="1030" centerz="7" radius="1">
     <npc name="Nurse Joy's Chansey" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
@@ -61800,42 +61791,6 @@
   <spawn centerx="2376" centery="1029" centerz="7" radius="1">
     <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2282" centery="720" centerz="7" radius="1">
-    <npc name="Nurse Joy's Chansey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2283" centery="720" centerz="7" radius="1">
-    <npc name="Nurse Joy" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2295" centery="719" centerz="7" radius="1">
-    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2289" centery="401" centerz="7" radius="1">
-    <npc name="Nurse Joy's Chansey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2290" centery="401" centerz="7" radius="1">
-    <npc name="Nurse Joy" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2302" centery="400" centerz="7" radius="1">
-    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2110" centery="491" centerz="7" radius="1">
-    <npc name="Nurse Joy's Chansey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2111" centery="491" centerz="7" radius="1">
-    <npc name="Nurse Joy" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2123" centery="490" centerz="7" radius="1">
-    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="1901" centery="631" centerz="7" radius="1">
-    <npc name="Nurse Joy's Chansey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="1902" centery="631" centerz="7" radius="1">
-    <npc name="Nurse Joy" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="1915" centery="630" centerz="7" radius="1">
-    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
   <spawn centerx="2531" centery="383" centerz="7" radius="1">
     <npc name="Nurse Joy's Chansey" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
@@ -61843,15 +61798,6 @@
     <npc name="Nurse Joy" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2543" centery="382" centerz="7" radius="1">
-    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2722" centery="379" centerz="7" radius="1">
-    <npc name="Nurse Joy's Chansey" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2723" centery="379" centerz="7" radius="1">
-    <npc name="Nurse Joy" x="0" y="0" z="7" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2735" centery="378" centerz="7" radius="1">
     <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2925" centery="522" centerz="7" radius="1">
@@ -75534,27 +75480,6 @@
   <spawn centerx="2646" centery="600" centerz="8" radius="1">
     <monster name="Magikarp" x="0" y="0" z="8" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2885" centery="655" centerz="8" radius="1">
-    <monster name="Golbat" x="0" y="0" z="8" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2927" centery="656" centerz="8" radius="1">
-    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2890" centery="657" centerz="8" radius="1">
-    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2883" centery="659" centerz="8" radius="1">
-    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2902" centery="655" centerz="8" radius="1">
-    <monster name="Seaking" x="0" y="0" z="8" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2912" centery="644" centerz="8" radius="1">
-    <monster name="Goldeen" x="0" y="0" z="8" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="2908" centery="650" centerz="8" radius="1">
-    <monster name="Goldeen" x="0" y="0" z="8" spawntime="60" level="0"/>
-  </spawn>
   <spawn centerx="2418" centery="639" centerz="8" radius="1">
     <monster name="Unown" x="0" y="0" z="8" spawntime="60" level="0"/>
   </spawn>
@@ -75641,5 +75566,329 @@
   </spawn>
   <spawn centerx="2430" centery="1093" centerz="8" radius="1">
     <monster name="Slowpoke" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2904" centery="612" centerz="8" radius="1">
+    <monster name="Golbat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2907" centery="617" centerz="8" radius="1">
+    <monster name="Golbat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2907" centery="618" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2927" centery="619" centerz="8" radius="1">
+    <monster name="Golbat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2924" centery="621" centerz="8" radius="1">
+    <monster name="Golbat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2898" centery="622" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2914" centery="622" centerz="8" radius="1">
+    <monster name="Golbat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2896" centery="623" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2912" centery="623" centerz="8" radius="1">
+    <monster name="Golbat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2892" centery="625" centerz="8" radius="1">
+    <monster name="Golbat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2912" centery="625" centerz="8" radius="1">
+    <monster name="Rattata" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2881" centery="626" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2883" centery="626" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2888" centery="626" centerz="8" radius="1">
+    <monster name="Golbat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2916" centery="626" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2925" centery="626" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2927" centery="626" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2884" centery="627" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2888" centery="627" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2896" centery="627" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2922" centery="627" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2919" centery="628" centerz="8" radius="1">
+    <monster name="Rattata" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2890" centery="629" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2910" centery="629" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2911" centery="629" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2915" centery="629" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2925" centery="629" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2882" centery="630" centerz="8" radius="1">
+    <monster name="Slowpoke" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2882" centery="631" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2890" centery="631" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2892" centery="631" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2894" centery="631" centerz="8" radius="1">
+    <monster name="Golbat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2916" centery="631" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2892" centery="632" centerz="8" radius="1">
+    <monster name="Slowpoke" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2896" centery="632" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2873" centery="633" centerz="8" radius="1">
+    <monster name="Golbat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2888" centery="633" centerz="8" radius="1">
+    <monster name="Golbat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2891" centery="633" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2893" centery="633" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2918" centery="633" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2884" centery="634" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2916" centery="634" centerz="8" radius="1">
+    <monster name="Slowpoke" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2873" centery="635" centerz="8" radius="1">
+    <monster name="Rattata" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2889" centery="635" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2893" centery="635" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2874" centery="636" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2917" centery="637" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2931" centery="637" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2935" centery="637" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2932" centery="638" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2941" centery="638" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2933" centery="639" centerz="8" radius="1">
+    <monster name="Golbat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2869" centery="640" centerz="8" radius="1">
+    <monster name="Slowpoke" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2864" centery="641" centerz="8" radius="1">
+    <monster name="Golbat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2869" centery="641" centerz="8" radius="1">
+    <monster name="Golbat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2874" centery="641" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2868" centery="643" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2877" centery="643" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2942" centery="643" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2867" centery="644" centerz="8" radius="1">
+    <monster name="Slowpoke" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2939" centery="644" centerz="8" radius="1">
+    <monster name="Slowpoke" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2940" centery="644" centerz="8" radius="1">
+    <monster name="Slowpoke" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2865" centery="645" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2866" centery="645" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2870" centery="645" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2933" centery="645" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2875" centery="646" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2867" centery="647" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2881" centery="649" centerz="8" radius="1">
+    <monster name="Slowpoke" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2931" centery="649" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2928" centery="654" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2881" centery="655" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2928" centery="656" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2925" centery="657" centerz="8" radius="1">
+    <monster name="Rattata" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2884" centery="658" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2891" centery="659" centerz="8" radius="1">
+    <monster name="Raticate" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2923" centery="659" centerz="8" radius="1">
+    <monster name="Golbat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2894" centery="660" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2918" centery="660" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2895" centery="661" centerz="8" radius="1">
+    <monster name="Zubat" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2912" centery="657" centerz="8" radius="1">
+    <monster name="Goldeen" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2926" centery="651" centerz="8" radius="1">
+    <monster name="Slowpoke" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2911" centery="633" centerz="8" radius="1">
+    <monster name="Goldeen" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2915" centery="658" centerz="8" radius="1">
+    <monster name="Slowpoke" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2927" centery="636" centerz="8" radius="1">
+    <monster name="Goldeen" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2914" centery="636" centerz="8" radius="1">
+    <monster name="Slowpoke" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2917" centery="658" centerz="8" radius="1">
+    <monster name="Goldeen" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2889" centery="658" centerz="8" radius="1">
+    <monster name="Goldeen" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2930" centery="638" centerz="8" radius="1">
+    <monster name="Slowpoke" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2929" centery="636" centerz="8" radius="1">
+    <monster name="Goldeen" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2898" centery="659" centerz="8" radius="1">
+    <monster name="Goldeen" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2931" centery="647" centerz="8" radius="1">
+    <monster name="Slowpoke" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2929" centery="637" centerz="8" radius="1">
+    <monster name="Goldeen" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2895" centery="636" centerz="8" radius="1">
+    <monster name="Goldeen" x="0" y="0" z="8" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2518" centery="557" centerz="7" radius="1">
+    <npc name="Nurse Joy's Chansey" x="0" y="-1" z="7" spawntime="60" level="0"/>
+    <npc name="Nurse Joy" x="1" y="-1" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2286" centery="720" centerz="7" radius="1">
+    <npc name="Nurse Joy's Chansey" x="0" y="-1" z="7" spawntime="60" level="0"/>
+    <npc name="Nurse Joy" x="1" y="-1" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2294" centery="401" centerz="7" radius="1">
+    <npc name="Nurse Joy's Chansey" x="0" y="-1" z="7" spawntime="60" level="0"/>
+    <npc name="Nurse Joy" x="1" y="-1" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2113" centery="491" centerz="7" radius="1">
+    <npc name="Nurse Joy's Chansey" x="0" y="-1" z="7" spawntime="60" level="0"/>
+    <npc name="Nurse Joy" x="1" y="-1" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2727" centery="379" centerz="7" radius="1">
+    <npc name="Nurse Joy's Chansey" x="0" y="-1" z="7" spawntime="60" level="0"/>
+    <npc name="Nurse Joy" x="1" y="-1" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="1908" centery="632" centerz="7" radius="1">
+    <npc name="Nurse Joy's Chansey" x="0" y="-1" z="7" spawntime="60" level="0"/>
+    <npc name="Nurse Joy" x="1" y="-1" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2538" centery="553" centerz="7" radius="1">
+    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2252" centery="714" centerz="7" radius="1">
+    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2278" centery="364" centerz="7" radius="1">
+    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2153" centery="474" centerz="7" radius="1">
+    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="1913" centery="657" centerz="7" radius="1">
+    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
+  </spawn>
+  <spawn centerx="2755" centery="343" centerz="7" radius="1">
+    <npc name="Mart" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
 </spawns>
