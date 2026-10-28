@@ -927,6 +927,9 @@ do not change.
     (hide play time, statistics or trophies from others), Preview as Others, Cancel and Save.
     The server refuses Pokémon the trainer doesn't own and drops favorites and trophies that
     were released or traded.
+  - The favorite follows its ball: a tag on the ball keeps it through level-ups and
+    evolutions. With no favorite picked, the card shows the "Most used Pokémon": each ball
+    counts how often it's sent out.
   - "Trainer since" counts from the first login after the card was added, because the
     `players` table has no creation date.
   - Artwork: `scripts/art/trainercard_ui.py`.
