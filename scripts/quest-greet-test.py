@@ -5,7 +5,7 @@ data/npc/lib/npcsystem/npchandler.lua, getQuestGreetHint in data/lib/ps/systems/
 Runs against a live server with the test-only talkaction from scripts/testing/ installed as
 "/questtest" (scripts/test-server-linux.sh does that in its temporary copy). The trainer is put
 next to each NPC at a level below and at its quest's level, says hi and checks the NPC's lines:
-the "(I have a {task} for you.)" hint only once the quest can be started, the idle greeting
+the {task} offer (one of a few lines, all naming {task}) only once the quest can be started, the idle greeting
 (message_greet_idle) before that, and an NPC without quests greeting as before.
 Exits non-zero on any failure.
 """
@@ -22,7 +22,7 @@ vt = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(vt)
 pt = vt.pt
 
-HINT = "(I have a {task} for you.)"
+HINT = "{task}"
 
 # level, NPC, what it must say, what it must not say, and what to say after hi (optional)
 CASES = [

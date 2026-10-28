@@ -378,7 +378,7 @@ if(NpcHandler == nil) then
     end
 
     -- Greets a new player.
-    -- A quest NPC says "(I have a {task} for you.)" after its greeting while it has a quest the trainer can
+    -- A quest NPC offers its {task} after its greeting while it has a quest the trainer can
     -- start at their level, and greets with message_greet_idle (when its XML has one) while it has nothing
     -- for them, so a greeting that leads into a quest isn't said to trainers who can't take it.
     -- A script sets questHint = false to keep its own greetings, or to a function(cid) that says whether

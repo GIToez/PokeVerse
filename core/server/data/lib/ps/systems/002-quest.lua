@@ -635,7 +635,22 @@ function getNpcCurrentQuest(pid, npcName)
     return ok and quest or nil
 end
 
--- Said after the greeting so the client shows a {task} option; most quest NPCs' greetings name no keyword
+-- Said after the greeting so the client shows a {task} option; most quest NPCs' greetings name no keyword.
+-- One line is picked at random so NPCs don't all say the same thing; each has a pt_br.loc entry.
+local QUEST_OFFER_LINES = {
+    "Hey, I have a {task} you could help me with, if you're interested.",
+    "Say, are you looking for a {task}? I could use a hand.",
+    "Actually, I could use some help with a {task}. Are you up for it?",
+}
+local QUEST_PROGRESS_LINES = {
+    "How's that {task} I gave you coming along?",
+    "Did you get anywhere with that {task}?",
+}
+
+local function questLine(pid, lines)
+    return __L(pid, lines[math.random(#lines)])
+end
+
 function getQuestGreetHint(pid, npcName)
     if (not QUESTS[npcName]) then
         return nil
@@ -649,7 +664,7 @@ function getQuestGreetHint(pid, npcName)
     end
     local status = getQuestStatus(pid, quest)
     if (status == QUEST_STATUS.STARTED) then
-        return "(Ask me about your {task}.)"
+        return questLine(pid, QUEST_PROGRESS_LINES)
     end
     if (isLevelBlocked(pid, quest)) then
         return nil
@@ -657,5 +672,5 @@ function getQuestGreetHint(pid, npcName)
     if (quest.daily and status > 100000 and status > getGlobalStorageValue(GLOBAL_STORAGES.SERVER_START_TIME)) then
         return nil
     end
-    return "(I have a {task} for you.)"
+    return questLine(pid, QUEST_OFFER_LINES)
 end
