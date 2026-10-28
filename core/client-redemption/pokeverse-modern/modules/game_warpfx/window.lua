@@ -5,7 +5,7 @@
 WarpWindow = {}
 
 local PREVIEW_KEY = 'warp-preview'
-local window, state, picks, selected, previewEvent, host
+local window, state, picks, selected, stopLoop
 local imported = false
 
 local function trigger(id)
@@ -25,9 +25,10 @@ local function style(id)
 end
 
 local function stopPreview()
-    removeEvent(previewEvent)
-    previewEvent = nil
-    stopKey(PREVIEW_KEY)
+    if stopLoop then
+        stopLoop()
+        stopLoop = nil
+    end
 end
 
 function WarpWindow.close()
@@ -36,28 +37,44 @@ function WarpWindow.close()
         window:destroy()
         window = nil
     end
-    state, picks, selected, host = nil, nil, nil, nil
+    state, picks, selected = nil, nil, nil
 end
 
 -- out, a moment hidden, in; Faint has no way back, the trainer just stands up again
-local function steps(entry, styleId)
-    if entry.kind == 'warp' then
+local function steps(kind, styleId)
+    if kind == 'warp' then
         return { { styleId, 'out', 60 }, { 'gap', 'hide', 450 }, { styleId, 'in' }, { nil, nil, 900 } }
-    elseif entry.kind == 'faint' then
+    elseif kind == 'faint' then
         return { { styleId, 'out', 60 }, { 'gap', 'hide', 700 }, { nil, nil, 600 } }
     end
     return { { styleId, 'fx' }, { nil, nil, 700 } }
 end
 
-local function runPreview()
-    stopPreview()
-    local entry = window and trigger(selected)
-    if not entry then
-        return
+-- Loops a style on a UICreature inside a clipping stage (this window's stage, the Store's preview) and
+-- returns the function that stops it. kind: "warp", "victory", "defeat" or "faint"; key: one loop per key.
+function loopStyle(stage, creatureWidget, kind, styleId, key)
+    if not LENGTHS[styleId] then
+        return function() end
     end
-    local list, i = steps(entry, picks[selected]), 0
+    local alive, event = true, nil
+    local host = {
+        parent = stage,
+        widgets = true,
+        anchor = function(play)
+            if not alive or creatureWidget:isDestroyed() then
+                return nil
+            end
+            local rect = creatureWidget:getRect()
+            local tile = rect.width * 32 / play.frame
+            return { x = rect.x + rect.width - tile / 2, y = rect.y + rect.height, tile = tile }
+        end,
+        real = function()
+            return alive and not creatureWidget:isDestroyed() and creatureWidget:getCreature() or nil
+        end,
+    }
+    local list, i = steps(kind, styleId), 0
     local function step()
-        if not window then
+        if not alive or stage:isDestroyed() then
             return
         end
         i = i % #list + 1
@@ -65,16 +82,29 @@ local function runPreview()
         local length
         if s[1] then
             length = LENGTHS[s[1]][s[2]] + (s[1] == 'gap' and s[3] or 0)
-            local creature = window.stage.creature:getCreature()
+            local creature = creatureWidget:getCreature()
             -- a little longer than the step so the trainer never shows between two halves
-            playOn({ host = host, key = PREVIEW_KEY, style = s[1], half = s[2], length = length + (s[3] and 60 or 0),
+            playOn({ host = host, key = key, style = s[1], half = s[2], length = length + (s[3] and 60 or 0),
                      outfit = creature and creature:getOutfit(), dir = creature and creature:getDirection() })
         else
             length = s[3]
         end
-        previewEvent = scheduleEvent(step, length)
+        event = scheduleEvent(step, length)
     end
     step()
+    return function()
+        alive = false
+        removeEvent(event)
+        stopKey(key)
+    end
+end
+
+local function runPreview()
+    stopPreview()
+    local entry = window and trigger(selected)
+    if entry then
+        stopLoop = loopStyle(window.stage, window.stage.creature, entry.kind, picks[selected], PREVIEW_KEY)
+    end
 end
 
 local function refreshWindow()
@@ -87,7 +117,7 @@ local function refreshWindow()
     end
     local chosen = entry and style(picks[selected])
     window.stage.name:setText(chosen and entry and (tr(entry.name) .. ': ' .. tr(chosen.name)) or '')
-    window.hint:setText(tr('Everyone around sees your styles. Victory and Defeat play when you win or lose a duel or a trainer battle, Faint when your trainer faints. Beam comes with Premium.'))
+    window.hint:setText(tr('Everyone around sees your styles. Victory and Defeat play when you win or lose a duel or a trainer battle, Faint when your trainer faints. Beam comes with Premium; the others are in the Store.'))
     runPreview()
 end
 
@@ -172,21 +202,6 @@ local function open(data)
     end
     stage.left.onClick = function() turn(1) end
     stage.right.onClick = function() turn(-1) end
-    host = {
-        parent = stage,
-        widgets = true,
-        anchor = function(play)
-            if not window then
-                return nil
-            end
-            local rect = window.stage.creature:getRect()
-            local tile = rect.width * 32 / play.frame
-            return { x = rect.x + rect.width - tile / 2, y = rect.y + rect.height, tile = tile }
-        end,
-        real = function()
-            return window and window.stage.creature:getCreature()
-        end,
-    }
 
     for _, entry in ipairs(state.triggers or {}) do
         local row = g_ui.createWidget('WarpStylesRow', window.rows)

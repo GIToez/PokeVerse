@@ -3610,6 +3610,21 @@ Pokegear layout's outfit window). Staff test any style on themselves with
 `/warpstyle <style> <trigger>`; `/warpstyle` alone lists them. The server test checks the
 messages (scripts/test-server-linux.sh, "Warp Styles"). Still to do: stages 5 and 6.
 
+**Built next (the first Store styles):** **Poke Ball** for the Log in, Log out and Teleport slots,
+**Fireworks** and **Trophy** for Victory, **Sweat Drop** and **Ghost** for Defeat. They are sold in
+the Store's new **Warp Styles** category (Poke Ball 10 Soul Coins, the others 5 each), where the
+chosen style loops on your own trainer, and bought ones are kept in `player_warp_styles`. The
+Store's Trainer Outfits also sell the two Pokemon costumes (15 each, Featured): Azurill (female) /
+Blastoise (male), and Pikachu (female) / Charizard (male).
+
+- **Poke Ball:** the ball is thrown beside the trainer, opens, and its red light pulls them in;
+  three wobbles and a click. Arriving, it drops at their feet, bursts open in white light and the
+  trainer grows out of it.
+- **Fireworks:** three rockets go up around the trainer and burst into rings of coloured sparks.
+- **Trophy:** a gold cup rises over the trainer's head in a ring of light.
+- **Sweat Drop:** gloom lines over the head and a big sweat drop running down beside it.
+- **Ghost:** the trainer goes grey while their spirit floats up, sways and is pulled back in.
+
 As built, differing from the plan below:
 
 - **A sixth slot, Faint:** when your trainer faints, a white flash shrinks into a glowing orb
@@ -3667,7 +3682,7 @@ Victory and Defeat effects are their own two lists, so a Victory effect can't be
 |---|---|---|
 | Warp Spin | A Poke Ball pad, a spin that speeds up, and a zip into the sky | Everyone (the default) |
 | Beam | A column of light scans the trainer away from the feet up | Premium |
-| Poke Ball | A Poke Ball's red light pulls the trainer in; three wobbles and a click | Store, quest or event (to decide) |
+| Poke Ball | A Poke Ball's red light pulls the trainer in; three wobbles and a click | Store, 10 Soul Coins (built) |
 | Psychic (Abra) | Abra blinks in, the trainer ripples purple and folds into a line | Store, quest or event (to decide) |
 | Dig (Diglett) | Diglett digs a hole and the trainer drops into it | Store, quest or event (to decide) |
 | Fly (Pidgeot) | Pidgeot swoops in and carries the trainer off the screen | Store, quest or event (to decide) |
@@ -3678,6 +3693,10 @@ Victory and Defeat effects are their own two lists, so a Victory effect can't be
 |---|---|---|
 | Victory | Two hops, a gold burst, Poke Ball confetti and a badge glint | Everyone (the default) |
 | Defeat | The trainer slumps grey, with dizzy stars and a little rain cloud | Everyone (the default) |
+| Fireworks (Victory) | Three rockets burst into rings of coloured sparks | Store, 5 Soul Coins (built) |
+| Trophy (Victory) | A gold cup rises over the head in a ring of light | Store, 5 Soul Coins (built) |
+| Sweat Drop (Defeat) | Gloom lines and a big sweat drop | Store, 5 Soul Coins (built) |
+| Ghost (Defeat) | The trainer goes grey and their spirit floats out and back | Store, 5 Soul Coins (built) |
 
 Later ideas, not drawn yet: Surf (a wave washes the trainer away), Vine Whip (Bulbasaur pulls them
 into the grass), Rapid Spin (Squirtle spins off), Fire Spin (a ring of flame), and more Victory

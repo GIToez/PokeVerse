@@ -16,12 +16,18 @@ WarpStyles = {}
 WarpStyles.RANGE_X, WarpStyles.RANGE_Y = 9, 7
 WarpStyles.STAFF_ACCESS = 3
 
--- kind: the list a style belongs to; the Log in, Log out and Teleport slots take "warp" styles
+-- kind: the list a style belongs to; the Log in, Log out and Teleport slots take "warp" styles.
+-- store: sold in the Store's Warp Styles category (Store.OFFERS)
 WarpStyles.STYLES = {
     { id = "spin", name = "Warp Spin", kind = "warp", everyone = true },
     { id = "beam", name = "Beam", kind = "warp", premium = true },
+    { id = "pokeball", name = "Poke Ball", kind = "warp", store = true },
     { id = "victory", name = "Victory", kind = "victory", everyone = true },
+    { id = "fireworks", name = "Fireworks", kind = "victory", store = true },
+    { id = "trophy", name = "Trophy", kind = "victory", store = true },
     { id = "defeat", name = "Defeat", kind = "defeat", everyone = true },
+    { id = "sweatdrop", name = "Sweat Drop", kind = "defeat", store = true },
+    { id = "ghost", name = "Ghost", kind = "defeat", store = true },
     { id = "faint", name = "Faint", kind = "faint", everyone = true },
 }
 
@@ -73,6 +79,11 @@ WarpStyles.owns = function(cid, styleId, bought)
         return true
     end
     return (bought or boughtStyles(cid))[styleId] == true
+end
+
+-- Bought or given to the character (not counting Premium or staff access)
+WarpStyles.bought = function(cid, styleId)
+    return boughtStyles(cid)[styleId] == true
 end
 
 WarpStyles.give = function(cid, styleId)
@@ -226,7 +237,8 @@ WarpStyles.sendState = function(cid, open)
     local styles, triggers = {}, {}
     for _, style in ipairs(WarpStyles.STYLES) do
         local owned = WarpStyles.owns(cid, style.id, bought)
-        local how = style.everyone and "Everyone has it" or (style.premium and "Premium") or "Not owned yet"
+        local how = style.everyone and "Everyone has it" or (style.premium and "Premium")
+            or (style.store and (bought[style.id] and "Bought in the Store" or "In the Store")) or "Not owned yet"
         styles[#styles + 1] = { id = style.id, name = style.name, kind = style.kind, owned = owned,
             how = (owned and not style.everyone and isStaff(cid) and not bought[style.id]) and "Staff" or how }
     end

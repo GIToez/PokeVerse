@@ -9,11 +9,12 @@
 local IMAGES = '/modules/game_warpfx/images/'
 local SHADERS = '/modules/game_warpfx/shaders/'
 local TICK = 30
-local HIDDEN, WHITE, GREY = 'Warp - hidden', 'Warp - white', 'Warp - grey'
-local SHADER_FILES = { [HIDDEN] = 'hidden', [WHITE] = 'white', [GREY] = 'grey' }
-local SHADER_RANK = { [HIDDEN] = 3, [WHITE] = 2, [GREY] = 1 }
+local HIDDEN, WHITE, GREY, RED = 'Warp - hidden', 'Warp - white', 'Warp - grey', 'Warp - red'
+local SHADER_FILES = { [HIDDEN] = 'hidden', [WHITE] = 'white', [GREY] = 'grey', [RED] = 'red' }
+local SHADER_RANK = { [HIDDEN] = 4, [RED] = 3, [WHITE] = 2, [GREY] = 1 }
 local SPIN = { 2, 1, 0, 3 } -- south, east, north, west: a turn on the spot
 local CONFETTI, SPARKLES, DROPS, STARS = 14, 5, 6, 3
+local ROCKETS, SPARKS = 3, 10 -- fireworks: rockets, and sparks in each burst
 
 DEFAULTS = { login = 'spin', logout = 'spin', teleport = 'spin', victory = 'victory', defeat = 'defeat', faint = 'faint' }
 LENGTHS = {
@@ -22,6 +23,11 @@ LENGTHS = {
     victory = { fx = 1700 },
     defeat = { fx = 2300 },
     faint = { out = 1500 },
+    pokeball = { out = 1650, ['in'] = 1300 },
+    fireworks = { fx = 2200 },
+    trophy = { fx = 1900 },
+    sweatdrop = { fx = 2000 },
+    ghost = { fx = 2300 },
     gap = { hide = 0 }, -- the window's stage between two halves: the trainer stays hidden
 }
 
@@ -341,6 +347,194 @@ STYLES.faint = {
         put(w.orb, a.x, body - rise * tile * 1.6, size, size, window(ms, 450, 1500, 100, 500))
         drift(w.sparkles, ms, 800, 1500, a.x, body - rise * tile * 1.6, tile, 0.6)
         return HIDDEN
+    end,
+}
+
+local function lerp(a, b, u)
+    return a + (b - a) * u
+end
+
+-- a flat image stretched from (x1, y1) to (x2, y2)
+local function stretch(widget, x1, y1, x2, y2, thickness, opacity)
+    widget:setRotation(math.deg(math.atan2(y2 - y1, x2 - x1)))
+    put(widget, (x1 + x2) / 2, (y1 + y2) / 2, math.sqrt((x2 - x1) ^ 2 + (y2 - y1) ^ 2), thickness, opacity)
+end
+
+-- Poke Ball: thrown beside the trainer, it opens and its red light pulls them in, then three wobbles and a
+-- click. Arriving, it drops at their feet, bursts open in white light and the trainer grows out of it.
+STYLES.pokeball = {
+    build = function(play)
+        local w = play.w
+        w.ray = image(play, 'redray')
+        w.copy = copy(play)
+        w.flash = image(play, 'orb')
+        w.ball = image(play, 'pokeball')
+        w.open = image(play, 'pokeball-open')
+        w.glint = image(play, 'glint')
+        w.sparkles = images(play, SPARKLES, 'sparkle')
+    end,
+    out = function(play, a, ms)
+        local w, tile = play.w, a.tile
+        local bx, by = a.x + tile * 0.75, a.y - tile * 0.2
+        local x, y, size, turn = bx, by, tile * 0.5, 0
+        if ms < 300 then
+            local u = ms / 300
+            x, y = lerp(a.x + tile * 1.8, bx, u), lerp(a.y - tile * 1.6, by, u) - math.sin(math.pi * u) * tile * 0.5
+            turn = ms * 1.4
+        elseif ms >= 850 and ms < 1360 then
+            local t = ms - 850
+            local k = math.floor(t / 170)
+            local f = (t % 170) / 110
+            turn = f < 1 and math.sin(math.pi * f) * 24 * (k % 2 == 0 and 1 or -1) or 0
+        end
+        local opened = ms >= 300 and ms < 780
+        local fade = 1 - span(ms, 1480, 1650)
+        w.ball:setRotation(turn)
+        put(w.ball, x, y, size, size, opened and 0 or fade)
+        put(w.open, x, y - tile * 0.04, size, size, opened and 1 or 0)
+        local pull = span(ms, 420, 760)
+        stretch(w.ray, bx, by - tile * 0.1, lerp(a.x, bx, pull), lerp(a.y - tile * 0.5, by, pull), tile * 0.24,
+            window(ms, 330, 780, 60, 60))
+        if ms < 780 then
+            copyShader(w.copy, ms >= 330 and RED or nil)
+            putCopy(play, w.copy, { x = lerp(a.x, bx, pull), y = lerp(a.y, by + tile * 0.1, pull), tile = tile },
+                { sx = 1 - pull, sy = 1 - pull, opacity = 1 - 0.3 * pull })
+        else
+            w.copy:hide()
+        end
+        local glow = tile * 0.9 * (1 + 0.1 * math.sin(ms / 50))
+        put(w.flash, bx, by, glow, glow, window(ms, 330, 820, 80, 120) * 0.8)
+        w.glint:setRotation(ms * 0.2)
+        put(w.glint, bx, by - tile * 0.15, tile * 0.6, tile * 0.6, window(ms, 1380, 1640, 40, 200))
+        drift(w.sparkles, ms, 1380, 1650, bx, by, tile, 0.7)
+        return HIDDEN
+    end,
+    ['in'] = function(play, a, ms)
+        local w, tile = play.w, a.tile
+        local bx, by = a.x, a.y - tile * 0.22
+        local y = by
+        if ms < 350 then
+            y = lerp(a.y - tile * 2.6, by, (ms / 350) ^ 2)
+        elseif ms < 520 then
+            y = by - math.sin(math.pi * (ms - 350) / 170) * tile * 0.25
+        end
+        local opened = ms >= 520
+        w.ball:setRotation(ms < 350 and ms * 1.2 or 0)
+        put(w.ball, bx, y, tile * 0.5, tile * 0.5, opened and 0 or 1)
+        put(w.open, bx, by - tile * 0.04, tile * 0.5, tile * 0.5, opened and (1 - span(ms, 750, 950)) or 0)
+        local burst = tile * (0.6 + 1.4 * span(ms, 520, 820))
+        put(w.flash, bx, by - tile * 0.3, burst, burst, window(ms, 520, 900, 40, 250))
+        if ms >= 540 then
+            local u = span(ms, 540, 860)
+            copyShader(w.copy, ms < 920 and WHITE or nil)
+            putCopy(play, w.copy, a, { sx = 0.1 + 0.9 * u, sy = 0.1 + 0.9 * u, opacity = 0.6 + 0.4 * u })
+        else
+            w.copy:hide()
+        end
+        drift(w.sparkles, ms, 600, 1150, bx, by - tile * 0.3, tile, 1.1)
+        return HIDDEN
+    end,
+}
+
+-- Fireworks: three rockets go up around the trainer and burst into rings of coloured sparks
+STYLES.fireworks = {
+    build = function(play)
+        local w = play.w
+        w.copy = copy(play)
+        w.rockets = images(play, ROCKETS, 'streak')
+        w.sparks = {}
+        for i = 1, ROCKETS do
+            w.sparks[i] = images(play, SPARKS, 'spark-' .. ((i - 1) % 3))
+        end
+    end,
+    fx = function(play, a, ms)
+        local w, tile = play.w, a.tile
+        local lift = ms < 500 and math.sin(ms / 500 * math.pi) * tile * 0.3 or 0
+        putCopy(play, w.copy, a, { dir = Directions.South, lift = lift })
+        local spots = { { -0.95, 2.2 }, { 0.95, 2.5 }, { 0.05, 3.0 } }
+        for i = 1, ROCKETS do
+            local start = 120 + (i - 1) * 380
+            local x, top = a.x + spots[i][1] * tile, a.y - spots[i][2] * tile
+            local up = span(ms, start, start + 380)
+            local y = lerp(a.y - tile * 0.3, top, 1 - (1 - up) ^ 2)
+            put(w.rockets[i], x, y + tile * 0.3, tile * 0.16, tile * 0.7, (ms >= start and up < 1) and 1 or 0)
+            local u = span(ms, start + 380, start + 1100)
+            for j, spark in ipairs(w.sparks[i]) do
+                local angle = (j - 1) * 2 * math.pi / SPARKS + i
+                local r = tile * 0.95 * (1 - (1 - u) ^ 3)
+                local size = tile * 0.26 * (1 - 0.4 * u)
+                put(spark, x + math.cos(angle) * r, y + math.sin(angle) * r + tile * 0.6 * u * u, size, size,
+                    (ms >= start + 380 and u < 1) and (1 - u ^ 2) or 0)
+            end
+        end
+        return HIDDEN
+    end,
+}
+
+-- Trophy: a gold cup rises over the trainer's head in a ring of light and shines
+STYLES.trophy = {
+    build = function(play)
+        local w = play.w
+        w.burst = image(play, 'burst')
+        w.copy = copy(play)
+        w.trophy = image(play, 'trophy')
+        w.glint = image(play, 'glint')
+        w.sparkles = images(play, SPARKLES, 'sparkle')
+    end,
+    fx = function(play, a, ms)
+        local w, tile = play.w, a.tile
+        local lift = (ms > 150 and ms < 600) and math.sin((ms - 150) / 450 * math.pi) * tile * 0.35 or 0
+        putCopy(play, w.copy, a, { dir = Directions.South, lift = lift })
+        local rise = span(ms, 100, 550)
+        local pop = rise < 1 and rise * (1.25 - 0.25 * rise) or 1 + 0.04 * math.sin(ms / 120)
+        local x, y = a.x, a.y - tile * (1.1 + 0.75 * (1 - (1 - rise) ^ 2)) + math.sin(ms / 200) * tile * 0.04
+        local shown = window(ms, 100, 1900, 120, 400)
+        w.burst:setRotation(ms * 0.04)
+        put(w.burst, x, y, tile * 1.7 * pop, tile * 1.7 * pop, shown * 0.75)
+        put(w.trophy, x, y, tile * 0.7 * pop, tile * 0.8 * pop, shown)
+        w.glint:setRotation(ms * 0.15)
+        put(w.glint, x - tile * 0.15, y - tile * 0.2, tile * 0.45, tile * 0.45, window(ms, 800, 1200, 100, 250))
+        drift(w.sparkles, ms, 500, 1500, x, y + tile * 0.2, tile, 0.8)
+        return HIDDEN
+    end,
+}
+
+-- Sweat Drop: gloom lines fall over the trainer's head and a big drop runs down beside it
+STYLES.sweatdrop = {
+    build = function(play)
+        local w = play.w
+        w.gloom = image(play, 'gloom')
+        w.sweat = image(play, 'sweat')
+    end,
+    fx = function(play, a, ms)
+        local w, tile = play.w, a.tile
+        local shown = window(ms, 0, 2000, 350, 400)
+        put(w.gloom, a.x, a.y - tile * 1.3 + span(ms, 0, 400) * tile * 0.1, tile * 0.95, tile * 0.65, shown * 0.9)
+        local pop = span(ms, 200, 380)
+        local slide = span(ms, 380, 1700)
+        put(w.sweat, a.x + tile * 0.36, a.y - tile * 1.3 + slide * tile * 0.3, tile * 0.3 * (0.6 + 0.4 * pop),
+            tile * 0.46 * (0.6 + 0.4 * pop), ms >= 200 and shown or 0)
+    end,
+}
+
+-- Ghost: the trainer goes grey and their spirit floats up out of them, sways, and is pulled back in
+STYLES.ghost = {
+    build = function(play)
+        local w = play.w
+        w.copy = copy(play)
+        w.sparkles = images(play, SPARKLES, 'sparkle')
+    end,
+    fx = function(play, a, ms)
+        local w, tile = play.w, a.tile
+        local up = span(ms, 200, 1100)
+        local back = span(ms, 1600, 1950)
+        local height = tile * 1.0 * (1 - (1 - up) ^ 2) * (1 - back ^ 2)
+        local sway = math.sin(ms / 220) * tile * 0.18 * up * (1 - back)
+        copyShader(w.copy, WHITE)
+        putCopy(play, w.copy, { x = a.x + sway, y = a.y, tile = tile },
+            { lift = height, opacity = ms >= 200 and 0.55 * (1 - back) or 0 })
+        drift(w.sparkles, ms, 1900, 2300, a.x, a.y - tile * 0.6, tile, 0.6)
+        return GREY
     end,
 }
 

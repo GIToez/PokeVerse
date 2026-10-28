@@ -20,6 +20,12 @@ it covers up to, and delete this file. One post.
 
 🎨 **Pick your styles**
 - Customise Trainer › **Warp Styles**: choose a style for Log in, Log out, Teleport, Victory, Defeat and Faint, and watch it on your trainer.
+
+🛒 **New in the Store**
+- **Warp Styles** category: watch each one play on your own trainer before you buy.
+  - **Poke Ball** (10 Soul Coins): a Poke Ball's red light pulls you in, three wobbles and a click. Works for log in, log out and teleport.
+  - **Fireworks** and **Trophy** victories, **Sweat Drop** and **Ghost** defeats (5 Soul Coins each).
+- **Pokemon costumes** in Trainer Outfits (15 Soul Coins each): Azurill or Blastoise, and Pikachu or Charizard (the costume depends on your trainer's sex).
 - More styles are coming.
 
 ⚙️ Options › Interface › **Warp styles**: Everyone, Only mine (everyone else shows the defaults), or Off.
