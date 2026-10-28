@@ -98,7 +98,7 @@ so. Items marked **To decide** need an answer before work starts.
 6. The NPCs with their own scripts, town by town.
 7. [Vocations](#6-vocations) (built).
 8. The [in-game wiki and tutorial](#9-in-game-wiki-and-tutorial) for the new dialogue.
-9. [Factions](#10-factions).
+9. [Organizations: clubs and factions](#10-organizations-clubs-and-factions).
 10. The [modernization audit](modernization-audit.md): the old keyword systems get windows,
     in its ranked order (Poke Mart, bank, travel picker and the rest; Nurse Joy needs no menu).
     - **Poke Mart window first (built, PR #161).** {trade} at the 158 shop NPCs opens it on
@@ -641,7 +641,7 @@ plates and tokens as rank-up quest costs or for crafting.
 6. Every player keeps the normal catching, battling, breeding, healing and exploring.
 7. Vocation perks never bypass PvP rules.
 8. One vocation per character.
-9. [Factions](#10-factions) are a separate system.
+9. [Organizations](#10-organizations-clubs-and-factions) (clubs and factions) are a separate system.
 
 | Player level | Rank |
 | --- | --- |
@@ -1052,15 +1052,49 @@ Not fixed yet:
 - Checked since: the slot machines are Eugene Oliver's in Celadon and Dusty Kaylyn's in
   Mauville, and the Quest Log lists PokeVerse quests. Still not checked: what Rocket Grunts give.
 
-## 10. Factions
+## 10. Organizations: clubs and factions
 
-Team Rocket and other factions, separate from vocations:
+Organizations are a progression of their own, separate from vocations and levels. There are two
+kinds:
 
-- any vocation can join any faction;
-- players earn faction points from faction tasks, like the Pokémon Ranger tasks in the
-  games, and the points raise their faction rank;
-- faction reputation and ranks are separate from vocation ranks;
-- faction membership does not change vocation bonuses.
+| Kind | Organizations |
+|---|---|
+| Clubs | Ranger Club, Pokémon Fan Club |
+| Factions | Team Rocket, International Police |
+
+Agreed so far (from before):
+
+- any vocation can join any organization;
+- players earn points from the organization's tasks, like the Pokémon Ranger tasks in the
+  games, and the points raise their rank there;
+- organization ranks are separate from vocation ranks;
+- membership does not change vocation bonuses.
+
+**Clubs.** The Ranger Club is in the game today (`lib/ps/config/001-rangerClub.lua`,
+`npc/scripts/rangerClub.lua`): tasks for points and four ranks, Rookie (level 10), Mentor
+(25), Coordinator (50) and Coach (75), with extra boss loot. The Pokémon Fan Club would be a
+second club in the same mould, for example tasks about friendship, contests, showing off
+Pokémon and helping other trainers. A player could belong to several clubs.
+
+**Factions.** Team Rocket and the International Police are on opposite sides, so a player
+belongs to one of them at most. Switching sides would cost something (rank, points or a waiting
+time).
+
+**To decide:**
+
+- How faction progress works:
+  - **reputation:** points from faction tasks, like the clubs;
+  - **alignment:** one scale from Rocket to Police that quests and choices move (helping a
+    grunt or turning one in), where joining needs enough lean to one side;
+  - **PvP:** points for beating players of the other faction, maybe only in marked zones or
+    during faction events (Rocket takeovers in [Ideas](#18-ideas-not-agreed) could become one).
+  These can mix, for example reputation for ranks and PvP for a weekly faction score.
+- What each rank unlocks: outfits, titles on the Trainer Card, shops, areas, faction quests.
+- Where players sign up (an NPC in the Rocket base and one at a police station) and the level to
+  join.
+- Whether the Ranger Club ranks stay as they are or move to the shared organization ranks.
+- A window for it, for example an Organizations tab on the Trainer Card with each club and
+  faction, the rank, the points to the next rank and the current tasks.
 
 ## 11. Bug fixes and small ideas
 
@@ -1380,7 +1414,7 @@ are changed to the new level (agreed); the rest are kept.
 | Elite Four | 95 | `lib/ps/systems/049-eliteFour.lua` | keep, or 80 if the badges already gate it |
 | Tournaments | by Pokémon level (0–100, 20–40, 41–50, 45–100, 50–100, 51–65, 66–80, 80–100); trainer level at least the minimum + 5 (`level - 5 < minLevel` refuses); Elite and Master are commented out | `XML/tournaments.xml`, `npc/scripts/tournament.lua` | keep |
 | Daily and weekly tasks | Beginner 1, Easy 15, Medium 35, Hard 55, Extreme 80; two task kinds need 10 | `lib/ps/systems/062-dailyTasks.lua` | keep |
-| Ranger Club ranks | Rookie 10, Mentor 25, Coordinator 50, Coach 75 | `lib/ps/config/001-rangerClub.lua` | keep (becomes [factions](#10-factions)) |
+| Ranger Club ranks | Rookie 10, Mentor 25, Coordinator 50, Coach 75 | `lib/ps/config/001-rangerClub.lua` | keep (becomes an [organization](#10-organizations-clubs-and-factions)) |
 | Referral reward | the friend reaches 50 | `lib/ps/systems/035-referral.lua` | 30 |
 | Quests | 258 have no level; the rest 10–100, with 76 at level 70 | `lib/ps/config/003-quest.lua` | check the level 70 group |
 | Professor Josh Rock and William Rock quests | 80 | `npc/scripts/quest_*Rock.lua` | keep |
