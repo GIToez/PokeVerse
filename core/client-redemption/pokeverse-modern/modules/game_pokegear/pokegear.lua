@@ -36,13 +36,49 @@ local function applyWalkLock()
 end
 
 -- the top bar buttons for the side windows Pokegear replaces
-local REPLACED_BUTTONS = { 'miniMap', 'battleButton' }
+local REPLACED_BUTTONS = { 'miniMap', 'battleButton', 'skillsButton' }
 
 local function applyTopBar()
     for _, id in ipairs(REPLACED_BUTTONS) do
         local button = Pokegear.topButton(id)
         if button then
             button:setVisible(not active)
+        end
+    end
+end
+
+-- The Skills window goes away in Pokegear: experience and Trainer Spirit are on the HUD (experience.lua)
+-- and the trainer skills on the Trainer card. Classic gets it back as it was.
+local skillsHidden, skillsWasOpen = false, false
+
+local function skillsWindow()
+    local skills = modules.game_skills
+    return skills and skills.skillsWindow
+end
+
+local function keepSkillsHidden(window)
+    if active then
+        window:hide()
+    end
+end
+
+local function applySkills()
+    local window = skillsWindow()
+    if not window then
+        return
+    end
+    if active and g_game.isOnline() then
+        if not skillsHidden then
+            skillsHidden = true
+            skillsWasOpen = window:isVisible()
+            connect(window, { onOpen = keepSkillsHidden })
+        end
+        window:hide()
+    elseif skillsHidden then
+        skillsHidden = false
+        disconnect(window, { onOpen = keepSkillsHidden })
+        if skillsWasOpen and g_game.isOnline() then
+            window:show()
         end
     end
 end
@@ -105,6 +141,7 @@ local function apply()
     Bag.apply(active)
     Sockets.apply(active)
     Experience.apply(active)
+    applySkills()
     Pokegear.layoutColumn()
 end
 

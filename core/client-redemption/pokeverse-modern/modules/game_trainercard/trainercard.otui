@@ -191,6 +191,42 @@ TcTrophy < UIButton
     margin-top: 6
     visible: false
 
+// One trainer skill on the Overview: name, level and progress, and its bar
+TcSkillRow < UIWidget
+  height: 26
+  phantom: false
+
+  TcMuted
+    id: label
+    anchors.top: parent.top
+    anchors.left: parent.left
+
+  TcValue
+    id: value
+    anchors.top: parent.top
+    anchors.right: parent.right
+
+  UIWidget
+    id: bar
+    height: 6
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-bottom: 2
+    image-source: /modules/game_pokegear/images/bar
+    image-border: 3
+    phantom: true
+
+    UIWidget
+      id: fill
+      anchors.left: parent.left
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      image-source: /modules/game_pokegear/images/bar_fill
+      image-border: 3
+      image-color: #5aa0ff
+      phantom: true
+
 // One Statistics line
 TcStatRow < UIWidget
   height: 22
@@ -754,12 +790,44 @@ TrainerCardWindow < UIWindow
         phantom: true
 
     TcPanel
+      id: skillsPanel
+      width: 206
+      height: 126
+      anchors.top: badgesPanel.bottom
+      anchors.right: parent.right
+      margin-top: 8
+
+      TcHeading
+        id: heading
+        !text: tr('Skills')
+        icon: /modules/game_trainercard/images/icon_level
+
+      UIWidget
+        id: list
+        anchors.top: heading.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        margin-top: 6
+        phantom: true
+        layout:
+          type: verticalBox
+          spacing: 3
+
+      TcMuted
+        id: hidden
+        !text: tr('Hidden by the trainer')
+        anchors.centerIn: list
+        visible: false
+
+    TcPanel
       id: trophiesPanel
       height: 126
       anchors.top: badgesPanel.bottom
       anchors.left: parent.left
-      anchors.right: parent.right
+      anchors.right: skillsPanel.left
       margin-top: 8
+      margin-right: 8
 
       TcHeading
         id: heading

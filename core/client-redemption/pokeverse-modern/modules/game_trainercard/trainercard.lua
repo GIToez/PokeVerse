@@ -226,8 +226,14 @@ local function fillInfo()
         tr('%s hours', formatNumber((card.playTime or 0) / 3600)), hiddenTime and MUTED_COLOR or nil)
     local since = tonumber(card.since) or 0
     infoRow(panel.col2, 'calendar', tr('Trainer since'), since > 0 and os.date('%b %d, %Y', since) or '-')
-    local duels = card.duels or {}
-    infoRow(panel.col2, 'duel', tr('Duels'), tr('%s won  \183  %s lost', formatNumber(duels.won), formatNumber(duels.lost)), '#ffd75a')
+    local duels, battles = card.duels or {}, card.battles
+    local duelRow = infoRow(panel.col2, 'duel', tr('Duels'), battles and
+        tr('%s - %s  \183  NPC %s - %s', formatNumber(duels.won), formatNumber(duels.lost), formatNumber(battles.won),
+           formatNumber(battles.lost)) or
+        tr('%s won  \183  %s lost', formatNumber(duels.won), formatNumber(duels.lost)), '#ffd75a')
+    duelRow:setPhantom(false)
+    duelRow:setTooltip(battles and tr('Duels: %s won, %s lost\nNPC battles: %s won, %s lost', formatNumber(duels.won),
+        formatNumber(duels.lost), formatNumber(battles.won), formatNumber(battles.lost)) or nil)
     infoRow(panel.col2, 'respect', tr('Respect'), formatNumber(card.respect), '#ff6f91')
 end
 
@@ -307,6 +313,8 @@ local function fillTrophies()
     local keys = hidden and {} or trophyKeys()
     local width = panel.list:getWidth()
     local cell = math.floor((width - 5 * 8) / 6)
+    -- next to the Skills box the tiles are too narrow for a name; it stays in the tooltip
+    local narrow = cell < 80
     local shown = edit and math.min(6, #keys + 1) or #keys
     for i = 1, shown do
         local tile = g_ui.createWidget('TcTrophy', panel.list)
@@ -320,6 +328,7 @@ local function fillTrophies()
             tile.level:setText(tr('Lv. %d', pokemon.level or 0))
             setSex(tile.sex, pokemon.sex)
             tile.name:setText(pokemon.name or '')
+            tile.name:setVisible(not narrow)
             tile:setTooltip(pokemon.name or '')
             if edit then
                 tile.remove:show()
@@ -336,6 +345,7 @@ local function fillTrophies()
             tile.portrait:hide()
             tile.sex:hide()
             tile.add:show()
+            tile.addText:setText(narrow and tr('Add') or tr('Add a trophy'))
             tile.addText:show()
             tile.onClick = function() pickTrophies() end
         end
@@ -371,6 +381,36 @@ local function fillStats()
         widget.icon:setImageSource(IMAGES .. 'icon_' .. row[1])
         widget.label:setText(tr(row[2]))
         widget.value:setText(row[3](card.stats))
+    end
+end
+
+local SKILL_ROWS = {
+    { 'catching', 'Catching', '#ff6f6f' },
+    { 'fishing', 'Fishing', '#5aa0ff' },
+    { 'headbutting', 'Headbutting', '#8fd66a' },
+}
+
+local function fillSkills()
+    local panel = window.right.skillsPanel
+    panel.list:destroyChildren()
+    local hidden = statsHidden() or card.skills == nil
+    panel.hidden:setVisible(hidden)
+    if hidden then
+        return
+    end
+    for _, entry in ipairs(SKILL_ROWS) do
+        local skill = card.skills[entry[1]] or {}
+        local level, percent = tonumber(skill.level) or 0, math.max(0, math.min(100, tonumber(skill.percent) or 0))
+        local row = g_ui.createWidget('TcSkillRow', panel.list)
+        row.label:setText(tr(entry[2]))
+        row.value:setText(tr('Lv %d  \183  %d%%', level, percent))
+        row:setTooltip(tr('%s level %d, %d%% of the way to level %d', tr(entry[2]), level, percent, level + 1))
+        row.bar.fill:setImageColor(entry[3])
+        row.bar.fill:setVisible(percent > 0)
+        row.bar.onGeometryChange = function(bar)
+            bar.fill:setWidth(math.max(6, math.floor(bar:getWidth() * percent / 100)))
+        end
+        row.bar.fill:setWidth(math.max(6, math.floor(row.bar:getWidth() * percent / 100)))
     end
 end
 
@@ -601,6 +641,7 @@ local function fill()
     fillBadges()
     fillTrophies()
     fillStats()
+    fillSkills()
     fillAbout()
     fillButtons()
     if tab ~= 'overview' then
