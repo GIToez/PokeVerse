@@ -4,9 +4,10 @@
     scripts/mapper/edit_tohjo_falls.py [--map mapper/map/dev.otbm] [--out <same>] [--spawns <map-spawn.xml>]
 
 Outside, under the ridge where the Tohjo river comes out:
-  falls     two 7-tile falls from a tarn on the mountain (floor 4), built column by column like Kanto's
+  falls     two 6-tile falls from a tarn on the mountain (floor 4), built column by column like Kanto's
             (spray on top, the face down through floors 5-7, foam a tile south) so Waterfall still works,
-            with a 3-tile rock gap between them; a spring on the summit feeds the tarn by a stream
+            with a 6-tile gap between them, open down to the ledge so a player there shows; a spring
+            on the summit feeds the tarn by a stream
   ledge     the path along the cliff's foot behind both falls. Floors 5 and 6 over it hold only the
             falling water (no ground), so the client keeps drawing the curtain over a player there
   cuts      bends through a rock spur each side, open to the sky all along so nothing hides the way:
@@ -59,7 +60,8 @@ STEP_E, STEP_W, STAIRS_DOWN_HIDDEN = 3679, 3681, 459
 LEDGE = 667                     # the path behind the falls (floor 7)
 Y = LEDGE + 1                   # the falls' row
 TOP = 4                         # the tarn's floor
-FALLS = [(2893, 2899), (2904, 2910)]
+FALLS = [(2893, 2898), (2905, 2910)]
+GAP = range(FALLS[0][1] + 1, FALLS[1][0])
 FX0, FX1 = FALLS[0][0], FALLS[-1][1]
 LIP = Y
 WEST, EAST = (2884, 2890), (2920, 2926)  # the old cave mouths' recesses, rock again
@@ -184,9 +186,9 @@ def design(tiles, house_src, thing_attrs):
     for x in range(FX0 - 3, FX1 + 4):         # nothing south of the lip up there, so the falls show
         for y in range(LIP + 1, LIP + 4):
             unset((x, y, TOP))
-    for x in range(FALLS[0][1] + 1, FALLS[1][0]):
-        for y in (LIP, LIP - 1):
-            setb(x, y, TOP, TOPG)
+    for x in GAP:                             # rock between the falls, none over the ledge (it would hide the floors above)
+        setb(x, LIP, TOP, TOPG)
+        unset((x, LIP - 1, TOP))
 
     # floor 7: the ledge along the mountain's foot; behind the falls one tile, rock behind it
     for lo, hi in (WEST, EAST):
@@ -199,7 +201,7 @@ def design(tiles, house_src, thing_attrs):
                 continue
             setb(x, y, 7, TOPG)
     for x in range(FX0 - 3, FX1 + 3):
-        setb(x, Y, 7, MOUNTAIN)
+        setb(x, Y, 7, MOUNTAIN if x not in GAP else TOPG)
     for x in range(FX0 - 3, FX1 + 3):         # the plunge pool
         for y in range(Y + 1, Y + 4):
             if y < Y + 3 or FX0 <= x <= FX1:
@@ -398,7 +400,7 @@ def design(tiles, house_src, thing_attrs):
                 return True
         return False
 
-    walk = [(x, y) for x in range(FX0 - 3, FX1 + 1) for y in (LEDGE - 1, LEDGE) if brush.get((x, y, 7)) is TOPG]
+    walk = [(x, y) for x in range(FX0 - 3, FX1 + 1) for y in (LEDGE - 1, LEDGE, Y) if brush.get((x, y, 7)) is TOPG]
     for _ in range(40):
         changed = False
         for (x, y) in walk:
