@@ -221,8 +221,12 @@ items in and out (to the ground, a hotkey, the PC, the GTS or another bag).
   | You | Gold |
   | Staff | Red badge |
 
-- **The Server Log** turns into toasts that slide away (catches, loot), plus an Activity list behind a
-  bell in the top bar.
+- **Activity** (built): milestones pop up as toasts above the move bar for five seconds, and an
+  Activity list behind a bell in the top bar keeps the last 100, newest first, with a count of the
+  unread ones. Only milestones go there, not everything in the Server Log: a GTS sale, a catch, an
+  evolution, an egg hatching, a task done, an NPC battle won. Level-ups (yours and your Pokemon's)
+  and finished quests already have a banner, so they go in the list without a toast. Everything
+  else stays in chat and the Server Log as before, and Classic is unchanged.
 
 **Equipment.** There is no equipment window. Each slot moves to where it is used:
 
