@@ -74,6 +74,15 @@ function Pokegear.fitText(label, text)
     fit()
 end
 
+-- Small screens (a 1366x768 or 1280x720 laptop) get the compact sizes: a smaller ring, a shorter chat
+-- and fewer rows, so the map and your trainer stay in view. 1600x900 and up keep the full sizes.
+local COMPACT_WIDTH, COMPACT_HEIGHT = 1500, 860
+
+function Pokegear.isCompact()
+    local root = g_ui.getRootWidget()
+    return root ~= nil and (root:getWidth() < COMPACT_WIDTH or root:getHeight() < COMPACT_HEIGHT)
+end
+
 -- the top bar's own panel: other widgets share some of these ids
 function Pokegear.topButton(id)
     local mainPanel = modules.game_mainpanel

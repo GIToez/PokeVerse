@@ -177,6 +177,25 @@ function refresh()
 end
 
 local startEvent
+local compact
+
+-- a window resize (or a phone turning) across the compact size re-fits every Pokegear window
+local function onRootGeometryChange()
+    local now = Pokegear.isCompact()
+    if now == compact then
+        return
+    end
+    compact = now
+    if not active or not g_game.isOnline() then
+        return
+    end
+    Hub.relayout()
+    Chat.relayout()
+    Nearby.relayout()
+    Bag.relayout()
+    Social.relayout()
+    Pokegear.layoutColumn()
+end
 
 local function onGameStart()
     -- after game_console has restored the saved Chat On / Chat Off
@@ -213,6 +232,8 @@ function init()
     Sockets.init()
     Experience.init()
     active = isActive()
+    compact = Pokegear.isCompact()
+    connect(rootWidget, { onGeometryChange = onRootGeometryChange })
     connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     if g_game.isOnline() then
         onGameStart()
@@ -220,6 +241,7 @@ function init()
 end
 
 function terminate()
+    disconnect(rootWidget, { onGeometryChange = onRootGeometryChange })
     disconnect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     removeEvent(startEvent)
     startEvent = nil

@@ -10,7 +10,7 @@ Bag = {}
 
 local POSITION_SETTING = 'pokegearBagPosition'
 local KEY = { 'Windows', 'Show/hide the Bag' }
-local MAX_VISIBLE_ROWS = 5
+local MAX_VISIBLE_ROWS, COMPACT_ROWS = 5, 4 -- fewer on small screens (Pokegear.isCompact)
 local COLUMNS = 6
 local CELL, CELL_SPACING = 42, 3
 -- a bag asked for by the Bag; the server answers with an open container shortly after
@@ -327,7 +327,7 @@ fillGrid = function()
         end
     end
     local rows = math.max(1, math.ceil(shown / COLUMNS))
-    local height = math.min(rows, MAX_VISIBLE_ROWS) * (CELL + CELL_SPACING) - CELL_SPACING
+    local height = math.min(rows, Pokegear.isCompact() and COMPACT_ROWS or MAX_VISIBLE_ROWS) * (CELL + CELL_SPACING) - CELL_SPACING
     grid:setHeight(height)
     window.gridScroll:setHeight(height)
     window:setHeight(8 + 24 + 16 + 36 + 10 + 18 + 8 + 24 + 8 + 16 + 4 + math.max(height, window.rail:getHeight()) + 10)
@@ -923,7 +923,8 @@ local function build()
         window:addAnchor(AnchorTop, 'pokegearHub', AnchorTop)
         window:addAnchor(AnchorRight, 'pokegearHub', AnchorLeft)
         window:setMarginTop(130)
-        window:setMarginRight(-6)
+        -- clear of Nearby under the small ring
+        window:setMarginRight(Pokegear.isCompact() and 4 or -6)
     end)
 end
 
@@ -1189,6 +1190,14 @@ end
 
 function Bag.backpackContainer()
     return containerById(tabs[1])
+end
+
+-- the screen crossed the compact size
+function Bag.relayout()
+    if Bag.isOpen() then
+        restorePosition()
+        fillGrid()
+    end
 end
 
 function Bag.isOpen()

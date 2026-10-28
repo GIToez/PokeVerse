@@ -9,8 +9,8 @@ local OPEN_SETTING = 'pokegearChatOpen'
 local MAX_ROWS = 120
 local MAX_FLOATS = 5
 local FLOAT_SECONDS = 8
-local OPEN_WIDTH = 540
-local OPEN_HEIGHT = 330
+local OPEN_WIDTH, OPEN_HEIGHT = 540, 330
+local COMPACT_WIDTH, COMPACT_HEIGHT = 480, 230 -- small screens (Pokegear.isCompact)
 local FOLDED_WIDTH = 400
 
 -- text colours, and the fill and text of each channel's tag
@@ -555,8 +555,9 @@ local function applyOpen()
         window:setPadding(10)
         window:setPaddingLeft(12)
         window:setPaddingRight(12)
-        window:setWidth(OPEN_WIDTH)
-        window:setHeight(OPEN_HEIGHT)
+        local compact = Pokegear.isCompact()
+        window:setWidth(compact and COMPACT_WIDTH or OPEN_WIDTH)
+        window:setHeight(compact and COMPACT_HEIGHT or OPEN_HEIGHT)
         clearFloats()
         unreadFolded = 0
         fillList()
@@ -574,6 +575,11 @@ local function applyOpen()
         window.input:setMarginRight(8)
     end
     refreshInput()
+end
+
+-- the screen crossed the compact size
+function Chat.relayout()
+    applyOpen()
 end
 
 function Chat.setOpen(on)
