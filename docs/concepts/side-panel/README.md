@@ -115,7 +115,7 @@ Coordinates move to a tooltip on the map (or the staff view). Level and experien
   starts: the ring, the chat, Nearby, Tracking, the Bag, Social and loot.
 - **Nearby** keeps the PokeVerse Battle List's filters and sorts:
   - filters: Wild, Trainers, NPCs, Party (`hideMonsters`, `hidePlayers`, `hideNPCs`, `hideParty`);
-  - sorts: distance, HP, name, level;
+  - sorts: distance, HP, name, level; a second click on the lit sort flips it (the arrow shows which way);
   - Ctrl+B still toggles it.
 - **Minimap ring.** Weather is left to the top bar. On the right of the ring: + and − to zoom, and
   ▲ and ▼ to go up or down a floor, with the floor shown between them. Around the left: Bag (B),
@@ -190,9 +190,10 @@ items in and out (to the ground, a hotkey, the PC, the GTS or another bag).
   Other is kept for what's left. They go into `GTS.CATEGORIES`, so the PC and the GTS pick them up too.
 
 **Chat.**
-- **WASD always walks.** Enter opens the chat line, you type, Enter sends it, and you're straight back
-  to walking (`returnDisablesChat`, already on). The single-letter keys (B, E, F, X, R) work because of
-  this.
+- **WASD always walks.** Enter, a click on the line or the Send button opens the chat line, you type,
+  Enter (or Send) sends it, and you're straight back to walking; Escape or an empty Enter drops the line.
+  The card binds Enter and Escape itself (`chat.lua`), since `game_console`'s own keys sit on the
+  hidden bottom panel. The single-letter keys (B, E, F, X, R) work because of this.
   - Pokegear has no Chat On / Chat Off button or setting: it always runs with `wasdMode` on.
   - Today a new install starts with Chat On (`wasdMode` in `game_console` defaults to false). Classic
     keeps that, and keeps its Chat On / Chat Off button.
