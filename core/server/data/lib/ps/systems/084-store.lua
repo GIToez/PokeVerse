@@ -265,7 +265,7 @@ Store.offer = function(id)
 end
 
 local function send(cid, data)
-    doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.STORE, JSON.encode(data))
+    doSendPlayerLongExtendedOpcode(cid, EXTENDED_IDS.STORE, JSON.encode(data))
 end
 
 local function result(cid, ok, text, ...)
