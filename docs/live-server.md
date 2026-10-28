@@ -56,6 +56,9 @@ secret; secrets are hidden in the logs):
 | Secret | `POKEVERSE_RSA_PRIVATE_KEY` | the private login key, see [Login key](#login-key) (required for `verify` and `deploy`) |
 | Secret | `GMAIL_APP_PASSWORD` | Google app password of the account that sends account emails, see [Account emails](#account-emails) |
 | Variable | `GMAIL_ADDRESS` | that Gmail address (`thepokeversemmo@gmail.com`) |
+| Secret | `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET` | the PayPal app's keys for buying Verse Orbs, see [payments.md](payments.md#live-server) |
+| Variable | `PAYPAL_ENV` | optional, `sandbox` (default) or `live` (must match the keys) |
+| Variable | `PAYPAL_WEBHOOK_ID`, `PAYMENTS_HOST` | optional (default: the service creates the webhook; `account.pokeverse.quest`) |
 | Variable | `OVH_HOST` | optional, server IP address (default `40.160.145.24`, the current OVH server) |
 | Variable | `LIVE_TIMEZONE` | e.g. `America/Los_Angeles` (server clock for the daily restart) |
 | Variable | `LIVE_DAILY_RESTART_TIME` | optional, `HH:MM`, default `00:00` (midnight in `LIVE_TIMEZONE`) |
@@ -73,8 +76,13 @@ production token: two bots with one token disconnect each other.
 ### 4. Firewall
 
 In the OVH control panel, if the network firewall is enabled, allow TCP **7564** (login)
-and **8548** (game). Keep 3306 (database) and 7199 (Discord bridge) closed; they only
-listen on 127.0.0.1 anyway.
+and **8548** (game), and **80** and **443** for the payment page (Caddy gets its HTTPS
+certificate on 80). Keep 3306 (database), 7199 (Discord bridge) and 7200 (payment service)
+closed; they only listen on 127.0.0.1 anyway.
+
+**Bootstrap version 2** (payments) adds Caddy, `python3-pymysql` and the payment service.
+A server set up before it keeps working, with buying Verse Orbs off: run step 2 again
+(same command) to turn it on. See [payments.md](payments.md#live-server).
 
 ### 5. First deployment
 
@@ -139,7 +147,7 @@ Every push and pull request builds both packages and runs the rehearsal, which i
 everything on a fresh Ubuntu 24.04 machine and tests login, character creation, movement,
 saved positions, GM restarts with warnings, crash recovery, the daily restart, an update
 with a player online, automatic rollback of a broken release, backup and restore, account
-emails through a local SMTP server, and the bot deployment. A live `verify`/`deploy` only runs after its rehearsal passed.
+emails through a local SMTP server, the payment service behind Caddy, and the bot deployment. A live `verify`/`deploy` only runs after its rehearsal passed.
 
 ## Login key
 
@@ -241,6 +249,8 @@ GM commands (Gamemaster and above):
   shared/config.local.lua              live settings, database password (never overwritten)
   shared/rsa.key                       private login key (p, q, d; from POKEVERSE_RSA_PRIVATE_KEY)
   shared/mail.env                      Gmail sender and app password (from GMAIL_ADDRESS, GMAIL_APP_PASSWORD)
+  shared/payments.env                  PayPal keys (from PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_ENV)
+  current/payments/                    the payment service (pokeverse-payments, behind Caddy)
   shared/logs/                         game server logs
   backups/                             database backups
   discord/current, discord/shared/     Discord bot release and its settings (.env.production)

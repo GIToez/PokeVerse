@@ -7,6 +7,8 @@
 	<globalevent name="serverRestart" interval="0" event="script" value="serverRestart.lua"/>
 	<!-- interval 0 = every second; ends /doubleexp events, see data/lib/ps/systems/058-serverExpEvent.lua -->
 	<globalevent name="serverExpEvent" interval="0" event="script" value="serverExpEvent.lua"/>
+	<!-- Verse Orbs bought with PayPal: the messages the payment service leaves, see data/lib/ps/systems/101-payments.lua -->
+	<globalevent name="payments" interval="5" event="script" value="../../lib/ps/events/globalevents/payments.lua"/>
 	
 	<globalevent name="Gameplay Tutorial Rattata" interval="15" event="script" value="../../lib/ps/events/globalevents/gameplayTutorialRattata.lua"/>
 	

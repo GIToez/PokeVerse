@@ -601,6 +601,19 @@ def account_request(args, action, account, password, name):
     return at.request(args, action, account, password, name)
 
 
+def closed_reply(bridge, timeout=3):
+    """What a replaced session receives next: None once the server has closed it. Keepalive pings sent
+    just before the close are skipped."""
+    deadline = time.time() + timeout
+    while True:
+        try:
+            msg = bridge.read(timeout=max(0.1, deadline - time.time()))
+        except (socket.timeout, OSError):
+            return "timeout"
+        if msg is None or msg.get("type") != "ping" or time.time() >= deadline:
+            return msg
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--host", default="127.0.0.1")
@@ -827,17 +840,11 @@ def main():
     check("reconnect accepted", b2.welcome and b2.welcome.get("bootId") == boot)
     r = b2.request("server.status")
     check("requests work after reconnect", r and r["ok"])
-    try:
-        old = b.read(timeout=3)
-    except (socket.timeout, OSError):
-        old = "timeout"
+    old = closed_reply(b)
     check("previous session closed on reconnect", old is None, str(old))
     if args.boost_test:
         b3 = boost_tests(b2, args)
-        try:
-            old = b2.read(timeout=3)
-        except (socket.timeout, OSError):
-            old = "timeout"
+        old = closed_reply(b2)
         check("boost test reconnect replaced the session", old is None and b3.welcome.get("bootId") == boot, str(old))
 
     print()

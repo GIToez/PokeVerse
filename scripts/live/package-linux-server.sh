@@ -30,6 +30,9 @@ cp "$root/core/database/20-world-defaults.sql" "$root/core/database/30-account-t
 cp "$root/scripts/live/pokeverse-ctl" "$root/scripts/live/bootstrap-ovh.sh" \
    "$root/scripts/protocol-test.py" "$root/scripts/account-test.py" "$root/scripts/live/rsa-key.py" "$pkg/tools/"
 cp "$root/scripts/live/systemd/"* "$pkg/tools/systemd/"
+mkdir -p "$pkg/payments"
+cp -r "$root/core/payments/." "$pkg/payments/"
+find "$pkg/payments" -name __pycache__ -prune -exec rm -rf {} +
 chmod +x "$pkg/pokeverse-server" "$pkg/tools/pokeverse-ctl" "$pkg/tools/bootstrap-ovh.sh"
 
 cat > "$pkg/RELEASE" <<EOF

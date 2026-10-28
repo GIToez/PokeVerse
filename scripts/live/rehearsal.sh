@@ -18,11 +18,13 @@ smtp_pid=""
 trap '[ -z "$smtp_pid" ] || kill "$smtp_pid" 2>/dev/null || true' EXIT
 ctl() { sudo -u pokeverse /opt/pokeverse/current/tools/pokeverse-ctl "$@"; }
 journal() { sudo journalctl -u pokeverse-server.service --no-pager "$@"; }
+payments_journal() { sudo journalctl -u pokeverse-payments.service --no-pager "$@"; }
 step() { echo; echo "::group::REHEARSAL: $*"; }
 endstep() { echo "::endgroup::"; }
 fail() {
   echo "::error::REHEARSAL FAILED: $*"
   journal -n 200 || true
+  payments_journal -n 40 || true
   echo "--- $(date) ($(TZ=${PV_TIMEZONE:-UTC} date +%H:%M:%S) ${PV_TIMEZONE:-UTC}), NRestarts $(restarts)"
   sudo sed -n '/BEGIN DEPLOYMENT SETTINGS/,/END DEPLOYMENT SETTINGS/{s/^smtpPassword = .*/smtpPassword = (hidden)/;p}' /opt/pokeverse/shared/config.local.lua || true
   sudo cat /opt/pokeverse/shared/server.env 2>/dev/null || true
@@ -55,8 +57,9 @@ ssh-keygen -q -t ed25519 -N "" -C rehearsal -f "$work/key"
 endstep
 
 step "bootstrap-ovh.sh (twice: it must be safe to run again)"
-sudo bash "$root/scripts/live/bootstrap-ovh.sh" "$(cat "$work/key.pub")"
-sudo bash "$root/scripts/live/bootstrap-ovh.sh" "$(cat "$work/key.pub")" > "$work/bootstrap2.log"
+# Caddy serves localhost with its own certificate here: no Let's Encrypt requests from CI.
+sudo PAYMENTS_HOST=localhost bash "$root/scripts/live/bootstrap-ovh.sh" "$(cat "$work/key.pub")"
+sudo PAYMENTS_HOST=localhost bash "$root/scripts/live/bootstrap-ovh.sh" "$(cat "$work/key.pub")" > "$work/bootstrap2.log"
 grep -q "Keeping the existing database password" "$work/bootstrap2.log" || fail "second bootstrap run replaced the secrets"
 [ "$(sudo grep -c 'restrict ssh-ed25519' /opt/pokeverse/.ssh/authorized_keys)" = 1 ] || fail "deploy key added twice"
 endstep
@@ -87,6 +90,9 @@ python3 -u "$root/scripts/testing/fake-smtp.py" --port 2526 --mailbox "$mail/box
 smtp_pid=$!
 export PV_MAIL_USER=rehearsal@pokeverse.test PV_MAIL_PASSWORD=rehearsal-app-pass
 export PV_SMTP_HOST=localhost PV_SMTP_PORT=2526 PV_SMTP_CA_FILE=/opt/pokeverse/rehearsal-smtp-ca.pem
+# Placeholder PayPal keys: PayPal refuses them, and the service must still run and keep the game server out of it.
+export PV_PAYPAL_CLIENT_ID=rehearsal-paypal-client-id-0000 PV_PAYPAL_CLIENT_SECRET=rehearsal-paypal-secret-00000000
+export PV_PAYMENTS_HOST=localhost PV_PAYMENTS_CHECK=false
 
 step "Wrong host key is refused"
 if PV_SSH_HOST_KEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBadBadBadBadBadBadBadBadBadBadBadBadBadBadBad" deploy status; then
@@ -110,6 +116,25 @@ for table in player_daily_tasks player_task_boards player_item_discoveries playe
   [ "$(sudo mariadb -N pokeverse -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'pokeverse' AND table_name = '$table'")" = 1 ] \
     || fail "the schema update did not create $table"
 done
+endstep
+
+step "payment service behind Caddy (HTTPS)"
+[ "$(sudo stat -c %a /opt/pokeverse/shared/payments.env)" = 600 ] || fail "the PayPal settings are not private"
+sudo grep -q '^paymentsUrl = "https://localhost"$' /opt/pokeverse/shared/config.local.lua || fail "paymentsUrl was not written"
+systemctl is-active --quiet caddy || fail "Caddy is not running"
+health=""
+for _ in $(seq 30); do
+  health=$(curl -sk --max-time 5 https://localhost/healthz || true)
+  [ "$health" = ok ] && break
+  sleep 1
+done
+[ "$health" = ok ] || fail "the payment service does not answer through Caddy"
+code=$(curl -sk -o /dev/null -w '%{http_code}' "https://localhost/buy?t=00000000000000000000000000000000")
+[ "$code" = 410 ] || fail "an unknown buy link answered $code instead of 410"
+payments_journal | grep -q "Payments listening on 127.0.0.1:7200" || fail "the payment service is not listening"
+! payments_journal | grep -q "$PV_PAYPAL_CLIENT_SECRET" || fail "the PayPal secret reached the log"
+! ss -ltn | grep -q '0.0.0.0:7200\|\*:7200\|\[::\]:7200' || fail "the payment service listens beyond this machine"
+ctl status | grep "Payments:"
 endstep
 
 step "players: login, movement, persistence"

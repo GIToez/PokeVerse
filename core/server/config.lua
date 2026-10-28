@@ -153,6 +153,11 @@
 	smtpFromName = "PokeVerse"
 	smtpCaFile = ""
 
+	-- Buying Verse Orbs with PayPal (docs/payments.md)
+	-- NOTE: paymentsUrl is the address of the payment service (core/payments/payments.py) that the Store's
+	-- Buy Verse Orbs button opens; empty hides the button. The live server sets https://account.pokeverse.quest.
+	paymentsUrl = ""
+
 	-- Deathlist
 	deathListEnabled = false
 	deathListRequiredTime = 1 * 60 * 1000

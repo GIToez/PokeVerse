@@ -30,6 +30,13 @@
 #   PV_MAIL_USER       account email sender (GitHub variable GMAIL_ADDRESS) and PV_MAIL_PASSWORD its
 #                      app password (GitHub secret GMAIL_APP_PASSWORD); without both, emails are off
 #   PV_SMTP_HOST, PV_SMTP_PORT, PV_SMTP_CA_FILE  mail server (default smtp.gmail.com:587, system CAs)
+#   PV_PAYPAL_CLIENT_ID, PV_PAYPAL_CLIENT_SECRET  PayPal app keys (GitHub secrets PAYPAL_CLIENT_ID and
+#                      PAYPAL_CLIENT_SECRET); without both, buying Verse Orbs is off
+#   PV_PAYPAL_ENV      sandbox (default) or live (GitHub variable PAYPAL_ENV)
+#   PV_PAYPAL_WEBHOOK_ID  optional (GitHub variable PAYPAL_WEBHOOK_ID); otherwise the service finds or
+#                      creates the webhook for its address itself
+#   PV_PAYMENTS_HOST   the HTTPS name of the payment service (default account.pokeverse.quest)
+#   PV_PAYMENTS_CHECK  false skips the outside check of https://PV_PAYMENTS_HOST after a deployment
 set -euo pipefail
 
 action=${1:?action}
@@ -44,6 +51,8 @@ PV_TIMEZONE=${PV_TIMEZONE:-}
 PV_SERVER_NAME=${PV_SERVER_NAME:-LeafGreen}
 PV_WARNING_MINUTES=${PV_WARNING_MINUTES:-5}
 PV_RSA_PUBLIC=${PV_RSA_PUBLIC:-$(cat "$root/scripts/live/rsa-public.txt")}
+PV_PAYPAL_ENV=${PV_PAYPAL_ENV:-sandbox}
+PV_PAYMENTS_HOST=${PV_PAYMENTS_HOST:-account.pokeverse.quest}
 REMOTE=/opt/pokeverse
 CTL=$REMOTE/current/tools/pokeverse-ctl
 
@@ -166,6 +175,21 @@ check_mail() {
   return 0
 }
 
+check_payments() {
+  if [ -n "${PV_PAYPAL_CLIENT_ID:-}" ] && [ -z "${PV_PAYPAL_CLIENT_SECRET:-}" ]; then fail "the secret PAYPAL_CLIENT_ID is set but PAYPAL_CLIENT_SECRET is not"; fi
+  if [ -z "${PV_PAYPAL_CLIENT_ID:-}" ] && [ -n "${PV_PAYPAL_CLIENT_SECRET:-}" ]; then fail "the secret PAYPAL_CLIENT_SECRET is set but PAYPAL_CLIENT_ID is not"; fi
+  [[ "$PV_PAYPAL_ENV" =~ ^(sandbox|live)$ ]] || fail "PAYPAL_ENV must be sandbox or live"
+  return 0
+}
+
+payments_summary() {
+  if [ -n "${PV_PAYPAL_CLIENT_ID:-}" ]; then
+    echo "PayPal $PV_PAYPAL_ENV at https://$PV_PAYMENTS_HOST"
+  else
+    echo "off (PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET are not set)"
+  fi
+}
+
 mail_summary() {
   if [ -n "${PV_MAIL_USER:-}" ]; then
     echo "required, sent as $PV_MAIL_USER through ${PV_SMTP_HOST:-smtp.gmail.com}:${PV_SMTP_PORT:-587}"
@@ -188,6 +212,14 @@ configure() {
     printf 'SMTP_PASSWORD=%s\n' "${PV_MAIL_PASSWORD:-}"
     printf 'SMTP_CA_FILE=%s\n' "${PV_SMTP_CA_FILE:-}"
   } | tr -d '\r' | remote "$(printf '%q ' "$REMOTE/releases/$server_release/tools/pokeverse-ctl" set-mail)"
+  check_payments
+  {
+    printf 'PAYPAL_CLIENT_ID=%s\n' "${PV_PAYPAL_CLIENT_ID:-}"
+    printf 'PAYPAL_CLIENT_SECRET=%s\n' "${PV_PAYPAL_CLIENT_SECRET:-}"
+    printf 'PAYPAL_ENV=%s\n' "$PV_PAYPAL_ENV"
+    printf 'PAYPAL_WEBHOOK_ID=%s\n' "${PV_PAYPAL_WEBHOOK_ID:-}"
+    printf 'PAYMENTS_PUBLIC_URL=https://%s\n' "$PV_PAYMENTS_HOST"
+  } | tr -d '\r' | remote "$(printf '%q ' "$REMOTE/releases/$server_release/tools/pokeverse-ctl" set-payments)"
   remote_ctl "$REMOTE/releases/$server_release/tools/pokeverse-ctl" configure \
     "host=$PV_PUBLIC_HOST" "daily_restart=$PV_DAILY_RESTART" "daily_time=$PV_DAILY_TIME" "timezone=$PV_TIMEZONE" \
     "server_name=$PV_SERVER_NAME"
@@ -226,6 +258,13 @@ PY
   PV_RSA_MODULUS=$PV_RSA_PUBLIC python3 "$root/scripts/protocol-test.py" --host "$PV_PUBLIC_HOST" --account "probe$RANDOM$RANDOM" \
     --password "not-a-real-account" --character x --expect-login-failure \
     || fail "the login server did not answer correctly from outside"
+  if [ -n "${PV_PAYPAL_CLIENT_ID:-}" ] && [ "${PV_PAYMENTS_CHECK:-true}" = true ]; then
+    if curl -fsS --max-time 20 "https://$PV_PAYMENTS_HOST/healthz" >/dev/null 2>"$work/payments.err"; then
+      echo "https://$PV_PAYMENTS_HOST reachable"
+    else
+      echo "::warning::https://$PV_PAYMENTS_HOST is not reachable yet ($(head -c 300 "$work/payments.err")). Buying Verse Orbs needs bootstrap-ovh.sh version 2, the DNS record and TCP 80/443 open (docs/payments.md)."
+    fi
+  fi
   endstep
 }
 
@@ -247,7 +286,9 @@ case "$action" in
     echo "Discord bot:             $([ -n "${DISCORD_TOKEN:-}" ] && echo "token set, guild ${DISCORD_GUILD_ID:-<missing>}" || echo "no token (skipped)")"
     echo "Login key:               PokeVerse key only"
     echo "Account emails:          $(mail_summary)"
+    echo "Buying Verse Orbs:       $(payments_summary)"
     check_mail
+    check_payments
     [[ "$PV_DAILY_TIME" =~ ^([01][0-9]|2[0-3]):[0-5][0-9]$ ]] || fail "LIVE_DAILY_RESTART_TIME must be HH:MM"
     if [ -n "${DISCORD_TOKEN:-}" ] && [ -z "${DISCORD_GUILD_ID:-}" ]; then fail "DISCORD_GUILD_ID is required with a bot token"; fi
     endstep
@@ -308,6 +349,7 @@ case "$action" in
     check_ssh
     remote_ctl "$CTL" logs
     remote_ctl "$CTL" discord logs | tail -n 60 || true
+    remote_ctl "$CTL" payments-logs | tail -n 60 || true
     ;;
   *)
     fail "unknown action: $action"

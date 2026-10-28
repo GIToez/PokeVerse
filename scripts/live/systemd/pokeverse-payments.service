@@ -1,0 +1,39 @@
+# PokeVerse payment service: Verse Orbs bought with PayPal (core/payments/payments.py, docs/payments.md).
+# Installed by scripts/live/bootstrap-ovh.sh; deployments restart it with each release, and only run it
+# while the PayPal keys are set (/opt/pokeverse/shared/payments.env).
+#
+# It listens on 127.0.0.1:7200 only; Caddy serves it over HTTPS as account.pokeverse.quest. It reads the
+# database and email settings from the release's config.lua and config.local.lua. Independent of the game
+# server: restarting one never restarts the other.
+[Unit]
+Description=PokeVerse payment service
+After=network-online.target mariadb.service
+Wants=network-online.target
+StartLimitIntervalSec=600
+StartLimitBurst=10
+
+[Service]
+Type=simple
+User=pokeverse
+Group=pokeverse
+WorkingDirectory=/opt/pokeverse/current
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 -u /opt/pokeverse/current/payments/payments.py --server-dir /opt/pokeverse/current --settings /opt/pokeverse/shared/payments.env --port 7200
+StandardInput=null
+Restart=always
+RestartSec=5
+TimeoutStopSec=20
+MemoryMax=256M
+SyslogIdentifier=pokeverse-payments
+
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+[Install]
+WantedBy=multi-user.target

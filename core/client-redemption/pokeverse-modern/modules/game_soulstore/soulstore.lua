@@ -1,9 +1,10 @@
 -- The Store: what Soul Coins buy (Store in the server lib). The top bar's Store button opens it. The server talks
--- JSON on ExtendedIds.Store: {type = "store", balance, coin, bag, points, premiumDays, sex, ball, guild, categories,
--- offers} fills the window, {type = "result", ok, text} answers a purchase, a withdraw or a deposit (a fresh "store"
--- comes first when it worked) and {type = "history", list} fills the history. The window sends {action = "open"},
--- {action = "buy", offer, count, text}, {action = "withdraw", amount}, {action = "deposit", amount} and
--- {action = "history"}.
+-- JSON on ExtendedIds.Store: {type = "store", balance, held, buyOrbs, coin, bag, points, premiumDays, sex, ball, guild,
+-- categories, offers} fills the window, {type = "result", ok, text} answers a purchase, a withdraw or a deposit (a fresh
+-- "store" comes first when it worked), {type = "history", list} fills the history and {type = "buy-link", url} is the
+-- page for buying Verse Orbs with PayPal. The window sends {action = "open"}, {action = "buy", offer, count, text},
+-- {action = "withdraw", amount}, {action = "deposit", amount}, {action = "history"} and {action = "buy-orbs"}.
+-- held is how many of the balance's coins were bought in the last days and can't be withdrawn yet.
 local ICONS = '/modules/game_vocation/images/perk_'
 local CATEGORY_ICONS = { featured = 'star', premium = 'crown', addons = 'heart', outfits = 'outfit',
                          services = 'guide', items = 'up', guild = 'ranks', referral = 'heart' }
@@ -325,7 +326,8 @@ local function refreshBank()
     bank.coin:setItemId(state.coin or 0)
     bank.balance:setText(thousands(state.balance or 0))
     bank.bag:setText((state.bag or 0) > 0 and tr('+%s in your bag', thousands(state.bag)) or '')
-    window.withdraw:setEnabled((state.balance or 0) > 0)
+    window.withdraw:setEnabled((state.balance or 0) - (state.held or 0) > 0)
+    window.buyOrbs:setVisible(state.buyOrbs == true)
     window.deposit:setEnabled((state.bag or 0) > 0)
 end
 
@@ -425,11 +427,15 @@ local function buy()
 end
 
 local function withdraw()
-    local max = state and state.balance or 0
+    local max = state and ((state.balance or 0) - (state.held or 0)) or 0
     if max <= 0 then
         return
     end
-    openDialog(tr('Withdraw Soul Coins'), tr('Soul Coins from your balance go to your bag, to trade or carry.'),
+    local text = tr('Soul Coins from your balance go to your bag, to trade or carry.')
+    if (state.held or 0) > 0 then
+        text = text .. '\n' .. tr('%s bought in the last 7 days stay on the balance until then.', thousands(state.held))
+    end
+    openDialog(tr('Withdraw Soul Coins'), text,
         tr('Withdraw'), function(amount) send({ action = 'withdraw', amount = amount }) end, max)
 end
 
@@ -525,6 +531,11 @@ local function onStore(protocol, opcode, buffer)
         end
     elseif data.type == 'history' then
         showHistory(data.list)
+    elseif data.type == 'buy-link' and type(data.url) == 'string' and data.url:match('^https?://') then
+        g_platform.openUrl(data.url)
+        if modules.game_textmessage then
+            modules.game_textmessage.displayGameMessage(tr('The Verse Orbs page opened in your browser. The orbs arrive here as soon as PayPal confirms the payment.'))
+        end
     end
 end
 
@@ -553,6 +564,7 @@ function init()
     end
     window.withdraw.onClick = withdraw
     window.deposit.onClick = deposit
+    window.buyOrbs.onClick = function() send({ action = 'buy-orbs' }) end
     window.footer.history.onClick = function() send({ action = 'history' }) end
 
     ProtocolGame.registerExtendedOpcode(ExtendedIds.Store, onStore)

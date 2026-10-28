@@ -17,10 +17,13 @@
 #                                            server_name=
 #   pokeverse-ctl set-rsa-key                install the private login key (PEM on stdin)
 #   pokeverse-ctl set-mail                   account email settings (KEY=VALUE on stdin, empty turns emails off)
+#   pokeverse-ctl set-payments               PayPal settings for buying Verse Orbs (KEY=VALUE on stdin, empty turns
+#                                            buying off)
 #   pokeverse-ctl set-group <character> <group id>
 #   pokeverse-ctl set-premium <character> <days|unlimited>   premium of the character's account (0 ends it)
 #   pokeverse-ctl restore <backup file> --yes  replace the database with a backup (safety backup first)
 #   pokeverse-ctl logs                       last lines of the game server log
+#   pokeverse-ctl payments-logs              last lines of the payment service log
 #   pokeverse-ctl discord-deploy <release>   install the Discord bot (settings on stdin, KEY=VALUE)
 #   pokeverse-ctl discord <check-config|check-bridge|setup|invite|status|logs>
 set -euo pipefail
@@ -37,6 +40,8 @@ HEALTH_ENV=$SHARED/health.env
 HEALTH_POSITION=$SHARED/health-position
 RSA_KEY=$SHARED/rsa.key
 MAIL_ENV=$SHARED/mail.env
+PAYMENTS_ENV=$SHARED/payments.env
+PAYMENTS_SERVICE=pokeverse-payments.service
 RESTART_REQUEST=$SHARED/restart-request
 MYCNF=$PV_HOME/.my.cnf
 DB_NAME=pokeverse
@@ -130,6 +135,15 @@ cmd_verify() {
     bad "$MAIL_ENV must have mode 600"
   else
     ok "account emails go through $(sed -n 's/^SMTP_HOST=//p' "$MAIL_ENV") as $(sed -n 's/^SMTP_USER=//p' "$MAIL_ENV")"
+  fi
+  if [ ! -f "/etc/systemd/system/$PAYMENTS_SERVICE" ]; then
+    warn "buying Verse Orbs needs bootstrap-ovh.sh version 2 (the payment service and HTTPS); run it again on the server"
+  elif [ ! -f "$PAYMENTS_ENV" ]; then
+    warn "buying Verse Orbs is off (written from PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET by the next deployment)"
+  elif [ "$(stat -c %a "$PAYMENTS_ENV")" != 600 ]; then
+    bad "$PAYMENTS_ENV must have mode 600"
+  else
+    ok "buying Verse Orbs: PayPal $(payments_value PAYPAL_ENV) at $(payments_value PAYMENTS_PUBLIC_URL)"
   fi
   if grep -q "^-- BEGIN DEPLOYMENT SETTINGS" "$CONFIG" 2>/dev/null; then
     local host
@@ -321,6 +335,7 @@ activate() {
   ln -sfn "releases/$id" "$PV_HOME/current.new"
   mv -Tf "$PV_HOME/current.new" "$CURRENT"
   log "Active release: $id"
+  restart_payments
 }
 
 players_online() { dbq "SELECT COUNT(*) FROM players WHERE online = 1" 2>/dev/null || echo 0; }
@@ -568,7 +583,8 @@ dailyRestartTime = \"$daily_time\"
 restartRequestFile = \"$RESTART_REQUEST\"
 ${server_name:+serverName = \"$server_name\"
 }$([ -f "$RSA_KEY" ] && printf 'rsaKeyFile = "%s"\n' "$RSA_KEY")
-$(mail_settings)"
+$(mail_settings)
+$(payments_settings)"
   if [ -n "$timezone" ]; then
     printf 'TZ=%s\n' "$timezone" > "$SERVER_ENV"
   else
@@ -584,6 +600,13 @@ $(mail_settings)"
     log "Account emails: required, sent through $(mail_value SMTP_HOST):$(mail_value SMTP_PORT) as $(mail_value SMTP_USER)"
   else
     log "Account emails: off"
+  fi
+  if payments_ready; then
+    log "Buying Verse Orbs: open at $(payments_value PAYMENTS_PUBLIC_URL) (PayPal $(payments_value PAYPAL_ENV))"
+  elif [ -f "$PAYMENTS_ENV" ]; then
+    log "Buying Verse Orbs: off until bootstrap-ovh.sh (version 2) has been run again on the server"
+  else
+    log "Buying Verse Orbs: off (PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET are not set)"
   fi
 }
 
@@ -640,6 +663,74 @@ cmd_set_mail() {
   else
     mv "$tmp" "$MAIL_ENV"
     log "Mail settings saved (the server uses them on its next start)"
+  fi
+}
+
+payments_value() { sed -n "s/^$1=//p" "$PAYMENTS_ENV" 2>/dev/null | tail -1; }
+
+# The payment service needs its systemd unit and sudo rule (bootstrap-ovh.sh version 2) and the PayPal keys.
+payments_ready() {
+  [ -f "/etc/systemd/system/$PAYMENTS_SERVICE" ] && [ -n "$(payments_value PAYPAL_CLIENT_ID)" ] \
+    && sudo -n -l /usr/bin/systemctl restart "$PAYMENTS_SERVICE" >/dev/null 2>&1
+}
+
+# paymentsUrl shows the Store's Buy Verse Orbs button; it stays off while the service can't run.
+payments_settings() {
+  payments_ready || return 0
+  printf 'paymentsUrl = "%s"\n' "$(payments_value PAYMENTS_PUBLIC_URL)"
+}
+
+# (Re)starts the payment service on the active release, or stops it when buying is off.
+restart_payments() {
+  [ -f "/etc/systemd/system/$PAYMENTS_SERVICE" ] || return 0
+  if payments_ready; then
+    svc enable "$PAYMENTS_SERVICE" >/dev/null 2>&1 || true
+    if svc restart "$PAYMENTS_SERVICE"; then log "Payment service restarted"; else log "WARNING: the payment service did not start"; fi
+  else
+    svc stop "$PAYMENTS_SERVICE" >/dev/null 2>&1 || true
+  fi
+}
+
+# PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_ENV (sandbox or live), PAYPAL_WEBHOOK_ID (optional) and
+# PAYMENTS_PUBLIC_URL arrive on stdin (the secret is never on the command line). Without the client id and
+# secret buying is turned off.
+cmd_set_payments() {
+  local line key value id="" secret="" mode=sandbox webhook="" url="" tmp
+  while IFS= read -r line || [ -n "$line" ]; do
+    line=${line%$'\r'}
+    [ -n "$line" ] || continue
+    key=${line%%=*}
+    value=${line#*=}
+    value=${value//[[:space:]]/}
+    case "$key" in
+      PAYPAL_CLIENT_ID) id=$value ;;
+      PAYPAL_CLIENT_SECRET) secret=$value ;;
+      PAYPAL_ENV) [ -n "$value" ] && mode=$value ;;
+      PAYPAL_WEBHOOK_ID) webhook=$value ;;
+      PAYMENTS_PUBLIC_URL) url=${value%/} ;;
+      *) die "unknown payment setting: $key" ;;
+    esac
+  done
+  if [ -z "$id" ] && [ -z "$secret" ]; then
+    rm -f "$PAYMENTS_ENV"
+    log "Buying Verse Orbs: off (no PayPal settings)"
+    return
+  fi
+  [[ "$id" =~ ^[A-Za-z0-9_-]{20,128}$ ]] || die "PAYPAL_CLIENT_ID does not look like a PayPal client id"
+  [[ "$secret" =~ ^[A-Za-z0-9_-]{20,128}$ ]] || die "PAYPAL_CLIENT_SECRET does not look like a PayPal secret"
+  [[ "$mode" =~ ^(sandbox|live)$ ]] || die "PAYPAL_ENV must be sandbox or live, got '$mode'"
+  [[ "$webhook" =~ ^[A-Za-z0-9-]{0,64}$ ]] || die "PAYPAL_WEBHOOK_ID does not look like a webhook id"
+  [[ "$url" =~ ^https://[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$ ]] || die "the payments address must be https://<host>, got '$url'"
+  tmp=$(mktemp "$SHARED/.payments.XXXXXX")
+  chmod 600 "$tmp"
+  printf 'PAYPAL_CLIENT_ID=%s\nPAYPAL_CLIENT_SECRET=%s\nPAYPAL_ENV=%s\nPAYPAL_WEBHOOK_ID=%s\nPAYMENTS_PUBLIC_URL=%s\n' \
+    "$id" "$secret" "$mode" "$webhook" "$url" > "$tmp"
+  if cmp -s "$tmp" "$PAYMENTS_ENV"; then
+    rm -f "$tmp"
+    log "PayPal settings unchanged"
+  else
+    mv "$tmp" "$PAYMENTS_ENV"
+    log "PayPal settings saved ($mode)"
   fi
 }
 
@@ -715,6 +806,11 @@ cmd_status() {
   [ -f "$SHARED/failed-release" ] && echo "Last failed:      $(cat "$SHARED/failed-release")"
   echo "Game server:      $(systemctl is-active "$SERVICE" || true) (restarts: $(systemctl show -p NRestarts --value "$SERVICE"), since $(systemctl show -p ActiveEnterTimestamp --value "$SERVICE"))"
   echo "Discord bot:      $(systemctl is-active "$BOT_SERVICE" || true), release $(basename "$(readlink "$BOT_HOME/current" 2>/dev/null)" 2>/dev/null || echo none)"
+  if [ -f "/etc/systemd/system/$PAYMENTS_SERVICE" ]; then
+    echo "Payments:         $(systemctl is-active "$PAYMENTS_SERVICE" || true)$(payments_ready && printf ', PayPal %s at %s' "$(payments_value PAYPAL_ENV)" "$(payments_value PAYMENTS_PUBLIC_URL)" || printf ', buying is off')"
+  else
+    echo "Payments:         not installed (run bootstrap-ovh.sh version 2)"
+  fi
   echo "Players online:   $(players_online)"
   echo "Public address:   $(config_value ip)"
   echo "Daily restart:    $(sed -n 's/^dailyRestartEnabled = //p' "$CONFIG" | tail -1) at $(config_value dailyRestartTime) $(cat "$SERVER_ENV" 2>/dev/null || date +%Z)"
@@ -837,6 +933,8 @@ case "$command" in
   configure) cmd_configure "$@" ;;
   set-rsa-key) cmd_set_rsa_key ;;
   set-mail) cmd_set_mail ;;
+  set-payments) cmd_set_payments ;;
+  payments-logs) sudo -n /usr/bin/journalctl -u "$PAYMENTS_SERVICE" -n 200 --no-pager ;;
   set-group) cmd_set_group "$@" ;;
   set-premium) cmd_set_premium "$@" ;;
   restore) cmd_restore "$@" ;;

@@ -13,6 +13,8 @@ db="mariadb --no-defaults --protocol=tcp -h127.0.0.1 -P3307"
 server_pid=""
 db_pid=""
 smtp_pid=""
+paypal_pid=""
+payments_pid=""
 
 stop_process() {
   kill "$1" 2>/dev/null || return 0
@@ -27,6 +29,8 @@ cleanup() {
     kill -9 "$server_pid" 2>/dev/null || true
     wait "$server_pid" 2>/dev/null || true
   fi
+  [ -n "$payments_pid" ] && stop_process "$payments_pid"
+  [ -n "$paypal_pid" ] && stop_process "$paypal_pid"
   [ -n "$smtp_pid" ] && stop_process "$smtp_pid"
   [ -n "$db_pid" ] && stop_process "$db_pid"
   if [ "${KEEP_WORK:-0}" != 1 ]; then rm -rf "$work"; else echo "Work directory kept: $work"; fi
@@ -60,7 +64,7 @@ echo "Bag Trainer gets the old item layout (bag in the hidden slot 3, no duel ic
 $db -upokeverse -ppokeverse pokeverse -e "DELETE i FROM player_items i JOIN players p ON p.id = i.player_id WHERE p.name = 'Bag Trainer' AND i.pid = 3;
   UPDATE player_items i JOIN players p ON p.id = i.player_id SET i.pid = 3 WHERE p.name = 'Bag Trainer' AND i.pid = 10;"
 # Characters used only by the Discord bridge test (each logs in once per run).
-$db -upokeverse -ppokeverse pokeverse -e "CALL pokeverse_create_account('bridgetrainer', 'secret'); CALL pokeverse_create_character('bridgetrainer', 'Bridge Trainer', 0); CALL pokeverse_create_account('bridgestaff', 'secret'); CALL pokeverse_create_character('bridgestaff', 'Bridge Staff', 0); CALL pokeverse_set_group('Bridge Staff', 6); CALL pokeverse_create_account('bridgelink', 'secret'); CALL pokeverse_create_character('bridgelink', 'Link Alpha', 0); CALL pokeverse_set_group('Link Alpha', 2); CALL pokeverse_create_character('bridgelink', 'Link Beta', 1); CALL pokeverse_create_account('bridgebooster', 'secret'); CALL pokeverse_create_character('bridgebooster', 'Booster Trainer', 0); CALL pokeverse_create_account('voctester', 'secret'); CALL pokeverse_create_character('voctester', 'Vocation Tester', 0); CALL pokeverse_create_account('vocfriend', 'secret'); CALL pokeverse_create_character('vocfriend', 'Vocation Friend', 1);"
+$db -upokeverse -ppokeverse pokeverse -e "CALL pokeverse_create_account('bridgetrainer', 'secret'); CALL pokeverse_create_character('bridgetrainer', 'Bridge Trainer', 0); CALL pokeverse_create_account('bridgestaff', 'secret'); CALL pokeverse_create_character('bridgestaff', 'Bridge Staff', 0); CALL pokeverse_set_group('Bridge Staff', 6); CALL pokeverse_create_account('bridgelink', 'secret'); CALL pokeverse_create_character('bridgelink', 'Link Alpha', 0); CALL pokeverse_set_group('Link Alpha', 2); CALL pokeverse_create_character('bridgelink', 'Link Beta', 1); CALL pokeverse_create_account('bridgebooster', 'secret'); CALL pokeverse_create_character('bridgebooster', 'Booster Trainer', 0); CALL pokeverse_create_account('voctester', 'secret'); CALL pokeverse_create_character('voctester', 'Vocation Tester', 0); CALL pokeverse_create_account('vocfriend', 'secret'); CALL pokeverse_create_character('vocfriend', 'Vocation Friend', 1); CALL pokeverse_create_account('orbbuyer', 'secret'); CALL pokeverse_create_character('orbbuyer', 'Orb Buyer', 0);"
 tables=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='pokeverse'")
 echo "Tables: $tables"
 
@@ -84,6 +88,10 @@ sed -i 's#</talkactions>#\t<talkaction words="/bridgetest" event="script" value=
 # /vocationtest (scripts/testing/) drives every vocation perk through the real game code.
 cp "$root/scripts/testing/vocation-test-talkaction.lua" "$work/server/data/talkactions/scripts/vocationtest.lua"
 sed -i 's#</talkactions>#\t<talkaction words="/vocationtest" event="script" value="vocationtest.lua"/>\n</talkactions>#' \
+  "$work/server/data/talkactions/talkactions.xml"
+# /paytest (scripts/testing/) drives the Store's Buy Verse Orbs button, Withdraw and the payment messages.
+cp "$root/scripts/testing/payments-test-talkaction.lua" "$work/server/data/talkactions/scripts/paytest.lua"
+sed -i 's#</talkactions>#\t<talkaction words="/paytest" event="script" value="paytest.lua"/>\n</talkactions>#' \
   "$work/server/data/talkactions/talkactions.xml"
 start_server() {
   (cd "$work/server" && exec "./$(basename "$binary")" >"$work/server.log" 2>&1) &
@@ -350,6 +358,7 @@ smtpUser = "ci@pokeverse.test"
 smtpPassword = "ci-app-password"
 smtpFrom = "ci@pokeverse.test"
 smtpCaFile = "$work/mail/cert.pem"
+paymentsUrl = "http://127.0.0.1:7200"
 LUA
 mv "$work/server.log" "$work/server-1.log"
 start_server
@@ -362,6 +371,21 @@ python3 "$root/scripts/account-email-test.py" --mailbox "$work/mail/box" --sql "
   || { tail -40 "$work/server.log"; cat "$work/smtp.log"; echo "FAIL: account email test"; exit 1; }
 python3 "$root/scripts/protocol-test.py" --account test --password test --character Trainer --walk east \
   || { echo "FAIL: an older account must keep playing during its 7 days"; exit 1; }
+
+step "Buying Verse Orbs (payment service against a fake PayPal)"
+python3 -u "$root/scripts/testing/fake-paypal.py" --port 7290 --client-id ci-paypal-client --client-secret ci-paypal-secret \
+  > "$work/paypal.log" 2>&1 &
+paypal_pid=$!
+PAYPAL_CLIENT_ID=ci-paypal-client PAYPAL_CLIENT_SECRET=ci-paypal-secret PAYPAL_API=http://127.0.0.1:7290 \
+  PAYPAL_SDK_URL=http://127.0.0.1:7290/sdk/js PAYMENTS_PUBLIC_URL=http://127.0.0.1:7200 \
+  python3 -u "$root/core/payments/payments.py" --server-dir "$work/server" --port 7200 > "$work/payments.log" 2>&1 &
+payments_pid=$!
+for _ in $(seq 30); do curl -fs http://127.0.0.1:7200/healthz >/dev/null 2>&1 && break; sleep 1; done
+grep -q "PayPal webhook WH-" "$work/payments.log" || { cat "$work/payments.log"; echo "FAIL: the payment service did not register its webhook"; exit 1; }
+python3 "$root/scripts/payments-test.py" --service http://127.0.0.1:7200 --paypal http://127.0.0.1:7290 \
+  --sql "$db -upokeverse -ppokeverse pokeverse" --buyer "orbbuyer:secret:Orb Buyer" --mailbox "$work/mail/box" \
+  || { tail -60 "$work/payments.log"; tail -20 "$work/paypal.log"; tail -40 "$work/server.log"; echo "FAIL: payments test"; exit 1; }
+! grep -qE "[?&]t=[0-9a-f]{32}" "$work/payments.log" "$work/server.log" || { echo "FAIL: a buy link reached a log"; exit 1; }
 codes=$(python3 -c 'import glob, json, re, sys
 for f in glob.glob(sys.argv[1] + "/*.json"):
     for c in re.findall(r"\b\d{6}\b", json.load(open(f))["subject"]): print(c)' "$work/mail/box" | sort -u)
@@ -371,4 +395,4 @@ for code in $codes; do
 done
 if grep -q "MYSQL ERROR" "$work/server.log"; then grep "MYSQL ERROR" "$work/server.log" | sort | uniq -c; echo "FAIL: database errors in server log"; exit 1; fi
 stop_server
-echo "PASS: database setup, server start, login, character creation, game login, movement, Discord bridge and account emails verified."
+echo "PASS: database setup, server start, login, character creation, game login, movement, Discord bridge, account emails and buying Verse Orbs verified."

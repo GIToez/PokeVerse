@@ -217,6 +217,16 @@ SoulStoreWindow < UIWindow
     anchors.top: parent.top
     margin: 2 6 0 0
 
+  PVGoldButton
+    id: buyOrbs
+    !text: tr('Buy Verse Orbs')
+    size: 128 30
+    ttf-font-size: 12
+    anchors.right: bank.left
+    anchors.top: parent.top
+    margin: 2 10 0 0
+    visible: false
+
   FishingPanel
     id: bank
     size: 190 42

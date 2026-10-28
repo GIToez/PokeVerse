@@ -1,0 +1,9 @@
+{
+  "currency": "USD",
+  "packs": [
+    { "id": "15", "orbs": 15, "price": "7.50" },
+    { "id": "40", "orbs": 40, "price": "18.00", "badge": "10% off" },
+    { "id": "85", "orbs": 85, "price": "36.00", "badge": "15% off" },
+    { "id": "160", "orbs": 160, "price": "64.00", "badge": "20% off" }
+  ]
+}
