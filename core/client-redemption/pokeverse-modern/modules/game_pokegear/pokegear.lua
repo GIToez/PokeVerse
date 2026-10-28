@@ -149,6 +149,10 @@ local function apply()
     Experience.apply(active)
     applySkills()
     Pokegear.layoutColumn()
+    local mainPanel = modules.game_mainpanel
+    if mainPanel and mainPanel.tidyTopBar then
+        mainPanel.tidyTopBar()
+    end
 end
 
 function toggleNearby()
