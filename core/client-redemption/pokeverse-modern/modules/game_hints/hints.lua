@@ -126,7 +126,16 @@ local function place(widget)
     local map = modules.game_interface.getMapPanel()
     widget:addAnchor(AnchorTop, 'gameMapPanel', AnchorTop)
     widget:addAnchor(AnchorHorizontalCenter, 'gameMapPanel', AnchorHorizontalCenter)
-    widget:setMarginTop(map and math.min(TOP_MARGIN, math.floor(map:getHeight() / 5)) or TOP_MARGIN)
+    local top = map and math.min(TOP_MARGIN, math.floor(map:getHeight() / 5)) or TOP_MARGIN
+    -- below the trainer's HUD, which sits over the top of the map, and the Pokegear loot list under it
+    local root = modules.game_interface.getRootPanel()
+    for _, id in ipairs({ 'pokeHud', 'pokegearLootFeed' }) do
+        local area = map and root:recursiveGetChildById(id)
+        if area and area:isVisible() then
+            top = math.max(top, area:getY() + area:getHeight() - map:getY() + 12)
+        end
+    end
+    widget:setMarginTop(top)
 end
 
 local function fit(widget)

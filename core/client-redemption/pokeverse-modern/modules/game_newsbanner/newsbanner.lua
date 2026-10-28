@@ -125,8 +125,9 @@ local function place(widget)
     local root = modules.game_interface.getRootPanel()
     local map = modules.game_interface.getMapPanel()
     local top = math.max(0, map:getY() - root:getY()) + 12
-    -- below the top bar and the trainer's HUD (name, health and party), which sit over the top of the map
-    for _, id in ipairs({ 'environment', 'pokeHud' }) do
+    -- below the top bar, the trainer's HUD (name, health and party), which sit over the top of the map, and
+    -- the Pokegear loot list under the HUD
+    for _, id in ipairs({ 'environment', 'pokeHud', 'pokegearLootFeed' }) do
         local area = root:recursiveGetChildById(id)
         if area and area:isVisible() then
             top = math.max(top, area:getY() + area:getHeight() - root:getY() + 12)
@@ -412,6 +413,10 @@ local function frame()
     end
     if w then
         setOpen(banner, w, gap, c.width)
+    end
+    -- windows raise themselves when they refresh (the Pokegear Bag); the banner stays above them
+    if banner:getParent():getLastChild() ~= banner then
+        banner:raise()
     end
     tickEvent = scheduleEvent(frame, TICK)
 end
