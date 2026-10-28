@@ -103,6 +103,8 @@ def make_handler(client_id, client_secret):
                     if not order:
                         return self.error(404, "RESOURCE_NOT_FOUND", "INVALID_RESOURCE_ID")
                     order["status"] = "APPROVED"
+                    if not isinstance(data, dict):
+                        data = {}
                     order["payer"] = {"email_address": data.get("email", "buyer@pokeverse.test"), "payer_id": new_id("P", 13)}
                     order["_capture"] = data.get("capture", "COMPLETED")
                     return self.reply(200, order)
