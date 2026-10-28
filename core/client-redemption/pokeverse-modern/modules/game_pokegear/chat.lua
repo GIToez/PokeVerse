@@ -769,6 +769,13 @@ function Chat.apply(isActive)
     end
     active = now
     if active then
+        -- what came in before the card showed is already on it
+        if open then
+            local tab = currentTab()
+            if tab then
+                unread[tab] = nil
+            end
+        end
         show()
     else
         hide()
