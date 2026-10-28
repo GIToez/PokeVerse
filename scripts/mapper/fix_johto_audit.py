@@ -13,7 +13,9 @@ Does all the parts unless told which.
             checked on a render; the places where such a piece is a house's real eave are not listed.)
             Then, all over Johto, the building pieces on floors 3-6 over open ground that lie in runs a
             tile or two across, mostly clear of any wall on the ground floor (hanging); KEEP_PIECES
-            lists the places where such runs are meant.
+            lists the places where such runs are meant. And the upper-floor tiles build_johto copied
+            with a building from the strip right of and below its box (cut_off), over open ground:
+            a Kanto neighbour's roof and wall edges, or a shed roof whose walls the box cut.
   pier      the boardwalk along Cherrygrove's south edge, on the grass strip above the beach: the
             strip goes under water like the bay it opens onto, so the boardwalk stands in the water,
             and the parasols that stood on it move to the sand spit on the bay's east side.
@@ -73,6 +75,9 @@ JOHTO = (1700, 20, 3047, 1270)
 KEEP_PIECES = [(2832, 588, 2984, 738),   # Tohjo Falls, rebuilt by edit_tohjo_falls.py
                (2350, 668, 2360, 678),   # Goldenrod's cream tower: its pieces stand on its own floors
                (2659, 812, 2683, 826)]   # the farm's pen roofs
+# buildings whose front stands out over the street on purpose: the centers and marts (rebuilt by
+# edit_johto_centers.py) and the Safari Zone gate's stall awning
+OWN_FRONTS = {'pokecenter', 'mart', 'safari-gate'}
 
 PIER = (2529, 861, 2581, 863)                       # the boardwalk
 UNDER = [(2529, 864, 2581, 867), (2529, 868, 2571, 870)]   # grass and sand from it down to the bay
@@ -95,6 +100,42 @@ def strays(tiles, brushes):
 
     return {k for k in tiles if 4 <= k[2] <= 6 and any(a <= k[0] <= c and b <= k[1] <= d for a, b, c, d in STRAYS)
             and piece(k) and hangs(*k)}
+
+
+def cut_off(tiles, brushes, names):
+    """The upper-floor tiles build_johto copied with a building from the strip right of and below its
+    box (upper_box) that stand over open ground: Kanto keeps a building's upper floors right over its
+    ground floor, so these are a Kanto neighbour's roof and wall edges, or the roof of a shed the box cut."""
+    import build_johto as BJ
+    import johto_towns as T
+    size = {n: (s['box'][2] - s['box'][0] + 1, s['box'][3] - s['box'][1] + 1) for n, s in BJ.PREFABS.items()}
+    boxes = []
+    for spec in BJ.TOWNS_BUILT + BJ.SITES:
+        for n, x, y in T.layout(spec, size, strict=False).buildings:
+            boxes.append((n, x, y, x + size[n][0] - 1, y + size[n][1] - 1, BJ.PREFABS[n]['z']))
+
+    def walled(x, y, z):
+        ids = tiles.get((x, y, z))
+        if not ids:
+            return False
+        b = brushes.by_item.get(ids[0])
+        if b is None or not (b.name in NATURAL or b.name in STREETS or b.name in SEA):
+            return True
+        return any(STRUCT.search(names.get(i, '')) for i in ids[1:])
+
+    gone = set()
+    for n, x0, y0, x1, y1, zb in boxes:
+        if n in OWN_FRONTS:
+            continue
+        for z in range(1, zb):
+            up = zb - z
+            for x in range(x0, x1 + up + 1):
+                for y in range(y0, y1 + up + 1):
+                    if (x <= x1 and y <= y1) or not tiles.get((x, y, z)) or walled(x, y, zb) or \
+                            any(b[1] <= x <= b[3] and b[2] <= y <= b[4] for b in boxes):
+                        continue
+                    gone.add((x, y, z))
+    return gone
 
 
 def item_names():
@@ -325,7 +366,9 @@ def main():
     done = []
     if 'roofs' in args.parts:
         gone = strays(tiles, B)
-        gone |= hanging(tiles, B, item_names())
+        names = item_names()
+        gone |= hanging(tiles, B, names)
+        gone |= cut_off(tiles, B, names)
         done.append('%d hanging roof and wall pieces out' % apply({k: [] for k in gone}))
     if 'pier' in args.parts:
         done.append('%d tiles at the pier' % apply(pier(tiles, B, rng)))
