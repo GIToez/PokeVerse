@@ -228,7 +228,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
 +    },
 +    -- PokeVerse layout (game_pokegear): 'pokegear' or the 'classic' side panels
 +    uiLayout                          = {
-+        value = 'classic',
++        value = 'pokegear',
 +        action = function(value, options, controller, panels, extraWidgets)
 +            if modules.game_pokegear and modules.game_pokegear.refresh then
 +                modules.game_pokegear.refresh()
@@ -414,7 +414,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
          setOption('soundMaster', 1)
      end
  end
-@@ -184,20 +172,50 @@
+@@ -184,20 +172,44 @@
      local crosshairCombo = panels.interface:recursiveGetChildById('crosshair')
      local antialiasingModeCombobox = panels.graphicsPanel:recursiveGetChildById('antialiasingMode')
      local floorViewModeCombobox = panels.graphicsEffectsPanel:recursiveGetChildById('floorViewMode')
@@ -444,17 +444,11 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 +    end
 +
 +    local layoutCombo = panels.interface:recursiveGetChildById('uiLayout')
-+    for _, v in ipairs({ { 'Classic', 'classic' }, { 'Pokegear (preview)', 'pokegear' } }) do
++    for _, v in ipairs({ { 'Pokegear', 'pokegear' }, { 'Classic', 'classic' } }) do
 +        layoutCombo:addOption(tr(v[1]), v[2])
 +    end
 +    layoutCombo.onOptionChange = function(comboBox, option)
 +        setOption('uiLayout', comboBox:getCurrentOption().data)
-+    end
-+    -- phones stay on Classic until Pokegear has its compact size (docs/concepts/side-panel)
-+    if g_platform.isMobile() then
-+        local row = layoutCombo:getParent()
-+        row:hide()
-+        row:setHeight(0)
 +    end
 +
 +    local battleTextCombo = panels.interface:recursiveGetChildById('battleText')
@@ -468,7 +462,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      mouseControlModeCombobox:addOption('Regular Controls', 0)
      mouseControlModeCombobox:addOption('Classic Controls', 1)
      mouseControlModeCombobox:addOption('Left Smart-Click', 2)
-@@ -235,12 +253,12 @@
+@@ -235,12 +247,12 @@
          setOption('floorViewMode', comboBox:getCurrentOption().data)
      end
  
@@ -486,7 +480,7 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
      end
  
      local profileCombobox = panels.misc:recursiveGetChildById('profile')
-@@ -293,6 +311,81 @@
+@@ -293,6 +305,87 @@
  
      setupComboBox()
  
@@ -562,6 +556,12 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 +            g_settings.set('crosshair', options.crosshair.value)
 +        end
 +        g_settings.set('pokeverseLayoutVersion', 5)
++        g_settings.save()
++    end
++    -- Pokegear became the default layout; everyone moves to it once, also from the old saved Classic
++    if layoutVersion < 6 then
++        resetToDefaults({ 'uiLayout' })
++        g_settings.set('pokeverseLayoutVersion', 6)
 +        g_settings.save()
 +    end
 +
@@ -752,11 +752,11 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 +    local pages = button and pagesOf(button) or {}
 +    if not pages[index] then
 +        return
-     end
++    end
 +    selectedPage = index
 +    for i, widget in ipairs(controller.ui.optionsSubTabBar:getChildren()) do
 +        widget:setChecked(i == index)
-+    end
+     end
 +    showPage(pages[index])
 +end
  
@@ -793,11 +793,11 @@ diff -ruN pristine/modules/client_options/options.lua modules/client_options/opt
 +    local count = bar:getChildCount()
 +    if count == 0 then
 +        return
-     end
++    end
 +    local width = math.floor((bar:getWidth() - 8 * (count - 1)) / count)
 +    for _, tab in ipairs(bar:getChildren()) do
 +        tab:setWidth(width)
-+    end
+     end
 +end
  
 -    return subWidget
