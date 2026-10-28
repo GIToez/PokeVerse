@@ -4,14 +4,13 @@
     scripts/mapper/edit_tohjo_falls.py [--map mapper/map/dev.otbm] [--out <same>] [--spawns <map-spawn.xml>]
 
 Outside, under the ridge where the Tohjo river comes out:
-  falls     two 6-tile falls from a tarn on the mountain (floor 4), built column by column like Kanto's
+  falls     two 7-tile falls from a tarn on the mountain (floor 4), built column by column like Kanto's
             (spray on top, the face down through floors 5-7, foam a tile south) so Waterfall still works,
-            with a 6-tile gap between them, open down to the ledge so a player there shows; a spring
-            on the summit feeds the tarn by a stream
+            with a 3-tile rock gap between them; a spring on the summit feeds the tarn by a stream
   ledge     the path along the cliff's foot behind both falls. Floors 5 and 6 over it hold only the
             falling water (no ground), so the client keeps drawing the curtain over a player there
-  cuts      bends through a rock spur each side, open to the sky all along so nothing hides the way:
-            west onto Route 27's meadow, east toward Route 26
+  tunnels   roofed bends through a rock spur each side, out through notches open to the sky: west onto
+            Route 27's meadow, east toward Route 26
   cave      the way down is behind the gap (an unseen stairs, 459, at the back of a notch); the cave
             below is build_johto's 'Tohjo Falls' (a lake cavern), which replaces the old one and its
             wild Pokémon, and whose falls climb to the radio room (TOHJO_LEDGE) as before
@@ -21,8 +20,6 @@ Outside, under the ridge where the Tohjo river comes out:
   house     Pallet's cottage east of the bridge, as Route 27's house in the games, empty for now
 
 Seeded, so the same map gives the same result; run it on a map without it (the dev map has it).
-To redo it on a map that has it, build from an older map that doesn't with --from: everything in
-the area on --map is then replaced by what that gives.
 """
 import argparse
 import os
@@ -51,7 +48,7 @@ CAVE_SEED = 7
 WF_FACE, WF_TOP, WF_FOOT = BJ.WATERFALL_UP, BJ.WATERFALL_TOP, BJ.WATERFALL_FOOT
 BOULDERS = [3329, 3338]
 LOOSE_ROCKS = [3607, 3608, 3615, 3616]
-TREES = set(range(2690, 2791)) | {12295}
+TREES = set(range(2690, 2791))
 TUFTS = {6216, 6217, 6218, 6219}
 PLANKS = (6210, 6211, 6212)
 RAILS = range(3758, 3774)
@@ -60,8 +57,7 @@ STEP_E, STEP_W, STAIRS_DOWN_HIDDEN = 3679, 3681, 459
 LEDGE = 667                     # the path behind the falls (floor 7)
 Y = LEDGE + 1                   # the falls' row
 TOP = 4                         # the tarn's floor
-FALLS = [(2893, 2898), (2905, 2910)]
-GAP = range(FALLS[0][1] + 1, FALLS[1][0])
+FALLS = [(2893, 2899), (2904, 2910)]
 FX0, FX1 = FALLS[0][0], FALLS[-1][1]
 LIP = Y
 WEST, EAST = (2884, 2890), (2920, 2926)  # the old cave mouths' recesses, rock again
@@ -186,9 +182,9 @@ def design(tiles, house_src, thing_attrs):
     for x in range(FX0 - 3, FX1 + 4):         # nothing south of the lip up there, so the falls show
         for y in range(LIP + 1, LIP + 4):
             unset((x, y, TOP))
-    for x in GAP:                             # rock between the falls, none over the ledge (it would hide the floors above)
-        setb(x, LIP, TOP, TOPG)
-        unset((x, LIP - 1, TOP))
+    for x in range(FALLS[0][1] + 1, FALLS[1][0]):
+        for y in (LIP, LIP - 1):
+            setb(x, y, TOP, TOPG)
 
     # floor 7: the ledge along the mountain's foot; behind the falls one tile, rock behind it
     for lo, hi in (WEST, EAST):
@@ -201,7 +197,7 @@ def design(tiles, house_src, thing_attrs):
                 continue
             setb(x, y, 7, TOPG)
     for x in range(FX0 - 3, FX1 + 3):
-        setb(x, Y, 7, MOUNTAIN if x not in GAP else TOPG)
+        setb(x, Y, 7, MOUNTAIN)
     for x in range(FX0 - 3, FX1 + 3):         # the plunge pool
         for y in range(Y + 1, Y + 4):
             if y < Y + 3 or FX0 <= x <= FX1:
@@ -212,7 +208,7 @@ def design(tiles, house_src, thing_attrs):
                 if brush.get((x, y, z)) is not None or (x, y, z) in tiles:
                     unset((x, y, z))
 
-    # the cuts: short bends through rounded spurs, open to the sky end to end; the rock
+    # the tunnels: short bends through rounded spurs, their mouths notches open to the sky; the rock
     # fingers the old ravines left south of the cliff go back to grass
     def west_edge(y):
         return 2875 + max(0, min(5, y - 661)) + (wobble(y, 4) if y < 665 else 0)
@@ -249,10 +245,7 @@ def design(tiles, house_src, thing_attrs):
             setb(x, y, 7, MOUNTAIN)
     for (x, y) in tun_w | tun_e:
         setb(x, y, 7, TOPG)
-    # a floor-6 tile draws over the floor-7 tile up-left of it too, so a cut is open over both
-    cuts = {(x + d, y + d) for (x, y) in tunnels for d in (0, 1)}
-    for (x, y) in cuts:
-        unset((x, y, 6))
+        setb(x, y, 6, TOPG)                   # the roof
     for (x, y) in mouth_w | mouth_e:
         unset((x, y, 6))
         setb(x, y, 7, TOPG)
@@ -278,19 +271,12 @@ def design(tiles, house_src, thing_attrs):
                             setb(*p, DIRT)
                             trail.add(p)
 
-    path([(2899, 708), (2899, 702), (2898, 697), (2895, 694), (2891, 692), (2889, 688), (2884, 685), (2881, 680), (2878, 677),
+    path([(2899, 708), (2898, 702), (2895, 697), (2891, 693), (2889, 688), (2884, 685), (2881, 680), (2878, 677),
           (2876, 673), (2874, 669), (2876, LEDGE), (2884, LEDGE)])
-    path([(2914, 707), (2914, 702), (2914, 698), (2915, 695), (2916, 692), (2920, 690), (2922, 689), (2923, 685), (2926, 681), (2927, 677),
+    path([(2914, 707), (2916, 702), (2915, 698), (2918, 693), (2922, 690), (2923, 685), (2926, 681), (2927, 677),
           (2927, 673), (2927, LEDGE + 2)])
     for (x, y) in NOTCH_HOLE:
         setb(x, y, 7, TOPG)
-    # the old road's ends left under the rock beside the trails go back to grass
-    for x in range(2864, 2940):
-        for y in range(661, 705):
-            p = (x, y, 7)
-            if brush.get(p) is DIRT and p not in trail and \
-                    any(brush.get(k) is not None or tiles.get(k) for k in ((x, y, 6), (x + 1, y + 1, 6))):
-                setb(*p, GRASS)
     # under the raised deck the river runs on, shallow so nothing is cut off where the bridge stood
     for x in range(2905, 2912):
         for y in range(703, 715):
@@ -340,7 +326,7 @@ def design(tiles, house_src, thing_attrs):
             ground = old[0] if old else pick(center)
             keep = [i for i in old[1:] if i not in B.border_item_ids]
         new[(x, y, z)] = [ground] + border + keep
-    for (x, y) in cuts:
+    for (x, y) in mouth_w | mouth_e:
         new[(x, y, 6)] = []
     for (x, y) in cascade:
         new[(x, y, 3)].append(WF_TOP)
@@ -361,6 +347,10 @@ def design(tiles, house_src, thing_attrs):
     for p in [(2896, 658, TOP), (2908, 661, TOP)]:
         if p in new and B.by_item.get(new[p][0]) is SEA:
             new[p].append(int(rng.choice(BOULDERS)))
+    for p in [(2885, LEDGE, 7), (2926, LEDGE - 1, 7), (2892, LEDGE - 1, 7), (2911, LEDGE, 7)]:
+        if p in new:
+            new[p].append(int(rng.choice(LOOSE_ROCKS)))
+
     # the bridge: the deck on floor 6, a step up onto it at each end of the two rows it is walked on
     for (x, y) in SPAN:
         rails = {707: [[3758, 3773], [3769]], 710: [[3761, 3772], [3768]]}.get(y)
@@ -400,7 +390,7 @@ def design(tiles, house_src, thing_attrs):
                 return True
         return False
 
-    walk = [(x, y) for x in range(FX0 - 3, FX1 + 1) for y in (LEDGE - 1, LEDGE, Y) if brush.get((x, y, 7)) is TOPG]
+    walk = [(x, y) for x in range(FX0 - 3, FX1 + 1) for y in (LEDGE - 1, LEDGE) if brush.get((x, y, 7)) is TOPG]
     for _ in range(40):
         changed = False
         for (x, y) in walk:
@@ -423,7 +413,6 @@ def design(tiles, house_src, thing_attrs):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--map', default=os.path.join(DEV, 'dev.otbm'))
-    ap.add_argument('--from', dest='source', help='build from this map, without the falls, and write the area onto --map')
     ap.add_argument('--out')
     ap.add_argument('--spawns')
     args = ap.parse_args()
@@ -432,7 +421,7 @@ def main():
     spawns_out = args.spawns or os.path.join(os.path.dirname(out), 'map-spawn.xml')
 
     data = open(args.map, 'rb').read()
-    raw = johto_edit.read_boxes(open(args.source, 'rb').read() if args.source else data, {'area': AREA, 'house': HOUSE_SRC})
+    raw = johto_edit.read_boxes(data, {'area': AREA, 'house': HOUSE_SRC})
     base = raw['area']
     tiles = {k: johto_edit.ids_of(t) for k, t in base.items()}
     house_raw = raw['house']
@@ -469,11 +458,6 @@ def main():
         edit.set(k, johto_edit.ids_of(t), src=t, flags=0)
 
     new_tiles, remove = edit.tiles()
-    if args.source:
-        built = {k: t for k, t in base.items() if k not in remove}
-        built.update(new_tiles)
-        now = johto_edit.read_boxes(data, {'area': AREA})['area']
-        new_tiles, remove = built, set(now) - set(built)
     cut = pvmap.write_map(data, out, new_tiles, remove)
     print('%s: %d tiles written, %d removed (%d replaced)' % (out, len(new_tiles), len(remove), cut))
 

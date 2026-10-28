@@ -9,8 +9,8 @@ small center. In each city of CITIES:
             Chansey where Pewter has them), on the ground the small center and the Mart stood on,
             its door on the town's main street by a 4-wide spur in that street's paving
   Mart      the city's own Mart moved, whole, to a lot elsewhere in town (at least 4 tiles from the
-            center and 2 from other buildings, clear of their upper floors and roofs, few trees and no
-            paving under it), its door joined to the town's roads by a 2-wide path
+            center and 2 from other buildings, few trees and no paving under it), its door joined to
+            the town's roads by a 2-wide path
   the rest  the old buildings' ground goes back to grass, their signs, roofs (floor 6), protection zone
             and staff move with them, and the town's temple goes to the new center's door
 
@@ -77,9 +77,6 @@ class Planner:
                 return False
             ids = t.get((xx, yy, 7))
             if not ids:
-                return True
-            # a floor k up draws k tiles up-left, so a neighbour's upper floors and roof cover this tile
-            if any(t.get((xx + k, yy + k, 7 - k)) for k in range(1, 5)):
                 return True
             br = B.by_item.get(ids[0])
             if br is None or any(i >= 10000 and i not in B.border_item_ids and i not in (CENTER_SIGN, MART_SIGN) for i in ids[1:]):
