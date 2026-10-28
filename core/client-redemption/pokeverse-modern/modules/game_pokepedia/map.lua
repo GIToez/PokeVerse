@@ -10,8 +10,9 @@ local sub = 'places'
 local places
 local waypoints = {} -- { name, icon, x, y, z }
 local route = {} -- { name, x, y, z, reached }
-local playerMark, focusMark
+local playerMark
 local pointer, pointerEvent
+local showPointer
 local waypointMarks, stopMarks, dots, shownMarks = {}, {}, {}, {}
 local dialog
 local placesEvent
@@ -136,9 +137,6 @@ local function refreshVisibility()
         for _, mark in ipairs(list) do
             mark:setVisible(mark.pos.z == z)
         end
-    end
-    if focusMark and focusMark.pos then
-        focusMark:setVisible(focusMark.pos.z == z)
     end
     if pointer and pointer.pos then
         pointer:setVisible(pointer.pos.z == z)
@@ -342,7 +340,10 @@ drawWaypoints = function()
         row.name:setText(name)
         row.town:setText(tr('Floor %s', Pp.floorName(pos.z)))
         row:setTooltip(tr('Click to show it, double-click to walk there, right-click for more.'))
-        row.onClick = function() centerOn(pos) end
+        row.onClick = function()
+            showPointer(pos, name)
+            centerOn(pos)
+        end
         row.onDoubleClick = function() Navigation.goTo(pos, name) end
         row.onMouseRelease = function(widget, mousePos, mouseButton)
             if mouseButton == MouseRightButton then
@@ -432,7 +433,10 @@ drawRoute = function()
         end
         row:setTooltip(Pp.formatPosition(pos))
         previous = pos
-        row.onClick = function() centerOn(pos) end
+        row.onClick = function()
+            showPointer(pos, name)
+            centerOn(pos)
+        end
         row.up:setEnabled(index > 1)
         row.up.onClick = function()
             route[index], route[index - 1] = route[index - 1], route[index]
@@ -646,6 +650,7 @@ local function drawPlaces()
                     for _, entry in ipairs(group.entries) do
                         if placeKind(entry) == 'town' then
                             group.onClick = function()
+                                showPointer(entry.position, entry.name)
                                 centerOn(entry.position)
                                 zoomTo(1)
                             end
@@ -711,18 +716,19 @@ local function animatePointer()
     pointer.ring:setOpacity(1 - phase)
 end
 
--- a bigger, animated mark for one spot (a quest's NPC); left-click walks there
-local function showPointer(pos, text)
+-- the bigger, animated mark for the spot being shown (a quest's NPC, a house, a place...); left-click
+-- walks there unless onClick is given
+showPointer = function(pos, text, onClick)
     clearPointer()
-    if focusMark then
-        focusMark:setVisible(false)
-        focusMark.pos = nil
-    end
     pointer = g_ui.createWidget('PpMapPointer', minimap)
     pointer.arrow:setTooltip(text or '')
     pointer.arrow.onMouseRelease = function(widget, mousePos, mouseButton)
         if mouseButton == MouseLeftButton then
-            Navigation.goTo(pos, text)
+            if onClick then
+                onClick()
+            else
+                Navigation.goTo(pos, text)
+            end
         end
         return true
     end
@@ -730,18 +736,9 @@ local function showPointer(pos, text)
     pointerEvent = cycleEvent(animatePointer, 33)
 end
 
-local function setFocus(pos, text)
-    clearPointer()
-    if not focusMark then
-        focusMark = newMark(Pp.IMAGES .. 'mark_spawn', 16, true)
-    end
-    focusMark:setTooltip(text or '')
-    placeMark(focusMark, pos)
-end
-
 selectPlace = function(place)
     selectedPlace = place
-    setFocus(place.position, place.name)
+    showPointer(place.position, place.name)
     centerOn(place.position)
     zoomTo(place.type and 2 or 1)
 end
@@ -759,14 +756,9 @@ local function showSub(name)
     end
 end
 
--- animated: the bigger animated mark instead of the flag
-function MapTab.showPosition(pos, text, animated)
+function MapTab.showPosition(pos, text)
     show('map')
-    if animated then
-        showPointer(pos, text)
-    else
-        setFocus(pos, text)
-    end
+    showPointer(pos, text)
     centerOn(pos)
 end
 
@@ -778,7 +770,7 @@ function MapTab.showPositions(list, text)
     clearPointer()
     local player = g_game.getLocalPlayer()
     local here = player and player:getPosition()
-    local best, bestDistance
+    local best, bestEntry, bestDistance
     for _, entry in ipairs(list) do
         local pos = toPosition(entry)
         local mark = newMark(entry.icon or (Pp.IMAGES .. 'mark_spawn'), entry.size or 16)
@@ -797,10 +789,11 @@ function MapTab.showPositions(list, text)
         shownMarks[#shownMarks + 1] = mark
         local distance = here and (Pp.distance(here, pos) + (here.z == pos.z and 0 or 100000)) or 0
         if not bestDistance or distance < bestDistance then
-            best, bestDistance = pos, distance
+            best, bestEntry, bestDistance = pos, entry, distance
         end
     end
     if best then
+        showPointer(best, bestEntry.text or text, bestEntry.onClick and function() bestEntry.onClick(bestEntry) end)
         centerOn(best)
     end
 end
@@ -1068,10 +1061,6 @@ end
 function MapTab.onGameEnd()
     clearList(shownMarks)
     clearPointer()
-    if focusMark then
-        focusMark:destroy()
-        focusMark = nil
-    end
     if dialog then
         dialog:destroy()
         dialog = nil
