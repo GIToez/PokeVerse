@@ -146,7 +146,7 @@ email, login security and the Store are built, and the Soul Coin NPCs are off th
 `scripts/mapper/hidden-regions.txt` while it is built, so the map doesn't show it before launch.
 
 Next after the Pokegear UI: [Warp Styles](#28-warp-styles-planned-not-built), with animated concepts
-of all eight styles.
+of all eight warp styles and the duel Victory and Defeat effects.
 
 ## 1. New depot
 
@@ -3590,79 +3590,105 @@ Running shoes (item 18754, from the Ash Ketchum quest) become a light alternativ
 
 ## 28. Warp Styles (planned, not built)
 
-Cosmetic animations for when a trainer **logs in, logs out, faints or teleports**. Today every
-one of these plays the same Tibia teleport effect (magic effect 10: `login.lua`, the travel NPCs
-in `npcsystem/modules.lua`, the teleport talkactions). Warp Styles swap that for a Pokemon
-moment that everyone nearby sees. The [animated concepts](concepts/warp-styles/README.md) show all
-eight styles over a real Route 1 screenshot.
+Cosmetic animations for a trainer's big moments: **logging in, logging out, teleporting, and
+winning or losing a duel** against a player or an NPC. Today the warps all play the same Tibia
+teleport effect (magic effect 10: `login.lua`, the travel NPCs in `npcsystem/modules.lua`, the
+teleport talkactions), and a duel ending plays nothing. Warp Styles replace all of these with
+Pokemon moments that everyone nearby sees. The [animated concepts](concepts/warp-styles/README.md)
+show every style over a real Route 1 screenshot.
 
 ![All eight Warp Styles](concepts/warp-styles/warp-styles-board.gif)
 
-### The idea
+### Decided (October 28)
 
-- **Four slots:** Log in, Log out, Faint and Teleport. Each slot takes any style you own, so you
-  can arrive by Fly and leave in a Poke Ball.
-- **Purely cosmetic:** nothing gets slower. Logging out, teleporting and fainting happen exactly
-  when they do today. The client plays the animation on its own around that moment, using a
-  copy of the trainer's sprite for the leaving half.
-- **Everyone sees it:** the server tells every client in view which style played. A Settings ›
-  Interface option, **Warp Styles: Everyone / Only mine / Off**, lets slow phones show plain
-  Classic for other players.
-- **One art set per style:** leaving plays the animation forwards and arriving plays it
-  backwards or mirrored, so each style is one sprite sheet, not four.
+- **The Tibia effect goes.** The new default for everyone is **Warp Spin**: a Poke Ball pad
+  lights up, the trainer spins faster and faster and zips up into the sky, like the warp panels
+  in Silph Co. and Saffron Gym. Arriving is the same backwards. The duels get their own
+  defaults, **Victory** and **Defeat**.
+- **Premium** trainers get **Beam** as well. All the other styles come from the Store, quests,
+  events and other rewards.
+- **GMs and above** (staff access 3 and up) have every style, for testing and events.
+- **Owned by the character**, like outfits, not by the account.
+- **Equipped in the Customise Character window:** a **Warp Styles** entry in its list (next to
+  Outfit, Mount, Wings, Aura, Effects and Shader), with a picker for each trigger and a looping
+  preview on your own trainer.
+
+### Triggers
+
+| Trigger | When | Default |
+|---|---|---|
+| Log in | You appear in the world | Warp Spin |
+| Log out | You leave the world | Warp Spin |
+| Teleport | Teleport tiles, travel NPCs and boats; it plays where you leave and where you arrive | Warp Spin |
+| Victory | You win a duel against a player or an NPC (trainers, gym leaders, Team Rocket) | Victory |
+| Defeat | You lose a duel against a player or an NPC | Defeat |
+
+Warp styles (Warp Spin, Beam, Poke Ball and the rest) go in the Log in, Log out and Teleport slots.
+Victory and Defeat effects are their own two lists, so a Victory effect can't be put on Log out.
 
 ### The styles
 
-| Style | What happens | How you get it (proposal) |
+| Style | What happens | Who has it |
 |---|---|---|
-| Classic | Today's blue teleport sparkle | Free, the default for every slot |
-| Beam | A column of light scans the trainer away from the feet up | Free |
-| Poke Ball | A Poke Ball's red light pulls the trainer in; three wobbles and a click | A catching milestone quest |
-| Psychic (Abra) | Abra blinks in, the trainer ripples purple and folds into a line | Store |
-| Dig (Diglett) | Diglett digs a hole and the trainer drops into it | Diglett's Cave quest |
-| Fly (Pidgeot) | Pidgeot swoops in and carries the trainer off the screen | Store |
-| Smoke Bomb (Koffing) | A smoke ball, Koffing in the cloud, and nobody there when it clears | A Team Rocket event |
-| Shadow (Gengar) | The shadow becomes a pool, Gengar grins and the trainer sinks into it | Halloween (from next year) |
+| Warp Spin | A Poke Ball pad, a spin that speeds up, and a zip into the sky | Everyone (the default) |
+| Beam | A column of light scans the trainer away from the feet up | Premium |
+| Poke Ball | A Poke Ball's red light pulls the trainer in; three wobbles and a click | Store, quest or event (to decide) |
+| Psychic (Abra) | Abra blinks in, the trainer ripples purple and folds into a line | Store, quest or event (to decide) |
+| Dig (Diglett) | Diglett digs a hole and the trainer drops into it | Store, quest or event (to decide) |
+| Fly (Pidgeot) | Pidgeot swoops in and carries the trainer off the screen | Store, quest or event (to decide) |
+| Smoke Bomb (Koffing) | A smoke ball, Koffing in the cloud, and nobody there when it clears | Store, quest or event (to decide) |
+| Shadow (Gengar) | The shadow becomes a pool, Gengar grins and the trainer sinks into it | Store, quest or event (to decide) |
+
+| Duel effect | What happens | Who has it |
+|---|---|---|
+| Victory | Two hops, a gold burst, Poke Ball confetti and a badge glint | Everyone (the default) |
+| Defeat | The trainer slumps grey, with dizzy stars and a little rain cloud | Everyone (the default) |
 
 Later ideas, not drawn yet: Surf (a wave washes the trainer away), Vine Whip (Bulbasaur pulls them
-into the grass), Rapid Spin (Squirtle spins off), Fire Spin (a ring of flame).
+into the grass), Rapid Spin (Squirtle spins off), Fire Spin (a ring of flame), and more Victory
+and Defeat effects (fireworks, a trophy, a Pokemon cheering, a sweat drop).
 
 ### How it works
 
-- **Server (`lib/ps/systems/warpstyles.lua`):** the catalogue (id, name, how long the in and out
-  halves run), a `player_warp_styles` table of owned styles, the four slots, and one call,
-  `WarpStyles.play(cid, moment, fromPos, toPos)`. It sends an extended opcode to every
-  spectator with the creature, the positions, the style and the half. Clients that don't
-  have the module get the plain magic effect 10 as they do now.
-- **Hooks:** `login.lua` (in), logout (out at the last spot), death (out where the trainer fell,
-  in at the Pokemon Center), teleport tiles (`teleport.cpp` through a Lua event), the travel NPCs
-  and boats in `npcsystem/modules.lua`, and the travel picker when it's built. Staff teleports
-  keep Classic.
+- **Purely cosmetic:** nothing gets slower. Logging out, teleporting and duels end exactly
+  when they do today, and the client plays the animation around that moment. For a departure it
+  draws a copy of the trainer's last outfit, since the real creature is already gone.
+- **Everyone sees it:** the server tells every client in view which style played. A Settings ›
+  Interface option, **Warp Styles: Everyone / Only mine / Off**, lets slow phones show the
+  defaults for other players instead.
+- **Server (`lib/ps/systems/warpstyles.lua`):** the catalogue (id, name, list, how long each
+  half runs, premium or not), a per-character `player_warp_styles` table of owned styles, the
+  five equipped slots, and one call, `WarpStyles.play(cid, trigger, fromPos, toPos)`. It sends an
+  extended opcode to every spectator with the creature, the positions, the style and the half.
+  Clients without the module get the plain magic effect for warps and nothing for duels, as
+  today.
+- **Hooks:** `login.lua` (in), logout (out at the last spot), teleport tiles (`teleport.cpp`
+  through a Lua event), the travel NPCs and boats in `npcsystem/modules.lua`, the travel picker
+  when it's built, and the duel endings: NPC trainers and gym leaders (`001-npcBattle.lua`,
+  where battle wins and losses are counted), Team Rocket (`050-rocketBattle.lua`), and player
+  duels where the engine counts duel wins and losses. Staff teleports stay plain.
 - **Client (`game_warpfx`):** draws each style as widgets anchored to the map tile, like the
   battle text bubbles, so the sprite files (`.dat`/`.spr`) don't change. For an arrival it
-  hides the trainer until the animation reveals them. For a departure it draws the trainer's last
-  outfit while the real creature is already gone.
-- **Choosing:** an **Effects** tab in the outfit window with a looping preview on your own
-  trainer and the four slot pickers. The Store gets a Warp Styles category with the same
-  previews.
+  hides the trainer until the animation reveals them.
+- **Store:** a Warp Styles category with the same looping previews.
 
 ### Stages
 
-1. Server: catalogue, ownership, slots, the opcode and the plain fallback, plus a staff test
-   command (`/warpstyle <style> <moment>`).
-2. Client `game_warpfx` with Classic and Beam, hiding and revealing the trainer, the
-   departure copy, and the Settings option.
-3. The hooks: login, logout, fainting, teleport tiles, travel NPCs and boats.
-4. The Effects tab in the outfit window.
+1. Server: catalogue, per-character ownership, the five slots, premium and staff access, the
+   opcode and the plain fallback, plus a staff test command (`/warpstyle <style> <trigger>`).
+2. Client `game_warpfx` with Warp Spin, Beam, Victory and Defeat; hiding and revealing the
+   trainer, the departure copy, and the Settings option.
+3. The hooks: login, logout, teleport tiles, travel NPCs and boats, and the duel endings.
+4. The Warp Styles entry in the Customise Character window.
 5. The other styles, with art at the game's scale (Poke Ball first, then Psychic, Dig, Fly, Smoke
    Bomb, Shadow), checked in the 4K harness.
 6. The Store category, the quest and event rewards, the wiki page and the changelog.
 
 ### To decide
 
-- Whether owned styles are per account (like Store items) or per character.
-- The sources in the table above, and which styles are Store-only.
-- Whether fainting gets its own slot or uses the Log out style.
+- Where each of the six other styles comes from: which are Store items, quest rewards or event
+  prizes.
+- More Victory and Defeat effects beyond the two defaults, and where they come from.
 
 ## Going private
 
