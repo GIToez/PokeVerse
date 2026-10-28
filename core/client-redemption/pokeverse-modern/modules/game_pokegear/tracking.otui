@@ -1,0 +1,240 @@
+// Tracking: the Pokepedia tracker's lines as a Pokegear window, and the chip it folds into under
+// the map's name. Lines are built by tracking.lua.
+PokegearTrackGroup < UILabel
+  height: 14
+  margin-top: 4
+  text-align: left
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 10
+  color: #8fa0c4
+  phantom: true
+
+PokegearTrackLine < UIWidget
+  height: 38
+  image-source: /modules/game_pokegear/images/row
+  image-border: 11
+  image-smooth: true
+  $hover:
+    image-source: /modules/game_pokegear/images/row_target
+
+  UIWidget
+    id: icon
+    size: 16 16
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 9
+    image-smooth: true
+    phantom: true
+
+  UILabel
+    id: name
+    anchors.left: icon.right
+    anchors.right: right.left
+    anchors.top: parent.top
+    margin-left: 8
+    margin-right: 6
+    margin-top: 5
+    height: 15
+    text-auto-resize: false
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #eef2ff
+    phantom: true
+
+  UIWidget
+    id: pin
+    size: 12 12
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-right: 3
+    margin-top: 2
+    image-source: /modules/game_pokepedia/images/icon_pinned
+    image-smooth: true
+    visible: false
+    phantom: true
+
+  UIWidget
+    id: right
+    width: 54
+    anchors.right: parent.right
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    margin-right: 10
+    phantom: true
+
+    UILabel
+      id: count
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      text-auto-resize: true
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 11
+      color: #b4c2dc
+      phantom: true
+
+    UIButton
+      id: claim
+      height: 20
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      text-auto-resize: true
+      padding: 0 9
+      image-source: /modules/game_pokegear/images/pill_on
+      image-border: 9
+      image-smooth: true
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 11
+      color: #ffffff
+      visible: false
+      $on:
+        image-color: #3fbf5a
+      $hover:
+        opacity: 0.85
+
+  UIWidget
+    id: bar
+    height: 6
+    anchors.left: name.left
+    anchors.right: right.left
+    anchors.bottom: parent.bottom
+    margin-right: 6
+    margin-bottom: 7
+    image-source: /modules/game_pokegear/images/bar
+    image-border: 3
+    phantom: true
+
+    UIWidget
+      id: fill
+      anchors.left: parent.left
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      image-source: /modules/game_pokegear/images/bar_fill
+      image-border: 3
+      phantom: true
+
+PokegearTracking < UIWidget
+  id: pokegearTracking
+  width: 300
+  height: 120
+  image-source: /modules/game_pokegear/images/card
+  image-border: 12
+  image-smooth: true
+  padding: 8 10 10 10
+  focusable: false
+
+  UIWidget
+    id: header
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 24
+    draggable: true
+    !tooltip: tr('Drag to move')
+
+    UILabel
+      id: title
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      text-auto-resize: true
+      !text: tr('Tracking')
+      ttf-font: /fonts/ttf/pixelify-sans.ttf
+      ttf-font-size: 18
+      color: #ffcb05
+      phantom: true
+
+    UIButton
+      id: fold
+      size: 20 20
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      image-source: /modules/game_pokegear/images/pill
+      image-border: 9
+      image-smooth: true
+      text: -
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 13
+      color: #eef2ff
+      !tooltip: tr('Fold it into a chip under the map')
+      $hover:
+        image-source: /modules/game_pokegear/images/pill_on
+
+    PokegearChip
+      id: keyChip
+      anchors.right: fold.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 6
+
+    UILabel
+      id: count
+      anchors.right: keyChip.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 6
+      text-auto-resize: true
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 11
+      color: #8fa0c4
+      phantom: true
+
+  UIScrollArea
+    id: list
+    anchors.top: header.bottom
+    anchors.left: parent.left
+    anchors.right: scroll.left
+    margin-top: 4
+    height: 40
+    vertical-scrollbar: scroll
+    layout:
+      type: verticalBox
+      spacing: 4
+
+  VerticalScrollBar
+    id: scroll
+    anchors.top: header.bottom
+    anchors.right: parent.right
+    margin-top: 4
+    height: 40
+    width: 0
+    step: 42
+    pixels-scroll: true
+    visible: false
+
+  UILabel
+    id: empty
+    anchors.top: header.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+    height: 30
+    text-wrap: true
+    text-align: center
+    !text: tr('Track a Pokemon from the Pokepedia, or take a task, to follow it here.')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 11
+    color: #8fa0c4
+    phantom: true
+
+// folded: a chip in the ribbon under the map's name
+PokegearTrackingChip < UIButton
+  id: pokegearTrackingChip
+  height: 20
+  text-offset: 22 0
+  text-align: left
+  image-source: /modules/game_pokegear/images/pill
+  image-border: 9
+  image-smooth: true
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 11
+  color: #eef2ff
+  $hover:
+    image-source: /modules/game_pokegear/images/pill_on
+
+  UIWidget
+    id: dot
+    size: 8 8
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 9
+    image-source: /modules/game_pokegear/images/bar_fill
+    image-border: 3
+    image-color: #4fd66a
+    phantom: true
