@@ -75,6 +75,7 @@
 	<talkaction log="yes" words="/createnpc" access="5" event="script" value="createNpc.lua"/>
 	<talkaction log="yes" words="/mypokemon" access="5" event="script" value="pokemon.lua"/>
 	<talkaction log="yes" words="/pstats" access="3" event="script" value="pokemonStats.lua"/>
+	<talkaction log="yes" words="/warpstyle" access="3" event="script" value="../../lib/ps/events/talkactions/warpStyle.lua" description="Play a Warp Style on yourself."/>
 	<talkaction log="yes" words="/vocation" access="5" event="script" value="vocation.lua"/>
 	<talkaction log="yes" words="/pokemonexp" access="5" event="script" value="pokemonExp.lua"/>
 	<talkaction log="yes" words="/s" access="5" event="script" value="summon.lua"/>

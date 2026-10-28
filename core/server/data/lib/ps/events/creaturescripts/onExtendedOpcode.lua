@@ -50,6 +50,8 @@ function onExtendedOpcode(cid, opcode, buffer)
         Social.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.POKEMON_OUTFIT) then
         PokemonAddon.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.WARP_STYLES) then
+        WarpStyles.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.AUTO_LOOT) then
         local enabled = buffer == "1"
         setPlayerAutoLoot(cid, enabled)

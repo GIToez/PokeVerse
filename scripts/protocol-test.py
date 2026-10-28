@@ -361,6 +361,8 @@ def main():
     ap.add_argument("--step-delay", type=float, default=1.5, help="seconds to wait after each step")
     ap.add_argument("--quest-log", action="store_true", help="also open the quest log and every quest in it")
     ap.add_argument("--say", action="append", default=[], help="say this in the default channel (repeatable)")
+    ap.add_argument("--send-opcode", action="append", default=[], metavar="ID:TEXT",
+                    help="send this extended opcode before saying anything (repeatable)")
     ap.add_argument("--expect-login-failure", action="store_true",
                     help="succeed only if the login server refuses the credentials")
     ap.add_argument("--game-host", default="127.0.0.1",
@@ -416,6 +418,11 @@ def main():
             except ProtocolError as e:
                 print("FAIL: " + str(e))
                 return 1
+        for item in args.send_opcode:
+            opcode, text = item.split(":", 1)
+            conn.send(b"\x32" + bytes([int(opcode)]) + pstr(text))
+            drain(conn, 1)
+            print("  sent extended opcode %s" % opcode)
         for text in args.say:
             conn.send(b"\x96\x01" + pstr(text))  # say, talk type 1 (default channel)
             drain(conn, 1)

@@ -244,6 +244,7 @@ ExtendedIds.Bag = 53
 ExtendedIds.Social = 54
 ExtendedIds.Activity = 55
 ExtendedIds.PokemonOutfit = 56
+ExtendedIds.WarpStyles = 57
 
 -- Long extended opcode messages arrive as "#id:index:count:" fragments (doSendPlayerLongExtendedOpcode
 -- on the server), and the server's output pool can deliver them out of order. Gives back the whole

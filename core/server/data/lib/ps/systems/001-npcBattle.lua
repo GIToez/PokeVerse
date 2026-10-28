@@ -1077,9 +1077,7 @@ if (NpcBattle == nil) then
         local npcPosition = getCreaturePosition(self.uid)
         self.battleMaxDistance = math.max(NPC_BATTLE_MAX_DISTANCE, getDistanceBetween(npcPosition, destination) + 1)
         if (not getSamePosition(destination, getCreaturePosition(pid))) then
-            doSendMagicEffect(getCreaturePosition(pid), CONST_ME_TELEPORT)
-            doTeleportThing(pid, destination, false)
-            doSendMagicEffect(destination, CONST_ME_TELEPORT)
+            WarpStyles.teleport(pid, destination, false)
         end
         doCreatureSetLookDirection(pid, getDirectionTo(destination, npcPosition))
         doCreatureSetLookDirection(self.uid, getDirectionTo(npcPosition, destination))

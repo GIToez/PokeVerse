@@ -145,8 +145,8 @@ built and tested against a fake PayPal, waiting for the sandbox test and then th
 [news banner, call-out bubbles and Discord announcements](#25-announcements-news-banner-call-out-bubbles-discord-and-the-calendar), and putting Johto in
 `scripts/mapper/hidden-regions.txt` while it is built, so the map doesn't show it before launch.
 
-Next after the Pokegear UI: [Warp Styles](#28-warp-styles-planned-not-built), with animated concepts
-of all eight warp styles and the duel Victory and Defeat effects.
+[Warp Styles](#28-warp-styles-first-styles-built): the defaults, Beam and the window are built;
+the six other styles, the Store category and the rewards are next.
 
 ## 1. New depot
 
@@ -3599,10 +3599,27 @@ Running shoes (item 18754, from the Ash Ketchum quest) become a light alternativ
 - Whether trainers should choose between the Mega Ring and running shoes (same slot, as
   decided), or the shoes should move elsewhere later.
 
-## 28. Warp Styles (planned, not built)
+## 28. Warp Styles (first styles built)
 
-**On hold until the Pokegear UI is finished and tested.** The plan and concepts below are
-approved; building starts after that.
+**Built (stages 1 to 4, plus Faint):** Warp Spin, Beam, Victory, Defeat and Faint, the six slots,
+the hooks, the Settings option and the Warp Styles window. Server
+`lib/ps/systems/102-warpStyles.lua` (opcode 57, `EXTENDED_IDS.WARP_STYLES`), engine hooks
+`Game::playWarpStyle` (teleport tiles and logouts), client `game_warpfx` (art:
+`scripts/art/warp_fx_art.py`). The window opens from **Customise Trainer › Warp Styles** (the
+Pokegear layout's outfit window). Staff test any style on themselves with
+`/warpstyle <style> <trigger>`; `/warpstyle` alone lists them. The server test checks the
+messages (scripts/test-server-linux.sh, "Warp Styles"). Still to do: stages 5 and 6.
+
+As built, differing from the plan below:
+
+- **A sixth slot, Faint:** when your trainer faints, a white flash shrinks into a glowing orb
+  that floats away. Its own list, like Victory and Defeat.
+- **The window is in Customise Trainer** (a Warp Styles button there), not an entry in a list:
+  the six slots with the styles that fit each, locked ones dimmed with how to get them, and the
+  chosen style looping on your trainer. Classic layout players don't have that window yet.
+- **Victory and Defeat** play on duels and NPC battles alike: on the duel and battle win and
+  loss counts going up (`onAdvance`). A timed-out duel is a loss for both trainers.
+- **Defeat** turns the trainer grey (without their outfit colours) under the cloud and stars.
 
 Cosmetic animations for a trainer's big moments: **logging in, logging out, teleporting, and
 winning or losing a duel** against a player or an NPC. Today the warps all play the same Tibia

@@ -171,6 +171,17 @@ local function openTrainer(creature, outfitList)
     window.header.title:setText(tr('Customise Trainer'))
     setupStage(window.stage)
     window.outfitsLabel:setText(tr('Outfits (%d)', #trainerState.list))
+    if modules.game_warpfx and modules.game_warpfx.openWindow then
+        local warp = g_ui.createWidget('PokegearSocialAction', window.footer)
+        warp:setText(tr('Warp Styles'))
+        warp:setTooltip(tr('How you appear, vanish, win, lose and faint'))
+        warp:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+        warp:addAnchor(AnchorVerticalCenter, 'parent', AnchorVerticalCenter)
+        warp.onClick = function()
+            closeTrainer()
+            modules.game_warpfx.openWindow()
+        end
+    end
     if Pokegear.isCompact() then
         window.list:setHeight(COMPACT_LIST_HEIGHT)
         window:setHeight(window:getHeight() - (FULL_LIST_HEIGHT - COMPACT_LIST_HEIGHT))

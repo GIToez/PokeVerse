@@ -183,8 +183,7 @@ if(Modules == nil) then
             npcHandler:say('It was a pleasure doing business with you.', cid)
             npcHandler:releaseFocus(cid)
 
-            doTeleportThing(cid, parameters.destination, false)
-            doSendMagicEffect(parameters.destination, CONST_ME_TELEPORT)
+            WarpStyles.teleport(cid, parameters.destination, false)
         end
 
         npcHandler:resetNpc()
@@ -451,8 +450,7 @@ if(Modules == nil) then
                         module.npcHandler:say('It was a pleasure doing business with you.', cid)
                         module.npcHandler:releaseFocus(cid)
 
-                        doTeleportThing(cid, parent.destination, true)
-                        doSendMagicEffect(parent.destination, CONST_ME_TELEPORT)
+                        WarpStyles.teleport(cid, parent.destination, true)
                     else
                         module.npcHandler:say('You do not have enough money.', cid)
                     end
@@ -492,8 +490,7 @@ if(Modules == nil) then
             module.npcHandler:say('Sure!', cid)
             module.npcHandler:releaseFocus(cid)
 
-            doTeleportThing(cid, parameters.destination, false)
-            doSendMagicEffect(parameters.destination, CONST_ME_TELEPORT)
+            WarpStyles.teleport(cid, parameters.destination, false)
         end
 
         module.npcHandler:releaseFocus(cid)

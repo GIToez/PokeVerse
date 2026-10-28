@@ -1175,3 +1175,12 @@ CREATE TABLE IF NOT EXISTS `payment_notices` (
   PRIMARY KEY (`id`),
   KEY `payment_notices_pending` (`delivered`, `account_id`)
 ) ENGINE = InnoDB;
+
+-- Warp Styles a character owns beyond the defaults, Premium's Beam and staff's (lib/ps/systems/102-warpStyles.lua)
+CREATE TABLE IF NOT EXISTS `player_warp_styles` (
+  `player_id` INT NOT NULL,
+  `style` VARCHAR(24) NOT NULL,
+  `obtained_at` BIGINT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`player_id`, `style`),
+  CONSTRAINT `player_warp_styles_player` FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

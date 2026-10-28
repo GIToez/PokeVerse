@@ -1,0 +1,14 @@
+// game_warpfx: the pieces of the Warp Styles. Images: scripts/art/warp_fx_art.py
+WarpFxImage < UIWidget
+  phantom: true
+  focusable: false
+
+WarpFxCreature < UICreature
+  phantom: true
+  focusable: false
+  padding: 0
+
+WarpFxClip < UIWidget
+  phantom: true
+  focusable: false
+  clipping: true
