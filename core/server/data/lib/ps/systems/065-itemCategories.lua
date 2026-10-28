@@ -2,7 +2,7 @@
 -- the hand-made ones here (plus what config/itemCategories.lua adds to them), the generated ones
 -- (scripts/make-item-categories.py), and Other last. An item is in the first
 -- category that lists it; anything in none counts as Other. The GTS leaves out what can't be traded
--- (NOT_TRADED) and the empty ones.
+-- (NOT_TRADED, OWNERS_ONLY) and the empty ones; the stash leaves out OWNERS_ONLY.
 
 ItemCategories = {}
 
@@ -46,9 +46,12 @@ for _, category in ipairs(LIST) do
     category.items = join(category.items, ITEM_CATEGORIES_MORE[category.name] or {})
 end
 local NOT_TRADED = { ["Key Items"] = true, ["Quest Items"] = true, ["Pokemon"] = true, ["Bags"] = true }
+-- money and event tokens stay with their trainer: not on the GTS, not in the PC stash
+local OWNERS_ONLY = { ["Money"] = true, ["Event"] = true }
 for _, category in ipairs(ITEM_CATEGORIES_EXTRA) do
     LIST[#LIST + 1] = { name = category.name, icon = category.icon, items = category.items,
-        trade = not NOT_TRADED[category.name], generated = true }
+        trade = not NOT_TRADED[category.name] and not OWNERS_ONLY[category.name],
+        stash = not OWNERS_ONLY[category.name], generated = true }
 end
 LIST[#LIST + 1] = { name = "Other", items = {} }
 
@@ -67,6 +70,9 @@ for index, category in ipairs(LIST) do
     category.icon = category.icon or items[1]
     if (category.trade == nil) then
         category.trade = true
+    end
+    if (category.stash == nil) then
+        category.stash = true
     end
 end
 

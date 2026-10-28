@@ -37,13 +37,14 @@ PC.LOCKERS = LOCKERS
 
 -- stash categories are the shared ones (065-itemCategories.lua); held items don't stack but keep
 -- nothing of their own (their level and experience are on the Pokemon's ball)
-local CATEGORY_OF, HELD = {}, {}
+local CATEGORY_OF, HELD, KEPT = {}, {}, {}
 for _, category in ipairs(ItemCategories.LIST) do
     for _, id in ipairs(category.items) do
         CATEGORY_OF[id] = category.name
         if (category.name == "Held Items" or category.name == "Mega Stones") then
             HELD[id] = true
         end
+        KEPT[id] = not category.stash or nil
     end
 end
 
@@ -366,13 +367,16 @@ end
 
 -- stash
 
+-- what's already stashed of a KEPT item can still be taken out, it just can't go back in
 local function stashable(item)
-    if (isContainer(item.uid) or isBallWithPokemon(item.uid) or getItemUniqueOwner(item.uid) ~= ITEM_UNIQUE_OWNER_NONE) then
+    if (KEPT[item.itemid] or isContainer(item.uid) or isBallWithPokemon(item.uid)
+        or getItemUniqueOwner(item.uid) ~= ITEM_UNIQUE_OWNER_NONE) then
         return false
     end
     local info = getItemInfo(item.itemid)
     return info and (info.stackable or HELD[item.itemid]) and true or false
 end
+PC.stashable = stashable
 
 local function stashAdd(guid, itemtype, amount)
     return db.executeQuery(string.format("INSERT INTO `pc_stash` (`player_id`, `itemtype`, `count`) VALUES (%d, %d, %d)"

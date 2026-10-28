@@ -3307,10 +3307,20 @@ local function testBag(cid)
             ItemCategories.nameOf(23497), ItemCategories.nameOf(29754)))
     local other = Bag.CATEGORIES[#Bag.CATEGORIES]
     check("bag: no generated item is left for Other", #other.items == 0, #other.items)
-    -- Key Items, Quest Items, Pokemon and Bags aren't traded, and Other is empty
-    check("bag: the GTS has every shared category but the untraded ones", #GTS.CATEGORIES == #ItemCategories.LIST - 5
-        and not gtsNames["Key Items"] and not gtsNames["Bags"] and gtsNames["Drops"] and gtsNames["Dolls & Decor"],
-        #GTS.CATEGORIES)
+    -- Key Items, Quest Items, Pokemon, Bags, Money and Event aren't traded, and Other is empty
+    check("bag: the GTS has every shared category but the untraded ones", #GTS.CATEGORIES == #ItemCategories.LIST - 7
+        and not gtsNames["Key Items"] and not gtsNames["Bags"] and not gtsNames["Money"] and not gtsNames["Event"]
+        and gtsNames["Outfits"] and gtsNames["Drops"] and gtsNames["Dolls & Decor"], #GTS.CATEGORIES)
+    local function stashes(itemid, count)
+        local uid = doCreateItemEx(itemid, count or 1)
+        local ok = PC.stashable({ uid = uid, itemid = itemid, type = count or 1 })
+        doRemoveItem(uid)
+        return ok
+    end
+    check("bag: money and event tokens stay out of the PC stash, a Feather goes in",
+        not stashes(2160, 5) and not stashes(14461, 5) and stashes(12142, 5),
+        string.format("money %s, token %s, feather %s", tostring(stashes(2160, 5)), tostring(stashes(14461, 5)),
+            tostring(stashes(12142, 5))))
     check("bag: the PC stash files a Feather under Drops", ItemCategories.nameOf(12142) == "Drops",
         ItemCategories.nameOf(12142))
 
