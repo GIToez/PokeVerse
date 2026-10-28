@@ -189,9 +189,10 @@ PokegearTracking < UIWidget
 
   VerticalScrollBar
     id: scroll
-    anchors.top: list.top
-    anchors.bottom: list.bottom
+    anchors.top: header.bottom
     anchors.right: parent.right
+    margin-top: 4
+    height: 40
     width: 0
     step: 42
     pixels-scroll: true
