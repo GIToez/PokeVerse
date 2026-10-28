@@ -102,6 +102,11 @@ jobs:
       PV_RSA_PRIVATE_KEY: ${{ secrets.POKEVERSE_RSA_PRIVATE_KEY }}
       PV_MAIL_USER: ${{ vars.GMAIL_ADDRESS || secrets.GMAIL_ADDRESS }}
       PV_MAIL_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+      PV_PAYPAL_CLIENT_ID: ${{ secrets.PAYPAL_CLIENT_ID }}
+      PV_PAYPAL_CLIENT_SECRET: ${{ secrets.PAYPAL_CLIENT_SECRET }}
+      PV_PAYPAL_ENV: ${{ vars.PAYPAL_ENV || 'sandbox' }}
+      PV_PAYPAL_WEBHOOK_ID: ${{ vars.PAYPAL_WEBHOOK_ID }}
+      PV_PAYMENTS_HOST: ${{ vars.PAYMENTS_HOST || 'account.pokeverse.quest' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -246,7 +251,7 @@ jobs:
         if: failure() && env.NEEDS_PACKAGES == 'true'
         run: |
           mkdir -p rehearsal-logs
-          sudo journalctl -u pokeverse-server.service -u pokeverse-discord.service --no-pager > rehearsal-logs/journal.txt || true
+          sudo journalctl -u pokeverse-server.service -u pokeverse-discord.service -u pokeverse-payments.service -u caddy.service --no-pager > rehearsal-logs/journal.txt || true
           sudo cp -r /opt/pokeverse/shared/logs rehearsal-logs/server-logs 2>/dev/null || true
           sudo chown -R "$USER" rehearsal-logs
 
@@ -298,6 +303,11 @@ jobs:
       PV_RSA_PRIVATE_KEY: ${{ secrets.POKEVERSE_RSA_PRIVATE_KEY }}
       PV_MAIL_USER: ${{ vars.GMAIL_ADDRESS || secrets.GMAIL_ADDRESS }}
       PV_MAIL_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+      PV_PAYPAL_CLIENT_ID: ${{ secrets.PAYPAL_CLIENT_ID }}
+      PV_PAYPAL_CLIENT_SECRET: ${{ secrets.PAYPAL_CLIENT_SECRET }}
+      PV_PAYPAL_ENV: ${{ vars.PAYPAL_ENV || 'sandbox' }}
+      PV_PAYPAL_WEBHOOK_ID: ${{ vars.PAYPAL_WEBHOOK_ID }}
+      PV_PAYMENTS_HOST: ${{ vars.PAYMENTS_HOST || 'account.pokeverse.quest' }}
     steps:
       - name: Check restore confirmation
         if: env.ACTION == 'restore' && inputs.confirm != 'RESTORE'

@@ -1,0 +1,86 @@
+* { box-sizing: border-box; }
+html { background: #0b1022; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font: 15px/1.5 "Segoe UI", Roboto, Arial, sans-serif;
+  color: #eef2ff;
+  background: radial-gradient(ellipse at top, #24306a 0%, #0b1022 65%);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 32px 14px;
+}
+.card {
+  width: 100%;
+  max-width: 640px;
+  background: rgba(18, 26, 56, 0.92);
+  border: 1px solid #34418a;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+header { display: flex; align-items: center; gap: 16px; }
+h1 { margin: 0; font-size: 24px; }
+h2 { font-size: 15px; margin: 22px 0 10px; color: #96aacd; text-transform: uppercase; letter-spacing: 0.06em; }
+p { margin: 4px 0; }
+a { color: #ffcb05; }
+.muted { color: #b7c2e3; }
+.small { font-size: 13px; }
+.gold { color: #ffd75a; }
+.orb {
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #f4e4ff 0%, #b67cff 22%, #6a2fd6 55%, #24104f 100%);
+  box-shadow: 0 0 12px rgba(182, 124, 255, 0.55), inset -3px -4px 8px rgba(10, 0, 40, 0.6);
+  flex: none;
+}
+.orb.big { width: 54px; height: 54px; }
+.sandbox {
+  margin-top: 14px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #4a3a08;
+  color: #ffe58a;
+  font-size: 13px;
+}
+.packs { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.pack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 16px 8px 12px;
+  border-radius: 10px;
+  border: 2px solid #34418a;
+  background: #151e45;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.pack:hover { border-color: #6b7fd8; }
+.pack.selected { border-color: #ffcb05; background: #1e2a5c; box-shadow: 0 0 0 3px rgba(255, 203, 5, 0.2); }
+.packs.done .pack { cursor: default; opacity: 0.6; }
+.pack b { font-size: 26px; line-height: 1.1; margin-top: 6px; }
+.pack .name { font-size: 12px; color: #b7c2e3; }
+.pack .price { font-size: 17px; font-weight: 600; color: #ffd75a; margin-top: 6px; }
+.pack .per { font-size: 12px; color: #96aacd; }
+.pack .badge {
+  position: absolute;
+  top: -9px;
+  right: 8px;
+  padding: 1px 8px;
+  border-radius: 9px;
+  background: #3fae5a;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+}
+#paypal { min-height: 48px; }
+.status { min-height: 22px; margin-top: 12px; font-weight: 600; }
+.status.ok { color: #7ee08f; }
+.status.error { color: #ff8f8f; }
+footer { margin-top: 22px; border-top: 1px solid #2a356f; padding-top: 12px; }

@@ -16,7 +16,7 @@ local TOASTS_ABOVE_BOTTOM = 70
 local TOASTS_ABOVE_MOVES = 8
 local KINDS = {
     gts = '#ffcb05', catch = '#ff6b6b', evolve = '#ba78ff', levelup = '#60dc78', quest = '#ffc42e',
-    task = '#78c8e6', battle = '#ff9f43', egg = '#f8a5c2',
+    task = '#78c8e6', battle = '#ff9f43', egg = '#f8a5c2', store = '#b67cff',
 }
 local OTHER = '#eef2ff'
 

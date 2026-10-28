@@ -138,8 +138,8 @@ firewall). The [Android signing key](client-updates.md#one-time-setup) is set up
 releases sign the APK with `ANDROID_KEYSTORE_BASE64`.
 
 Also open: the bugs and gaps the wiki check found ([list](#found-while-checking-the-wiki)),
-buying Soul Coins with PayPal ([phase 4](#19-accounts-soul-coins-and-the-store); accounts and
-email, login security and the Store are built, and the Soul Coin NPCs are off the map), the
+turning on buying Verse Orbs with PayPal on the live server ([payments.md](payments.md#live-server);
+built and tested against a fake PayPal, waiting for the sandbox test and then the live keys), the
 [travel picker](modernization-audit.md#3-travel-picker), the
 [new Pokémon #387 to #718](#23-new-pokémon-gen-4-to-6), the
 [news banner, call-out bubbles and Discord announcements](#25-announcements-news-banner-call-out-bubbles-discord-and-the-calendar), and putting Johto in
@@ -1958,8 +1958,10 @@ berries and the GTS. Making some of those nicer is in the
 
 ## 19. Accounts, Soul Coins and the Store
 
-Planned October 20, for going public. Phases 1 to 3 are built: password security (PR #167),
-accounts and email (PR #168) and the Store (PR #163). Phase 4, buying Soul Coins, is not.
+Planned October 20, for going public. All four phases are built: password security (PR #167),
+accounts and email (PR #168), the Store (PR #163) and buying Verse Orbs with PayPal
+([payments.md](payments.md)), which is tested against a fake PayPal and still needs the
+sandbox and then live keys on the server.
 
 ### Now
 
@@ -1971,7 +1973,12 @@ accounts and email (PR #168) and the Store (PR #163). Phase 4, buying Soul Coins
   the PokeVerse login key; 10 wrong passwords in a row lock the account for 15 minutes.
 - **The Store** (`game_soulstore`, `084-store.lua`) sells everything the Soul Coin NPCs did,
   with Withdraw and Deposit. The Soul Coin NPCs are off the map (commented out in
-  `map-spawn.xml`). Buying Soul Coins with PayPal is not built.
+  `map-spawn.xml`).
+- **Buying Verse Orbs** (`core/payments`, [payments.md](payments.md)): Buy Verse Orbs in the
+  Store opens a one-time link to `account.pokeverse.quest/buy`, where PayPal Checkout sells
+  the four packs. Orbs are credited once per payment, refunds and chargebacks take them
+  back (below zero closes the Store for the account), and bought orbs can't be withdrawn
+  for 7 days. Players get a message in game and a receipt by email.
 
 ### Before (October 20)
 
@@ -2129,7 +2136,10 @@ phases 1 and 2 together. Buying Soul Coins (phase 4) comes later. Each is its ow
      out. The NPCs' **referral** rewards (paint tickets, hunter outfit, rare seal box,
      Pikachu backpack, doll box) cost referral points, not Soul Coins, and are not part of
      this.
-4. **Buying Soul Coins with PayPal** (needs the PayPal Business account):
+4. **Buying Soul Coins with PayPal** (built; [payments.md](payments.md) has the details and
+   the live setup). A small Python service behind Caddy (HTTPS with its own certificate, so
+   the DNS stays at Spaceship). Still to do: the sandbox test on the live server, the switch
+   to live keys, and the Terms with the refund policy. As planned:
    - Buy Soul Coins in the Store makes a one-time code for the account (like the Discord
      `/link` codes) and opens `account.pokeverse.quest/buy` with it. No website login.
    - The page shows the packs and PayPal's buttons. When PayPal confirms the payment, the
@@ -2154,8 +2164,9 @@ phases 1 and 2 together. Buying Soul Coins (phase 4) comes later. Each is its ow
   local SMTP server (`scripts/testing/fake-smtp.py`), so the Cursor Dashboard needs neither.
   Changing the Gmail password cancels the App Password: make a new one and update the
   secret. Access to the `pokeverse.quest` DNS, ideally on Cloudflare (phase 4).
-- Phase 4: a PayPal Business account and a PayPal developer app (sandbox and live keys),
-  added the same way.
+- Phase 4: a PayPal Business account (done) and a PayPal developer app (sandbox and live
+  keys), added the same way as the secrets `PAYPAL_CLIENT_ID` and `PAYPAL_CLIENT_SECRET`, and
+  the DNS record `account.pokeverse.quest` (done, at Spaceship).
 
 ### Soul Coins become Verse Orbs
 

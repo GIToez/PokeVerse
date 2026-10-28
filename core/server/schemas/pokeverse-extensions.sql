@@ -1101,3 +1101,77 @@ CREATE TABLE IF NOT EXISTS `store_history` (
   PRIMARY KEY (`id`),
   KEY `store_history_account` (`account_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ---------------------------------------------------------------------------
+-- Buying Verse Orbs with PayPal (core/payments/payments.py, 101-payments.lua, docs/payments.md)
+-- ---------------------------------------------------------------------------
+-- Verse Orbs are the player-facing name of Soul Coins: bought orbs go onto `accounts`.`soulcoins`.
+-- Rollback: DROP TABLE `payment_notices`, `payment_events`, `payment_orders`, `payment_links`; no
+-- existing table was changed and orbs already credited stay on the accounts.
+
+-- The link the Store's Buy Verse Orbs button opens: a random token for the account, made by the game
+-- server and read by the payment service. It only lets someone pay for orbs on that account, and
+-- expires after 30 minutes.
+CREATE TABLE IF NOT EXISTS `payment_links` (
+  `token` CHAR(32) NOT NULL,
+  `account_id` INT NOT NULL,
+  `player_id` INT NOT NULL,
+  `created_at` BIGINT NOT NULL,
+  `expires_at` BIGINT NOT NULL,
+  PRIMARY KEY (`token`),
+  KEY `payment_links_account` (`account_id`),
+  KEY `payment_links_expires` (`expires_at`),
+  CONSTRAINT `payment_links_account` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+-- One row per PayPal order. `status`: created, pending (PayPal is still clearing the payment),
+-- completed (the orbs were added at `credited_at`), refunded or reversed (`taken_back` orbs were
+-- taken off the balance again), failed. The status change to completed and the deposit happen in one
+-- transaction, so an order is credited once however often PayPal reports it.
+CREATE TABLE IF NOT EXISTS `payment_orders` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `paypal_order_id` VARCHAR(36) NOT NULL,
+  `capture_id` VARCHAR(36) NULL DEFAULT NULL,
+  `account_id` INT NOT NULL,
+  `player_id` INT NOT NULL,
+  `pack` VARCHAR(16) NOT NULL,
+  `orbs` INT NOT NULL,
+  `amount_cents` INT NOT NULL,
+  `currency` CHAR(3) NOT NULL,
+  `status` VARCHAR(16) NOT NULL DEFAULT 'created',
+  `payer_email` VARCHAR(255) NOT NULL DEFAULT '',
+  `created_at` BIGINT NOT NULL,
+  `credited_at` BIGINT NOT NULL DEFAULT 0,
+  `taken_back` INT NOT NULL DEFAULT 0,
+  `updated_at` BIGINT NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `payment_orders_paypal` (`paypal_order_id`),
+  UNIQUE KEY `payment_orders_capture` (`capture_id`),
+  KEY `payment_orders_account` (`account_id`, `status`, `credited_at`),
+  CONSTRAINT `payment_orders_account` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE RESTRICT
+) ENGINE = InnoDB;
+
+-- Every webhook PayPal sent with a valid signature, by PayPal's event id, so a repeated event does nothing.
+CREATE TABLE IF NOT EXISTS `payment_events` (
+  `event_id` VARCHAR(64) NOT NULL,
+  `event_type` VARCHAR(64) NOT NULL,
+  `order_id` INT UNSIGNED NULL DEFAULT NULL,
+  `received_at` BIGINT NOT NULL,
+  `result` VARCHAR(64) NOT NULL DEFAULT '',
+  PRIMARY KEY (`event_id`),
+  KEY `payment_events_order` (`order_id`)
+) ENGINE = InnoDB;
+
+-- Messages the game server shows: to the account's character when it is online (`kind` credited,
+-- reversed), or to the staff online (`kind` staff). `delivered` is set once shown.
+CREATE TABLE IF NOT EXISTS `payment_notices` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `account_id` INT NOT NULL,
+  `kind` VARCHAR(16) NOT NULL,
+  `orbs` INT NOT NULL DEFAULT 0,
+  `text` VARCHAR(255) NOT NULL,
+  `created_at` BIGINT NOT NULL,
+  `delivered` TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `payment_notices_pending` (`delivered`, `account_id`)
+) ENGINE = InnoDB;

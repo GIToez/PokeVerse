@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Buy Verse Orbs - PokeVerse</title>
+<link rel="stylesheet" href="/buy.css">
+</head>
+<body>
+<main class="card">
+  <header>
+    <span class="orb big"></span>
+    <div>
+      <h1>Buy Verse Orbs</h1>
+      <p class="muted">For <b>{{player}}</b>'s account. Balance: <b class="gold" id="balance">{{balance}}</b> Verse Orbs</p>
+    </div>
+  </header>
+  {{sandbox}}
+  <p class="muted small">{{held}}</p>
+  <h2>1. Choose a pack</h2>
+  <div class="packs" id="packs">
+{{packs}}
+  </div>
+  <h2>2. Pay with PayPal</h2>
+  <div id="paypal"></div>
+  <p id="status" class="status" role="status" aria-live="polite"></p>
+  <footer class="muted small">
+    <p>Verse Orbs are digital goods for your PokeVerse account. They are added as soon as PayPal confirms the payment,
+      with a message in the game and a receipt by email. Spend them in the Store right away; orbs you buy can be
+      withdrawn to your bag after {{hold_days}} days. Reversing a payment through PayPal takes the orbs back.</p>
+    <p><a href="{{website}}">pokeverse.quest</a></p>
+  </footer>
+</main>
+<script type="application/json" id="config">{{config}}</script>
+<script src="/buy.js"></script>
+</body>
+</html>

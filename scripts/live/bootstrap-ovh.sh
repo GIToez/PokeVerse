@@ -13,16 +13,21 @@
 #     GitHub Actions logs in as this user with the deploy key (no password, no shell tricks)
 #   - creates the production database and its user with a random password
 #   - writes /opt/pokeverse/shared/config.local.lua (database password, Discord bridge secret)
-#   - installs the systemd services (game server, Discord bot, daily backup) and allows the
-#     pokeverse user to start/stop/restart only these services
-#   - opens the game ports 7564 and 8548 if the ufw firewall is active
+#   - installs the systemd services (game server, Discord bot, payment service, daily backup) and allows
+#     the pokeverse user to start/stop/restart only these services
+#   - installs Caddy, which serves the payment service over HTTPS as $PAYMENTS_HOST (default
+#     account.pokeverse.quest, an A record pointing at this server) with a free certificate it renews
+#     itself; PAYMENTS_HOST=none leaves Caddy out
+#   - opens the game ports 7564 and 8548, and 80 and 443 for Caddy, if the ufw firewall is active
 set -euo pipefail
 
-BOOTSTRAP_VERSION=1
+BOOTSTRAP_VERSION=2
 PV_USER=pokeverse
 PV_HOME=/opt/pokeverse
 DB_NAME=pokeverse
 GAME_PORTS="7564 8548"
+PAYMENTS_HOST=${PAYMENTS_HOST:-account.pokeverse.quest}
+[[ "$PAYMENTS_HOST" =~ ^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$ ]] || { echo "ERROR: invalid PAYMENTS_HOST: $PAYMENTS_HOST" >&2; exit 1; }
 
 die() { echo "ERROR: $*" >&2; exit 1; }
 step() { echo; echo "==> $*"; }
@@ -48,7 +53,7 @@ if [ ! -f "$units_dir/pokeverse-server.service" ]; then
   # Running from a single downloaded file: fetch the service files from the same commit.
   ref=${POKEVERSE_REF:-main}
   units_dir=$(mktemp -d)
-  for f in pokeverse-server.service pokeverse-discord.service pokeverse-backup.service pokeverse-backup.timer; do
+  for f in pokeverse-server.service pokeverse-discord.service pokeverse-payments.service pokeverse-backup.service pokeverse-backup.timer; do
     curl -fsSL "https://raw.githubusercontent.com/GIToez/PokeVerse/$ref/scripts/live/systemd/$f" -o "$units_dir/$f" \
       || die "could not download $f"
   done
@@ -58,7 +63,7 @@ step "Installing packages"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -q
 apt-get install -y -q --no-install-recommends \
-  mariadb-server mariadb-client python3 rsync gzip openssl ca-certificates curl \
+  mariadb-server mariadb-client python3 python3-pymysql rsync gzip openssl ca-certificates curl \
   libboost-filesystem1.83.0 libboost-thread1.83.0 libgmp10 libicu74 liblua5.1-0 libmariadb3 \
   libsqlite3-0 libssl3t64 libxml2 zlib1g
 systemctl enable --now mariadb
@@ -161,7 +166,7 @@ chmod 600 "$PV_HOME/.my.cnf"
 mariadb --defaults-file="$PV_HOME/.my.cnf" "$DB_NAME" -e "SELECT 1" >/dev/null || die "the $PV_USER database login does not work"
 
 step "Installing the systemd services"
-for f in pokeverse-server.service pokeverse-discord.service pokeverse-backup.service pokeverse-backup.timer; do
+for f in pokeverse-server.service pokeverse-discord.service pokeverse-payments.service pokeverse-backup.service pokeverse-backup.timer; do
   install -m 644 "$units_dir/$f" "/etc/systemd/system/$f"
 done
 systemctl daemon-reload
@@ -179,8 +184,14 @@ Cmnd_Alias PV_CONTROL = \
   /usr/bin/systemctl restart pokeverse-discord.service, \
   /usr/bin/systemctl enable pokeverse-discord.service, \
   /usr/bin/systemctl disable pokeverse-discord.service, \
+  /usr/bin/systemctl start pokeverse-payments.service, \
+  /usr/bin/systemctl stop pokeverse-payments.service, \
+  /usr/bin/systemctl restart pokeverse-payments.service, \
+  /usr/bin/systemctl enable pokeverse-payments.service, \
+  /usr/bin/systemctl disable pokeverse-payments.service, \
   /usr/bin/journalctl -u pokeverse-server.service -n 300 --no-pager, \
-  /usr/bin/journalctl -u pokeverse-discord.service -n 300 --no-pager
+  /usr/bin/journalctl -u pokeverse-discord.service -n 300 --no-pager, \
+  /usr/bin/journalctl -u pokeverse-payments.service -n 200 --no-pager
 pokeverse ALL=(root) NOPASSWD: PV_CONTROL
 SUDO
 chmod 440 /etc/sudoers.d/pokeverse
@@ -198,15 +209,44 @@ cat > /etc/logrotate.d/pokeverse <<'ROTATE'
 }
 ROTATE
 
+step "HTTPS for the payment service (Caddy)"
+if [ "$PAYMENTS_HOST" = none ]; then
+  echo "PAYMENTS_HOST=none: skipping Caddy; buying Verse Orbs needs HTTPS in front of 127.0.0.1:7200"
+else
+  apt-get install -y -q --no-install-recommends caddy
+  caddyfile=/etc/caddy/Caddyfile
+  # Only a Caddyfile this script wrote, or Ubuntu's untouched example, is replaced.
+  if [ ! -f "$caddyfile" ] || grep -q "^# PokeVerse (bootstrap-ovh.sh)" "$caddyfile" || grep -q "^:80 {" "$caddyfile"; then
+    cat > "$caddyfile" <<CADDY
+# PokeVerse (bootstrap-ovh.sh): the payment service over HTTPS. Caddy gets and renews the certificate
+# for $PAYMENTS_HOST itself; that name's A record must point at this server.
+$PAYMENTS_HOST {
+	encode gzip
+	header -Server
+	reverse_proxy 127.0.0.1:7200
+}
+CADDY
+    caddy validate --config "$caddyfile" --adapter caddyfile >/dev/null 2>&1 || die "the Caddyfile was rejected"
+    systemctl enable caddy >/dev/null
+    systemctl reload-or-restart caddy
+    echo "Caddy serves https://$PAYMENTS_HOST (the certificate comes once the DNS record points here)"
+  else
+    echo "WARNING: $caddyfile was changed by hand; add this site yourself:"
+    echo "  $PAYMENTS_HOST { reverse_proxy 127.0.0.1:7200 }"
+  fi
+fi
+
 echo "$BOOTSTRAP_VERSION" > "$PV_HOME/shared/bootstrap-version"
 chown "$PV_USER:$PV_USER" "$PV_HOME/shared/bootstrap-version"
 
 step "Firewall"
+open_ports=$GAME_PORTS
+[ "$PAYMENTS_HOST" = none ] || open_ports="$open_ports 80 443"
 if command -v ufw >/dev/null && ufw status | grep -q "Status: active"; then
-  for p in $GAME_PORTS; do ufw allow "$p/tcp" >/dev/null; done
-  echo "ufw is active: opened $GAME_PORTS (TCP). The database (3306) and the Discord bridge (7199) stay closed."
+  for p in $open_ports; do ufw allow "$p/tcp" >/dev/null; done
+  echo "ufw is active: opened $open_ports (TCP). The database (3306), the Discord bridge (7199) and the payment service (7200) stay closed."
 else
-  echo "ufw is not active. If OVH's network firewall is enabled, allow TCP $GAME_PORTS there."
+  echo "ufw is not active. If OVH's network firewall is enabled, allow TCP $open_ports there."
 fi
 
 step "Checking SSH access for $PV_USER"

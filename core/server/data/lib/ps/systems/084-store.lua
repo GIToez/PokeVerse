@@ -7,10 +7,15 @@
 --
 -- The window talks JSON on EXTENDED_IDS.STORE:
 --   client -> server  {action = "open"}, {action = "buy", offer, count, text}, {action = "withdraw", amount},
---                     {action = "deposit", amount}, {action = "history"}
---   server -> client  {type = "store", balance, coin, bag, points, premiumDays, sex, ball, guild, categories, offers}
+--                     {action = "deposit", amount}, {action = "history"}, {action = "buy-orbs"}
+--   server -> client  {type = "store", balance, held, buyOrbs, coin, bag, points, premiumDays, sex, ball, guild, categories,
+--                     offers}
 --                     {type = "result", ok, text}
 --                     {type = "history", list}
+--                     {type = "buy-link", url}: the page for buying Verse Orbs with PayPal (101-payments.lua)
+--
+-- Orbs bought with PayPal in the last 7 days (held) can be spent but not withdrawn. A refund can leave the balance
+-- below zero; then nothing can be bought or withdrawn until it is paid back.
 
 Store = {}
 
@@ -180,7 +185,11 @@ local function pay(cid, price)
         return true
     end
     local account = getPlayerAccountId(cid)
-    local fromBalance = math.min(Store.getBalance(account), price)
+    local balance = Store.getBalance(account)
+    if (balance < 0) then
+        return false, "A PayPal refund took back orbs you had already spent, so the Store is closed for this account until the balance is above zero."
+    end
+    local fromBalance = math.min(balance, price)
     local fromBag = price - fromBalance
     if (getPlayerItemCount(cid, Store.COIN_ID) < fromBag) then
         return false, "You need %d Soul Coins for this."
@@ -259,7 +268,9 @@ local function categoryList(cid)
 end
 
 Store.sendState = function(cid)
-    send(cid, { type = "store", balance = Store.getBalance(getPlayerAccountId(cid)), coin = getItemClientId(Store.COIN_ID),
+    local account = getPlayerAccountId(cid)
+    send(cid, { type = "store", balance = Store.getBalance(account), held = Payments.getHeld(account),
+                buyOrbs = Payments.enabled() or nil, coin = getItemClientId(Store.COIN_ID),
                 bag = getPlayerItemCount(cid, Store.COIN_ID), points = Referral.getPoints(cid), premiumDays = getPlayerPremiumDays(cid),
                 sex = getPlayerSex(cid), ball = ballInfo(cid), guild = guildInfo(cid),
                 categories = categoryList(cid), offers = offerList(cid),
@@ -448,7 +459,15 @@ Store.withdraw = function(cid, amount)
         return result(cid, false, "Withdraw between 1 and %d Soul Coins.", Store.MAX_TRANSFER)
     end
     local account = getPlayerAccountId(cid)
-    if (not Store.takeBalance(account, amount)) then
+    -- one statement, so a payment or a refund landing at the same moment can't get around the hold
+    db.executeQuery(string.format("UPDATE `accounts` SET `soulcoins` = `soulcoins` - %d WHERE `id` = %d AND `soulcoins` - %d >= %s",
+        amount, account, amount, Payments.heldSql(account)))
+    if (changedRows() ~= 1) then
+        local held = Payments.getHeld(account)
+        if (held > 0 and Store.getBalance(account) >= amount) then
+            return result(cid, false, "%d of your Soul Coins were bought in the last %d days and can't be withdrawn yet. Spend them in the Store any time.",
+                held, Payments.HOLD_DAYS)
+        end
         return result(cid, false, "Your balance doesn't have %d Soul Coins.", amount)
     end
     local given = 0
@@ -502,5 +521,12 @@ Store.onClientMessage = function(cid, buffer)
         Store.deposit(cid, data.amount)
     elseif (action == "history") then
         Store.sendHistory(cid)
+    elseif (action == "buy-orbs") then
+        local url, why = Payments.createLink(cid)
+        if (url) then
+            send(cid, { type = "buy-link", url = url })
+        else
+            result(cid, false, why)
+        end
     end
 end

@@ -162,6 +162,37 @@ else
   fi
 fi
 
+# Buying Verse Orbs
+paypal_re='^[A-Za-z0-9_-]{20,128}$'
+if ! is_set PV_PAYPAL_CLIENT_ID && ! is_set PV_PAYPAL_CLIENT_SECRET; then
+  report INFO PAYPAL_CLIENT_ID "not set: buying Verse Orbs stays off"
+else
+  for name in PAYPAL_CLIENT_ID PAYPAL_CLIENT_SECRET; do
+    var=PV_$name
+    value=$(printf '%s' "${!var:-}" | tr -d '[:space:]')
+    if ! is_set "$var"; then
+      report FAIL "$name" "secret missing: PayPal Developer Dashboard > Apps & Credentials"
+    elif [[ "$value" =~ $paypal_re ]]; then
+      report OK "$name" "set (${#value} characters)"
+    else
+      report FAIL "$name" "does not look like a PayPal app key (letters, digits, - and _ only)"
+    fi
+  done
+fi
+case "${PV_PAYPAL_ENV:-sandbox}" in
+  sandbox) report OK PAYPAL_ENV "sandbox (test payments; set the variable to live for real money)" ;;
+  live) report OK PAYPAL_ENV "live (real payments: the keys must be the Live ones)" ;;
+  *) report FAIL PAYPAL_ENV "must be sandbox or live" ;;
+esac
+if [ -n "${PV_PAYPAL_WEBHOOK_ID:-}" ] && [[ ! "$PV_PAYPAL_WEBHOOK_ID" =~ ^[A-Za-z0-9-]{1,64}$ ]]; then
+  report FAIL PAYPAL_WEBHOOK_ID "does not look like a webhook id"
+fi
+if [[ "${PV_PAYMENTS_HOST:-account.pokeverse.quest}" =~ $host_re ]]; then
+  report OK PAYMENTS_HOST "https://${PV_PAYMENTS_HOST:-account.pokeverse.quest}"
+else
+  report FAIL PAYMENTS_HOST "not a host name: '${PV_PAYMENTS_HOST:-}'"
+fi
+
 # Discord bot
 snowflake='^[0-9]{17,20}$'
 bot_needed=false
