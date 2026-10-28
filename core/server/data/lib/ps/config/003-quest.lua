@@ -5183,7 +5183,7 @@ QUESTS_CONFIG = {
             questRequest = function(cid) return getPlayerItemCount(cid, 18755) >= 1 end,
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 60,
+            requiredLevel = 30,
             startPosition = { x = 3898, y = 625, z = 7 },
             finishPosition = { x = 3898, y = 625, z = 7 },
             blockStart = true -- This is started by Delia Ketchum 8377
@@ -5200,7 +5200,7 @@ QUESTS_CONFIG = {
             questRequest = { 18756, 1, 18755, 1 },
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 18754, count = 1, unique = true } },
             rewardExp = 0,
-            requiredLevel = 60,
+            requiredLevel = 30,
             canStart = function(cid) return getCreatureStorage(cid, 8378) == QUEST_STATUS.FINISHED end,
             onEnd = function(cid) doCreatureSetStorage(cid, 8377, QUEST_STATUS.FINISHED) end, -- AutoEnd Delia Ketchum 8377
             startPosition = { x = 3898, y = 625, z = 7 },
@@ -5676,7 +5676,7 @@ QUESTS_CONFIG = {
             questRequest = function(cid) return false end, -- AutoEnd with Ash Ketchum 8379
             rewardItems = {},
             rewardExp = 0,
-            requiredLevel = 60,
+            requiredLevel = 30,
             questStartItems = { 18755, 1 },
             onStart = function(cid) doCreatureSetStorage(cid, 8378, QUEST_STATUS.STARTED) end
         }
