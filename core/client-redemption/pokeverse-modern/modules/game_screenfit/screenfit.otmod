@@ -1,0 +1,8 @@
+Module
+  name: game_screenfit
+  description: Keeps every window on the screen: a window bigger than a small screen (a phone, a 720p laptop) shrinks to fit, and one hanging off an edge moves back on
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ screenfit ]
+  @onLoad: init()
+  @onUnload: terminate()

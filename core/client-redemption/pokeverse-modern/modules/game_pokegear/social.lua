@@ -7,6 +7,7 @@ local POSITION_SETTING = 'pokegearSocialPosition'
 local TAB_SETTING = 'pokegearSocialTab'
 local KEY = { 'Windows', 'Show/hide VIP list' }
 local REFRESH_MS = 3000
+local FULL_HEIGHT, COMPACT_HEIGHT = 440, 330 -- shorter on small screens (Pokegear.isCompact)
 local NEAR_TILES = 60
 local TABS = { 'friends', 'guild', 'party', 'blocked' }
 local TRAINER_ICONS = '/modules/game_trainercard/images/icon_'
@@ -645,14 +646,29 @@ local function build()
         end
     end
     restorePosition = Pokegear.makeMovable(window, window.header, POSITION_SETTING, function()
-        -- left of the ring, or left of the Bag when that is open there
+        -- left of the ring, or left of the Bag when that is open there; on a small screen that would
+        -- cover your trainer, so it goes to the left edge instead
         local besideBag = Bag.isOpen() and Pokegear.isDocked(rootWidget:recursiveGetChildById('pokegearBag'),
             'pokegearBagPosition')
+        if besideBag and Pokegear.isCompact() then
+            window:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+            window:setMarginLeft(12)
+            Pokegear.hangFromMapTop(window, 8)
+            return
+        end
         window:addAnchor(AnchorTop, 'pokegearHub', AnchorTop)
         window:addAnchor(AnchorRight, besideBag and 'pokegearBag' or 'pokegearHub', AnchorLeft)
         window:setMarginTop(besideBag and 130 or 40)
         window:setMarginRight(besideBag and 4 or -6)
     end)
+end
+
+-- the screen crossed the compact size
+function Social.relayout()
+    if Social.isOpen() then
+        window:setHeight(Pokegear.isCompact() and COMPACT_HEIGHT or FULL_HEIGHT)
+        restorePosition()
+    end
 end
 
 function Social.isOpen()
@@ -667,6 +683,7 @@ function Social.open()
         build()
     end
     if not window:isVisible() then
+        window:setHeight(Pokegear.isCompact() and COMPACT_HEIGHT or FULL_HEIGHT)
         restorePosition()
         window:show()
     end

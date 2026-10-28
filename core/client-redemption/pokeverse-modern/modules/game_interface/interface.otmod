@@ -90,5 +90,6 @@ Module
     - game_lootlist
     - game_menukeys
     - game_pokegear
+    - game_screenfit
   @onLoad: init()
   @onUnload: terminate()

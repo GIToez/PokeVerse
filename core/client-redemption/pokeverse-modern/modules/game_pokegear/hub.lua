@@ -1,12 +1,31 @@
 -- The Pokegear ring (docs/concepts/side-panel): the game's minimap, made round, with the app orbs
 -- on its left, zoom and floor buttons on its right, the time of day on its rim and the place under
 -- it. The minimap widget itself is game_minimap's, moved in here while Pokegear is on.
-local HUB_CENTER = { x = 205, y = 182 }
-local MAP_RADIUS = 128
-local ORB_RADIUS = 168
-local BUTTON_RADIUS = 142
-local SUN_RADIUS = 139
-local RIBBON_TOP = 352
+-- the full-size geometry; small screens get it scaled down (Pokegear.isCompact), all but the ribbon,
+-- whose text keeps its size
+local COMPACT_SCALE = 0.75
+local scale = 1
+local HUB_CENTER, MAP_RADIUS, ORB_RADIUS, BUTTON_RADIUS, SUN_RADIUS, RIBBON_TOP
+local RIBBON_HEIGHT = 46
+
+local function px(n)
+    return math.floor(n * scale + 0.5)
+end
+
+local function setScale(compact)
+    scale = compact and COMPACT_SCALE or 1
+    HUB_CENTER = { x = px(205), y = px(182) }
+    MAP_RADIUS = px(128)
+    ORB_RADIUS = px(168)
+    BUTTON_RADIUS = px(142)
+    SUN_RADIUS = px(139)
+    RIBBON_TOP = px(352)
+end
+setScale(false)
+
+local function hubHeight()
+    return RIBBON_TOP + RIBBON_HEIGHT + 2
+end
 local POSITION_SETTING = 'pokegearHubPosition'
 
 -- the orbs, top to bottom down the left of the ring; each one presses a top bar button, so it
@@ -142,25 +161,43 @@ local function refresh()
     Pokegear.fitColumn()
 end
 
+-- sizes and spots for the current scale; again whenever the screen crosses the compact size
+local function layout()
+    setScale(Pokegear.isCompact())
+    hub:setSize({ width = px(380), height = hubHeight() + (hub.ribbonExtra or 0) })
+    hub.ring:setSize({ width = px(320), height = px(320) })
+    place(hub.ring, HUB_CENTER.x - px(160), HUB_CENTER.y - px(160))
+    hub.mapSlot:setSize({ width = MAP_RADIUS * 2, height = MAP_RADIUS * 2 })
+    place(hub.mapSlot, HUB_CENTER.x - MAP_RADIUS, HUB_CENTER.y - MAP_RADIUS)
+    hub.sun:setSize({ width = px(20), height = px(20) })
+    hub.sun:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+    hub.sun:addAnchor(AnchorTop, 'parent', AnchorTop)
+    place(hub.north, HUB_CENTER.x - 5, HUB_CENTER.y - px(178))
+    place(hub.grip, HUB_CENTER.x - 18, HUB_CENTER.y + px(150))
+    place(hub.ribbon, HUB_CENTER.x - 130, RIBBON_TOP)
+    local fx, fy = at(26, MAP_RADIUS - px(30), 0)
+    place(hub.floorLabel, fx - 24, fy - 9)
+    for i, def in ipairs(ORBS) do
+        local orb = orbs[def.id]
+        orb:setSize({ width = px(70), height = px(70) })
+        orb.icon:setSize({ width = px(28), height = px(28) })
+        place(orb, at(ORB_FIRST_ANGLE + (i - 1) * ORB_STEP, ORB_RADIUS, px(70)))
+    end
+    for _, def in ipairs(BUTTONS) do
+        local button = buttons[def.id]
+        button:setSize({ width = px(42), height = px(42) })
+        place(button, at(def.angle, BUTTON_RADIUS, px(42)))
+    end
+end
+
 local function build()
     hub = g_ui.createWidget('PokegearHub', modules.game_interface.getRootPanel())
     hub:hide()
 
-    place(hub.ring, HUB_CENTER.x - 160, HUB_CENTER.y - 160)
-    place(hub.mapSlot, HUB_CENTER.x - MAP_RADIUS, HUB_CENTER.y - MAP_RADIUS)
-    hub.sun:addAnchor(AnchorLeft, 'parent', AnchorLeft)
-    hub.sun:addAnchor(AnchorTop, 'parent', AnchorTop)
-    place(hub.north, HUB_CENTER.x - 5, HUB_CENTER.y - 178)
-    place(hub.grip, HUB_CENTER.x - 18, HUB_CENTER.y + 150)
-    place(hub.ribbon, HUB_CENTER.x - 130, RIBBON_TOP)
-    local fx, fy = at(26, MAP_RADIUS - 30, 0)
-    place(hub.floorLabel, fx - 24, fy - 9)
-
-    for i, def in ipairs(ORBS) do
+    for _, def in ipairs(ORBS) do
         local orb = g_ui.createWidget('PokegearOrb', hub)
         orb:setId(def.id .. 'Orb')
         orb:setTooltip(tr(def.tooltip))
-        place(orb, at(ORB_FIRST_ANGLE + (i - 1) * ORB_STEP, ORB_RADIUS, 70))
         orb.onClick = function()
             if def.open == 'bag' then
                 Bag.toggle()
@@ -179,13 +216,13 @@ local function build()
         button:setId(def.id .. 'Button')
         button:setText(def.text)
         button:setTooltip(tr(def.tooltip))
-        place(button, at(def.angle, BUTTON_RADIUS, 42))
         buttons[def.id] = button
     end
     buttons.zoomIn.onClick = function() if minimap then minimap:zoomIn() end end
     buttons.zoomOut.onClick = function() if minimap then minimap:zoomOut() end end
     buttons.floorUp.onClick = function() modules.game_minimap.upLayer() refreshFloor() end
     buttons.floorDown.onClick = function() modules.game_minimap.downLayer() refreshFloor() end
+    layout()
 
     restorePosition = Pokegear.makeMovable(hub, hub.grip, POSITION_SETTING, function()
         Pokegear.hangFromMapTop(hub, 0)
@@ -251,8 +288,6 @@ end
 
 -- the ribbon under the map grows by extra pixels for a widget of another window (the folded Tracking
 -- chip); the ring grows with it, so what hangs under it moves down
-local RIBBON_HEIGHT, HUB_HEIGHT = 46, 400
-
 function Hub.ribbon()
     return hub and hub.ribbon
 end
@@ -261,9 +296,20 @@ function Hub.extendRibbon(extra)
     if not hub then
         return
     end
+    hub.ribbonExtra = extra
     hub.ribbon:setHeight(RIBBON_HEIGHT + extra)
-    hub:setHeight(HUB_HEIGHT + extra)
+    hub:setHeight(hubHeight() + extra)
     Pokegear.fitColumn()
+end
+
+-- the screen crossed the compact size
+function Hub.relayout()
+    if hub then
+        layout()
+        if hub:isVisible() then
+            refresh()
+        end
+    end
 end
 
 function Hub.terminate()
