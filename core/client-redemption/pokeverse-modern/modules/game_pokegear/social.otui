@@ -110,6 +110,7 @@ PokegearSocialAction < UIButton
   height: 24
   text-auto-resize: true
   padding: 0 12
+  text-offset: 0 3
   image-source: /modules/game_pokegear/images/pill
   image-border: 9
   image-smooth: true

@@ -333,6 +333,7 @@ PokegearBag < UIWidget
       anchors.verticalCenter: parent.verticalCenter
       margin-right: 6
       !text: tr('Sort')
+      text-offset: 0 1
       !tooltip: tr('Sort my bags now: move what you carry to the bags whose rules take it')
 
     UILabel

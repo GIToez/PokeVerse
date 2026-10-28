@@ -217,7 +217,7 @@ PokegearTracking < UIWidget
 PokegearTrackingChip < UIButton
   id: pokegearTrackingChip
   height: 20
-  text-offset: 22 0
+  text-offset: 22 1
   text-align: left
   image-source: /modules/game_pokegear/images/pill
   image-border: 9
