@@ -1,177 +1,188 @@
-// Chat: game_console's channels as a Pokegear card, and the lines that float over the map while
-// it's folded. Built by chat.lua; the text line is game_console's own consoleTextEdit.
-PokegearChatChip < UIButton
-  height: 20
+// Chat (docs/concepts/side-panel/chat-open.jpg, chat-folded.jpg): game_console's channels as a Pokegear
+// card, and the lines that float over the map while it's folded. Built by chat.lua; the text line is
+// game_console's own consoleTextEdit. Pills are round.png tinted, faces are face_round.png with a
+// tinted face_ring.png.
+PokegearChatPill < UILabel
+  height: 16
   text-auto-resize: true
-  padding: 0 10
-  text-offset: 0 4
-  image-source: /modules/game_pokegear/images/pill
-  image-border: 9
+  padding: 0 6
+  text-align: center
+  text-offset: 0 1
+  image-source: /modules/game_pokegear/images/round_s
+  image-border: 8
   image-smooth: true
-  ttf-font: /fonts/ttf/arialb.ttf
-  ttf-font-size: 11
-  color: #8fa0c4
-  $on:
-    image-source: /modules/game_pokegear/images/pill_on
-    color: #eef2ff
-    text-offset: 0 1
-  $hover:
-    color: #eef2ff
-
-  UILabel
-    id: count
-    anchors.right: parent.right
-    anchors.top: parent.top
-    margin-right: -4
-    margin-top: -5
-    height: 13
-    text-auto-resize: true
-    padding: 0 4
-    text-offset: 0 1
-    image-source: /modules/game_pokegear/images/bar_fill
-    image-border: 3
-    image-color: #e5484d
-    ttf-font: /fonts/ttf/arialb.ttf
-    ttf-font-size: 9
-    color: #ffffff
-    phantom: true
-    visible: false
-
-PokegearChatFace < UIButton
-  size: 24 24
-  image-source: /modules/game_pokegear/images/face
-  image-border: 12
-  image-smooth: true
-  text-offset: 0 2
   ttf-font: /fonts/ttf/arialb.ttf
   ttf-font-size: 10
-  color: #eef2ff
+  color: #ffffff
+  phantom: true
+
+PokegearChatCount < UILabel
+  size: 16 16
+  text-align: center
+  text-offset: 0 1
+  image-source: /modules/game_pokegear/images/badge_round
+  image-smooth: true
+  image-color: #e5484d
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 10
+  color: #ffffff
+  phantom: true
+  visible: false
+
+// a channel chip: [dot] name [count] in a row, so nothing overlaps whatever the text
+PokegearChatChip < UIButton
+  height: 26
+  padding: 0 11
+  image-source: /modules/game_pokegear/images/round
+  image-border: 13
+  image-smooth: true
+  image-color: #0b1222
+  layout:
+    type: horizontalBox
+    spacing: 6
+    fit-children: true
+  $hover !on:
+    image-color: #1a2742
   $on:
-    color: #ffcb05
+    image-color: #ffcb05
+
+  UIWidget
+    id: dot
+    size: 8 8
+    margin-top: 9
+    margin-bottom: 9
+    image-source: /modules/game_pokegear/images/dot
+    image-smooth: true
+    phantom: true
 
   UILabel
+    id: label
+    height: 26
+    text-auto-resize: true
+    text-align: left
+    text-offset: 0 1
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 12
+    color: #eef2ff
+    phantom: true
+
+  PokegearChatCount
+    id: count
+    margin-top: 5
+    margin-bottom: 5
+
+PokegearChatFace < UIButton
+  size: 28 28
+  image-source: /modules/game_pokegear/images/face_round
+  image-smooth: true
+  text-align: center
+  text-offset: 0 1
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 11
+  color: #eef2ff
+
+  UIWidget
+    id: ring
+    anchors.fill: parent
+    image-source: /modules/game_pokegear/images/face_ring
+    image-smooth: true
+    image-color: #8fa0c4
+    phantom: true
+
+  PokegearChatCount
     id: count
     anchors.right: parent.right
     anchors.top: parent.top
-    margin-right: -4
-    margin-top: -4
-    height: 13
-    text-auto-resize: true
-    padding: 0 4
-    text-offset: 0 1
-    image-source: /modules/game_pokegear/images/bar_fill
-    image-border: 3
-    image-color: #e5484d
-    ttf-font: /fonts/ttf/arialb.ttf
-    ttf-font-size: 9
-    color: #ffffff
-    phantom: true
-    visible: false
-
-PokegearChatTag < UILabel
-  height: 14
-  text-auto-resize: true
-  padding: 0 5
-  text-offset: 0 1
-  image-source: /modules/game_pokegear/images/bar_fill
-  image-border: 3
-  ttf-font: /fonts/ttf/arialb.ttf
-  ttf-font-size: 9
-  color: #0d1424
-  phantom: true
+    margin-right: -5
+    margin-top: -5
 
 PokegearChatRow < UIWidget
-  height: 40
-  padding: 4 6 4 6
-  phantom: false
+  height: 44
+  padding: 4 8 4 8
+  image-source: /modules/game_pokegear/images/round_s
+  image-border: 8
+  image-color: #00000000
   $hover:
-    image-source: /modules/game_pokegear/images/row
-    image-border: 11
+    image-color: #1a274288
 
-  UILabel
+  PokegearChatFace
     id: face
-    size: 24 24
     anchors.left: parent.left
     anchors.top: parent.top
-    image-source: /modules/game_pokegear/images/face
-    image-border: 12
-    image-smooth: true
-    text-align: center
-    text-offset: 0 1
-    ttf-font: /fonts/ttf/arialb.ttf
-    ttf-font-size: 10
-    color: #eef2ff
-    phantom: true
-
-  UILabel
-    id: name
-    anchors.left: face.right
-    anchors.top: parent.top
-    margin-left: 8
-    height: 14
-    text-auto-resize: true
-    ttf-font: /fonts/ttf/arialb.ttf
-    ttf-font-size: 11
-    color: #eef2ff
+    margin-top: 2
     phantom: true
 
   UIWidget
-    id: tags
-    anchors.left: name.right
-    anchors.verticalCenter: name.verticalCenter
-    margin-left: 5
-    height: 14
-    width: 1
+    id: head
+    anchors.left: face.right
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-left: 10
+    height: 18
     layout:
       type: horizontalBox
-      spacing: 3
-      fit-children: true
-    phantom: true
-
-  UILabel
-    id: time
-    anchors.left: tags.right
-    anchors.verticalCenter: name.verticalCenter
-    margin-left: 5
-    text-auto-resize: true
-    ttf-font: /fonts/ttf/arialb.ttf
-    ttf-font-size: 9
-    color: #6f7fa3
+      spacing: 6
     phantom: true
 
   UILabel
     id: text
-    anchors.left: name.left
+    anchors.left: head.left
     anchors.right: parent.right
-    anchors.top: name.bottom
-    margin-top: 2
+    anchors.top: head.bottom
+    margin-top: 3
     text-wrap: true
     text-auto-resize: true
     text-align: topLeft
     ttf-font: /fonts/ttf/arialb.ttf
-    ttf-font-size: 11
-    color: #c9d3ea
+    ttf-font-size: 12
+    color: #e6ecfa
     phantom: true
 
-// a floating line while the chat is folded: the channel tag, then the line
-PokegearChatFloat < UIWidget
-  height: 22
-  padding: 4 8 4 6
-  image-source: /modules/game_pokegear/images/card
-  image-border: 12
-  image-smooth: true
-  opacity: 0.85
+PokegearChatName < UILabel
+  height: 18
+  text-auto-resize: true
+  text-align: left
+  text-offset: 0 2
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 13
+  color: #eef2ff
   phantom: true
 
-  PokegearChatTag
-    id: tag
+PokegearChatTime < UILabel
+  height: 18
+  text-auto-resize: true
+  text-align: left
+  text-offset: 0 3
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 10
+  color: #6f7fa3
+  phantom: true
+
+PokegearChatHeadPill < PokegearChatPill
+  margin-top: 1
+  text-offset: 0 0
+
+// a floating line while the chat is folded: no box, an outline so it reads over the map
+PokegearChatFloat < UIWidget
+  height: 18
+  phantom: true
+
+  UIWidget
+    id: tags
     anchors.left: parent.left
     anchors.top: parent.top
+    height: 16
+    width: 1
     margin-top: 1
+    layout:
+      type: horizontalBox
+      spacing: 4
+      fit-children: true
+    phantom: true
 
   UILabel
     id: text
-    anchors.left: tag.right
+    anchors.left: tags.right
     anchors.right: parent.right
     anchors.top: parent.top
     margin-left: 6
@@ -179,18 +190,19 @@ PokegearChatFloat < UIWidget
     text-auto-resize: true
     text-align: topLeft
     ttf-font: /fonts/ttf/arialb.ttf
-    ttf-font-size: 12
-    color: #eef2ff
+    ttf-font-size: 13
+    ttf-stroke: 1 #0b1530
+    color: #ffffff
     phantom: true
 
 PokegearChat < UIWidget
   id: pokegearChat
-  width: 430
-  height: 250
+  width: 540
+  height: 330
   image-source: /modules/game_pokegear/images/card
   image-border: 12
   image-smooth: true
-  padding: 8 10 8 10
+  padding: 10 12 10 12
   focusable: false
 
   UIWidget
@@ -198,7 +210,7 @@ PokegearChat < UIWidget
     anchors.top: parent.top
     anchors.left: parent.left
     anchors.right: parent.right
-    height: 24
+    height: 30
     draggable: true
     !tooltip: tr('Drag to move')
 
@@ -208,41 +220,44 @@ PokegearChat < UIWidget
       anchors.right: faces.left
       anchors.verticalCenter: parent.verticalCenter
       margin-right: 6
-      height: 24
+      height: 26
+      clipping: true
       layout:
         type: horizontalBox
-        spacing: 4
+        spacing: 5
       phantom: true
 
     UIWidget
       id: faces
       anchors.right: fold.left
       anchors.verticalCenter: parent.verticalCenter
-      margin-right: 6
-      height: 24
+      margin-right: 8
+      height: 28
       width: 1
       layout:
         type: horizontalBox
-        spacing: 4
+        spacing: 6
         fit-children: true
       phantom: true
 
     UIButton
       id: fold
-      size: 20 20
+      size: 26 26
       anchors.right: parent.right
       anchors.verticalCenter: parent.verticalCenter
-      image-source: /modules/game_pokegear/images/pill
-      image-border: 9
+      image-source: /modules/game_pokegear/images/round
+      image-border: 13
       image-smooth: true
+      image-color: #0b1222
       text: -
+      text-align: center
       text-offset: 0 -1
       ttf-font: /fonts/ttf/arialb.ttf
-      ttf-font-size: 13
+      ttf-font-size: 15
       color: #eef2ff
       !tooltip: tr('Fold the chat: the last lines float over the map')
       $hover:
-        image-source: /modules/game_pokegear/images/pill_on
+        image-color: #1a2742
 
   UIScrollArea
     id: list
@@ -250,13 +265,13 @@ PokegearChat < UIWidget
     anchors.left: parent.left
     anchors.right: parent.right
     anchors.bottom: input.top
-    margin-top: 6
-    margin-bottom: 6
+    margin-top: 8
+    margin-bottom: 8
     margin-right: 12
     vertical-scrollbar: scroll
     layout:
       type: verticalBox
-      spacing: 0
+      spacing: 2
 
   VerticalScrollBar
     id: scroll
@@ -271,74 +286,92 @@ PokegearChat < UIWidget
   UIWidget
     id: input
     anchors.left: parent.left
-    anchors.right: parent.right
+    anchors.right: send.left
     anchors.bottom: parent.bottom
-    height: 26
+    margin-right: 8
+    height: 34
     image-source: /modules/game_pokegear/images/pill
     image-border: 9
     image-smooth: true
 
-    PokegearChatTag
+    PokegearChatPill
       id: channel
       anchors.left: parent.left
       anchors.verticalCenter: parent.verticalCenter
       margin-left: 6
+      height: 24
+      padding: 0 12
+      ttf-font-size: 12
+      image-color: #24407a
 
     UILabel
       id: hint
       anchors.left: channel.right
-      anchors.right: open.left
+      anchors.right: enterChip.left
       anchors.verticalCenter: parent.verticalCenter
-      margin-left: 8
-      height: 16
+      margin-left: 10
+      height: 18
+      text-align: left
       text-offset: 0 2
       !text: tr('Press Enter to chat')
       ttf-font: /fonts/ttf/arialb.ttf
-      ttf-font-size: 11
+      ttf-font-size: 12
       color: #6f7fa3
       phantom: true
 
     UIWidget
       id: slot
       anchors.left: channel.right
-      anchors.right: open.left
+      anchors.right: parent.right
       anchors.top: parent.top
       anchors.bottom: parent.bottom
-      margin-left: 4
+      margin-left: 6
+      margin-right: 10
       phantom: true
 
-    UIButton
-      id: open
-      size: 22 18
+    PokegearChatPill
+      id: enterChip
       anchors.right: parent.right
       anchors.verticalCenter: parent.verticalCenter
-      margin-right: 4
-      image-source: /modules/game_pokegear/images/pill
-      image-border: 9
-      image-smooth: true
-      text: ^
-      text-offset: 0 3
-      ttf-font: /fonts/ttf/arialb.ttf
-      ttf-font-size: 11
-      color: #eef2ff
-      !tooltip: tr('Open the chat')
-      visible: false
-      $hover:
-        image-source: /modules/game_pokegear/images/pill_on
-
-    PokegearChip
-      id: enterChip
-      anchors.right: open.left
-      anchors.verticalCenter: parent.verticalCenter
-      margin-right: 4
+      margin-right: 10
+      height: 18
+      padding: 0 7
+      image-color: #0b1222
+      color: #ffcb05
       !text: tr('Enter')
+
+  UIButton
+    id: send
+    size: 34 34
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    image-source: /modules/game_pokegear/images/send
+    image-smooth: true
+    !tooltip: tr('Send')
+    $hover:
+      opacity: 0.85
+
+  // folded: DMs show next to the pill
+  UIWidget
+    id: foldedFaces
+    anchors.left: input.right
+    anchors.verticalCenter: input.verticalCenter
+    margin-left: 10
+    height: 28
+    width: 1
+    layout:
+      type: horizontalBox
+      spacing: 6
+      fit-children: true
+    phantom: true
+    visible: false
 
 PokegearChatFloats < UIWidget
   id: pokegearChatFloats
-  width: 430
+  width: 500
   height: 10
   phantom: true
   layout:
     type: verticalBox
-    spacing: 3
+    spacing: 4
     fit-children: true

@@ -3,34 +3,48 @@
 -- is only the text line, and new lines float over the map for a few seconds. game_console still
 -- does the work: it keeps the tabs, sends what you type and tells us every line it adds
 -- (onTabText). Its text line moves into the card while Pokegear is on, and the bottom panel hides.
+-- NPC lines also show in Local, teal, so NPCs and players talk side by side there.
 local POSITION_SETTING = 'pokegearChatPosition'
 local OPEN_SETTING = 'pokegearChatOpen'
 local MAX_ROWS = 120
 local MAX_FLOATS = 5
 local FLOAT_SECONDS = 8
-local OPEN_HEIGHT = 250
+local OPEN_WIDTH = 540
+local OPEN_HEIGHT = 330
+local FOLDED_WIDTH = 400
 
+-- text colours, and the fill and text of each channel's tag
 local COLORS = {
     local_ = '#eef2ff',
-    global = '#5aa0ff',
-    help = '#6fdc8c',
+    global = '#7fb4ff',
+    help = '#8be3a0',
     npc = '#42e0c4',
-    dm = '#b48cff',
+    dm = '#c3a2ff',
     log = '#8fa0c4',
     channel = '#f2b45a',
     you = '#ffcb05',
-    staff = '#e5484d',
+    staff = '#ff8a8a',
 }
+local TAGS = {
+    local_ = { '#3b4a6b', '#eef2ff' },
+    global = { '#3a6fc4', '#ffffff' },
+    help = { '#8be3a0', '#0d1f14' },
+    npc = { '#42e0c4', '#06201c' },
+    dm = { '#9b6dff', '#ffffff' },
+    log = { '#3b4a6b', '#c9d3ea' },
+    channel = { '#c98a2e', '#ffffff' },
+    staff = { '#e5484d', '#ffffff' },
+}
+local DOTS = { global = '#5aa0ff', help = '#6fdc8c', npc = '#42e0c4', log = '#8fa0c4', channel = '#f2b45a' }
 
 local window, floats, restorePosition
 local active = false
 local open = true
-local history = {} -- per tab: { {name, text, kind, time, own, staff, npc}, ... }
+local history = {} -- per tab: { {name, text, kind, time, own, staff, npc, tab}, ... }
 local unread = {}
 local unreadFolded = 0
-local chips, faces = {}, {}
 local tabBar
-local editHome -- where consoleTextEdit lived: its parent and anchors, to put it back
+local editHome -- where consoleTextEdit lived, to put it back
 
 Chat = {}
 
@@ -81,22 +95,36 @@ local function chipText(tab)
         return tr('Local')
     elseif c and tab == c.serverTab then
         return tr('Log')
+    elseif tab.npcChat then
+        return tr('NPCs')
     end
     return tab:getText()
 end
 
 local function initials(name)
     local letters = {}
-    for word in (name or ''):gmatch('%S+') do
+    for word in (name or ''):gmatch('[%w]+') do
         letters[#letters + 1] = word:sub(1, 1):upper()
         if #letters == 2 then
             break
         end
     end
     if #letters == 1 then
-        letters[2] = name:sub(2, 2):upper()
+        letters[2] = (name:match('^%w(%w)') or ''):upper()
     end
     return table.concat(letters)
+end
+
+local function clock()
+    local hour = tonumber(os.date('%H'))
+    local suffix = hour >= 12 and 'PM' or 'AM'
+    hour = hour % 12
+    return string.format('%d:%s %s', hour == 0 and 12 or hour, os.date('%M'), suffix)
+end
+
+-- text goes through setColoredText, where braces mark colour runs
+local function plain(text)
+    return (text:gsub('[{}]', ''))
 end
 
 local function tabs()
@@ -140,39 +168,78 @@ local function isStaff(speaktype)
         or speaktype == types.broadcast)
 end
 
-local function addTag(row, text, color)
-    local tag = g_ui.createWidget('PokegearChatTag', row.tags)
-    tag:setText(text)
-    tag:setImageColor(color)
+local function pill(parent, style, text, kind)
+    local colors = TAGS[kind] or TAGS.channel
+    local widget = g_ui.createWidget(style, parent)
+    widget:setText(text)
+    widget:setImageColor(colors[1])
+    widget:setColor(colors[2])
+    return widget
+end
+
+local function setFace(face, name, color)
+    face:setText(initials(name))
+    face:setColor(color)
+    face.ring:setImageColor(color)
+end
+
+local function nameColor(line)
+    if line.npc then
+        return COLORS.npc
+    elseif line.staff then
+        return COLORS.staff
+    elseif line.own then
+        return COLORS.you
+    elseif line.kind == 'dm' then
+        return COLORS.dm
+    end
+    return COLORS.local_
+end
+
+local function textColor(line)
+    if line.npc then
+        return COLORS.npc
+    elseif line.kind == 'log' then
+        return COLORS.log
+    end
+    return '#e6ecfa'
 end
 
 local function fillRow(row, line)
-    local color = line.own and COLORS.you or COLORS[line.kind] or COLORS.local_
-    row.tags:destroyChildren()
+    local head = row.head
+    head:destroyChildren()
+    local color = nameColor(line)
     if line.name then
-        row.face:setText(initials(line.name))
-        row.face:setColor(color)
-        row.name:setText(line.name)
-        row.name:setColor(color)
         if line.npc then
-            addTag(row, tr('NPC'), COLORS.npc)
+            setFace(row.face, '', color)
+            row.face:setText('+')
+        else
+            setFace(row.face, line.name, color)
         end
         if line.staff then
-            addTag(row, tr('GM'), COLORS.staff)
+            pill(head, 'PokegearChatHeadPill', tr('GM'), 'staff')
         end
-        row.time:setText(line.time)
+        local name = g_ui.createWidget('PokegearChatName', head)
+        name:setText(line.name)
+        name:setColor(color)
+        if line.npc then
+            pill(head, 'PokegearChatHeadPill', tr('NPC'), 'npc')
+        end
     else
-        row.face:setText('')
-        row.face:setImageSource('')
-        row.name:setText('')
-        row.time:setText(line.time)
+        setFace(row.face, '', COLORS.log)
+        row.face:setText('i')
     end
+    local time = g_ui.createWidget('PokegearChatTime', head)
+    time:setText(line.time)
     row.text:setText(line.text)
-    row.text:setColor(line.npc and COLORS.npc or (line.kind == 'log' and COLORS.log or '#c9d3ea'))
+    row.text:setColor(textColor(line))
+    if line.own then
+        row:setImageColor('#1a2742')
+    end
 end
 
 local function rowHeight(row)
-    return math.max(30, 18 + row.text:getHeight()) + 8
+    return math.max(32, 21 + row.text:getHeight()) + 8
 end
 
 local function addRow(line)
@@ -228,18 +295,28 @@ local function addFloat(line)
         return
     end
     local float = g_ui.createWidget('PokegearChatFloat', floats)
-    local tab = line.tab
-    float.tag:setText(tab and chipText(tab) or '')
-    float.tag:setImageColor(COLORS[line.kind] or COLORS.local_)
-    local text = line.name and (line.name .. ': ' .. line.text) or line.text
-    float.text:setText(text)
-    float.text:setColor(line.npc and COLORS.npc or (line.own and COLORS.you or '#eef2ff'))
-    float:setHeight(math.max(22, float.text:getHeight() + 8))
-    scheduleEvent(function()
+    local kind = line.npc and 'npc' or line.kind
+    pill(float.tags, 'PokegearChatPill', line.npc and tr('NPC') or (line.tab and chipText(line.tab) or ''), kind)
+    if line.staff then
+        pill(float.tags, 'PokegearChatPill', tr('GM'), 'staff')
+    end
+    float.tags:setWidth(1)
+    local body = line.npc and COLORS.npc or '#ffffff'
+    float.text:setColor(body)
+    if line.name then
+        local color = line.npc and COLORS.npc or (line.staff and COLORS.staff) or (line.own and COLORS.you)
+            or COLORS[line.kind] or COLORS.local_
+        float.text:setColoredText(string.format('{%s:, %s} {%s, %s}', plain(line.name), color, plain(line.text), body))
+    else
+        float.text:setText(line.text)
+    end
+    local function fit()
         if float and not float:isDestroyed() then
-            float:setHeight(math.max(22, float.text:getHeight() + 8))
+            float:setHeight(math.max(18, float.text:getHeight() + 2))
         end
-    end, 1)
+    end
+    fit()
+    scheduleEvent(fit, 1)
     while #floats:getChildren() > MAX_FLOATS do
         floats:getChildren()[1]:destroy()
     end
@@ -255,21 +332,13 @@ local function addFloat(line)
     end, FLOAT_SECONDS * 1000)
 end
 
-local function onTabText(tab, text, speaktype, creatureName)
-    local name, message = split(text, creatureName)
-    local kind = kindOf(tab)
-    local line = { name = name, text = message, raw = text, kind = kind, tab = tab,
-        time = os.date('%H:%M'), own = name ~= nil and name == myName(),
-        npc = speaktype ~= nil and speaktype.npcChat and name ~= myName(), staff = isStaff(speaktype) }
+local function remember(tab, line)
     history[tab] = history[tab] or {}
     table.insert(history[tab], line)
     if #history[tab] > MAX_ROWS then
         table.remove(history[tab], 1)
     end
-    if not active or not window then
-        return
-    end
-    if open and tab == currentTab() then
+    if active and window and open and tab == currentTab() then
         local bottom = window.scroll:getValue() >= window.scroll:getMaximum() - 4
         addRow(line)
         local rows = window.list:getChildren()
@@ -279,8 +348,29 @@ local function onTabText(tab, text, speaktype, creatureName)
         if bottom then
             scrollToBottom()
         end
-    elseif kind ~= 'log' then
+    elseif line.kind ~= 'log' and not line.own then
         unread[tab] = (unread[tab] or 0) + 1
+    end
+end
+
+local function onTabText(tab, text, speaktype, creatureName)
+    local name, message = split(text, creatureName)
+    local kind = kindOf(tab)
+    local line = { name = name, text = message, raw = text, kind = kind, tab = tab, time = clock(),
+        own = name ~= nil and name == myName(), staff = isStaff(speaktype),
+        npc = speaktype ~= nil and speaktype.npcChat == true and name ~= nil and name ~= myName() }
+    remember(tab, line)
+    local c = console()
+    if line.npc and c and c.defaultTab and tab ~= c.defaultTab then
+        local copy = {}
+        for k, v in pairs(line) do
+            copy[k] = v
+        end
+        copy.kind = 'local_'
+        remember(c.defaultTab, copy)
+    end
+    if not active or not window then
+        return
     end
     if not open then
         addFloat(line)
@@ -315,34 +405,50 @@ local function onTabChange(bar, tab)
     end, 1)
 end
 
+local function addFace(parent, tab, current)
+    local face = g_ui.createWidget('PokegearChatFace', parent)
+    setFace(face, tab:getText(), tab == current and COLORS.you or COLORS.dm)
+    face:setTooltip(tab:getText())
+    local count = unread[tab] or 0
+    face.count:setText(tostring(count))
+    face.count:setVisible(count > 0)
+    face.onClick = function()
+        selectTab(tab)
+        if not open then
+            Chat.setOpen(true)
+        end
+    end
+    return face
+end
+
 refreshChips = function()
     if not window then
         return
     end
-    window.header.chips:destroyChildren()
-    window.header.faces:destroyChildren()
+    local header = window.header
+    header.chips:destroyChildren()
+    header.faces:destroyChildren()
+    window.foldedFaces:destroyChildren()
     local current = currentTab()
     local faceCount = 0
     for _, tab in ipairs(tabs()) do
         local kind = kindOf(tab)
         local count = unread[tab] or 0
         if kind == 'dm' then
-            local face = g_ui.createWidget('PokegearChatFace', window.header.faces)
-            face:setText(initials(tab:getText()))
-            face:setTooltip(tab:getText())
-            face:setOn(tab == current)
-            face.count:setText(tostring(count))
-            face.count:setVisible(count > 0)
-            face.onClick = function() selectTab(tab) end
+            addFace(header.faces, tab, current)
+            addFace(window.foldedFaces, tab, current)
             faceCount = faceCount + 1
         else
-            local chip = g_ui.createWidget('PokegearChatChip', window.header.chips)
-            chip:setText(chipText(tab))
-            chip:setOn(tab == current)
-            if tab ~= current then
-                chip:setColor(COLORS[kind] or COLORS.channel)
+            local chip = g_ui.createWidget('PokegearChatChip', header.chips)
+            local on = tab == current
+            chip:setOn(on)
+            chip.label:setText(chipText(tab))
+            chip.label:setColor(on and '#0d1424' or '#eef2ff')
+            local dot = not on and DOTS[kind]
+            chip.dot:setVisible(dot ~= nil and dot ~= false)
+            if dot then
+                chip.dot:setImageColor(dot)
             end
-            chip:setWidth(chip:getTextSize().width + 22)
             chip.count:setText(tostring(count))
             chip.count:setVisible(count > 0)
             chip.onClick = function() selectTab(tab) end
@@ -357,12 +463,19 @@ refreshChips = function()
             end
         end
     end
-    local plus = g_ui.createWidget('PokegearChatChip', window.header.chips)
-    plus:setText('+')
-    plus:setWidth(24)
+    local plus = g_ui.createWidget('PokegearChatChip', header.chips)
+    plus.label:setText('+')
+    plus.dot:hide()
+    plus:setPaddingLeft(9)
+    plus:setPaddingRight(9)
     plus:setTooltip(tr('Join a channel'))
     plus.onClick = function() g_game.requestChannels() end
-    window.header.faces:setWidth(math.max(1, faceCount * 28 - 4))
+    local facesWidth = math.max(1, faceCount * 34 - 6)
+    header.faces:setWidth(facesWidth)
+    window.foldedFaces:setWidth(facesWidth)
+    if not open then
+        window:setWidth(FOLDED_WIDTH + (faceCount > 0 and facesWidth + 10 or 0))
+    end
 end
 
 refreshInput = function()
@@ -371,11 +484,15 @@ refreshInput = function()
     end
     local tab = currentTab()
     local input = window.input
-    local kind = kindOf(tab)
-    input.channel:setText(tab and chipText(tab) or '')
-    input.channel:setImageColor(COLORS[kind] or COLORS.local_)
     local edit = textEdit()
     local typing = edit ~= nil and edit:isExplicitlyVisible()
+    -- folded, the pill names the channel; open, the chips already do
+    input.channel:setVisible(not open)
+    if tab then
+        input.channel:setText(chipText(tab))
+    end
+    input.channel:setWidth(open and 0 or input.channel:getTextSize().width + 24)
+    input.channel:setMarginLeft(open and 0 or 6)
     input.hint:setVisible(not typing)
     input.enterChip:setVisible(not typing)
     if not open and unreadFolded > 0 then
@@ -383,7 +500,6 @@ refreshInput = function()
     else
         input.hint:setText(tr('Press Enter to chat'))
     end
-    input.open:setVisible(not open)
 end
 
 local function applyOpen()
@@ -393,22 +509,33 @@ local function applyOpen()
     window.header:setVisible(open)
     window.list:setVisible(open)
     window.scroll:setVisible(open)
+    window.send:setVisible(open)
+    window.foldedFaces:setVisible(not open)
+    window.input:removeAnchor(AnchorRight)
     if open then
+        window.input:addAnchor(AnchorRight, 'send', AnchorLeft)
         window:setImageSource('/modules/game_pokegear/images/card')
-        window:setPadding(8)
-        window:setPaddingLeft(10)
-        window:setPaddingRight(10)
+        window:setPadding(10)
+        window:setPaddingLeft(12)
+        window:setPaddingRight(12)
+        window:setWidth(OPEN_WIDTH)
         window:setHeight(OPEN_HEIGHT)
         clearFloats()
         unreadFolded = 0
         fillList()
     else
+        window.input:addAnchor(AnchorRight, 'parent', AnchorRight)
         window:setImageSource('')
         window:setPadding(0)
         window:setHeight(window.input:getHeight())
     end
     floats:setVisible(not open)
     refreshChips()
+    if not open then
+        window.input:setMarginRight(window:getWidth() - FOLDED_WIDTH)
+    else
+        window.input:setMarginRight(8)
+    end
     refreshInput()
 end
 
@@ -442,8 +569,16 @@ local function adoptEdit()
     edit:setMarginRight(0)
     edit:setMarginBottom(0)
     edit:setMarginTop(0)
+    editHome.font = editHome.font or edit:getFont()
+    editHome.align = editHome.align or edit:getTextAlign()
     edit:setImageColor('#00000000')
-    edit:setTextOffset({ x = 4, y = 2 })
+    edit:mergeStyle({ ['ttf-font'] = '/fonts/ttf/arialb.ttf', ['ttf-font-size'] = 13 })
+    editHome.paddingTop = editHome.paddingTop or edit:getPaddingTop()
+    editHome.paddingLeft = editHome.paddingLeft or edit:getPaddingLeft()
+    edit:setTextAlign(AlignLeft)
+    -- a text edit places its text by padding, not text-offset
+    edit:setPaddingTop(9)
+    edit:setPaddingLeft(4)
     connect(edit, { onVisibilityChange = onEditVisibility })
 end
 
@@ -462,12 +597,35 @@ local function releaseEdit()
     edit:setMarginRight(5)
     edit:setMarginBottom(3)
     edit:setHeight(18)
-    edit:setTextOffset({ x = 0, y = 0 })
     edit:setImageColor('#ffffff')
+    if editHome.paddingTop then
+        edit:setPaddingTop(editHome.paddingTop)
+        edit:setPaddingLeft(editHome.paddingLeft)
+    end
+    if editHome.font then
+        edit:setFont(editHome.font)
+    end
+    if editHome.align then
+        edit:setTextAlign(editHome.align)
+    end
 end
 
 local function bottomPanel()
     return modules.game_interface.getBottomPanel()
+end
+
+local function sendLine()
+    local c = console()
+    local edit = textEdit()
+    if not c or not edit then
+        return
+    end
+    if edit:isExplicitlyVisible() and edit:getText() ~= '' then
+        c.sendCurrentMessage()
+    elseif not edit:isExplicitlyVisible() and c.toggleChat then
+        c.toggleChat()
+        edit:focus()
+    end
 end
 
 local function build()
@@ -479,7 +637,8 @@ local function build()
     window:hide()
     floats:hide()
     window.header.fold.onClick = function() Chat.setOpen(false) end
-    window.input.open.onClick = function() Chat.setOpen(true) end
+    window.send.onClick = sendLine
+    window.input:setTooltip(tr('Click to open the chat'))
     window.input.onMouseRelease = function(widget, mousePos, button)
         if button == MouseLeftButton and not open then
             Chat.setOpen(true)
