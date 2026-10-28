@@ -208,11 +208,9 @@ QUESTS_CONFIG = {
 --            onEnd = function(cid) doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.GAMEPLAY_TUTORIAL_IMAGE, "004-sewer") end,
             rewardItems = { { type = REWARD_TYPE.ITEM, id = 12115, count = 5 } },
         },
-        -- Beginner Quest - A work for Oak: the Pallet Town start for trainers who skipped Tutorial Island.
-        -- Every trainer starts there now, so it is no longer offered; ones who started it can still finish it.
+        -- Beginner Quest - A work for Oak
         {
             storage = 8498,
-            blockStart = true,
             talk_questStarting = "Good to know that you are busy with your journey. I need a hand with some things. Can you help me?",
             talk_questStarted = "I placed an order at the Pallet PokeMart. Please pick it up for me. We will see if you are a good trainer.",
             talk_questFinishing = "Did my order arrive?",
@@ -221,6 +219,7 @@ QUESTS_CONFIG = {
             talk_questDone = "Thanks, but, I have no missions for you now.",
             questType = QUEST_TYPE.BRING_ITEMS,
             questRequest = { 23950, 1 },
+            requiredLevel = 5,
             canStart = function(cid)
                 -- up to level 20, after Professor Oak's tutorial (8753) or with a Pokemon from Professor Tommy's island
                 return getPlayerLevel(cid) <= 20 and
