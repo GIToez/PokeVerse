@@ -147,6 +147,7 @@ local function apply()
     Loot.apply(active)
     Sockets.apply(active)
     Experience.apply(active)
+    Activity.apply(active)
     applySkills()
     Pokegear.layoutColumn()
 end
@@ -159,6 +160,11 @@ end
 local function isBadgeCase(container)
     local badgeCase = modules.game_badgecase
     return active and badgeCase ~= nil and badgeCase.isDexContainer ~= nil and badgeCase.isDexContainer(container)
+end
+
+-- game_textmessage hands server notices over in Pokegear (activity.lua)
+function takeMessage(mode, text, msgtype, bannered)
+    return Activity.takeMessage(mode, text, msgtype, bannered)
 end
 
 function claimsContainer(container)
@@ -199,6 +205,7 @@ local function onGameEnd()
     Loot.reset()
     Sockets.apply(false)
     Experience.apply(false)
+    Activity.reset()
     Pokegear.layoutColumn()
 end
 
@@ -212,6 +219,7 @@ function init()
     Loot.init()
     Sockets.init()
     Experience.init()
+    Activity.init()
     active = isActive()
     connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     if g_game.isOnline() then
@@ -237,4 +245,5 @@ function terminate()
     Loot.terminate()
     Sockets.terminate()
     Experience.terminate()
+    Activity.terminate()
 end

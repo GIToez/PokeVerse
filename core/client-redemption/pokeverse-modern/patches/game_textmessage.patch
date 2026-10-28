@@ -1,13 +1,20 @@
 diff -ruN pristine/modules/game_textmessage/textmessage.lua modules/game_textmessage/textmessage.lua
 --- a/modules/game_textmessage/textmessage.lua
 +++ b/modules/game_textmessage/textmessage.lua
-@@ -265,6 +265,12 @@
+@@ -265,6 +265,19 @@
          end
      end
  
 +    -- PokeVerse: a server-wide message the news banner already shows (game_newsbanner) stays in the console only
 +    local newsBanner = modules.game_newsbanner
-+    if msgtype.screenTarget and newsBanner and newsBanner.takeScreenText and newsBanner.takeScreenText(mode, text) then
++    local bannered = msgtype.screenTarget and newsBanner and newsBanner.takeScreenText and newsBanner.takeScreenText(mode, text)
++
++    -- PokeVerse: in the Pokegear layout milestone notices go in its Activity list and pop up as toasts (game_pokegear)
++    local pokegear = modules.game_pokegear
++    if pokegear and pokegear.takeMessage and pokegear.takeMessage(mode, text, msgtype, bannered) then
++        return
++    end
++    if bannered then
 +        return
 +    end
 +
