@@ -67,6 +67,10 @@ if(NpcSystem == nil) then
 		if(ret ~= nil) then
 			npcHandler:setMessage(MESSAGE_GREET, ret)
 		end
+		local ret = NpcSystem.getParameter('message_greet_idle')
+		if(ret ~= nil) then
+			npcHandler.idleGreet = ret
+		end
 		local ret = NpcSystem.getParameter('message_farewell')
 		if(ret ~= nil) then
 			npcHandler:setMessage(MESSAGE_FAREWELL, ret)

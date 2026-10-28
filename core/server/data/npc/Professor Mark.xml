@@ -4,5 +4,6 @@
 	<look type="562" head="0" body="0" legs="0" feet="0" addons="0"/>
 	<parameters>
 		<parameter key="message_greet" value="Hello |PLAYERNAME|. How are you? I'm Mark, a former scientist at the {Pokemon mansion}."/>
+		<parameter key="message_greet_idle" value="Hello |PLAYERNAME|. How are you? I'm Mark, I used to be a scientist at the Pokemon mansion."/>
 	</parameters>
 </npc>

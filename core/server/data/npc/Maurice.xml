@@ -4,5 +4,6 @@
 	<look type="503" head="152" body="73" legs="75" feet="0" addons="0"/>
 	<parameters>
 		<parameter key="message_greet" value="Hello |PLAYERNAME|! I'm producing {TV cameras}. Have you used one?"/>
+		<parameter key="message_greet_idle" value="Hello |PLAYERNAME|! I'm Maurice. I build cameras for the TV stations."/>
 	</parameters>
 </npc>

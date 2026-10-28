@@ -4,6 +4,7 @@
 	<look type="626" head="90" body="150" legs="70" feet="60" addons="3"/>
 	<parameters>
 		<parameter key="message_greet" value="Hello |PLAYERNAME|, what's up? Need a delivery?"/>
+		<parameter key="message_greet_idle" value="Hello |PLAYERNAME|, what's up? I'm swamped with packages today."/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

@@ -21,7 +21,8 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
-	if(msgcontains(msg, 'Pokemon mansion') or msgcontains(msg, 'mansao pokemon')) then
+	if(msgcontains(msg, 'Pokemon mansion') or msgcontains(msg, 'mansao pokemon') or msgcontains(msg, 'task') or
+			msgcontains(msg, 'mission') or msgcontains(msg, 'quest')) then
 		if (getCreatureStorage(cid, refundStorage) == -1 and getCreatureStorage(cid, questStorage) == 1) then -- Quest done but with old reward
             selfSay("You've done this mission and have the old reward. I can renew your reward. Do you want it? {Yes} or {No}", cid)
             npcHandler.talkState[talkUser] = TALKSTATE_RENEW

@@ -378,18 +378,39 @@ if(NpcHandler == nil) then
     end
 
     -- Greets a new player.
+    -- A quest NPC says "(I have a {task} for you.)" after its greeting while it has a quest the trainer can
+    -- start at their level, and greets with message_greet_idle (when its XML has one) while it has nothing
+    -- for them, so a greeting that leads into a quest isn't said to trainers who can't take it.
+    -- A script sets questHint = false to keep its own greetings, or to a function(cid) that says whether
+    -- the quest talk is open to this trainer (a gym leader's only after its battle is won).
+    function NpcHandler:getQuestGreeting(cid)
+        if (self.questHint == false or not getQuestGreetHint) then
+            return nil, nil
+        end
+        local name = getCreatureName(getNpcId())
+        if (not getNpcQuests(name) or (self.questHint and not self.questHint(cid))) then
+            return nil, nil
+        end
+        local hint = getQuestGreetHint(cid, name)
+        return hint, not hint and self.idleGreet or nil
+    end
+
     function NpcHandler:greet(cid)
         if(cid ~= 0) then
             local callback = self:getCallback(CALLBACK_GREET)
             if(callback == nil or callback(cid)) then
                 if(self:processModuleCallback(CALLBACK_GREET, cid)) then
-                    local msg = self:getMessage(MESSAGE_GREET)
+                    local hint, idle = self:getQuestGreeting(cid)
+                    local msg = idle or self:getMessage(MESSAGE_GREET)
                     local parseInfo = { [TAG_PLAYERNAME] = getCreatureName(cid) }
                     msg = self:parseMessage(msg, parseInfo, cid)
 
                     self:say(msg)
                     self:addFocus(cid)
                     self:say(msg, cid)
+                    if (hint) then
+                        self:say(hint, cid)
+                    end
                     if (Quests and Quests.onMeet) then
                         Quests.onMeet(cid, getCreatureName(getNpcId()))
                     end

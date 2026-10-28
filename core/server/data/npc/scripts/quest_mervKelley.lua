@@ -23,7 +23,9 @@ end)
 
 npcHandler:setCallback(CALLBACK_GREET, function(cid)
     local status = getCreatureStorage(cid, 8229)
-    if (status == QUEST_STATUS.UNSTARTED) then -- Last quest of the chain
+    if (status == QUEST_STATUS.UNSTARTED and not getQuestGreetHint(cid, "Merv Kelley")) then
+        npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|, my name is Merv Kelley, I'm a Pokemon researcher. I'm studying how bug Pokemon behave when they're fed different fruits.")
+    elseif (status == QUEST_STATUS.UNSTARTED) then -- Last quest of the chain
         npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|, my name is Merv Kelley, I'm a Pokemon researcher. I'm currently studying the behavior of bug Pokemon when fed with fruits, but now I'm having terrible {problems}.")
     elseif (status == QUEST_STATUS.STARTED) then
         npcHandler:setMessage(MESSAGE_GREET, "Hey! How are you doing?")

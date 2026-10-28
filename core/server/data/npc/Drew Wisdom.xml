@@ -4,5 +4,6 @@
 	<look type="1255" head="50" body="76" legs="34" feet="34" corpse="0"/>
 	<parameters>
 		<parameter key="message_greet" value="Hello |PLAYERNAME|! How about skiing? Hahaha! You must be cold in that {outfit}."/>
+		<parameter key="message_greet_idle" value="Hello |PLAYERNAME|! How about skiing? Hahaha!"/>
 	</parameters>
 </npc>

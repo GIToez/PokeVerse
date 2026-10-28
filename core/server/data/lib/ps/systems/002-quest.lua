@@ -138,13 +138,21 @@ local function getQuestStatus(pid, quest)
     return getCreatureStorage(pid, quest.storage) or QUEST_STATUS.ERROR
 end
 
--- anywhere: outside the NPC's script (the quest log), where there is no NPC position to check
+local function isLevelBlocked(pid, quest)
+    return quest.requiredLevel and getPlayerLevel(pid) < quest.requiredLevel and
+            getQuestStatus(pid, quest) == QUEST_STATUS.UNSTARTED
+end
+
+-- anywhere: outside the NPC's script (the quest log), where there is no NPC position to check.
+-- A quest the trainer's level is too low for steps aside for a later one of the same NPC they can
+-- start (Ash's Honey Pot before his main story part); it is only offered when nothing else is.
 local function getCurrentQuest(pid, npcName, anywhere)
     if (not QUESTS[npcName]) then
         log(LOG_TYPES.ERROR, "Quest:getCurrentQuest - Unkown NPC.", npcName)
         return false
     end
 
+    local waiting
     for i = 1, #QUESTS[npcName] do
         local status = getQuestStatus(pid, QUESTS[npcName][i])
         if (status ~= QUEST_STATUS.FINISHED and status ~= QUEST_STATUS.ERROR and (status == QUEST_STATUS.STARTED or
@@ -166,11 +174,14 @@ local function getCurrentQuest(pid, npcName, anywhere)
                 end
                 return QUESTS[npcName][i] -- TODO test
             elseif (anywhere or not QUESTS[npcName][i].startPosition or getSamePosition(getNpcPos(), QUESTS[npcName][i].startPosition)) then
-                return QUESTS[npcName][i]
+                if (not isLevelBlocked(pid, QUESTS[npcName][i])) then
+                    return QUESTS[npcName][i]
+                end
+                waiting = waiting or QUESTS[npcName][i]
             end
         end
     end
-    return false --QUESTS[npcName][#QUESTS[npcName]] -- No more quests to do, just return the last
+    return waiting or false
 end
 
 local function getQuestItemsText(quest)
@@ -639,6 +650,9 @@ function getQuestGreetHint(pid, npcName)
     local status = getQuestStatus(pid, quest)
     if (status == QUEST_STATUS.STARTED) then
         return "(Ask me about your {task}.)"
+    end
+    if (isLevelBlocked(pid, quest)) then
+        return nil
     end
     if (quest.daily and status > 100000 and status > getGlobalStorageValue(GLOBAL_STORAGES.SERVER_START_TIME)) then
         return nil

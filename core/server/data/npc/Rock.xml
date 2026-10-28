@@ -4,5 +4,6 @@
 	<look type="538" head="0" body="0" legs="0" feet="0" addons="0"/>
 	<parameters>
 		<parameter key="message_greet" value="Hi, I'm Rock. Synchronize your mind with your body and you will be at full strength! Haha! Err, I'm {hungry}."/>
+		<parameter key="message_greet_idle" value="Hi, I'm Rock. Synchronize your mind with your body and you will be at full strength! Haha!"/>
 	</parameters>
 </npc>
