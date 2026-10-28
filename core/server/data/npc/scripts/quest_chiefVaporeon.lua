@@ -133,4 +133,7 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
     return true
 end)
 
+-- its greetings already lead into its quest, which starts from {restore}, not {task}
+npcHandler.questHint = false
+
 npcHandler:addModule(FocusModule:new())

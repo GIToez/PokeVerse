@@ -443,7 +443,7 @@
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
 		<mission name="George Carter's gift" storageid="8665" startvalue="0" endvalue="1">
-			<missionstate id="0" description="George Carter has a present for your help with his research. Talk to him in Pewter to take it (from level 40)."/>
+			<missionstate id="0" description="George Carter has a present for your help with his research. Talk to him in Pewter to take it (from level 30)."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
 	</quest>
@@ -682,7 +682,7 @@
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
 		<mission name="Jeana Maxene's Heracross" storageid="8230" startvalue="0" endvalue="1">
-			<missionstate id="0" description="Jeana Maxene dreams of being a trainer. Bring her a Heracross and she will give you a Lichi Fruit (from level 70)."/>
+			<missionstate id="0" description="Jeana Maxene dreams of being a trainer. Bring her a Heracross and she will give you a Lichi Fruit (from level 75)."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
 		<mission name="Merv Kelley #03" storageid="8228" startvalue="0" endvalue="1">

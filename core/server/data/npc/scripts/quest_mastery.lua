@@ -56,4 +56,14 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, function(cid, type, msg)
 	return true
 end)
 
+-- only trainers of its mastery get its daily mission, and not again before the next server restart
+npcHandler.questHint = function(cid)
+    local npc = NPCS[getNpcName()]
+    if (not npc or not npc.quest or getPlayerMastery(cid) ~= npc.mastery) then
+        return false
+    end
+    local status = getCreatureStorage(cid, npc.quest.storage)
+    return not (status > 100000 and status > getGlobalStorageValue(GLOBAL_STORAGES.SERVER_START_TIME))
+end
+
 npcHandler:addModule(FocusModule:new())

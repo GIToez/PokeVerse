@@ -4,5 +4,6 @@
 	<look type="630" head="152" body="73" legs="75" feet="0" addons="0"/>
 	<parameters>
 		<parameter key="message_greet" value="Hello! I'm George Carter, an archaeologist. I'm in Pewter to do {research} and excavations!"/>
+		<parameter key="message_greet_idle" value="Hello! I'm George Carter, an archaeologist. The rocks around Pewter have plenty of stories to tell."/>
 	</parameters>
 </npc>

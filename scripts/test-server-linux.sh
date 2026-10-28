@@ -64,7 +64,7 @@ echo "Bag Trainer gets the old item layout (bag in the hidden slot 3, no duel ic
 $db -upokeverse -ppokeverse pokeverse -e "DELETE i FROM player_items i JOIN players p ON p.id = i.player_id WHERE p.name = 'Bag Trainer' AND i.pid = 3;
   UPDATE player_items i JOIN players p ON p.id = i.player_id SET i.pid = 3 WHERE p.name = 'Bag Trainer' AND i.pid = 10;"
 # Characters used only by the Discord bridge test (each logs in once per run).
-$db -upokeverse -ppokeverse pokeverse -e "CALL pokeverse_create_account('bridgetrainer', 'secret'); CALL pokeverse_create_character('bridgetrainer', 'Bridge Trainer', 0); CALL pokeverse_create_account('bridgestaff', 'secret'); CALL pokeverse_create_character('bridgestaff', 'Bridge Staff', 0); CALL pokeverse_set_group('Bridge Staff', 6); CALL pokeverse_create_account('bridgelink', 'secret'); CALL pokeverse_create_character('bridgelink', 'Link Alpha', 0); CALL pokeverse_set_group('Link Alpha', 2); CALL pokeverse_create_character('bridgelink', 'Link Beta', 1); CALL pokeverse_create_account('bridgebooster', 'secret'); CALL pokeverse_create_character('bridgebooster', 'Booster Trainer', 0); CALL pokeverse_create_account('voctester', 'secret'); CALL pokeverse_create_character('voctester', 'Vocation Tester', 0); CALL pokeverse_create_account('vocfriend', 'secret'); CALL pokeverse_create_character('vocfriend', 'Vocation Friend', 1); CALL pokeverse_create_account('orbbuyer', 'secret'); CALL pokeverse_create_character('orbbuyer', 'Orb Buyer', 0);"
+$db -upokeverse -ppokeverse pokeverse -e "CALL pokeverse_create_account('bridgetrainer', 'secret'); CALL pokeverse_create_character('bridgetrainer', 'Bridge Trainer', 0); CALL pokeverse_create_account('bridgestaff', 'secret'); CALL pokeverse_create_character('bridgestaff', 'Bridge Staff', 0); CALL pokeverse_set_group('Bridge Staff', 6); CALL pokeverse_create_account('bridgelink', 'secret'); CALL pokeverse_create_character('bridgelink', 'Link Alpha', 0); CALL pokeverse_set_group('Link Alpha', 2); CALL pokeverse_create_character('bridgelink', 'Link Beta', 1); CALL pokeverse_create_account('bridgebooster', 'secret'); CALL pokeverse_create_character('bridgebooster', 'Booster Trainer', 0); CALL pokeverse_create_account('voctester', 'secret'); CALL pokeverse_create_character('voctester', 'Vocation Tester', 0); CALL pokeverse_create_account('vocfriend', 'secret'); CALL pokeverse_create_character('vocfriend', 'Vocation Friend', 1); CALL pokeverse_create_account('orbbuyer', 'secret'); CALL pokeverse_create_character('orbbuyer', 'Orb Buyer', 0); CALL pokeverse_create_account('questgreeter', 'secret'); CALL pokeverse_create_character('questgreeter', 'Quest Greeter', 0);"
 tables=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='pokeverse'")
 echo "Tables: $tables"
 
@@ -88,6 +88,10 @@ sed -i 's#</talkactions>#\t<talkaction words="/bridgetest" event="script" value=
 # /vocationtest (scripts/testing/) drives every vocation perk through the real game code.
 cp "$root/scripts/testing/vocation-test-talkaction.lua" "$work/server/data/talkactions/scripts/vocationtest.lua"
 sed -i 's#</talkactions>#\t<talkaction words="/vocationtest" event="script" value="vocationtest.lua"/>\n</talkactions>#' \
+  "$work/server/data/talkactions/talkactions.xml"
+# /questtest (scripts/testing/) sets the level and puts the trainer next to an NPC for the greeting checks.
+cp "$root/scripts/testing/quest-greet-test-talkaction.lua" "$work/server/data/talkactions/scripts/questtest.lua"
+sed -i 's#</talkactions>#\t<talkaction words="/questtest" event="script" value="questtest.lua"/>\n</talkactions>#' \
   "$work/server/data/talkactions/talkactions.xml"
 # /paytest (scripts/testing/) drives the Store's Buy Verse Orbs button, Withdraw and the payment messages.
 cp "$root/scripts/testing/payments-test-talkaction.lua" "$work/server/data/talkactions/scripts/paytest.lua"
@@ -125,6 +129,10 @@ sleep 3
 step "Vocation tests"
 python3 "$root/scripts/vocation-test.py" --tester "voctester:secret:Vocation Tester" --friend "vocfriend:secret:Vocation Friend" \
   || { grep "vocationtest: FAIL" "$work/server.log"; exit 1; }
+sleep 3
+
+step "Quest NPC greeting tests"
+python3 "$root/scripts/quest-greet-test.py" --tester "questgreeter:secret:Quest Greeter"
 sleep 3
 
 step "Discord bridge tests"

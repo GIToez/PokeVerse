@@ -4,6 +4,7 @@
 	<look type="632" head="15" body="100" legs="100" feet="50" addons="0"/>
 	<parameters>
 		<parameter key="message_greet" value="Hello... did you find my {letters}?"/>
+		<parameter key="message_greet_idle" value="Hello... The sea is calm today."/>
 		<parameter key="idletime" value="30" />
 	</parameters>
 </npc>

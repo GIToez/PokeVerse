@@ -4,5 +4,6 @@
 	<look type="628" head="190" body="50" legs="39" feet="50" corpse="2212"/>
 	<parameters>
 		<parameter key="message_greet" value="Hello, I am Zazi, an old fisherman of this continent. I've worked with {fishing rods} since childhood."/>
+		<parameter key="message_greet_idle" value="Hello, I am Zazi, an old fisherman of this continent. The fish are biting well today."/>
 	</parameters>
 </npc>

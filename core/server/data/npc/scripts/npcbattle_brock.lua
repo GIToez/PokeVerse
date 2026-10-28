@@ -84,4 +84,6 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
 end)
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- its quests are asked for once its battle is won
+npcHandler.questHint = function(cid) return getPlayerDefeatedNPC(cid, getNpcName()) end
 npcHandler:addModule(FocusModule:new())

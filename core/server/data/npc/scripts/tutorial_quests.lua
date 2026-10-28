@@ -204,4 +204,7 @@ function creatureSayCallback(cid, type, msg)
 end
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- the old Tutorial Island chain (Quests.RETIRED_NPCS) has no quest marks or hints
+npcHandler.questHint = false
+
 npcHandler:addModule(FocusModule:new())

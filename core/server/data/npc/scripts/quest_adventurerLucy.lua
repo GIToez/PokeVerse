@@ -61,7 +61,10 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
     end
 
     local status = getCreatureStorage(cid, 8240)
-    if (status == QUEST_STATUS.UNSTARTED) then
+    if (status == QUEST_STATUS.UNSTARTED and not getQuestGreetHint(cid, "Adventurer Lucy")) then
+        npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|! Forgive the mess, I've been reading old maps of the islands all night.")
+
+    elseif (status == QUEST_STATUS.UNSTARTED) then
         npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|, do you want to hear a good story? {Yes} or {No}")
         npcHandler.talkState[cid] = TALKSTATES.HEAR_STORY
 
@@ -73,5 +76,8 @@ npcHandler:setCallback(CALLBACK_GREET, function(cid)
     end
 	return true
 end)
+
+-- her greetings already lead into her quest
+npcHandler.questHint = false
 
 npcHandler:addModule(FocusModule:new())

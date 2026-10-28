@@ -1419,7 +1419,7 @@ are changed to the new level (agreed); the rest are kept.
 | Daily and weekly tasks | Beginner 1, Easy 15, Medium 35, Hard 55, Extreme 80; two task kinds need 10 | `lib/ps/systems/062-dailyTasks.lua` | keep |
 | Ranger Club ranks | Rookie 10, Mentor 25, Coordinator 50, Coach 75 | `lib/ps/config/001-rangerClub.lua` | keep (becomes an [organization](#10-organizations-clubs-and-factions)) |
 | Referral reward | the friend reaches 50 | `lib/ps/systems/035-referral.lua` | 30 |
-| Quests | 258 have no level; the rest 10–100, with 76 at level 70 | `lib/ps/config/003-quest.lua` | check the level 70 group |
+| Quests | 258 have no level; the rest 10–100, with 76 at level 70 | `lib/ps/config/003-quest.lua` | spread out (below) |
 | Professor Josh Rock and William Rock quests | 80 | `npc/scripts/quest_*Rock.lua` | keep |
 | Masteries | 85–130 | `lib/ps/systems/014-mastery.lua` | removed with the [vocations](#6-vocations) |
 | Calling a Pokémon | its level at most the trainer's level + 10 | `MAX_LEVEL_DIFF_BETWEEN_PLAYER_POKEMON`, `others/constants.lua` | keep |
@@ -1456,8 +1456,35 @@ daycare 20, houses and Starter tournament 25, guilds 30, Pro tournament 46, Epic
 "Tournaments" pages match. Not in the banner yet: slot machine, tasks, wave arena, the
 vocation quest and the Frontier Island arenas.
 
-**To decide:** whether the Elite Four moves to 80, and what the level 70 quest group is (76
-quests at the same level). The daycare stays Premium (agreed with the Breeder perks).
+**To decide:** whether the Elite Four moves to 80. The daycare stays Premium (agreed with the
+Breeder perks).
+
+**Quest levels (spread out):** the level 70 group was the Orange Archipelago: every quest there
+needed 70, the level it opens at, and Kanto's main story jumped from 10 to 40 to 50 with a third
+of it at 10 behind a level 50 part. 97 quests moved so each part follows the story and the map:
+
+| Quests | Before | Now |
+| --- | --- | --- |
+| A work for Oak (Professor Oak in Pallet Town, up to level 20) | none | 5, the start level |
+| Kanto Main #01 (Guyli, Daisy, Gary and his battle) | 10 | 5 to 8, from the level 5 start |
+| Around the continent (Jack Simps, John Rouver, Mary Vinn and the others) | 10 | 5 to 16, by what they ask for |
+| Kanto Main #03 | 10 | 12 |
+| Kanto Main #04 (S.S. Anne), with Lt. Surge's town | 40 | 35 |
+| Kanto Main #05 (Celadon), with Erika's town | 50 | 40 |
+| Kanto Main #06 to #11 | 10 (behind #05 at 50) | 42, 44, 46, 48, 50, 50 |
+| Rescue Ash Ketchum (Kanto Main #08, also gives Running Shoes) | 60 | 46 |
+| Exploring Mt. Moon (George Carter) | 40 | 25 to 30 |
+| Love Present parts Misty #01 starts (Luther Lacey, Misty #02) | 15 and 20 | 30, Misty #01's level |
+| Orange Archipelago Main #01 | 70 | 70, where the archipelago opens |
+| Orange Archipelago Main #02, #03, #04, #05 | 70 | 72, 75, 78, 82 |
+| Deepsoul (Orange Archipelago Main #05) | 100 | 90 |
+| Orange Archipelago side quests, from Valencia in the south to the north | 70 | 72 to 82 |
+
+Kept: the gyms (15 to 50), the After Kanto quests that open the archipelago (70), the Pokedex
+Upgrade and Chansey quests in Kanto (70), and everything from 80 up. An NPC also offers the first
+of its quests the trainer can start at their level, so a quest the trainer is too low for no
+longer holds back an easier one behind it in the NPC's list (Ash Ketchum's Running Shoes quests
+were behind his level 60 one).
 
 ## 13. Switch off the old PSoul and anniversary content
 
