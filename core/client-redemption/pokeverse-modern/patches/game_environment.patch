@@ -311,7 +311,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
      end
  end
  
-@@ -306,6 +474,10 @@
+@@ -306,6 +474,15 @@
      end
  end
  
@@ -319,10 +319,15 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
 +    return areaName
 +end
 +
++function getAreaNameAt(pos)
++    local area = pos and findArea(pos)
++    return area and area[DATA_INDEX.MESSAGE] or ''
++end
++
  function setDisplay(v)
      environmentEnabled = v
      if (environmentEnabled) then
-@@ -322,12 +494,15 @@
+@@ -322,12 +499,15 @@
  -- Hooks
  function onOnline()
      stopSound()
@@ -339,7 +344,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
  end
  
  function onPositionChange(cid, newPos, oldPos)
-@@ -345,23 +520,9 @@
+@@ -345,23 +525,9 @@
  function onInit()
      rcSoundChannel = g_sounds.getChannel(SOUND_CHANNEL)
  
@@ -365,7 +370,7 @@ diff -ruN pristine/modules/game_environment/environment.lua modules/game_environ
      labelWindow:hide()
  
      connect(g_game, {
-@@ -388,5 +549,6 @@
+@@ -388,5 +554,6 @@
          onPositionChange = onPositionChange
      })
  
