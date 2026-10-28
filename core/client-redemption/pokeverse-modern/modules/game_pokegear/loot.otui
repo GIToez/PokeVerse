@@ -1,0 +1,148 @@
+// Loot: the list under the HUD of what auto loot picked up, and the window a body opens in.
+// Built by loot.lua.
+PokegearLootRow < UIWidget
+  height: 26
+  phantom: true
+
+  UIWidget
+    id: pill
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    width: 60
+    image-source: /modules/game_pokegear/images/row
+    image-border: 11
+    image-smooth: true
+    phantom: true
+    $on:
+      image-source: /modules/game_pokegear/images/row_target
+
+    Item
+      id: item
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 4
+      size: 22 22
+      virtual: true
+      phantom: true
+      image-source: ~
+      border-width: 0
+
+    UILabel
+      id: text
+      anchors.left: item.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 6
+      text-auto-resize: true
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 12
+      color: #eef2ff
+      phantom: true
+
+PokegearLootFeed < UIWidget
+  id: pokegearLootFeed
+  width: 360
+  phantom: true
+  focusable: false
+  layout:
+    type: verticalBox
+    spacing: 3
+    fit-children: true
+
+PokegearLootItem < Item
+  size: 38 38
+  image-source: /modules/game_pokegear/images/tile
+  image-border: 6
+  padding: 3
+  font: verdana-11px-rounded
+
+PokegearLoot < UIWidget
+  id: pokegearLoot
+  width: 230
+  height: 150
+  image-source: /modules/game_pokegear/images/card
+  image-border: 12
+  image-smooth: true
+  padding: 8 10 10 10
+  focusable: false
+
+  UIWidget
+    id: header
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 32
+    draggable: true
+    !tooltip: tr('Drag to move')
+
+    UIWidget
+      id: portrait
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      size: 32 32
+      image-smooth: true
+      phantom: true
+
+    UILabel
+      id: title
+      anchors.left: portrait.right
+      anchors.right: close.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 6
+      margin-right: 6
+      ttf-font: /fonts/ttf/pixelify-sans.ttf
+      ttf-font-size: 16
+      color: #ffcb05
+      text-wrap: false
+      phantom: true
+
+    PVCloseButton
+      id: close
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      !tooltip: tr('Close')
+
+  UIWidget
+    id: grid
+    anchors.top: header.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 6
+    height: 38
+    layout:
+      type: grid
+      cell-size: 38 38
+      cell-spacing: 3
+      num-columns: 5
+      flow: true
+
+  UILabel
+    id: empty
+    anchors.top: header.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 16
+    height: 16
+    text-align: center
+    !text: tr('Nothing left on the body')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 11
+    color: #8fa0c4
+    phantom: true
+    visible: false
+
+  PokegearPill
+    id: takeAll
+    anchors.top: grid.bottom
+    anchors.left: parent.left
+    margin-top: 8
+    !text: tr('Take all')
+    !tooltip: tr('Put everything in your Bag')
+
+  PokegearPill
+    id: autoLoot
+    anchors.top: grid.bottom
+    anchors.right: parent.right
+    margin-top: 8
+    !text: tr('Auto loot')
+    !tooltip: tr('Auto loot: what you defeat goes straight to your Bag. The same as Settings > Controls > General > Auto loot and /autoloot.')

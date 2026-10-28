@@ -128,9 +128,8 @@ Coordinates move to a tooltip on the map (or the staff view). Level and experien
   - Opening a body yourself shows a small window with the Pokemon's portrait, the items, Take all and
     an **Auto loot** switch.
   - That switch is the same setting as the Auto loot checkbox in Settings › Controls › General
-    (`autoLoot`, which sends `ExtendedIds.AutoLoot` to the server). Today `/autoloot` only flips it on the
-    server, and the checkbox sends its own value again at the next login. The server should send the
-    new value back after `/autoloot`, so the switch, the checkbox and the command always agree.
+    (`autoLoot`, which sends `ExtendedIds.AutoLoot` to the server). `/autoloot` sends the new value back,
+    so the switch, the checkbox and the command always agree.
 
 **The Bag** works like today's backpack: a grid of squares. Right-click an item to use it, and drag
 items in and out (to the ground, a hotkey, the PC, the GTS or another bag).

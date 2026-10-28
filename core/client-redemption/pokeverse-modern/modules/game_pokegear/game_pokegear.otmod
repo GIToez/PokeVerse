@@ -3,6 +3,6 @@ Module
   description: PokeVerse layouts: Pokegear (the ring map, the Bag and windows you drag anywhere) or Classic (the side panels), Options > Interface > Layout
   author: PokeVerse
   sandboxed: true
-  scripts: [ common, pokegear, hub, nearby, tracking, social, chat, bag, sockets, experience ]
+  scripts: [ common, pokegear, hub, nearby, tracking, social, chat, bag, loot, sockets, experience ]
   @onLoad: init()
   @onUnload: terminate()

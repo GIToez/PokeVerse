@@ -1317,9 +1317,8 @@ local function releaseContainers()
         if container then
             container.pokegearClaimed = nil
             local spot = restore and restore[id]
-            if (restore and not spot) or (not restore and not keep[id]) then
-                -- opened by the Bag; Classic gets back the windows it had, or the backpack and the belt
-                -- when Pokegear started without any
+            if not keep[id] and not spot then
+                -- opened by the Bag; Classic gets back the windows it had, and always the backpack and the belt
                 g_game.close(container)
             elseif containers then
                 containers.onContainerOpen(container)

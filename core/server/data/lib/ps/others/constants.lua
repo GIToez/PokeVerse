@@ -45,7 +45,7 @@ EXTENDED_IDS = {
     DASHWALKING = 10,
     SUMMON_OWNER = 11, -- sent by the server's protocol code: "creatureId,ownerId" for other trainers' Pokemon
     POKEMON_STATS = 12, -- JSON stat sheet of your own Pokemon after a Pokedex view (PokemonStats.getStatSheet)
-    AUTO_LOOT = 13, -- the client's Auto loot setting, "1" or "0": sent at login and when it changes
+    AUTO_LOOT = 13, -- the Auto loot setting, "1" or "0": the client sends it at login and when it changes, the server after /autoloot
     EVOLUTION = 14, -- JSON {state = "start", from, to, fromLook, toLook, duration} then {state = "done"} (doPokemonEvolve)
     DAILY_TASKS = 15, -- JSON state of today's daily tasks (DailyTasks.send)
     LEVEL_UP = 16, -- JSON Pokemon/trainer level-up and TM banners (LevelUpBanner)
