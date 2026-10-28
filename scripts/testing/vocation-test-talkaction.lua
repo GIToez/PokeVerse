@@ -3314,6 +3314,22 @@ local function testBag(cid)
     check("bag: the PC stash files a Feather under Drops", ItemCategories.nameOf(12142) == "Drops",
         ItemCategories.nameOf(12142))
 
+    -- Pokegear Activity: the milestone goes first, so the client knows to hide its text message
+    local order = {}
+    local sendOpcode, sendText = doSendPlayerExtendedOpcode, doPlayerSendTextMessage
+    doSendPlayerExtendedOpcode = function(target, opcode, buffer)
+        order[#order + 1] = opcode == EXTENDED_IDS.ACTIVITY and ("activity " .. buffer) or ("opcode " .. opcode)
+    end
+    doPlayerSendTextMessage = function(target, mode, text)
+        order[#order + 1] = "text " .. text
+    end
+    doPlayerSendActivity(cid, "gts", MESSAGE_STATUS_CONSOLE_BLUE, "GTS: You sold 1x Feather for $450.")
+    doPlayerAddActivity(cid, "levelup", "Your Pidgey reached level 13.")
+    doSendPlayerExtendedOpcode, doPlayerSendTextMessage = sendOpcode, sendText
+    check("activity: the milestone, then its text; a list-only one sends no text", #order == 3
+        and order[1]:find('"kind":"gts"', 1, true) and order[2] == "text GTS: You sold 1x Feather for $450."
+        and order[3]:find('"quiet":true', 1, true), table.concat(order, " / "))
+
     -- what the client gets: fragments joined back together, each one under the 8 KB string limit
     local sent, pieces, longest = {}, {}, 0
     local original = doSendPlayerExtendedOpcode
