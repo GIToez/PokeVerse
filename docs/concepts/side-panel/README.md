@@ -304,6 +304,29 @@ bell, the gear and the Store on the right.
     Training and Regeneration.
 - Classic keeps the tracker window, the VIP box and the Skills window.
 
+### Compact Pokegear for small screens (its own project, after the default flips)
+
+At phone size Pokegear doesn't fit: on a screen 1200x509 points across, the ring alone is 400 tall,
+Nearby is cut off and the Bag and chat cover the middle of the map. A typical phone is smaller still
+(about 914x411).
+
+- **Until it's built, Android stays on Classic.** The Layout option is hidden on Android, and Pokegear
+  becoming the default is for Windows and Linux only.
+- **When the screen is small, everything scales down to about 60%.** Small means fewer than about 600
+  points high, checked again when the window resizes or the phone rotates. The ring, Nearby, Tracking,
+  the Bag, the Social window, the chat card, the HUD and its sockets all shrink by the same factor;
+  text stays readable (no smaller than the Classic windows' font).
+- **Nearby, Tracking and chat start folded.** Nearby and Tracking show as chips under the map's
+  name, and the chat card as its one-line input with the channel chips. Tapping a chip opens it; it
+  folds again on its own after a while without a touch. What the player unfolds is kept per
+  character, like on desktop.
+- **The Bag and the Social window open over the map** (centred, with a close button big enough for a
+  thumb) instead of beside the ring, and only one of them at a time.
+- **Touch:** dragging a window by its header works as on desktop; a long press stands for right
+  click (use an item, the Nearby menu), as the Android touch controls already do.
+- **Tested** with the harness at phone and tablet sizes (914x411, 1200x509, 1280x800), on both
+  layouts, plus a switch back and forth like the desktop audit.
+
 ## To decide
 
 - Tracking, Social and the Skills window split: the mock-ups above.
