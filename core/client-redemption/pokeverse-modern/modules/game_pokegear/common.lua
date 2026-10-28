@@ -159,9 +159,37 @@ function Pokegear.isDocked(window, setting)
     return not saved or (saved.x == 0 and saved.y == 0)
 end
 
+-- every movable window by its setting, for Reset layout
+local movable = {}
+
+-- the saved spots, also for windows not built yet this session
+local POSITION_SETTINGS = { 'pokegearHubPosition', 'pokegearChatPosition', 'pokegearNearbyPosition',
+    'pokegearTrackingPosition', 'pokegearBagPosition', 'pokegearSocialPosition', 'pokegearLootPos' }
+
+function Pokegear.forgetLayout()
+    for _, setting in ipairs(POSITION_SETTINGS) do
+        g_settings.set(setting, { x = 0, y = 0 })
+    end
+end
+
+-- every Pokegear window back where the layout puts it; hidden ones go there when they next open
+function Pokegear.resetLayout()
+    Pokegear.forgetLayout()
+    for _, entry in pairs(movable) do
+        local window = entry.window
+        if not window:isDestroyed() and window:isVisible() then
+            Pokegear.unhang(window)
+            window:breakAnchors()
+            entry.placeDefault()
+        end
+    end
+    Pokegear.layoutColumn()
+end
+
 -- Dragging handle moves window; the spot is saved under setting. A double click on the handle, or
 -- no saved spot, puts it back with placeDefault().
 function Pokegear.makeMovable(window, handle, setting, placeDefault)
+    movable[setting] = { window = window, placeDefault = placeDefault }
     local function restore()
         local saved = g_settings.getPoint(setting)
         Pokegear.unhang(window)

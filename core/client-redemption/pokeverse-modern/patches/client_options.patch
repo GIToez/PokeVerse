@@ -1094,7 +1094,7 @@ diff -ruN pristine/modules/client_options/styles/interface/HUD.otui modules/clie
 diff -ruN pristine/modules/client_options/styles/interface/interface.otui modules/client_options/styles/interface/interface.otui
 --- a/modules/client_options/styles/interface/interface.otui
 +++ b/modules/client_options/styles/interface/interface.otui
-@@ -5,6 +5,29 @@
+@@ -5,6 +5,40 @@
      anchors.left: parent.left
      anchors.right: parent.right
      anchors.top: parent.top
@@ -1116,6 +1116,17 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 +      mouse-scroll: false
 +      !tooltip: tr('Pokegear: the ring map, the Bag and windows you drag anywhere; WASD always walks and Enter opens the chat. Classic: the side panels and the chat as before.')
 +
++    QtButton
++      id: resetLayout
++      !text: tr('Reset layout')
++      width: 90
++      height: 20
++      margin-left: 10
++      anchors.verticalCenter: prev.verticalCenter
++      anchors.left: prev.right
++      !tooltip: tr('Puts every Pokegear window back where it starts: the ring, the chat, Nearby, Tracking, the Bag, Social and loot.')
++      @onClick: if modules.game_pokegear then modules.game_pokegear.resetLayout() end
++
 +  SmallReversedQtPanel
 +    anchors.left: parent.left
 +    anchors.right: parent.right
@@ -1124,7 +1135,7 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
      height: 22
  
      OptionCheckBox
-@@ -53,17 +76,21 @@
+@@ -53,17 +87,21 @@
      margin-top: 7
      height: 22
  
@@ -1156,7 +1167,7 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
  
    SmallReversedQtPanel
      anchors.left: parent.left
-@@ -71,41 +98,178 @@
+@@ -71,41 +109,178 @@
      anchors.top: prev.bottom
      margin-top: 7
      height: 22
@@ -1171,6 +1182,30 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 +      !text: tr('Show news banner')
 +      !tooltip: tr('Server-wide news (events, legendaries, restarts, staff broadcasts) in a banner at the top of the screen. Off: the red text in the middle of the screen.')
 +
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 22
++
++    OptionCheckBoxMarked
++      id: showTips
++      !text: tr('Show tips')
++      !tooltip: tr('A tip in the news banner about once an hour, never during a fight.')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 22
++
++    OptionCheckBoxMarked
++      id: showHints
++      !text: tr('Show first-visit hints')
++      !tooltip: tr('A card with what a place is for the first time you walk into a Pokemon Center, a Mart, the Day Care and more. The Wiki tab of the Pokepedia shows them again.')
++
    SmallReversedQtPanel
      anchors.left: parent.left
      anchors.right: parent.right
@@ -1183,9 +1218,9 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 -      id: showSpellGroupCooldowns
 -      !text: tr('Show spell group cooldowns')
 -      !tooltip: tr('Can be enabled only in version 8.7x or higher')
-+      id: showTips
-+      !text: tr('Show tips')
-+      !tooltip: tr('A tip in the news banner about once an hour, never during a fight.')
++      id: weatherEffects
++      !text: tr('Show weather on the map')
++      !tooltip: tr('Rain, storms, snow, hail, fog, sandstorms, wind and sun where the sky is open. The weather still changes the light and the battles.')
  
    SmallReversedQtPanel
      anchors.left: parent.left
@@ -1199,34 +1234,10 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 -      id: showInfoBanner
 -      !text: tr('Show Info Banner')
 -      !tooltip: tr('Tick this box to display an info banner for certain in-game events.')
-+      id: showHints
-+      !text: tr('Show first-visit hints')
-+      !tooltip: tr('A card with what a place is for the first time you walk into a Pokemon Center, a Mart, the Day Care and more. The Wiki tab of the Pokepedia shows them again.')
- 
-+  SmallReversedQtPanel
-+    anchors.left: parent.left
-+    anchors.right: parent.right
-+    anchors.top: prev.bottom
-+    margin-top: 7
-+    height: 22
-+
-+    OptionCheckBoxMarked
-+      id: weatherEffects
-+      !text: tr('Show weather on the map')
-+      !tooltip: tr('Rain, storms, snow, hail, fog, sandstorms, wind and sun where the sky is open. The weather still changes the light and the battles.')
-+
-+  SmallReversedQtPanel
-+    anchors.left: parent.left
-+    anchors.right: parent.right
-+    anchors.top: prev.bottom
-+    margin-top: 7
-+    height: 22
-+
-+    OptionCheckBoxMarked
 +      id: weatherLight
 +      !text: tr('Lighter weather effects')
 +      !tooltip: tr('Fewer raindrops and snowflakes, and a lighter fog and sandstorm.')
-+
+ 
 +  SmallReversedQtPanel
 +    anchors.left: parent.left
 +    anchors.right: parent.right
@@ -1238,24 +1249,24 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
 +      id: weatherSounds
 +      !text: tr('Weather sounds')
 +      !tooltip: tr('Rain, wind and thunder, at the Ambience volume.')
-+
-+  SmallReversedQtPanel
-+    anchors.left: parent.left
-+    anchors.right: parent.right
-+    anchors.top: prev.bottom
-+    margin-top: 7
-+    height: 22
-+
-+    OptionCheckBoxMarked
-+      id: weatherLightning
-+      !text: tr('Lightning flashes')
-+      !tooltip: tr('The white flash of lightning in thunderstorms.')
  
    SmallReversedQtPanel
      anchors.left: parent.left
      anchors.right: parent.right
      anchors.top: prev.bottom
      margin-top: 7
++    height: 22
++
++    OptionCheckBoxMarked
++      id: weatherLightning
++      !text: tr('Lightning flashes')
++      !tooltip: tr('The white flash of lightning in thunderstorms.')
++
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
 +    height: 22
 +
 +    OptionCheckBoxMarked
@@ -1348,7 +1359,7 @@ diff -ruN pristine/modules/client_options/styles/interface/interface.otui module
      height: 32
    
      Label
-@@ -117,63 +281,33 @@
+@@ -117,63 +292,33 @@
  
      QtComboBox
        id: crosshair

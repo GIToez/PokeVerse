@@ -209,6 +209,19 @@ local function apply()
     end
 end
 
+-- Settings > Interface > Reset layout
+function resetLayout()
+    if active and g_game.isOnline() then
+        Pokegear.resetLayout()
+    else
+        Pokegear.forgetLayout()
+    end
+    local messages = modules.game_textmessage
+    if g_game.isOnline() and messages and messages.displayStatusMessage then
+        messages.displayStatusMessage(tr('Pokegear windows are back in their places.'))
+    end
+end
+
 function toggleNearby()
     Nearby.toggle()
 end
