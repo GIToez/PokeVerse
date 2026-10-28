@@ -109,9 +109,10 @@ Coordinates move to a tooltip on the map (or the staff view). Level and experien
 | Top bar | ![Top bar](topbar.jpg) |
 
 **Pokegear, all together.** The ring map with its app buttons, Nearby, the Bag and loot are separate windows.
-- Drag a window by its header; the hub has a tab under the ring for this. Windows snap to the
-  screen edges and to each other.
-- The layout is saved per character. Lock windows and Reset layout go in the gear menu.
+- Drag a window by its header; the hub has a tab under the ring for this. Windows go wherever you
+  drop them: no Tibia-style snapping. A double click on the header puts that one window back.
+- **Reset layout** (Settings › Interface, next to Layout) puts every Pokegear window back where it
+  starts: the ring, the chat, Nearby, Tracking, the Bag, Social and loot.
 - **Nearby** keeps the PokeVerse Battle List's filters and sorts:
   - filters: Wild, Trainers, NPCs, Party (`hideMonsters`, `hidePlayers`, `hideNPCs`, `hideParty`);
   - sorts: distance, HP, name, level;
