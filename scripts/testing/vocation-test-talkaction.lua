@@ -5047,7 +5047,8 @@ local function testLegendaries(cid, friend, arena)
             W.runRayquaza(os.time() + W.CONFIG.rayquazaDelay + 1)
             check("Legendary: Rayquaza comes down to them", (W.findFlight("Rayquaza") or W.find("Rayquaza")) ~= nil and
                 last():find("Rayquaza is coming down from the sky") ~= nil, last())
-            local ray = W.find("Rayquaza") or landNow("Rayquaza")
+            -- still on its way in from 16 to 24 tiles out: land it first
+            local ray = landNow("Rayquaza") or W.find("Rayquaza")
             check("Legendary: Rayquaza lands next to Groudon", ray and getDistanceBetween(getCreaturePosition(ray),
                 getCreaturePosition(g)) <= 10, ray and getDistanceBetween(getCreaturePosition(ray), getCreaturePosition(g)))
             W.runClashes(os.time())
