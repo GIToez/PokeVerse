@@ -22,13 +22,14 @@ local function applyWalkLock()
             console.toggleChat()
         end
         toggle:hide()
-        if textEdit then
+        -- in Pokegear the line lives in the chat card (chat.lua)
+        if textEdit and textEdit:getParent() == console.consolePanel then
             textEdit:removeAnchor(AnchorRight)
             textEdit:addAnchor(AnchorRight, 'parent', AnchorRight)
         end
     else
         toggle:show()
-        if textEdit then
+        if textEdit and textEdit:getParent() == console.consolePanel then
             textEdit:removeAnchor(AnchorRight)
             textEdit:addAnchor(AnchorRight, 'toggleChat', AnchorLeft)
         end
@@ -137,6 +138,7 @@ end
 
 local function apply()
     if g_game.isOnline() then
+        Chat.apply(active)
         applyWalkLock()
         applyTopBar()
     end
@@ -186,6 +188,7 @@ local function onGameEnd()
     Nearby.apply(false)
     Tracking.apply(false)
     Social.apply(false)
+    Chat.apply(false)
     Bag.reset()
     Sockets.apply(false)
     Experience.apply(false)
@@ -197,6 +200,7 @@ function init()
     g_ui.importStyle('nearby')
     g_ui.importStyle('tracking')
     Social.init()
+    Chat.init()
     Bag.init()
     Sockets.init()
     Experience.init()
@@ -217,6 +221,7 @@ function terminate()
     Nearby.terminate()
     Tracking.terminate()
     Social.terminate()
+    Chat.terminate()
     Bag.terminate()
     Sockets.terminate()
     Experience.terminate()
