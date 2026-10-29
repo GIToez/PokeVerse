@@ -106,9 +106,7 @@ local function take(button, index)
     button:setSize({ width = TILE_BUTTON_SIZE, height = TILE_BUTTON_SIZE })
     -- the bar's 20px art is drawn with a frame border, so scaled up its middle tiles into copies: the
     -- tile shows it whole instead (the button's clip follows its pressed and on states)
-    if not entry.source:find('button_empty') then
-        tile.icon:setImageSource(entry.source)
-    end
+    tile.icon:setImageSource(entry.source)
     button:setImageSource('')
     button:setIconSize({ width = TILE_ICON_SIZE, height = TILE_ICON_SIZE })
     button.onMouseRelease = function(widget, mousePos, mouseButton)
