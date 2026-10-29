@@ -250,14 +250,21 @@ else
 fi
 
 step "Checking SSH access for $PV_USER"
-if sshd -T 2>/dev/null | grep -Eqi '^(allowusers|allowgroups) '; then
-  echo "WARNING: sshd has AllowUsers/AllowGroups set. Add '$PV_USER' there or GitHub Actions cannot log in:"
-  sshd -T | grep -Ei '^(allowusers|allowgroups) '
+# Read once: under pipefail, `sshd -T | awk '... exit'` dies of SIGPIPE, and sshd -T itself fails
+# when socket-activated ssh hasn't made /run/sshd yet. Either used to end the script silently here.
+mkdir -p /run/sshd
+sshd_settings=$(sshd -T 2>/dev/null || true)
+if [ -z "$sshd_settings" ]; then
+  echo "WARNING: could not read sshd's settings (sshd -T); check SSH logins for '$PV_USER' by hand."
 fi
-if sshd -T 2>/dev/null | grep -qi '^pubkeyauthentication no'; then
+if grep -Eqi '^(allowusers|allowgroups) ' <<<"$sshd_settings"; then
+  echo "WARNING: sshd has AllowUsers/AllowGroups set. Add '$PV_USER' there or GitHub Actions cannot log in:"
+  grep -Ei '^(allowusers|allowgroups) ' <<<"$sshd_settings"
+fi
+if grep -qi '^pubkeyauthentication no' <<<"$sshd_settings"; then
   echo "WARNING: PubkeyAuthentication is disabled in sshd; GitHub Actions needs it."
 fi
-ssh_port=$(sshd -T 2>/dev/null | awk '/^port / {print $2; exit}')
+ssh_port=$(awk '/^port / {print $2; exit}' <<<"$sshd_settings")
 
 host_key=/etc/ssh/ssh_host_ed25519_key.pub
 [ -f "$host_key" ] || die "$host_key is missing"
