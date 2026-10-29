@@ -372,7 +372,32 @@ function hide()
     end
 end
 
+-- Phone screens are shorter than the window: the bottom row (Leave a Pokemon, Plate) gives up to
+-- BOTTOM_CUT and then the middle row (Compatibility, the egg, Egg) up to MIDDLE_CUT, so the plates stay on screen.
+local FULL_HEIGHT, MIDDLE_HEIGHT, EGG_SIZE, EGG_ITEM = 636, 128, 112, 64
+local BOTTOM_CUT, MIDDLE_CUT, SCREEN_MARGIN = 60, 40, 12
+
+local function fitScreen()
+    local cutBottom, cutMiddle = 0, 0
+    if g_platform.isMobile() then
+        local over = math.max(0, FULL_HEIGHT + SCREEN_MARGIN - rootWidget:getHeight())
+        cutBottom = math.min(over, BOTTOM_CUT)
+        cutMiddle = math.min(over - cutBottom, MIDDLE_CUT)
+    end
+    window:setHeight(FULL_HEIGHT - cutBottom - cutMiddle)
+    window.compatibility:setHeight(MIDDLE_HEIGHT - cutMiddle)
+    local egg = EGG_SIZE - cutMiddle
+    window.egg:setSize({ width = egg, height = egg })
+    window.egg:setMarginTop(34 - math.floor(cutMiddle / 4))
+    -- the egg's status line keeps the full gap between the side panels
+    window.compatibility:setMarginRight(18 + math.floor(cutMiddle / 2))
+    window.eggPanel:setMarginLeft(18 + math.floor(cutMiddle / 2))
+    local item = math.min(EGG_ITEM, egg - 24)
+    window.egg.item:setSize({ width = item, height = item })
+end
+
 local function show()
+    fitScreen()
     local root = rootWidget:getSize()
     if not window:isVisible() then
         window:setPosition({ x = math.floor((root.width - window:getWidth()) / 2),
