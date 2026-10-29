@@ -43,7 +43,7 @@ HINTS = {
       areas = { 'Union Room' },
       lines = {
           "Joey runs the tournaments, Emmet Cash is the bank and Curt Raeburn manages TMs.",
-          "Josh Pillberg sells EV and breeding items, and the mastery wing is here too. Soul Coins are spent in the Store on the top bar.",
+          "Josh Pillberg sells EV and breeding items, and the mastery wing is here too. Verse Orbs are spent in the Store on the top bar.",
       } },
     { key = 'gym', title = 'Gym', portrait = 68,
       areas = { 'Gym' },

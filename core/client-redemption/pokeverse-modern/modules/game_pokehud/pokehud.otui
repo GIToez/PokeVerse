@@ -255,7 +255,7 @@ UIWidget
 
     HudCoin
       id: soulCoins
-      !tooltip: tr('Soul coins you are carrying')
+      !tooltip: tr('Verse Orbs you are carrying')
 
     HudCoin
       id: dollars

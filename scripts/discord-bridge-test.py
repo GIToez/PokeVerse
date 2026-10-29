@@ -391,12 +391,12 @@ def booster_tests(b, args):
     check("a week that is not complete is refused", error(week(DISCORD_D, since, 61)) == "not_due")
     check("not_due comes before before_link", error(week(DISCORD_D, now - 1000, 1)) == "not_due")
     r = week(DISCORD_D, since, 2, 14)
-    check("a due week deposits 1 Soul Coin (no community bonus off loyalty weeks)", r and r["ok"] and r["result"] ==
+    check("a due week deposits 1 Verse Orb (no community bonus off loyalty weeks)", r and r["ok"] and r["result"] ==
           {"deposited": True, "week": 2, "weekly": 1, "loyalty": 0, "yearly": 0, "community": 0, "total": 1}, str(r))
     check("soulcoins rose by the total", coins() == start + 1, "%d -> %d" % (start, coins()))
     booster.collect(1)
     check("the online character is thanked in game",
-          booster.received(b"Thank you for boosting the PokeVerse Discord! 1 Soul Coin was added to your Soul Coin balance (spend it in the Store)."))
+          booster.received(b"Thank you for boosting the PokeVerse Discord! 1 Verse Orb was added to your Verse Orb balance (spend it in the Store)."))
     r = week(DISCORD_D, since, 2, 500)
     check("the same week again is not paid twice", r and r["ok"] and r["result"] ==
           {"deposited": False, "week": 2, "weekly": 1, "loyalty": 0, "yearly": 0, "community": 0, "total": 1}, str(r))

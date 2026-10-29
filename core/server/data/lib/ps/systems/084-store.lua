@@ -1,7 +1,7 @@
--- The Store: what Soul Coins buy, from the Store button on the top bar. It replaced the Soul Coin NPCs
+-- The Store: what Verse Orbs buy, from the Store button on the top bar. It replaced the Verse Orb NPCs
 -- (npc/scripts/soulTrade.lua, kept but no longer on the map) and Josh Pillberg's vitamin reset.
 --
--- Soul Coins are an account balance (`accounts`.`soulcoins`, shared by the account's characters) and an item
+-- Verse Orbs are an account balance (`accounts`.`soulcoins`, shared by the account's characters) and an item
 -- (Store.COIN_ID). Withdraw turns balance into coins in the bag and Deposit puts them back. A purchase takes the
 -- balance first and then coins from the bag, so nobody has to withdraw to shop.
 --
@@ -352,12 +352,12 @@ local function pay(cid, price)
     local fromBalance = math.min(balance, price)
     local fromBag = price - fromBalance
     if (getPlayerItemCount(cid, Store.COIN_ID) < fromBag) then
-        return false, "You need %d Soul Coins for this."
+        return false, "You need %d Verse Orbs for this."
     elseif (not Store.takeBalance(account, fromBalance)) then
-        return false, "Your Soul Coin balance changed. Try again."
+        return false, "Your Verse Orb balance changed. Try again."
     elseif (fromBag > 0 and not doPlayerRemoveItem(cid, Store.COIN_ID, fromBag)) then
         Store.addBalance(account, fromBalance)
-        return false, "You need %d Soul Coins for this."
+        return false, "You need %d Verse Orbs for this."
     end
     return true
 end
@@ -610,7 +610,7 @@ Store.buy = function(cid, id, count, text)
     if (not deliver(cid, offer, count, text)) then
         refund(cid, price)
         Store.sendState(cid)
-        return result(cid, false, "That didn't work, and your Soul Coins went back to your balance.")
+        return result(cid, false, "That didn't work, and your Verse Orbs went back to your balance.")
     end
     if (offer.use and price > 0) then
         doDatalogCoinUse(os.time(), getPlayerGUID(cid), offer.use, price)
@@ -621,7 +621,7 @@ Store.buy = function(cid, id, count, text)
     end
     log(cid, label, -price)
     doPlayerSave(cid)
-    print(string.format("> Store: %s bought %s for %d Soul Coins", getCreatureName(cid), label, price))
+    print(string.format("> Store: %s bought %s for %d Verse Orbs", getCreatureName(cid), label, price))
 
     local done = DONE[offer.kind]
     local arg = offer.kind == "premium" and offer.days or (offer.kind == "item" and label) or
@@ -633,7 +633,7 @@ end
 Store.withdraw = function(cid, amount)
     amount = math.floor(tonumber(amount) or 0)
     if (amount <= 0 or amount > Store.MAX_TRANSFER) then
-        return result(cid, false, "Withdraw between 1 and %d Soul Coins.", Store.MAX_TRANSFER)
+        return result(cid, false, "Withdraw between 1 and %d Verse Orbs.", Store.MAX_TRANSFER)
     end
     local account = getPlayerAccountId(cid)
     -- one statement, so a payment or a refund landing at the same moment can't get around the hold
@@ -642,10 +642,10 @@ Store.withdraw = function(cid, amount)
     if (changedRows() ~= 1) then
         local held = Payments.getHeld(account)
         if (held > 0 and Store.getBalance(account) >= amount) then
-            return result(cid, false, "%d of your Soul Coins were bought in the last %d days and can't be withdrawn yet. Spend them in the Store any time.",
+            return result(cid, false, "%d of your Verse Orbs were bought in the last %d days and can't be withdrawn yet. Spend them in the Store any time.",
                 held, Payments.HOLD_DAYS)
         end
-        return result(cid, false, "Your balance doesn't have %d Soul Coins.", amount)
+        return result(cid, false, "Your balance doesn't have %d Verse Orbs.", amount)
     end
     local given = 0
     while (given < amount) do
@@ -658,28 +658,28 @@ Store.withdraw = function(cid, amount)
     if (given < amount) then
         Store.addBalance(account, amount - given)
         if (given == 0) then
-            return result(cid, false, "There is no room for the coins. Nothing was withdrawn.")
+            return result(cid, false, "There is no room for the orbs. Nothing was withdrawn.")
         end
         amount = given
     end
     log(cid, "Withdrew to the bag", -amount)
     doPlayerSave(cid)
     Store.sendState(cid)
-    return result(cid, true, "%d Soul Coins are in your bag now (or your depot, where the bag was full).", amount)
+    return result(cid, true, "%d Verse Orbs are in your bag now (or your depot, where the bag was full).", amount)
 end
 
 Store.deposit = function(cid, amount)
     amount = math.floor(tonumber(amount) or 0)
     if (amount <= 0 or amount > Store.MAX_TRANSFER) then
-        return result(cid, false, "Deposit between 1 and %d Soul Coins.", Store.MAX_TRANSFER)
+        return result(cid, false, "Deposit between 1 and %d Verse Orbs.", Store.MAX_TRANSFER)
     elseif (getPlayerItemCount(cid, Store.COIN_ID) < amount or not doPlayerRemoveItem(cid, Store.COIN_ID, amount)) then
-        return result(cid, false, "You don't carry %d Soul Coins.", amount)
+        return result(cid, false, "You don't carry %d Verse Orbs.", amount)
     end
     Store.addBalance(getPlayerAccountId(cid), amount)
     log(cid, "Deposited from the bag", amount)
     doPlayerSave(cid)
     Store.sendState(cid)
-    return result(cid, true, "%d Soul Coins were added to your balance.", amount)
+    return result(cid, true, "%d Verse Orbs were added to your balance.", amount)
 end
 
 Store.onClientMessage = function(cid, buffer)

@@ -1,5 +1,5 @@
 // The Store, laid out like Redemption's game_store: categories on the left, offers in the middle, the picked
-// offer on the right and the Soul Coin balance on top (the frame comes from game_dailytasks, panels, tabs and rows
+// offer on the right and the Verse Orb balance on top (the frame comes from game_dailytasks, panels, tabs and rows
 // from game_fishing, the icons from game_vocation, the buttons and fields from client_entergame, the scroll bar
 // from game_gts)
 
@@ -186,7 +186,7 @@ SoulStoreWindow < UIWindow
 
   StoreMuted
     id: subtitle
-    !text: tr('Spend Soul Coins on Premium, addons, outfits and services')
+    !text: tr('Spend Verse Orbs on Premium, addons, outfits and services')
     text-auto-resize: true
     anchors.left: headerTitle.left
     anchors.top: headerTitle.bottom
@@ -242,7 +242,7 @@ SoulStoreWindow < UIWindow
 
     StoreMuted
       id: caption
-      !text: tr('Soul Coins')
+      !text: tr('Verse Orbs')
       text-auto-resize: true
       anchors.top: parent.top
       anchors.left: coin.right
@@ -495,7 +495,7 @@ SoulStoreWindow < UIWindow
 
     StoreMuted
       id: note
-      !text: tr('Purchases use your Soul Coin balance first, then the coins in your bag. Every purchase is in History.')
+      !text: tr('Purchases use your Verse Orb balance first, then the orbs in your bag. Every purchase is in History.')
       text-auto-resize: true
       anchors.left: parent.left
       anchors.verticalCenter: parent.verticalCenter

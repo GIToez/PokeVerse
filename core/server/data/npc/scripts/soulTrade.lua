@@ -45,9 +45,9 @@ local function getOptionsMessage()
         message[#message + 1] = option.count
         message[#message + 1] = "x]["
         message[#message + 1] = option.coins
-        message[#message + 1] = "x SC]\n"
+        message[#message + 1] = "x VO]\n"
     end
-    message[#message + 1] = "\nSC = Soul Coin"
+    message[#message + 1] = "\nVO = Verse Orb"
     return table.concat(message)
 end
 
@@ -233,7 +233,7 @@ local NODES = {
         parameters = {
             npcHandler = npcHandler,
             --onlyFocus = true,
-            text = 'Oh, then you want a premium account. You can buy 30 days for 10 Soul Coins. Do you want it? {Yes} or {No}'
+            text = 'Oh, then you want a premium account. You can buy 30 days for 10 Verse Orbs. Do you want it? {Yes} or {No}'
         },
         childs = {
             {
@@ -249,7 +249,7 @@ local NODES = {
                     end
 
                     if (not doPlayerRemoveItem(cid, SOUL_COIN_ID, 10)) then
-                        npcHandler:say("You need at least 10 Soul Coins to do it.", cid)
+                        npcHandler:say("You need at least 10 Verse Orbs to do it.", cid)
                         return true
                     end
 
@@ -283,7 +283,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'Do you want to change your sex? The price is 3 Soul Coins. {Yes} or {No}'
+            text = 'Do you want to change your sex? The price is 3 Verse Orbs. {Yes} or {No}'
         },
         childs = {
             {
@@ -299,7 +299,7 @@ local NODES = {
                     end
 
                     if (not doPlayerRemoveItem(cid, SOUL_COIN_ID, 3)) then
-                        npcHandler:say("You need at least 3 Soul Coins to change your sex.", cid)
+                        npcHandler:say("You need at least 3 Verse Orbs to change your sex.", cid)
                         return true
                     end
 
@@ -334,7 +334,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'What will be your new hometown? This will cost 5 Souls Coins.'
+            text = 'What will be your new hometown? This will cost 5 Verse Orbs.'
         },
         childs = {
             {
@@ -382,7 +382,7 @@ local NODES = {
                             end
 
                             if (not doPlayerRemoveItem(cid, SOUL_COIN_ID, 5)) then
-                                npcHandler:say("You need at least 5 Soul Coins to change your hometown.", cid)
+                                npcHandler:say("You need at least 5 Verse Orbs to change your hometown.", cid)
                                 return true
                             end
 
@@ -422,7 +422,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'Do you want blessing? With this you will lose less experience when you faint. This will cost 1 Soul Coin.'
+            text = 'Do you want blessing? With this you will lose less experience when you faint. This will cost 1 Verse Orb.'
         },
         childs = {
             {
@@ -443,7 +443,7 @@ local NODES = {
                     end
 
                     if (not doPlayerRemoveItem(cid, SOUL_COIN_ID, 1)) then
-                        npcHandler:say("You need at least 1 Soul Coin to blessed.", cid)
+                        npcHandler:say("You need at least 1 Verse Orb to blessed.", cid)
                         return true
                     end
 
@@ -480,7 +480,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'I can create or change your Pokemon\'s nickname for 1 Soul Coin. What nickname do you want?'
+            text = 'I can create or change your Pokemon\'s nickname for 1 Verse Orb. What nickname do you want?'
         },
         childs = {
             {
@@ -525,7 +525,7 @@ local NODES = {
                                 return true
 
                             elseif (not doPlayerRemoveItem(cid, SOUL_COIN_ID, 1)) then
-                                npcHandler:say("You need at least 1 Soul Coin to change your pokemon nickname.", cid)
+                                npcHandler:say("You need at least 1 Verse Orb to change your pokemon nickname.", cid)
                                 return true
                             end
 
@@ -614,13 +614,13 @@ local NODES = {
             }
         }
     },
-    -- SOUL COIN WITHDRAW
+    -- VERSE ORB WITHDRAW
     {
         keywords = { 'withdraw', 'sacar' },
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'How many soul coins do you want to withdraw?'
+            text = 'How many Verse Orbs do you want to withdraw?'
         },
         childs = {
             {
@@ -644,7 +644,7 @@ local NODES = {
 
                     local playerSoulCoins = getPlayerAccountSoulCoins(cid)
                     if (count > playerSoulCoins) then
-                        npcHandler:say("Sorry, your account does not have that number of Soul Coins.", cid)
+                        npcHandler:say("Sorry, your account does not have that number of Verse Orbs.", cid)
                         return true
                     end
 
@@ -662,7 +662,7 @@ local NODES = {
             }
         }
     },
-    -- SOUL COIN BALANCE
+    -- VERSE ORB BALANCE
     {
         keywords = { 'balance', 'saldo' },
         callback = function(cid, message, keywords, parameters, node)
@@ -675,7 +675,7 @@ local NODES = {
                 return false
             end
 
-            npcHandler:say(string.format(__L(cid, "Your account's soul coin balance is: %s."), getPlayerAccountSoulCoins(cid)), cid)
+            npcHandler:say(string.format(__L(cid, "Your account's Verse Orb balance is: %s."), getPlayerAccountSoulCoins(cid)), cid)
 
             npcHandler:resetNpc(cid)
             return true
@@ -690,7 +690,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'I can sell you a stamina recover for 1 Soul Coin, do you want it? {Yes} or {No}'
+            text = 'I can sell you a stamina recover for 1 Verse Orb, do you want it? {Yes} or {No}'
         },
         childs = {
             {
@@ -706,7 +706,7 @@ local NODES = {
                     end
 
                     if (not doPlayerRemoveItem(cid, SOUL_COIN_ID, 1)) then
-                        npcHandler:say("You need at least 1 Soul Coin to buy a Stamina Recover.", cid)
+                        npcHandler:say("You need at least 1 Verse Orb to buy a Stamina Recover.", cid)
                         return true
                     end
 
@@ -733,9 +733,9 @@ local NODES = {
             }
         }
     },
-    -- SOUL COINS
+    -- VERSE ORBS
     {
-        keywords = { 'soul' },
+        keywords = { 'orb' },
         callback = function(cid, message, keywords, parameters, node)
             local npcHandler = parameters.npcHandler
             if (npcHandler == nil) then
@@ -746,7 +746,7 @@ local NODES = {
                 return false
             end
 
-            npcHandler:say("Souls are valuable coins that can be exchanged for the following benefits: {premium account}, {exchange of sex}, {Pokemon nick change}, {Pokemon nick remove}, {stamina recover}, forming a {guild}, creating a guild {rank}, buying an {Egg Move Capsule} and {Pokemon Addon}. You can also {withdraw} your Soul Coins or check your account {balance}.", cid)
+            npcHandler:say("Verse Orbs are valuable and can be exchanged for the following benefits: {premium account}, {exchange of sex}, {Pokemon nick change}, {Pokemon nick remove}, {stamina recover}, forming a {guild}, creating a guild {rank}, buying an {Egg Move Capsule} and {Pokemon Addon}. You can also {withdraw} your Verse Orbs or check your account {balance}.", cid)
 
             npcHandler:resetNpc(cid)
             return true
@@ -761,7 +761,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'You can create your own guild here for 5 Soul Coins. What will be the name of your guild?'
+            text = 'You can create your own guild here for 5 Verse Orbs. What will be the name of your guild?'
         },
         childs = {
             {
@@ -818,7 +818,7 @@ local NODES = {
                                 return true
 
                             elseif (not doPlayerRemoveItem(cid, SOUL_COIN_ID, 5)) then
-                                npcHandler:say("You need at least 5 Soul Coins to form a guild.", cid)
+                                npcHandler:say("You need at least 5 Verse Orbs to form a guild.", cid)
                                 return true
 
                             elseif (doCreateGuild(cid, lastGuildName[cid])) then
@@ -858,7 +858,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'You can create a new rank for your guild for 1 soul coin. What will be the name of the new rank?'
+            text = 'You can create a new rank for your guild for 1 Verse Orb. What will be the name of the new rank?'
         },
         childs = {
             {
@@ -907,7 +907,7 @@ local NODES = {
                                 return true
 
                             elseif (not doPlayerRemoveItem(cid, SOUL_COIN_ID, 1)) then
-                                npcHandler:say("You need at least 1 Soul Coin to create a new guild rank.", cid)
+                                npcHandler:say("You need at least 1 Verse Orb to create a new guild rank.", cid)
                                 return true
 
                             elseif (doGuildCreateRank(getPlayerGuildId(cid), lastGuildName[cid])) then
@@ -1043,7 +1043,7 @@ local NODES = {
                 return false
             end
 
-            npcHandler:say('Yes, here you can exchange your soul coins for Pokemon addons. These are the options. Just say the name of what you want.', cid)
+            npcHandler:say('Yes, here you can exchange your Verse Orbs for Pokemon addons. These are the options. Just say the name of what you want.', cid)
             PokemonAddon.doPlayerShowOptions(cid)
 
             return true
@@ -1072,7 +1072,7 @@ local NODES = {
                     end
 
                     lastAddonOption[cid] = option
-                    npcHandler:say(string.format(__L(cid, "Do you really want to exchange %s soul coin(s) for a %s? {Yes} or {No}"), option.coins, option.name), cid)
+                    npcHandler:say(string.format(__L(cid, "Do you really want to exchange %s Verse Orb(s) for a %s? {Yes} or {No}"), option.coins, option.name), cid)
 
                     return true
                 end,
@@ -1125,7 +1125,7 @@ local NODES = {
         callback = StdModule.say,
         parameters = {
             npcHandler = npcHandler,
-            text = 'I can sell you an Egg Move Capsule for 1 Soul Coin, do you want it? {Yes} or {No}'
+            text = 'I can sell you an Egg Move Capsule for 1 Verse Orb, do you want it? {Yes} or {No}'
         },
         childs = {
             {
@@ -1141,7 +1141,7 @@ local NODES = {
                     end
 
                     if (not doPlayerRemoveItem(cid, SOUL_COIN_ID, 1)) then
-                        npcHandler:say("You need at least 1 Soul Coin to buy an Egg Move Capsule.", cid)
+                        npcHandler:say("You need at least 1 Verse Orb to buy an Egg Move Capsule.", cid)
                         return true
                     end
 

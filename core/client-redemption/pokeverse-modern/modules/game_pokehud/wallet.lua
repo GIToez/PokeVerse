@@ -1,4 +1,4 @@
--- Dollars and soul coins the player carries, counted from the equipment and the containers.
+-- Dollars and Verse Orbs the player carries, counted from the equipment and the containers.
 -- The server only sends a container's items once it is open, so a closed bag keeps the
 -- count it had when it was last open.
 Wallet = {}

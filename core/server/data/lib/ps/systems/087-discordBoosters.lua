@@ -1,11 +1,11 @@
--- Discord booster rewards: Soul Coins for every 7 days of continuous server boosting, paid to
+-- Discord booster rewards: Verse Orbs for every 7 days of continuous server boosting, paid to
 -- the game account linked to the booster (061-discordAccounts.lua). Switched by
 -- discordBridgeBoosterRewards; needs discordBridgeAccountLinking too.
 --
 -- The bot only says which boost week of which streak is complete. The game owns the amounts
 -- (config) and the ledger `discord_booster_rewards` (schemas/pokeverse-extensions.sql), so a
 -- retry, a lost bot state file or a replayed old streak never pays twice. The ledger row and
--- the Soul Coins are written together in C++ (doDiscordBoosterDeposit, src/discordbridge.cpp)
+-- the Verse Orbs are written together in C++ (doDiscordBoosterDeposit, src/discordbridge.cpp)
 -- inside one transaction; never read-modify-write `soulcoins` here. On loyalty weeks the
 -- community bonus adds +1 per discordBridgeBoosterCommunityEvery server boosts the bot reports,
 -- capped at discordBridgeBoosterCommunityMax.
@@ -71,12 +71,12 @@ local function isStaleStreak(discordUserId, boostSince)
 end
 
 local function coinsText(amount)
-    return amount == 1 and "1 Soul Coin was" or string.format("%d Soul Coins were", amount)
+    return amount == 1 and "1 Verse Orb was" or string.format("%d Verse Orbs were", amount)
 end
 
 local function notifyAccount(accountId, total)
     local message = string.concat("Thank you for boosting the PokeVerse Discord! ", coinsText(total),
-        " added to your Soul Coin balance (spend ", total == 1 and "it" or "them", " in the Store).")
+        " added to your Verse Orb balance (spend ", total == 1 and "it" or "them", " in the Store).")
     for _, cid in ipairs(getPlayersOnline()) do
         if (getPlayerAccountId(cid) == accountId) then
             doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, message)
@@ -149,7 +149,7 @@ local function handleWeek(params)
         fail(err or "internal", "the reward could not be deposited")
     end
     if (reward.deposited) then
-        print(string.format("> Discord booster reward: week %d, %d Soul Coins to account %d.", week, reward.total,
+        print(string.format("> Discord booster reward: week %d, %d Verse Orbs to account %d.", week, reward.total,
             link.account_id))
         if (reward.total > 0) then
             notifyAccount(link.account_id, reward.total)
