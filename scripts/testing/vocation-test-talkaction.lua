@@ -1055,11 +1055,6 @@ local function testDaycare(cid)
         CALLBACK_GREET = 5,
         CALLBACK_MESSAGE_DEFAULT = 7,
     }, { "data/npc/lib/npc.lua" })
-    local function talk(text)
-        said = {}
-        callbacks[env.CALLBACK_MESSAGE_DEFAULT](cid, TALKTYPE_SAY, text)
-        return table.concat(said, " ")
-    end
     local guid = getPlayerGUID(cid)
     setPlayerStorageValue(cid, playersStorages.daycareEgg, -1)
     setPlayerStorageValue(cid, playersStorages.daycareClient, -1)
@@ -1074,27 +1069,30 @@ local function testDaycare(cid)
     db.executeQuery("INSERT INTO daycare_male (player_id, date, max_training_minutes, pokemon_name, pokemon_level) VALUES (" ..
         guid .. ", " .. (os.time() - 3 * 86400) .. ", 2880, 'Pidgey', 30)")
 
-    -- One daycare visit: leave a female Pidgey, two days of training, then take it out
+    -- One daycare visit through the window's actions: leave a female Pidgey, two days of training, take it
+    -- back and collect what the pair left
     local function visit(name, daysSinceEgg, statusCheck)
         db.executeQuery("UPDATE players SET lasteggtime = " .. (os.time() - daysSinceEgg * 86400 - 60) .. " WHERE id = " .. guid)
         local ball = newBall(cid, "Pidgey", 30, POKEMON_SEX_FEMALE)
         doPlayerAddMoney(cid, 100)
-        talk("leave")
-        talk("pidgey")
-        talk("1440")
-        local left = talk("yes")
-        if (not left:find("will be fine here")) then
-            check(name .. ": leave the Pokemon", false, left)
+        local key
+        for index, b in ipairs(getPlayerAllBallsWithPokemon(cid)) do
+            if (b.uid == ball.uid) then
+                key = string.format("%d|%s|%d", index, getBallPokemonName(b.uid), getBallPokemonLevel(b.uid))
+            end
+        end
+        if (not Daycare.deposit(cid, key, 1440)) then
+            check(name .. ": leave the Pokemon", false, key)
             return nil
         end
         db.executeQuery("UPDATE daycare_female SET date = date - 2 * 86400 WHERE player_id = " .. guid)
         if (statusCheck) then
-            statusCheck(talk("status"))
+            statusCheck(Daycare.eggState(cid))
         end
         doPlayerAddMoney(cid, 5000)
         local eggs = getPlayerItemCount(cid, eggId)
-        talk("withdraw")
-        local out = talk("yes")
+        local out = Daycare.withdraw(cid, 1)
+        Daycare.collect(cid)
         for _, b in ipairs(getPlayerAllBallsWithPokemon(cid)) do
             if (getBallPokemonName(b.uid) == "Pidgey") then
                 doRemoveItem(b.uid)
@@ -1102,8 +1100,8 @@ local function testDaycare(cid)
         end
         local got = getPlayerItemCount(cid, eggId) - eggs
         doPlayerRemoveItem(cid, eggId, got)
-        if (not out:find("Thank you for using our services")) then
-            check(name .. ": withdraw", false, out)
+        if (not out) then
+            check(name .. ": withdraw", false)
         end
         return got
     end
@@ -1111,14 +1109,14 @@ local function testDaycare(cid)
     doPlayerAddPremiumDays(cid, 30)
     become(cid, nil)
     check("daycare: no egg in the first 7 days", visit("day 3", 3, function(status)
-        check("daycare: status explains the wait", status:find("on day 14 it is certain") ~= nil, status)
+        check("daycare: the egg slot shows the wait until day 14", status.status == "waiting" and status.certainDay == 14, status.status)
     end) == 0)
     check("daycare: the egg is certain on day 14", visit("day 14", 14) == 1)
     become(cid, "breeder", 3)
     withPerk("breeder", "earlyEgg", 1, function()
         withPerk("breeder", "secondEgg", 0, function()
             check("daycare: Breeder's early egg roll (forced to 100%) gives an egg on day 8", visit("day 8", 8, function(status)
-                check("daycare: status shows the egg rolled on day 8", status:find("An {egg} is waiting") ~= nil, status)
+                check("daycare: the egg slot shows the egg rolled on day 8", status.status == "ready", status.status)
             end) == 1)
         end)
         withPerk("breeder", "secondEgg", 1, function()
