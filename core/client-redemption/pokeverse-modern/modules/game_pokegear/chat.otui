@@ -250,7 +250,7 @@ PokegearChat < UIWidget
 
     UIWidget
       id: faces
-      anchors.right: fold.left
+      anchors.right: lock.left
       anchors.verticalCenter: parent.verticalCenter
       margin-right: 8
       height: 28
@@ -260,6 +260,30 @@ PokegearChat < UIWidget
         spacing: 6
         fit-children: true
       phantom: true
+
+    UIButton
+      id: lock
+      size: 26 26
+      anchors.right: fold.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 6
+      image-source: /modules/game_pokegear/images/round
+      image-border: 13
+      image-smooth: true
+      image-color: #0b1222
+      $hover:
+        image-color: #1a2742
+      $on:
+        image-color: #24407a
+
+      UIWidget
+        id: icon
+        size: 14 14
+        anchors.centerIn: parent
+        image-source: /modules/game_pokegear/images/unlock
+        image-smooth: true
+        image-color: #8fa0c4
+        phantom: true
 
     UIButton
       id: fold
@@ -279,6 +303,22 @@ PokegearChat < UIWidget
       !tooltip: tr('Fold the chat: the last lines float over the map')
       $hover:
         image-color: #1a2742
+
+  // drag to resize (open only); it sits in the card's top-right padding
+  UIWidget
+    id: grip
+    size: 14 14
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: -9
+    margin-right: -11
+    image-source: /modules/game_pokegear/images/grip_corner
+    image-smooth: true
+    image-color: #6f7fa3
+    draggable: true
+    !tooltip: tr('Drag to resize, double-click for the usual size')
+    $hover:
+      image-color: #eef2ff
 
   UIScrollArea
     id: list

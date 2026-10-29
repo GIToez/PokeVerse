@@ -6,6 +6,9 @@
 -- NPC lines also show in Local, teal, so NPCs and players talk side by side there.
 local POSITION_SETTING = 'pokegearChatPosition'
 local OPEN_SETTING = 'pokegearChatOpen'
+local LOCK_SETTING = 'pokegearChatLocked'
+local SIZE_SETTING = 'pokegearChatSize' -- x = width, y = height; 0 0 is the usual size
+local MIN_WIDTH, MIN_HEIGHT = 380, 180
 local MAX_ROWS = 120
 local MAX_FLOATS = 5
 local FLOAT_SECONDS = 8
@@ -525,6 +528,7 @@ refreshInput = function()
     local input = window.input
     local edit = textEdit()
     local typing = edit ~= nil and edit:isExplicitlyVisible()
+    local empty = not typing or edit:getText() == ''
     -- folded, the pill names the channel; open, the chips already do
     input.channel:setVisible(not open)
     if tab then
@@ -532,13 +536,56 @@ refreshInput = function()
     end
     input.channel:setWidth(open and 0 or input.channel:getTextSize().width + 24)
     input.channel:setMarginLeft(open and 0 or 6)
-    input.hint:setVisible(not typing)
+    -- the edit's own placeholder is a bitmap font that never lines up with the hint, so the hint stands in
+    input.hint:setVisible(empty)
     input.enterChip:setVisible(not typing)
-    if not open and unreadFolded > 0 then
+    if typing then
+        input.hint:setText(tr('Type here to chat'))
+    elseif not open and unreadFolded > 0 then
         input.hint:setText(tr('Press Enter to chat') .. '  \183  ' .. tr('%d new', unreadFolded))
     else
         input.hint:setText(tr('Press Enter to chat'))
     end
+end
+
+local function placed()
+    local saved = g_settings.getPoint(POSITION_SETTING)
+    return saved ~= nil and (saved.x ~= 0 or saved.y ~= 0)
+end
+
+-- no wider than the room right of the card, no taller than the room above its bottom
+local function clampSize(width, height, bottom)
+    local root = modules.game_interface.getRootPanel()
+    local maxWidth = math.max(MIN_WIDTH, root:getX() + root:getWidth() - window:getX() - 8)
+    local maxHeight = math.max(MIN_HEIGHT, (bottom or (window:getY() + window:getHeight())) - root:getY() - 8)
+    return math.max(MIN_WIDTH, math.min(maxWidth, math.floor(width))),
+        math.max(MIN_HEIGHT, math.min(maxHeight, math.floor(height)))
+end
+
+local function openSize()
+    local compact = Pokegear.isCompact()
+    local saved = g_settings.getPoint(SIZE_SETTING)
+    if saved and saved.x > 0 and saved.y > 0 then
+        local width, height = clampSize(saved.x, saved.y)
+        return { width = width, height = height }
+    end
+    return { width = compact and COMPACT_WIDTH or OPEN_WIDTH, height = compact and COMPACT_HEIGHT or OPEN_HEIGHT }
+end
+
+-- the lines wrap to the new width, then take the height that needs
+local remeasureEvent
+local function remeasureRows()
+    removeEvent(remeasureEvent)
+    remeasureEvent = scheduleEvent(function()
+        remeasureEvent = nil
+        if window then
+            for _, row in ipairs(window.list:getChildren()) do
+                if row.text then
+                    row:setHeight(rowHeight(row))
+                end
+            end
+        end
+    end, 1)
 end
 
 local function applyOpen()
@@ -546,6 +593,7 @@ local function applyOpen()
         return
     end
     window.header:setVisible(open)
+    window.grip:setVisible(open and not window.pokegearLocked)
     window.list:setVisible(open)
     window.scroll:setVisible(open)
     window.send:setVisible(open)
@@ -557,9 +605,9 @@ local function applyOpen()
         window:setPadding(10)
         window:setPaddingLeft(12)
         window:setPaddingRight(12)
-        local compact = Pokegear.isCompact()
-        window:setWidth(compact and COMPACT_WIDTH or OPEN_WIDTH)
-        window:setHeight(compact and COMPACT_HEIGHT or OPEN_HEIGHT)
+        local size = openSize()
+        window:setWidth(size.width)
+        window:setHeight(size.height)
         clearFloats()
         unreadFolded = 0
         fillList()
@@ -584,7 +632,35 @@ function Chat.relayout()
     applyOpen()
 end
 
-function Chat.setOpen(on)
+-- a card you moved folds down onto its line and opens upwards from it, like the one in its corner
+local function keepBottom(change)
+    if not window or not placed() then
+        change()
+        return
+    end
+    local bottom = window:getY() + window:getHeight()
+    change()
+    local pos = { x = window:getX(), y = math.max(0, bottom - window:getHeight()) }
+    window:setPosition(pos)
+    g_settings.set(POSITION_SETTING, pos)
+end
+
+local function applyLock()
+    if not window then
+        return
+    end
+    local locked = g_settings.getBoolean(LOCK_SETTING, false)
+    window.pokegearLocked = locked
+    local lock = window.header.lock
+    lock:setOn(locked)
+    lock.icon:setImageSource('/modules/game_pokegear/images/' .. (locked and 'lock' or 'unlock'))
+    lock.icon:setImageColor(locked and '#ffcb05' or '#8fa0c4')
+    lock:setTooltip(locked and tr('Locked: click to move or resize the chat again') or tr('Lock the chat\'s place and size'))
+    window.grip:setVisible(open and not locked)
+    window.header:setTooltip(locked and '' or tr('Drag to move'))
+end
+
+local function setOpenNow(on)
     open = on
     -- what came in while folded is in front of you once it opens
     local tab = on and currentTab()
@@ -595,6 +671,14 @@ function Chat.setOpen(on)
         g_settings.set(openSetting(), on)
     end
     applyOpen()
+end
+
+function Chat.setOpen(on)
+    if window and on ~= open then
+        keepBottom(function() setOpenNow(on) end)
+    else
+        setOpenNow(on)
+    end
 end
 
 function Chat.isOpen()
@@ -622,14 +706,15 @@ local function adoptEdit()
     editHome.font = editHome.font or edit:getFont()
     editHome.align = editHome.align or edit:getTextAlign()
     edit:setImageColor('#00000000')
-    edit:mergeStyle({ ['ttf-font'] = '/fonts/ttf/arialb.ttf', ['ttf-font-size'] = 13 })
+    edit:mergeStyle({ ['ttf-font'] = '/fonts/ttf/arialb.ttf', ['ttf-font-size'] = 12 })
     editHome.paddingTop = editHome.paddingTop or edit:getPaddingTop()
     editHome.paddingLeft = editHome.paddingLeft or edit:getPaddingLeft()
     edit:setTextAlign(AlignLeft)
     -- a text edit places its text by padding, not text-offset
-    edit:setPaddingTop(9)
+    edit:setPaddingTop(11)
     edit:setPaddingLeft(4)
-    connect(edit, { onVisibilityChange = onEditVisibility })
+    edit:mergeStyle({ ['placeholder-color'] = '#00000000' })
+    connect(edit, { onVisibilityChange = onEditVisibility, onTextChange = onEditVisibility })
 end
 
 local function releaseEdit()
@@ -637,7 +722,8 @@ local function releaseEdit()
     if not edit or not editHome or edit:getParent() == editHome.parent then
         return
     end
-    disconnect(edit, { onVisibilityChange = onEditVisibility })
+    disconnect(edit, { onVisibilityChange = onEditVisibility, onTextChange = onEditVisibility })
+    edit:mergeStyle({ ['placeholder-color'] = '#707070' })
     edit:breakAnchors()
     edit:setParent(editHome.parent)
     edit:addAnchor(AnchorLeft, 'sayModeButton', AnchorRight)
@@ -755,6 +841,47 @@ local function build()
     window:hide()
     floats:hide()
     window.header.fold.onClick = function() Chat.setOpen(false) end
+    -- the grip keeps the bottom-left corner where it is: the card grows up and to the right
+    local grip = window.grip
+    grip.onDragEnter = function(widget, mousePos)
+        if window.pokegearLocked or not open then
+            return false
+        end
+        widget.start = { x = mousePos.x, y = mousePos.y, width = window:getWidth(), height = window:getHeight(),
+                         bottom = window:getY() + window:getHeight() }
+        return true
+    end
+    grip.onDragMove = function(widget, mousePos)
+        local start = widget.start
+        local width, height = clampSize(start.width + mousePos.x - start.x, start.height - (mousePos.y - start.y), start.bottom)
+        window:setWidth(width)
+        window:setHeight(height)
+        if placed() then
+            window:setY(start.bottom - height)
+        end
+        remeasureRows()
+        return true
+    end
+    grip.onDragLeave = function()
+        g_settings.set(SIZE_SETTING, { x = window:getWidth(), y = window:getHeight() })
+        if placed() then
+            g_settings.set(POSITION_SETTING, window:getPosition())
+        end
+        return true
+    end
+    grip.onDoubleClick = function()
+        if window.pokegearLocked then
+            return false
+        end
+        g_settings.set(SIZE_SETTING, { x = 0, y = 0 })
+        keepBottom(applyOpen)
+        remeasureRows()
+        return true
+    end
+    window.header.lock.onClick = function()
+        g_settings.set(LOCK_SETTING, not g_settings.getBoolean(LOCK_SETTING, false))
+        applyLock()
+    end
     window.send.onClick = sendLine
     window.input:setTooltip(tr('Click to chat'))
     window.input.onMouseRelease = function(widget, mousePos, button)
@@ -783,6 +910,12 @@ local function build()
         window:addAnchor(AnchorBottom, 'parent', AnchorBottom)
         window:setMarginLeft(12)
         window:setMarginBottom(12)
+        if open then
+            local size = openSize()
+            window:setWidth(size.width)
+            window:setHeight(size.height)
+            remeasureRows()
+        end
     end)
 end
 
@@ -805,6 +938,7 @@ local function show()
         connect(tabBar, { onTabChange = onTabChange })
     end
     restorePosition()
+    applyLock()
     window:show()
     window:raise()
     floats:raise()

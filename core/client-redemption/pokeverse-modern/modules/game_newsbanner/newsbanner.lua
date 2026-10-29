@@ -127,10 +127,19 @@ local function place(widget)
     local top = math.max(0, map:getY() - root:getY()) + 12
     -- below the top bar, the trainer's HUD (name, health and party), which sit over the top of the map, and
     -- the Pokegear loot list under the HUD
-    for _, id in ipairs({ 'environment', 'pokeHud', 'pokegearLootFeed' }) do
+    for _, id in ipairs({ 'environment', 'pokeHud' }) do
         local area = root:recursiveGetChildById(id)
         if area and area:isVisible() then
             top = math.max(top, area:getY() + area:getHeight() - root:getY() + 12)
+        end
+    end
+    -- the feed keeps its full height when empty: only the loot rows showing count
+    local feed = root:recursiveGetChildById('pokegearLootFeed')
+    if feed and feed:isVisible() then
+        for _, row in ipairs(feed:getChildren()) do
+            if row:isVisible() then
+                top = math.max(top, row:getY() + row:getHeight() - root:getY() + 12)
+            end
         end
     end
     widget:setMarginTop(top)

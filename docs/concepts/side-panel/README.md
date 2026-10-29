@@ -148,6 +148,10 @@ items in and out (to the ground, a hotkey, the PC, the GTS or another bag).
   - Both use the normal call cooldown, and stay off in duels and NPC battles, where you choose by hand.
     Both settings are kept with your character.
   - While one is on, the gold ball shows a small mark.
+- **F keys follow the Pokemon.** F1 to F6 are places on the quick call bar, and the bar keeps its order
+  per character. A ball keeps its quick call number while it moves (belt, gold slot, a swap, Auto swap,
+  an evolution, the next login: `006-fastcall.lua`), so it keeps its place and its key; only a new
+  Pokemon goes to the end. Right-click a Pokemon on the bar for Move up / Move down to change its key.
 - **Bags as tabs.**
   - Your starting bag is the first tab. It can't be taken off.
   - Any number of bags fit inside it, one slot each. Each holds as many slots as that bag does, so
@@ -197,6 +201,11 @@ items in and out (to the ground, a hotkey, the PC, the GTS or another bag).
   - Pokegear has no Chat On / Chat Off button or setting: it always runs with `wasdMode` on.
   - Today a new install starts with Chat On (`wasdMode` in `game_console` defaults to false). Classic
     keeps that, and keeps its Chat On / Chat Off button.
+- **Lock and fold.** The padlock in the header locks the card where it is (no dragging, no double-click
+  reset; Reset layout still works). A card you moved folds down onto its line and opens upwards from it.
+- **Resize.** Drag the grip in the top-right corner. The bottom-left corner stays put, so the card grows
+  up and to the right, from 380x180 up to the room on screen. The size is kept. Double-clicking the grip,
+  or Reset layout, brings back the usual size. Locking hides the grip.
 - **Folded by default, remembered.** A new character starts with the chat open, so it's easy to find.
   Folding or opening it is saved per character and comes back the same at the next login.
 - **New messages while folded.** The lines float in as usual. The pill shows an unread count, and

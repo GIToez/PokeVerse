@@ -58,11 +58,44 @@ function Creature:showStaticSquare(color)
     apply(self, color)
 end
 
+-- the target or followed creature keeps its mark whatever asks to hide it: the Battle List resets its rows
+-- (and their creatures' marks) as creatures come and go, even while hidden behind Pokegear's Nearby
+local function keptKind(creature)
+    local attacking = g_game.getAttackingCreature()
+    if attacking and attacking:getId() == creature:getId() then
+        return 'onTargeted'
+    end
+    local following = g_game.getFollowingCreature()
+    if following and following:getId() == creature:getId() then
+        return 'onFollowed'
+    end
+end
+
+local function keptColor(creature)
+    local kind = keptKind(creature)
+    local colors = kind and UICreatureButton and UICreatureButton.getCreatureButtonColors()
+    return colors and colors[kind] and colors[kind].notHovered
+end
+
 function Creature:hideStaticSquare()
+    local color = keptColor(self)
+    if color then
+        self:showStaticSquare(color)
+        return
+    end
     marked[self:getId()] = nil
     self:setCrosshairTexture('~')
     nativeHide(self)
 end
+
+-- a creature that left the screen and came back is a fresh mark-less creature to the client
+local function onAppear(creature)
+    local color = keptColor(creature)
+    if color then
+        creature:showStaticSquare(color)
+    end
+end
+connect(Creature, { onAppear = onAppear })
 
 -- 'classic', 'pokeball' or 'square'
 function TargetMarker.setStyle(value)

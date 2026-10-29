@@ -30,6 +30,58 @@ local function slots()
     return list
 end
 
+-- F1 to F6 go by place on the bar, and the bar keeps its order per character: a Pokemon keeps its number
+-- (006-fastcall.lua) and its place while its ball moves around, and only a new one goes to the end.
+-- "Move up" and "Move down" (right click) rearrange it.
+local ORDER_SETTING = 'pokeverse-quickcall-order'
+local order -- fast call numbers, top to bottom
+
+local function orderKey()
+    local player = g_game.getLocalPlayer()
+    return ORDER_SETTING .. '_' .. (player and player:getName() or '')
+end
+
+local function loadOrder()
+    order = {}
+    for number in g_settings.getString(orderKey()):gmatch('%d+') do
+        order[#order + 1] = tonumber(number)
+    end
+end
+
+local function saveOrder()
+    local list = {}
+    for i, number in ipairs(order) do
+        list[i] = tostring(number)
+    end
+    g_settings.set(orderKey(), table.concat(list, ','))
+end
+
+local function placeOf(number)
+    for i, n in ipairs(order) do
+        if n == number then
+            return i
+        end
+    end
+end
+
+-- the bar's slots in the saved order
+local function sortSlots()
+    local list = slots()
+    table.sort(list, function(a, b)
+        return (placeOf(a.number) or math.huge) < (placeOf(b.number) or math.huge)
+    end)
+    local first = 0
+    for index, child in ipairs(pokemonBar:getChildren()) do
+        if child:getStyleName() == 'QuickCallSlot' then
+            first = index
+            break
+        end
+    end
+    for i, slot in ipairs(list) do
+        pokemonBar:moveChildToIndex(slot, first + i - 1)
+    end
+end
+
 local function updateKeyLabels()
     if not pokemonBar then
         return
@@ -173,6 +225,29 @@ local function giveHeld(slot, dragged)
     return true
 end
 
+-- swaps the slot with its neighbour on the bar, and their F keys with it
+local function moveSlot(slot, step)
+    local list = slots()
+    for i, other in ipairs(list) do
+        if other == slot then
+            local neighbour = list[i + step]
+            if not neighbour then
+                return
+            end
+            local a, b = placeOf(slot.number), placeOf(neighbour.number)
+            if a and b then
+                order[a], order[b] = order[b], order[a]
+                saveOrder()
+                sortSlots()
+                updateKeyLabels()
+                -- the Bag's belt shows the keys too
+                signalcall(g_game.onPokemonBarOrder)
+            end
+            return
+        end
+    end
+end
+
 local function openMenu(mousePos, slot)
     local menu = g_ui.createWidget('PopupMenu')
     menu:setGameMenu(true)
@@ -182,6 +257,13 @@ local function openMenu(mousePos, slot)
     if slot then
         if heldByNumber[slot.number] then
             menu:addOption(tr('Take held item'), function() takeHeld(slot) end, '(Alt)')
+        end
+        local list = slots()
+        if list[1] ~= slot then
+            menu:addOption(orientation == HORIZONTAL and tr('Move left') or tr('Move up'), function() moveSlot(slot, -1) end)
+        end
+        if list[#list] ~= slot then
+            menu:addOption(orientation == HORIZONTAL and tr('Move right') or tr('Move down'), function() moveSlot(slot, 1) end)
         end
         menu:addSeparator()
     end
@@ -259,6 +341,31 @@ local function findSlot(number)
 end
 
 function onPokemonBarAdd(itemId, number, textColor, text)
+    -- the same ball linked again (it moved, or evolved): this one replaces it
+    local old = findSlot(number)
+    if old then
+        if old == activeSlot then
+            activeSlot = nil
+        end
+        old:destroy()
+    end
+    if not order then
+        loadOrder()
+    end
+    if not placeOf(number) then
+        -- Pokemon left in the PC keep their place for a while, so they come back to it
+        if #order >= 60 then
+            local kept = {}
+            for _, n in ipairs(order) do
+                if findSlot(n) then
+                    kept[#kept + 1] = n
+                end
+            end
+            order = kept
+        end
+        order[#order + 1] = number
+        saveOrder()
+    end
     local slot = g_ui.createWidget('QuickCallSlot', pokemonBar)
     slot:setId('poke' .. number)
     slot.number = number
@@ -309,6 +416,7 @@ function onPokemonBarAdd(itemId, number, textColor, text)
         return true
     end
     updateSlot(slot, textColor, text)
+    sortSlots()
     applyOrientation()
     updateKeyLabels()
     show()
@@ -345,6 +453,7 @@ end
 
 function onOnline()
     heldByNumber = {}
+    order = nil
     hide()
     reset()
 end

@@ -1245,7 +1245,7 @@ function Bag.init()
     })
     connect(LocalPlayer, { onInventoryChange = onInventoryChange })
     connect(g_game, { onGameStart = onGameStart, onPokemonBarAdd = onQuickCallChange,
-        onPokemonBarRemove = onQuickCallChange })
+        onPokemonBarRemove = onQuickCallChange, onPokemonBarOrder = onQuickCallChange })
     connect(Keybind, { onBind = onQuickCallChange })
     ProtocolGame.registerExtendedOpcode(ExtendedIds.Bag, onBagMessage)
     if g_game.isOnline() then
@@ -1384,7 +1384,7 @@ function Bag.terminate()
     })
     disconnect(LocalPlayer, { onInventoryChange = onInventoryChange })
     disconnect(g_game, { onGameStart = onGameStart, onPokemonBarAdd = onQuickCallChange,
-        onPokemonBarRemove = onQuickCallChange })
+        onPokemonBarRemove = onQuickCallChange, onPokemonBarOrder = onQuickCallChange })
     disconnect(Keybind, { onBind = onQuickCallChange })
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.Bag)
     if beltRequest then
