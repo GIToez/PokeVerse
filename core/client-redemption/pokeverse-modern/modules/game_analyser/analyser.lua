@@ -10,6 +10,33 @@ local SUBTITLES = {
     xp = 'Trainer and Pokemon experience this session',
     catch = 'Odds on the last Pokemon you defeated',
 }
+local HELP = {
+    session = {
+        title = 'The Session tab',
+        lines = {
+            'Counts what you did since you logged in or pressed Reset session.',
+            'The "/ h" rates show after a minute of hunting.',
+        },
+    },
+    xp = {
+        title = 'The XP tab',
+        lines = {
+            'Trainer XP is your own. Pokemon XP adds up every Pokemon you had out.',
+            'Next level is how long the rest of the level takes at this session\'s XP / h.',
+        },
+    },
+    catch = {
+        title = 'How catching works',
+        lines = {
+            'Ball counter: every ball you throw at this species adds to it, and better balls add more. It is kept per species and never resets.',
+            'Species chance: how hard the species is. Until your counter reaches it, each throw has the same odds.',
+            'After that, every throw makes the next one better: at double the species chance the odds are at their best.',
+            'Catchable after: below a quarter of the species chance a ball can not catch it at all.',
+            'Roll: a throw catches when a random number up to the second value is at most the first. Catching skill lowers the second value.',
+            'The percent on each ball is the chance for your next throw. Hover a ball for more.',
+        },
+    },
+}
 local BOARD_TOP = 112 -- window padding, header and tabs
 local PADDING_BOTTOM = 22
 local MIN_RATE_SECONDS = 60 -- XP per hour waits for a minute of hunting
@@ -187,7 +214,7 @@ local function addDetail(parent, label, value)
     setStat(stat, label, value)
 end
 
-local function ballRow(parent, ball)
+local function ballRow(parent, ball, data)
     local row = g_ui.createWidget('AnBallRow', parent)
     if (ball.item or 0) > 0 then
         row.item:setItemId(ball.item)
@@ -221,7 +248,14 @@ local function ballRow(parent, ball)
     if ball.expected then
         tip[#tip + 1] = tr('About %s throws on average', thousands(math.ceil(ball.expected)))
     end
-    tip[#tip + 1] = tr('Every miss makes the next throw better.')
+    if data.unlockAt then
+        if (data.tries or 0) < (data.chance or 0) then
+            tip[#tip + 1] = tr('Same odds until your counter reaches %s, then every throw makes the next one better.',
+                thousands(data.chance))
+        else
+            tip[#tip + 1] = tr('Your counter is past %s: every throw makes the next one better.', thousands(data.chance))
+        end
+    end
     row:setTooltip(table.concat(tip, '\n'))
 end
 
@@ -254,26 +288,37 @@ local function refreshCatch()
     end
     board.empty:setMarginTop(40)
 
+    local tries, chance = data.tries or 0, data.chance or 0
     if data.unlockAt then
-        setStat(board.throws, tr('Ball counter on this species'), tr('%s  (%d%% of %s)', thousands(data.tries),
-            math.floor((data.tries or 0) / math.max(0.01, data.chance or 1) * 100), thousands(data.chance)))
+        local value, color
+        if tries <= data.unlockAt then
+            value, color = tr('%s  -  catchable after %s', thousands(tries), thousands(data.unlockAt)), '#ff7a6b'
+        elseif tries < chance then
+            value = tr('%s  -  odds start rising at %s', thousands(tries), thousands(chance))
+        else
+            value, color = tr('%s  -  odds rising with every throw', thousands(tries)), '#6fe08a'
+        end
+        setStat(board.throws, tr('Ball counter on this species'), value, color)
     else
         setStat(board.throws, tr('Ball counter on this species'), tr('not used'))
     end
-    setStat(board.skill, tr('Catching skill'), tostring(data.skill or 0))
+    setStat(board.skill, tr('Catching skill'), tr('%d  -  lowers the roll', data.skill or 0))
 
     board.balls:destroyChildren()
     local balls = data.balls or {}
     for _, ball in ipairs(balls) do
-        ballRow(board.balls, ball)
+        ballRow(board.balls, ball, data)
     end
 
     board.details:destroyChildren()
     local details = 1
-    addDetail(board.details, tr('Species chance'), thousands(data.chance))
     if data.unlockAt then
+        addDetail(board.details, tr('Species chance'), tr('%s  -  odds rise once your counter passes it',
+            thousands(chance)))
         details = details + 1
-        addDetail(board.details, tr('Catchable after'), tr('a counter over %s', thousands(data.unlockAt)))
+        addDetail(board.details, tr('Catchable after'), tr('your counter passes %s', thousands(data.unlockAt)))
+    else
+        addDetail(board.details, tr('Species chance'), thousands(chance))
     end
     if data.catcher then
         details = details + 1
@@ -288,6 +333,26 @@ local function refreshCatch()
     fitWindow(46 + 10 + 36 + 8 + rows * 34 + (rows - 1) * 4 + 20 + 10 + details * 18)
 end
 
+local function fitHelp()
+    local help = window.help
+    if help:isVisible() then
+        window:setHeight(math.max(window:getHeight(), BOARD_TOP + help:getHeight() + PADDING_BOTTOM))
+    end
+end
+
+local function fillHelp()
+    local help, info = window.help, HELP[currentTab]
+    help.title:setText(tr(info.title))
+    for _, child in ipairs(help:getChildren()) do
+        if child ~= help.title then
+            child:destroy()
+        end
+    end
+    for _, line in ipairs(info.lines) do
+        g_ui.createWidget('AnHelpLine', help):setText(tr(line))
+    end
+end
+
 local function refresh()
     if not window or not window:isVisible() then
         return
@@ -300,7 +365,19 @@ local function refresh()
     else
         refreshCatch()
     end
+    fitHelp()
     window:bindRectToParent()
+end
+
+function toggleHelp()
+    local help = window.help
+    help:setVisible(not help:isVisible())
+    window.helpButton:setOn(help:isVisible())
+    if help:isVisible() then
+        fillHelp()
+        help:raise()
+    end
+    refresh()
 end
 
 local function showTab(name)
@@ -308,6 +385,9 @@ local function showTab(name)
     for _, tab in ipairs(TABS) do
         window.tabs[tab]:setChecked(tab == name)
         window[tab .. 'Board']:setVisible(tab == name)
+    end
+    if window.help:isVisible() then
+        fillHelp()
     end
     refresh()
 end
@@ -402,6 +482,7 @@ function init()
     g_ui.importStyle('analyser')
     window = g_ui.createWidget('AnalyserWindow', rootWidget)
     window:hide()
+    window.help.onGeometryChange = fitHelp
     for _, name in ipairs(TABS) do
         window.tabs[name].onClick = function() showTab(name) end
     end
