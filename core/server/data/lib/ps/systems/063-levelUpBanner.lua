@@ -2,6 +2,7 @@
 --   {kind = "pokemon", name, number, look, from, to, stats = {{name, old, new}, ...}, moves = {move, ...}}
 --   {kind = "trainer", name, from, to, hp = {old, new}, pokemonCap, pokemonCapOld, unlocks = {{icon, title, text, level}, ...}}
 --   {kind = "tm", name, number, look, move = move}
+--   {kind = "rank", key, name, title, from, to, maxRank, gains = {{icon, text, value, badge}, ...}} (Vocations.sendRankBanner)
 -- with move = {name, icon, element, category, power, energy, cooldown, description}.
 
 LevelUpBanner = {}
@@ -131,4 +132,9 @@ LevelUpBanner.sendTm = function(cid, pokemonName, displayName, moveName)
         look = getLook(pokemonName),
         move = LevelUpBanner.getMoveInfo(cid, moveName)
     })
+end
+
+LevelUpBanner.sendRank = function(cid, data)
+    data.kind = "rank"
+    send(cid, data)
 end

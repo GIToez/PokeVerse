@@ -484,11 +484,13 @@ Vocations.rankUp = function(cid)
         end
         return false
     end
-    Vocations.setRank(cid, Vocations.getRank(cid) + 1)
+    local from = Vocations.getRank(cid)
+    Vocations.setRank(cid, from + 1)
     Vocations.resetTrial(cid)
     doSendMagicEffect(getCreaturePosition(cid), EFFECT_FIREWORK_YELLOW)
-    doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(__L(cid, "You are now %s!"),
+    doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, string.format(__L(cid, "Congratulations! You are now %s!"),
         withArticle(__L(cid, Vocations.getTitle(cid)))))
+    Vocations.sendRankBanner(cid, from, from + 1)
     return true
 end
 
@@ -608,6 +610,23 @@ local function gains(cid, from, to)
         end
     end
     return list
+end
+
+-- The rank-up banner (game_levelup, LevelUpBanner.sendRank): the new title and what the rank improved
+Vocations.sendRankBanner = function(cid, from, to)
+    local vocation = Vocations.get(cid)
+    if (not vocation or not LevelUpBanner) then
+        return
+    end
+    LevelUpBanner.sendRank(cid, {
+        key = vocation.key,
+        name = __L(cid, vocation.name),
+        title = __L(cid, vocation.titles[to]),
+        from = from,
+        to = to,
+        maxRank = Vocations.MAX_RANK,
+        gains = JSON.array(gains(cid, perkRows(cid, vocation, from), perkRows(cid, vocation, to)))
+    })
 end
 
 -- The progress window for a trainer with a vocation (U, or the top bar button)

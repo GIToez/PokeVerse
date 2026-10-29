@@ -1,6 +1,6 @@
 -- Level-up and TM banners. The server sends JSON on ExtendedIds.LevelUp (LevelUpBanner in the
 -- server lib): kind "pokemon" (stat changes and the moves learned), "trainer" (HP, Pokemon level
--- cap, unlocked features) or "tm" (the move taught).
+-- cap, unlocked features), "tm" (the move taught) or "rank" (a vocation rank-up: the new title and perks).
 local IMAGES = '/modules/game_levelup/images/'
 local TOP_MARGIN = 128
 local SHOW_MS = 4200
@@ -261,7 +261,71 @@ local function buildTm(parent, data)
     return banner, {}
 end
 
-local BUILDERS = { pokemon = buildPokemon, trainer = buildTrainer, tm = buildTm }
+local VOCATION_IMAGES = '/modules/game_vocation/images/'
+
+local function addPerkBox(parent, gain)
+    local box = g_ui.createWidget('LevelUpMoveBox', parent)
+    local isNew = gain.badge == tr('New')
+    box.title:setText(isNew and tr('New perk:') or tr('Better:'))
+    box.moveName:setText(gain.text or '')
+    box.iconFrame.icon:hide()
+    local picture = g_ui.createWidget('UIWidget', box.iconFrame)
+    picture:setSize({ width = 24, height = 24 })
+    picture:addAnchor(AnchorHorizontalCenter, 'parent', AnchorHorizontalCenter)
+    picture:addAnchor(AnchorVerticalCenter, 'parent', AnchorVerticalCenter)
+    picture:setImageSource(VOCATION_IMAGES .. 'perk_' .. (gain.icon or 'star'))
+    picture:setImageSmooth(true)
+    picture:setPhantom(true)
+    box.element:hide()
+    box.category:hide()
+    box.details:addAnchor(AnchorLeft, 'title', AnchorLeft)
+    box.details:setMarginLeft(0)
+    local details = gain.value or ''
+    if not isNew and gain.badge then
+        details = details .. '   (' .. gain.badge .. ')'
+    end
+    box.details:setText(shorten(details, 60))
+    return box
+end
+
+local function buildRank(parent, data)
+    local banner = createBanner(parent)
+    local player = g_game.getLocalPlayer()
+    if player then
+        banner.creature:setOutfit(player:getOutfit())
+        banner.creature:show()
+    end
+    if data.key then
+        banner.badge:setImageSource(VOCATION_IMAGES .. 'icon_' .. data.key)
+        banner.badge:setImageSmooth(true)
+        banner.badge:show()
+    end
+    banner.name:setText(shorten(data.name or tr('Vocation'), 16))
+    banner.highlight:setText(tr('Rank Up!'))
+    banner.subtitle:setText(tr('Congratulations! You are now %s', data.title or ''))
+    addChip(banner, {
+        icon = VOCATION_IMAGES .. 'perk_ranks',
+        label = tr('Rank'),
+        value = tr('%d of %d', tonumber(data.to) or 0, tonumber(data.maxRank) or 5),
+        up = true,
+        width = 84
+    })
+    addChip(banner, {
+        icon = VOCATION_IMAGES .. 'perk_title',
+        label = tr('Title'),
+        value = shorten(data.title, 22),
+        color = '#ffd75a',
+        width = 160
+    })
+    local gains = data.gains or {}
+    local boxes = {}
+    for index = 1, math.min(#gains, MAX_UNLOCK_BOXES) do
+        table.insert(boxes, function() return addPerkBox(parent, gains[index]) end)
+    end
+    return banner, boxes
+end
+
+local BUILDERS = { pokemon = buildPokemon, trainer = buildTrainer, tm = buildTm, rank = buildRank }
 
 local function topMargin()
     local root = modules.game_interface.getRootPanel()
