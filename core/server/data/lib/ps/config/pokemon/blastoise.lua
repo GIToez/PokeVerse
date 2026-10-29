@@ -46,6 +46,14 @@ POKEMON["Clone Blastoise"].spDef = 70 * 3
 POKEMON["Cloned Blastoise"] = table.deepcopy(POKEMON["Blastoise"])
 POKEMON["Cloned Blastoise"].blockTransform = true
 
+-- the turtles wear the Ninja Pack looks (038-pokemonAddon.lua); their shinies the green ones
+for _, turtle in ipairs({ "Leonardo", "Raphael", "Michelangelo", "Donatello" }) do
+    local name = turtle .. " Blastoise"
+    POKEMON[name] = table.deepcopy(POKEMON["Blastoise"])
+    POKEMON[name].blockTransform = true
+    POKEMON[name].evolutions = {}
+end
+
 -- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
 POKEMON["Mega Blastoise"] = table.deepcopy(POKEMON["Blastoise"])
 POKEMON["Mega Blastoise"].megaOf = "Blastoise"

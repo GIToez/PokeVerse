@@ -409,28 +409,32 @@ ADDONS[PokemonAddon.IDS.RED_STRIPE] = {
 
 ADDONS[PokemonAddon.IDS.SWORD_NINJA_PACK] = {
     outfits = {
-        ["Blastoise"] = { lookType = 2130, surf = 2141 }
+        ["Blastoise"] = { lookType = 2130, surf = 2141 },
+        ["Shiny Blastoise"] = { lookType = 2656, surf = 2660 }
     },
     itemId = 29583,
 }
 
 ADDONS[PokemonAddon.IDS.SAI_NINJA_PACK] = {
     outfits = {
-        ["Blastoise"] = { lookType = 2139, surf = 2142 }
+        ["Blastoise"] = { lookType = 2139, surf = 2142 },
+        ["Shiny Blastoise"] = { lookType = 2654, surf = 2658 }
     },
     itemId = 29584,
 }
 
 ADDONS[PokemonAddon.IDS.NUNCHAKU_NINJA_PACK] = {
     outfits = {
-        ["Blastoise"] = { lookType = 2140, surf = 2143 }
+        ["Blastoise"] = { lookType = 2140, surf = 2143 },
+        ["Shiny Blastoise"] = { lookType = 2655, surf = 2659 }
     },
     itemId = 29585,
 }
 
 ADDONS[PokemonAddon.IDS.STAFF_NINJA_PACK] = {
     outfits = {
-        ["Blastoise"] = { lookType = 2131, surf = 2144 }
+        ["Blastoise"] = { lookType = 2131, surf = 2144 },
+        ["Shiny Blastoise"] = { lookType = 2657, surf = 2661 }
     },
     itemId = 29586,
 }
