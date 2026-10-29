@@ -372,23 +372,33 @@ function hide()
     end
 end
 
--- Phone screens are shorter than the window: the bottom row (Leave a Pokemon, Plate) gives up to
--- BOTTOM_CUT and then the middle row (Compatibility, the egg, Egg) up to MIDDLE_CUT, so the plates stay on screen.
+-- Phone screens are shorter than the window. It gives up height in this order, so the plates and the egg
+-- panel's button stay on screen: the spacing around the cards (SPACING_CUT), the bottom row with Leave a
+-- Pokemon and Plate (BOTTOM_CUT), then the middle row with Compatibility, the egg and Egg (MIDDLE_CUT).
 local FULL_HEIGHT, MIDDLE_HEIGHT, EGG_SIZE, EGG_ITEM = 636, 128, 112, 64
-local BOTTOM_CUT, MIDDLE_CUT, SCREEN_MARGIN = 60, 40, 12
+local CARDS_MARGIN, LINE_HEIGHT, MIDDLE_MARGIN, EGG_MARGIN = 14, 20, 12, 34
+local SPACING_CUT, BOTTOM_CUT, MIDDLE_CUT, SCREEN_MARGIN = 22, 60, 40, 12
 
 local function fitScreen()
-    local cutBottom, cutMiddle = 0, 0
+    local cutSpacing, cutBottom, cutMiddle = 0, 0, 0
     if g_platform.isMobile() then
         local over = math.max(0, FULL_HEIGHT + SCREEN_MARGIN - rootWidget:getHeight())
-        cutBottom = math.min(over, BOTTOM_CUT)
-        cutMiddle = math.min(over - cutBottom, MIDDLE_CUT)
+        cutSpacing = math.min(over, SPACING_CUT)
+        cutBottom = math.min(over - cutSpacing, BOTTOM_CUT)
+        cutMiddle = math.min(over - cutSpacing - cutBottom, MIDDLE_CUT)
     end
-    window:setHeight(FULL_HEIGHT - cutBottom - cutMiddle)
+    local cardsMargin = CARDS_MARGIN - math.floor(cutSpacing * 10 / 22)
+    local lineHeight = LINE_HEIGHT - math.floor(cutSpacing * 8 / 22)
+    local middleMargin = MIDDLE_MARGIN - (cutSpacing - (CARDS_MARGIN - cardsMargin) - (LINE_HEIGHT - lineHeight))
+    window:setHeight(FULL_HEIGHT - cutSpacing - cutBottom - cutMiddle)
+    window.slot1:setMarginTop(cardsMargin)
+    window.line1Down:setHeight(lineHeight)
+    window.line2Down:setHeight(lineHeight)
+    window.compatibility:setMarginTop(middleMargin)
     window.compatibility:setHeight(MIDDLE_HEIGHT - cutMiddle)
     local egg = EGG_SIZE - cutMiddle
     window.egg:setSize({ width = egg, height = egg })
-    window.egg:setMarginTop(34 - math.floor(cutMiddle / 4))
+    window.egg:setMarginTop(EGG_MARGIN - (LINE_HEIGHT - lineHeight) - (MIDDLE_MARGIN - middleMargin) - math.floor(cutMiddle / 4))
     -- the egg's status line keeps the full gap between the side panels
     window.compatibility:setMarginRight(18 + math.floor(cutMiddle / 2))
     window.eggPanel:setMarginLeft(18 + math.floor(cutMiddle / 2))
