@@ -1,16 +1,10 @@
 import csv, glob, os, pickle, re, shutil
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../../docs/art-audit/')
 os.makedirs(OUT + 'pages', exist_ok=True)
-import better, costumes
+import costumes
 from highlight import padv as P
 from packpages import status
 def tag(s, i): return {'pack': 'pack', 'padv': 'PAdventures', 'ours': 'ours'}[s], i
-with open(OUT + 'better_art.csv', 'w', newline='') as f:
-    w = csv.writer(f); w.writerow(['Pokemon', 'Our look type', 'Source', 'Id'])
-    for label, cells in better.items:
-        ours = next((i for s, i, _ in cells if s == 'ours'), '')
-        for s, i, _ in cells:
-            if s != 'ours': w.writerow([label.replace(' (PAdv)', ''), ours, *tag(s, i)])
 IP = re.compile(r'stitch|bat costume|captain|mario|spider|batman', re.I)
 with open(OUT + 'costumes.csv', 'w', newline='') as f:
     w = csv.writer(f); w.writerow(['Costume', 'Source', 'Id', 'Our base look type', 'Note'])

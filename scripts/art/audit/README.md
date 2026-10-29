@@ -20,6 +20,7 @@ These scripts make [docs/art-audit](../../../docs/art-audit/README.md).
 3. `near.py` and `cand.py` find PAdventures sprites closest to our Pokémon.
    `packpages.py 07 pg/costume` and `packpages.py 09 pg/other` draw the pack's costume and
    other-art folders next to ours.
-4. `better.py`, `costumes.py` and `addons.py` draw the picked sheets. The picks are hand-made
-   lists in those files.
+4. `review.py docs/art-audit/review` draws the better-art review pages and writes
+   `better_art_picks.csv`. `costumes.py` and `addons.py` draw the costume and add-on sheets.
+   
 5. `export.py` writes the CSVs and copies the sheets into `docs/art-audit`.

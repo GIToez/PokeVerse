@@ -13,17 +13,17 @@ We have permission to use PAdventures' art (see [future-generations.md](../futur
 | Trainer outfits we don't have | 1,154 unique shapes: 760 from PAdventures, 394 from the pack | [trainer pages](#trainer-outfits), `trainer_outfits.csv` |
 | Trainer outfits with add-ons | 145, all PAdventures (72 also have a mount) | `addons_1.png`, `addons_2.png` |
 | Pokémon costumes | 113 from the pack and 27 more from PAdventures | `costumes_pack.png`, `costumes_padv.png`, `costumes.csv` |
-| Better art for Pokémon we have | 23 species from the pack and 1 from PAdventures | `better.png`, `better_art.csv` |
+| Possible better art for Pokémon we have | 492 candidates for 228 Pokémon, for picking by hand | `review/`, `better_art_picks.csv` |
 
 **Short version:**
 
-- **PAdventures** is the place for trainer outfits. Its outfits are colourable greyscale like
-  ours, and many come with two add-ons. They are mostly fantasy: armour, robes, mages,
-  assassins, archers, pirates and the like.
+- **PAdventures' trainer outfits are mostly Tibia-style fantasy,** not Pokémon: armour, robes,
+  mages, assassins and archers. That includes all 145 with add-ons. They're colourable like
+  ours, but most don't fit the game.
 - **PAdventures' Gen 1 to 3 Pokémon are mostly our own art.** About 700 of its sheets match
   ours tile for tile, and most of the rest are tiny edits. It has very few real redraws.
-- **The pack** is the place for better Pokémon art and costumes. Its folder 09 ("other art for
-  Pokémon we have") has the bigger, more detailed redraws.
+- **The pack** is the place for Pokémon redraws and costumes. Its folder 09 ("other art for
+  Pokémon we have") has the redraws, for picking one by one.
 - **The pack's trainer outfits are mostly pre-coloured** (290 of 394), so they can't take
   player colours. Many are characters from other franchises and shouldn't be used.
 
@@ -36,9 +36,8 @@ We have permission to use PAdventures' art (see [future-generations.md](../futur
 - **Recolours:** sprites with the same outline (alpha shape) count as one. Only the first of
   each shape is listed, and the "copies" column in `trainer_outfits.csv` says how many recolours
   were folded into it.
-- **PAdventures has no names,** so each of its Pokémon sprites was matched to our nearest
-  Pokémon by colour and shape. The closest 700 were then checked by eye. Past that point the
-  matches are other Pokémon and monsters, mostly Gen 4 and up.
+- **PAdventures has no names in the repo.** Only its sprites that share tiles with ours are
+  named here.
 - **Names for the pack** come from the earlier review in [sprite-pack-review](../sprite-pack-review/README.md).
 - **Ids:** `A` + number is a PAdventures creature id
   (`sprites/creature/<id>.png` in [padventures-sprites](https://github.com/DistTopic/padventures-sprites)).
@@ -47,21 +46,28 @@ We have permission to use PAdventures' art (see [future-generations.md](../futur
 
 ## Better art for Pokémon we have
 
-![Better art](better.png)
+Nothing is pre-picked: every swap is your call. `review/better_art_01.png` to `better_art_24.png`
+give each Pokémon one row:
 
-Picked because they're bigger, have more shading, or read better than ours at game size:
+- our sprite first (blue, front and side view);
+- then every candidate (green, numbered, with its code);
+- all at the same scale, so size differences show.
 
-- **Starters:** Ivysaur and Charizard (two versions).
-- **Kanto:** Butterfree, Raichu, Nidorina, Jigglypuff, Mankey, Poliwrath, Machoke, Machamp,
-  Slowpoke, Haunter, Chansey, Tentacruel, Eevee, Flareon, Omastar, Zapdos and Moltres.
-- **Hoenn:** Grovyle, Altaria, Zangoose and Rayquaza.
-- **From PAdventures:** Lapras, with more shading.
+There are 228 Pokémon with 492 candidates between them. Write the number you want in the
+**Pick** column of `better_art_picks.csv`, or leave it blank to keep ours.
 
-**Not picked:** many folder 09 sprites are just *different*: smaller (Typhlosion, Ursaring,
-Kingler, Pelipper), sitting poses, or about the same as ours (Gengar, Lickitung, Croconaw,
-Espeon). They're all in `pages/pack_other_art_*.png`, ours beside theirs, if you want to look
-again. Only the south-facing frame is shown, so check the other directions and the walk frames
-before swapping anything.
+**Where the candidates come from:**
+
+- **Pack folder 09.** Its names come from the earlier review, and some are wrong.
+- **PAdventures sheets that share tiles with our sprite.** These are edits of ours, so the
+  species is right.
+
+PAdventures sprites that only *look like* ours were left out, because that matching was too
+often wrong. Once the PAdventures Pokédex names are in (website look type = repo creature id −
+40034, so Bulbasaur 25 = `40059.png`), its real redraws can be added as their own rows.
+
+Check the walk frames in the source sheet before swapping. The page only shows the standing
+frame.
 
 ## Pokémon costumes
 
@@ -108,8 +114,7 @@ layout as our outfits (two add-on rows), and 72 also have a mount row.
   gold-armour set, and a few with wings or capes.
 - **Colour:** PAdventures only exports the base layer, so they show as grey here. In game they
   take player colours like ours.
-- **Style:** they're darker and more Tibia than our Pokémon-trainer outfits, so they suit an
-  event, a PvP set or a store theme better than the default list.
+- **Style:** Tibia fantasy, not Pokémon. Most won't fit; they're listed so nothing is missed.
 
 ### Everything else
 
@@ -135,23 +140,17 @@ layout as our outfits (two add-on rows), and 72 also have a mount row.
 **Don't use (other franchises):** Saint Seiya armour, Dragon Ball, Naruto, Sonic, Mortal Kombat,
 Spider-Man and The Simpsons. They're on the pack pages at the end of `pages/trainers_*.png`.
 
-**Best fits for us:**
-
-- The pack's Pokémon onesies are pre-coloured but very on-theme. They could be fixed-colour
-  store outfits.
-- Its fishing and diving poses would suit fishing and surfing.
-- PAdventures' casual and swimsuit outfits are colourable and fit the default list.
+**Picking:** mark the ones you want in the Pick column of `trainer_outfits.csv`. Each page shows
+the code under every outfit.
 
 ## Files
 
 | File | What |
 | --- | --- |
-| `better.png`, `better_art.csv` | Picked redraws, with our look type |
-| `costumes_pack.png`, `costumes_padv.png`, `costumes.csv` | All costumes, with our base look type |
+| `review/better_art_*.png`, `better_art_picks.csv` | Every candidate redraw next to ours, with a Pick column |
+| `costumes_pack.png`, `costumes_padv.png`, `costumes.csv` | All costumes, with our base look type and a Pick column |
 | `addons_1.png`, `addons_2.png` | PAdventures outfits with add-ons |
-| `trainer_outfits.csv` | All 1,154 outfits: source, id, colourable, add-on count, mount, recolour count |
+| `trainer_outfits.csv` | All 1,154 outfits: source, id, colourable, add-on count, mount, recolour count, Pick column |
 | `pages/trainers_*.png` | Every trainer outfit |
-| `pages/pack_other_art_*.png` | All of pack folder 09 next to ours (for reviewing better art) |
-| `pages/padventures_nearest_*.png` | PAdventures sprites closest to our Pokémon that aren't our art |
 
 The scripts that made these are in [scripts/art/audit](../../scripts/art/audit/README.md).
