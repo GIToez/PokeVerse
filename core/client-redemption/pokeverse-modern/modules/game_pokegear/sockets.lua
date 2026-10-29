@@ -167,7 +167,7 @@ end
 
 -- game_inventory's top bar toggle, only there in the extended view
 local function inventoryButton()
-    return modules.client_topmenu and modules.client_topmenu.getButton('inventory')
+    return Pokegear.topButton('inventory')
 end
 
 local function inventoryWindow()

@@ -5,6 +5,13 @@ pokemonBar = nil
 local HORIZONTAL = 0
 local VERTICAL = 1
 local SPACING = 6
+-- phones are too short for six slots standing at the middle of the left edge: the bar starts at the
+-- top instead, packed a little tighter so it ends above the joystick in the bottom-left corner
+local MOBILE_SPACING = 2
+local MOBILE_MARGIN_TOP = 4
+local MOBILE_MIN_SLOT = 34
+local JOYSTICK_GAP = 4
+local PORTRAIT_SIZE = 32
 local SLOT_SIZE = 46
 local RING_STEPS = 20 -- ring-*.png frames (scripts/art/ui_kit.py)
 
@@ -87,7 +94,12 @@ local function updateKeyLabels()
         return
     end
     for position, slot in ipairs(slots()) do
-        slot.key:setText(position <= CALL_KEYS and Keybind.getShortLabel(KEYBIND_CATEGORY, callAction(position)) or '')
+        -- phones and tablets have no F keys: the chip numbers the slot instead
+        if g_platform.isMobile() then
+            slot.key:setText(tostring(position))
+        else
+            slot.key:setText(position <= CALL_KEYS and Keybind.getShortLabel(KEYBIND_CATEGORY, callAction(position)) or '')
+        end
     end
 end
 
@@ -115,6 +127,24 @@ local function unbindKeys()
     end
 end
 
+-- a standing bar at its default spot on mobile shrinks its slots to end above the joystick
+local function slotSize(count)
+    if not g_platform.isMobile() or orientation ~= VERTICAL or pokemonBar.moved then
+        return SLOT_SIZE
+    end
+    local pad = modules.game_joystick and modules.game_joystick.getPanel and modules.game_joystick.getPanel()
+    if not pad or not pad:isVisible() then
+        return SLOT_SIZE
+    end
+    local bar, rect = pokemonBar:getRect(), pad:getRect()
+    if rect.x >= bar.x + bar.width or rect.x + rect.width <= bar.x or rect.y <= bar.y then
+        return SLOT_SIZE
+    end
+    local room = rect.y - JOYSTICK_GAP - bar.y - pokemonBar:getPaddingTop() - pokemonBar:getPaddingBottom()
+        - (count - 1) * MOBILE_SPACING
+    return math.max(MOBILE_MIN_SLOT, math.min(SLOT_SIZE, math.floor(room / count)))
+end
+
 local function applyOrientation()
     local layout
     if orientation == HORIZONTAL then
@@ -122,17 +152,25 @@ local function applyOrientation()
     else
         layout = UIVerticalLayout.create(pokemonBar)
     end
-    layout:setSpacing(SPACING)
+    local spacing = g_platform.isMobile() and MOBILE_SPACING or SPACING
+    layout:setSpacing(spacing)
     layout:setFitChildren(true)
     pokemonBar:setLayout(layout)
 
     local count = math.max(#slots(), 1)
-    local slotWidth, slotHeight = SLOT_SIZE, SLOT_SIZE
+    local size = slotSize(count)
+    local portrait = math.floor(PORTRAIT_SIZE * size / SLOT_SIZE + 0.5)
+    for _, slot in ipairs(slots()) do
+        slot:setSize({ width = size, height = size })
+        slot.ring:setSize({ width = size, height = size })
+        slot.portrait:setSize({ width = portrait, height = portrait })
+    end
+    local slotWidth, slotHeight = size, size
     local padding = pokemonBar:getPaddingLeft() + pokemonBar:getPaddingRight()
     if orientation == HORIZONTAL then
-        pokemonBar:setSize({ width = padding + count * slotWidth + (count - 1) * SPACING, height = padding + slotHeight })
+        pokemonBar:setSize({ width = padding + count * slotWidth + (count - 1) * spacing, height = padding + slotHeight })
     else
-        pokemonBar:setSize({ width = padding + slotWidth, height = padding + count * slotHeight + (count - 1) * SPACING })
+        pokemonBar:setSize({ width = padding + slotWidth, height = padding + count * slotHeight + (count - 1) * spacing })
     end
     pokemonBar:bindRectToParent()
 end
@@ -143,12 +181,31 @@ local function savePosition()
     end
 end
 
+local function anchorDefault()
+    pokemonBar:breakAnchors()
+    pokemonBar:addAnchor(AnchorLeft, 'gameMapPanel', AnchorLeft)
+    if g_platform.isMobile() then
+        pokemonBar:addAnchor(AnchorTop, 'gameMapPanel', AnchorTop)
+        pokemonBar:setMarginTop(MOBILE_MARGIN_TOP)
+    else
+        pokemonBar:addAnchor(AnchorVerticalCenter, 'gameMapPanel', AnchorVerticalCenter)
+    end
+end
+
+-- once the anchors have placed the bar
+local function refit()
+    addEvent(function()
+        if pokemonBar then
+            applyOrientation()
+        end
+    end)
+end
+
 local function resetPosition()
     pokemonBar.moved = false
     g_settings.remove('pokeverse-quickcall-pos')
-    pokemonBar:breakAnchors()
-    pokemonBar:addAnchor(AnchorLeft, 'gameMapPanel', AnchorLeft)
-    pokemonBar:addAnchor(AnchorVerticalCenter, 'gameMapPanel', AnchorVerticalCenter)
+    anchorDefault()
+    refit()
 end
 
 local function switchOrientation()
@@ -490,6 +547,7 @@ function onInit()
     pokemonBar.onDragLeave = function(self)
         self.moved = true
         savePosition()
+        applyOrientation()
     end
     pokemonBar.onMouseRelease = function(self, mousePos, button)
         if button == MouseRightButton then
@@ -506,10 +564,15 @@ function onInit()
             pokemonBar:setPosition(saved)
             pokemonBar.moved = true
         end, 100)
+    else
+        anchorDefault()
     end
 
     applyOrientation()
     pokemonBar:hide()
+    if g_platform.isMobile() then
+        connect(rootWidget, { onGeometryChange = refit })
+    end
     connect(Keybind, { onBind = updateKeyLabels })
     bindKeys()
     if g_game.isOnline() then
@@ -528,6 +591,7 @@ function onTerminate()
         onPokemonBarClose = onPokemonBarClose
     })
     disconnect(Creature, { onHealthPercentChange = onCreatureHealthPercentChange })
+    disconnect(rootWidget, { onGeometryChange = refit })
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.HeldItem)
     removeEvent(refreshEvent)
     unbindKeys()

@@ -114,6 +114,9 @@ local keyLabelPrefixes = { ['Ctrl+'] = 'C', ['Shift+'] = 'S', ['Alt+'] = 'A' }
 
 -- The primary key of a keybind in the current chat mode, short enough for a slot corner.
 function Keybind.getShortLabel(category, action)
+  if g_platform.isMobile() then
+    return '' -- no keyboard on phones and tablets, so no key chips
+  end
   local keys = Keybind.defaultKeybinds[category .. '_' .. action] and Keybind.getKeybindKeys(category, action)
   local label = keys and keys.primary or ''
   for prefix, short in pairs(keyLabelPrefixes) do
