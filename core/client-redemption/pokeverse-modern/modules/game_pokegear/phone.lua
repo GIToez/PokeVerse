@@ -108,7 +108,9 @@ local function take(button, index)
     -- tile shows it whole instead (the button's clip follows its pressed and on states)
     tile.icon:setImageSource(entry.source)
     button:setImageSource('')
-    button:setIconSize({ width = TILE_ICON_SIZE, height = TILE_ICON_SIZE })
+    -- an icon size alone pins the icon to the button's top-left corner; Bag and Audio draw theirs as an icon
+    local inset = (TILE_BUTTON_SIZE - TILE_ICON_SIZE) / 2
+    button:setIconRect({ x = inset, y = inset, width = TILE_ICON_SIZE, height = TILE_ICON_SIZE })
     button.onMouseRelease = function(widget, mousePos, mouseButton)
         local done = entry.release and entry.release(widget, mousePos, mouseButton)
         if done then
@@ -260,7 +262,7 @@ local function disableTopBar()
             button:setMarginTop(0)
             button:setSize(entry.size)
             button:setImageSource(entry.source)
-            button:setIconSize(entry.iconSize)
+            button:setIconRect({ x = 0, y = 0, width = entry.iconSize.width, height = entry.iconSize.height })
             if panel then
                 panel:insertChild(math.min(entry.index, panel:getChildCount() + 1), button)
             end
