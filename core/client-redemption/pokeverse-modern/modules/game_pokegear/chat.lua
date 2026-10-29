@@ -7,6 +7,8 @@
 local POSITION_SETTING = 'pokegearChatPosition'
 local OPEN_SETTING = 'pokegearChatOpen'
 local LOCK_SETTING = 'pokegearChatLocked'
+local SIZE_SETTING = 'pokegearChatSize' -- x = width, y = height; 0 0 is the usual size
+local MIN_WIDTH, MIN_HEIGHT = 380, 180
 local MAX_ROWS = 120
 local MAX_FLOATS = 5
 local FLOAT_SECONDS = 8
@@ -546,11 +548,52 @@ refreshInput = function()
     end
 end
 
+local function placed()
+    local saved = g_settings.getPoint(POSITION_SETTING)
+    return saved ~= nil and (saved.x ~= 0 or saved.y ~= 0)
+end
+
+-- no wider than the room right of the card, no taller than the room above its bottom
+local function clampSize(width, height, bottom)
+    local root = modules.game_interface.getRootPanel()
+    local maxWidth = math.max(MIN_WIDTH, root:getX() + root:getWidth() - window:getX() - 8)
+    local maxHeight = math.max(MIN_HEIGHT, (bottom or (window:getY() + window:getHeight())) - root:getY() - 8)
+    return math.max(MIN_WIDTH, math.min(maxWidth, math.floor(width))),
+        math.max(MIN_HEIGHT, math.min(maxHeight, math.floor(height)))
+end
+
+local function openSize()
+    local compact = Pokegear.isCompact()
+    local saved = g_settings.getPoint(SIZE_SETTING)
+    if saved and saved.x > 0 and saved.y > 0 then
+        local width, height = clampSize(saved.x, saved.y)
+        return { width = width, height = height }
+    end
+    return { width = compact and COMPACT_WIDTH or OPEN_WIDTH, height = compact and COMPACT_HEIGHT or OPEN_HEIGHT }
+end
+
+-- the lines wrap to the new width, then take the height that needs
+local remeasureEvent
+local function remeasureRows()
+    removeEvent(remeasureEvent)
+    remeasureEvent = scheduleEvent(function()
+        remeasureEvent = nil
+        if window then
+            for _, row in ipairs(window.list:getChildren()) do
+                if row.text then
+                    row:setHeight(rowHeight(row))
+                end
+            end
+        end
+    end, 1)
+end
+
 local function applyOpen()
     if not window then
         return
     end
     window.header:setVisible(open)
+    window.grip:setVisible(open and not window.pokegearLocked)
     window.list:setVisible(open)
     window.scroll:setVisible(open)
     window.send:setVisible(open)
@@ -562,9 +605,9 @@ local function applyOpen()
         window:setPadding(10)
         window:setPaddingLeft(12)
         window:setPaddingRight(12)
-        local compact = Pokegear.isCompact()
-        window:setWidth(compact and COMPACT_WIDTH or OPEN_WIDTH)
-        window:setHeight(compact and COMPACT_HEIGHT or OPEN_HEIGHT)
+        local size = openSize()
+        window:setWidth(size.width)
+        window:setHeight(size.height)
         clearFloats()
         unreadFolded = 0
         fillList()
@@ -591,8 +634,7 @@ end
 
 -- a card you moved folds down onto its line and opens upwards from it, like the one in its corner
 local function keepBottom(change)
-    local saved = g_settings.getPoint(POSITION_SETTING)
-    if not window or not saved or (saved.x == 0 and saved.y == 0) then
+    if not window or not placed() then
         change()
         return
     end
@@ -613,7 +655,8 @@ local function applyLock()
     lock:setOn(locked)
     lock.icon:setImageSource('/modules/game_pokegear/images/' .. (locked and 'lock' or 'unlock'))
     lock.icon:setImageColor(locked and '#ffcb05' or '#8fa0c4')
-    lock:setTooltip(locked and tr('Locked: click to move the chat again') or tr('Lock the chat where it is'))
+    lock:setTooltip(locked and tr('Locked: click to move or resize the chat again') or tr('Lock the chat\'s place and size'))
+    window.grip:setVisible(open and not locked)
     window.header:setTooltip(locked and '' or tr('Drag to move'))
 end
 
@@ -798,6 +841,43 @@ local function build()
     window:hide()
     floats:hide()
     window.header.fold.onClick = function() Chat.setOpen(false) end
+    -- the grip keeps the bottom-left corner where it is: the card grows up and to the right
+    local grip = window.grip
+    grip.onDragEnter = function(widget, mousePos)
+        if window.pokegearLocked or not open then
+            return false
+        end
+        widget.start = { x = mousePos.x, y = mousePos.y, width = window:getWidth(), height = window:getHeight(),
+                         bottom = window:getY() + window:getHeight() }
+        return true
+    end
+    grip.onDragMove = function(widget, mousePos)
+        local start = widget.start
+        local width, height = clampSize(start.width + mousePos.x - start.x, start.height - (mousePos.y - start.y), start.bottom)
+        window:setWidth(width)
+        window:setHeight(height)
+        if placed() then
+            window:setY(start.bottom - height)
+        end
+        remeasureRows()
+        return true
+    end
+    grip.onDragLeave = function()
+        g_settings.set(SIZE_SETTING, { x = window:getWidth(), y = window:getHeight() })
+        if placed() then
+            g_settings.set(POSITION_SETTING, window:getPosition())
+        end
+        return true
+    end
+    grip.onDoubleClick = function()
+        if window.pokegearLocked then
+            return false
+        end
+        g_settings.set(SIZE_SETTING, { x = 0, y = 0 })
+        keepBottom(applyOpen)
+        remeasureRows()
+        return true
+    end
     window.header.lock.onClick = function()
         g_settings.set(LOCK_SETTING, not g_settings.getBoolean(LOCK_SETTING, false))
         applyLock()
@@ -830,6 +910,12 @@ local function build()
         window:addAnchor(AnchorBottom, 'parent', AnchorBottom)
         window:setMarginLeft(12)
         window:setMarginBottom(12)
+        if open then
+            local size = openSize()
+            window:setWidth(size.width)
+            window:setHeight(size.height)
+            remeasureRows()
+        end
     end)
 end
 

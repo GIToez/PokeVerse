@@ -203,6 +203,9 @@ items in and out (to the ground, a hotkey, the PC, the GTS or another bag).
     keeps that, and keeps its Chat On / Chat Off button.
 - **Lock and fold.** The padlock in the header locks the card where it is (no dragging, no double-click
   reset; Reset layout still works). A card you moved folds down onto its line and opens upwards from it.
+- **Resize.** Drag the grip in the top-right corner. The bottom-left corner stays put, so the card grows
+  up and to the right, from 380x180 up to the room on screen. The size is kept. Double-clicking the grip,
+  or Reset layout, brings back the usual size. Locking hides the grip.
 - **Folded by default, remembered.** A new character starts with the chat open, so it's easy to find.
   Folding or opening it is saved per character and comes back the same at the next login.
 - **New messages while folded.** The lines float in as usual. The pill shows an unread count, and

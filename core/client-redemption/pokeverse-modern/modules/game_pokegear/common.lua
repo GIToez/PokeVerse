@@ -164,7 +164,8 @@ local movable = {}
 
 -- the saved spots, also for windows not built yet this session
 local POSITION_SETTINGS = { 'pokegearHubPosition', 'pokegearChatPosition', 'pokegearNearbyPosition',
-    'pokegearTrackingPosition', 'pokegearBagPosition', 'pokegearSocialPosition', 'pokegearLootPos' }
+    'pokegearTrackingPosition', 'pokegearBagPosition', 'pokegearSocialPosition', 'pokegearLootPos',
+    'pokegearChatSize' }
 
 function Pokegear.forgetLayout()
     for _, setting in ipairs(POSITION_SETTINGS) do
