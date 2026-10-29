@@ -349,6 +349,29 @@ CatchBoard < UIWidget
     margin-top: 40
     visible: false
 
+AnHelpLine < AnText
+  text-auto-resize: true
+  text-wrap: true
+  margin-top: 6
+  $first:
+    margin-top: 0
+
+// covers the board while open, so it needs its own backdrop
+AnHelp < AnCard
+  anchors.top: tabs.bottom
+  anchors.left: parent.left
+  anchors.right: parent.right
+  margin-top: 12
+  padding: 12
+  background-color: #0e1a33f2
+  layout:
+    type: verticalBox
+    fit-children: true
+
+  AnBold
+    id: title
+    margin-bottom: 4
+
 AnalyserWindow < UIWindow
   size: 470 400
   image-source: /modules/game_dailytasks/images/window
@@ -391,6 +414,17 @@ AnalyserWindow < UIWindow
     anchors.right: parent.right
     @onClick: modules.game_analyser.hide()
 
+  PVBlueButton
+    id: helpButton
+    !text: '?'
+    !tooltip: tr('How to read this tab')
+    ttf-font-size: 14
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: closeButton.left
+    margin-right: 8
+    @onClick: modules.game_analyser.toggleHelp()
+
   UIWidget
     id: tabs
     height: 34
@@ -428,4 +462,8 @@ AnalyserWindow < UIWindow
 
   CatchBoard
     id: catchBoard
+    visible: false
+
+  AnHelp
+    id: help
     visible: false
