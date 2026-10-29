@@ -6,6 +6,7 @@ Phone = {}
 local BAR_KEEPS = { ['Store shop'] = true, optionsButton = true, logoutButton = true }
 local BAR_HEIGHT, BAR_BUTTON_SIZE = 44, 30
 local TILE_WIDTH, TILE_HEIGHT, TILE_SPACING, TILE_BUTTON_SIZE = 76, 70, 6, 44
+local TILE_ICON_SIZE = 28
 local DRAWER_COLUMNS, DRAWER_PADDING = 5, 10
 local ACTIONS = { 'attack', 'follow', 'look', 'use' }
 local ACTION_SIZE, ACTION_SPACING, ACTION_PADDING = 64, 4, 6
@@ -17,7 +18,7 @@ local SWEEP_TICKS = 8
 local on = false
 local drawer, scrim, appsButton, actionsButton, tickEvent
 local ticks, lastArmed = 0, nil
--- top bar buttons in the drawer: { button, tile, index, size, release }
+-- top bar buttons in the drawer: { button, tile, index, size, release, source, iconSize }
 local taken = {}
 local barSizes = {}
 local barHeight
@@ -93,7 +94,8 @@ local function tileLabel(button)
 end
 
 local function take(button, index)
-    local entry = { button = button, index = index, size = button:getSize(), release = button.onMouseRelease }
+    local entry = { button = button, index = index, size = button:getSize(), release = button.onMouseRelease,
+                    source = button:getImageSource(), iconSize = button:getIconSize() }
     local tile = g_ui.createWidget('PokegearAppTile', drawer.tiles)
     tile:setId(button:getId() .. 'Tile')
     button:getParent():removeChild(button)
@@ -102,6 +104,13 @@ local function take(button, index)
     button:addAnchor(AnchorHorizontalCenter, 'parent', AnchorHorizontalCenter)
     button:setMarginTop(2)
     button:setSize({ width = TILE_BUTTON_SIZE, height = TILE_BUTTON_SIZE })
+    -- the bar's 20px art is drawn with a frame border, so scaled up its middle tiles into copies: the
+    -- tile shows it whole instead (the button's clip follows its pressed and on states)
+    if not entry.source:find('button_empty') then
+        tile.icon:setImageSource(entry.source)
+    end
+    button:setImageSource('')
+    button:setIconSize({ width = TILE_ICON_SIZE, height = TILE_ICON_SIZE })
     button.onMouseRelease = function(widget, mousePos, mouseButton)
         local done = entry.release and entry.release(widget, mousePos, mouseButton)
         if done then
@@ -120,6 +129,7 @@ local function fitDrawer()
     local count = 0
     for _, entry in ipairs(taken) do
         entry.tile:setVisible(entry.button:isExplicitlyVisible())
+        entry.tile.icon:setImageClip(entry.button:getImageClip())
         local label = tileLabel(entry.button)
         if entry.tile.label.fullText ~= label then
             Pokegear.fitText(entry.tile.label, label)
@@ -251,6 +261,8 @@ local function disableTopBar()
             button:breakAnchors()
             button:setMarginTop(0)
             button:setSize(entry.size)
+            button:setImageSource(entry.source)
+            button:setIconSize(entry.iconSize)
             if panel then
                 panel:insertChild(math.min(entry.index, panel:getChildCount() + 1), button)
             end

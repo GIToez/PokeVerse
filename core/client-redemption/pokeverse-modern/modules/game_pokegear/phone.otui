@@ -42,6 +42,14 @@ PokegearAppsDrawer < UIWidget
 PokegearAppTile < UIWidget
   focusable: false
 
+  UIWidget
+    id: icon
+    size: 44 44
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 2
+    phantom: true
+
   UILabel
     id: label
     anchors.left: parent.left
