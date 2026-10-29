@@ -1,6 +1,6 @@
 Module
   name: game_soulstore
-  description: PokeVerse Store: Premium, Pokemon addons, trainer outfits and services for Soul Coins
+  description: PokeVerse Store: Premium, Pokemon addons, trainer outfits and services for Verse Orbs
   author: PokeVerse
   sandboxed: true
   scripts: [ soulstore ]

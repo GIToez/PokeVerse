@@ -3,6 +3,6 @@
 	<health now="150" max="150"/>
 	<look type="1193" head="55" body="75" legs="75" feet="10"/>
 	<parameters>
-        <parameter key="message_greet" value="Hello |PLAYERNAME|. Do you know what a {SOUL COIN} is?"/>
+        <parameter key="message_greet" value="Hello |PLAYERNAME|. Do you know what a {VERSE ORB} is?"/>
     </parameters>
 </npc>

@@ -228,7 +228,7 @@ WikiData = {
                 { "PP Up", "Max energy 5 / 8 / 10%" },
                 { "PP Max", "Max energy 10% (once)" },
             } },
-            { 'p', "Up to 3 of each and 10 in all per Pokemon, and each one after the first needs 10 more levels. Use them with the Pokemon in its ball. The Store resets them for 1 Soul Coin (Services). The casino merchants sell them for poke coins." },
+            { 'p', "Up to 3 of each and 10 in all per Pokemon, and each one after the first needs 10 more levels. Use them with the Pokemon in its ball. The Store resets them for 1 Verse Orb (Services). The casino merchants sell them for poke coins." },
         } },
         { key = 'held', title = 'Held items', item = 22170, body = {
             { 'p', "Each Pokemon holds one item, and its slot on the Pokemon bar shows it. A type item boosts one type of moves by 20% (Charcoal Fire, Mystic Water Water, Dragon Fang Dragon, and so on); the Polkadot Bow boosts Normal moves by 10%. An Elemental Stone boosts the two types it was charged with. Shiny Pokemon, and the clones in quests, sometimes drop the item of their type." },
@@ -266,7 +266,7 @@ WikiData = {
             { 'p', "Hoes ($200), watering cans ($100) and seeds ($500) are sold by the farmers in the Kanto towns, Randy Hayden in Hoenn and Sampson Trueman in the Orange Islands. Lum and Sitrus seeds are not sold; they come from seed boxes. During Harvest Moon trees grow twice as fast and give up to 8 berries." },
         } },
         { key = 'nickname', title = 'Nicknames', item = 6499, body = {
-            { 'p', "Put the Pokemon's ball in your Poke Ball slot, open the Store (Services), type the name (4 to 20 letters) and buy Pokemon Nickname for 1 Soul Coin. Remove Nickname is free." },
+            { 'p', "Put the Pokemon's ball in your Poke Ball slot, open the Store (Services), type the name (4 to 20 letters) and buy Pokemon Nickname for 1 Verse Orb. Remove Nickname is free." },
             { 'see', { 'soulcoins' } },
         } },
         { key = 'seals', title = 'Ball seals', item = 15744, body = {
@@ -545,7 +545,7 @@ WikiData = {
             { 'p', "The GTS, house rent and Pokepedia purchases use your bank balance." },
         } },
         { key = 'guilds', title = 'Guilds', item = 6499, body = {
-            { 'p', "Create one in the Store (Guild): type the name (4 to 20 letters) and buy it. You need level 30 and 5 Soul Coins; no Premium. A new rank costs 1 Soul Coin." },
+            { 'p', "Create one in the Store (Guild): type the name (4 to 20 letters) and buy it. You need level 30 and 5 Verse Orbs; no Premium. A new rank costs 1 Verse Orb." },
             { 'p', "Run it from the Guild channel with commands starting with ! or /: invite, revoke, kick, promote, demote, setrankname, passleadership, setmotd, leave and disband. Accept an invitation with !joinguild and the guild's name." },
             { 'p', "Give a member a rank with /setrank name, rank (leaders and vice-leaders). /list shows who of your guild is online." },
             { 'commands', { "!invite name", "!joinguild guild", "/setrank name, rank", "/list" } },
@@ -609,22 +609,22 @@ WikiData = {
             { 'see', { 'discord', 'boosting', 'premium' } },
         } },
         { key = 'boosting', title = 'Boosting and rewards', item = 6499, body = {
-            { 'p', "Boosting the PokeVerse Discord server with Discord Nitro earns Soul Coins on your linked account, for as long as the boost lasts." },
+            { 'p', "Boosting the PokeVerse Discord server with Discord Nitro earns Verse Orbs on your linked account, for as long as the boost lasts." },
             { 'table', {
-                { "When", "Soul Coins" },
+                { "When", "Verse Orbs" },
                 { "Every 7 days of boosting", "1" },
                 { "Every 4th week", "+1 loyalty bonus" },
                 { "Week 52, 104 and every year after", "+15 yearly bonus" },
             } },
-            { 'p', "So 4 weeks give 5 Soul Coins, and a full year of boosting gives 80: 52 weekly, 13 loyalty and the 15 yearly bonus. Each loyalty bonus also adds a community bonus: +1 for every 5 boosts the server has, up to +5." },
+            { 'p', "So 4 weeks give 5 Verse Orbs, and a full year of boosting gives 80: 52 weekly, 13 loyalty and the 15 yearly bonus. Each loyalty bonus also adds a community bonus: +1 for every 5 boosts the server has, up to +5." },
             { 'h', "Server boost perks" },
             { 'p', "While the PokeVerse Discord has Server Boost Level 1, everyone online gets +5% experience; Level 2 adds +5% catch chance and Level 3 +10% shiny chance. You are told at login, and !discord perks shows them." },
             { 'steps', {
                 "Link your account first. Weeks completed before the link are not paid.",
                 "Boost the server. Each completed week is paid, posted in #booster-rewards, and your online characters get a thank-you message.",
-                "The Soul Coins go to your account's Soul Coin balance, ready for the Store.",
+                "The Verse Orbs go to your account's Verse Orb balance, ready for the Store.",
             } },
-            { 'p', "In Discord, /booster shows your streak, the weeks paid, the Soul Coins received and when the next week is due." },
+            { 'p', "In Discord, /booster shows your streak, the weeks paid, the Verse Orbs received and when the next week is due." },
             { 'p', "The weeks count from the day your current boost started. Removing the boost or moving it to another server ends the streak, and a new boost starts again at week 1. A week is only ever paid once." },
             { 'tip', "Boosted before you linked? Link now: the weeks you complete from then on are paid." },
             { 'see', { 'discordlink', 'soulcoins', 'premium' } },
@@ -1038,11 +1038,11 @@ WikiData = {
                 { "1 to 10 hours", "Winding Down", "+5%", "+5%" },
                 { "Under 1 hour", "Worn Out", "none", "none" },
             } },
-            { 'p', "Hover the bar to see every boost you have now: Trainer Spirit, XP potions, server events, a Lucky Egg and the Ace Trainer perk. A Spirit Tonic (Store, 1 Soul Coin) restores 10 hours when you are below 30." },
+            { 'p', "Hover the bar to see every boost you have now: Trainer Spirit, XP potions, server events, a Lucky Egg and the Ace Trainer perk. A Spirit Tonic (Store, 1 Verse Orb) restores 10 hours when you are below 30." },
             { 'see', { 'premium', 'soulcoins' } },
         } },
         { key = 'premium', title = 'Premium', item = 6499, body = {
-            { 'p', "Premium costs 15 Soul Coins for 30 days, or 40 for 90 days, in the Store. It is needed for:" },
+            { 'p', "Premium costs 15 Verse Orbs for 30 days, or 40 for 90 days, in the Store. It is needed for:" },
             { 'steps', {
                 "Fly, Levitate, Surf, Dive, Waterfall, Strength, Rock Climb and Teleport.",
                 "Houses, beds, the Day Care, masteries, outfit addons, and the Elite Trainer, Adventurer, Academy, Social, Jamaica, Punk, Hiker, Mercenary, Rapper, Oriental and Rocket outfits.",
@@ -1051,10 +1051,10 @@ WikiData = {
             } },
             { 'p', "Premium trainers can also run two hunting tasks at once. Guilds, tournaments, duels, the Safari Zone, TMs, gyms and the Elite Four are free. A Premium coupon is used with /coupon CODE, once per account." },
         } },
-        { key = 'soulcoins', title = 'Soul coins and the Store', item = 6499, body = {
-            { 'p', "Soul Coins are spent in the Store: the Store button on the top bar. Your balance belongs to the account and is shared by its characters." },
+        { key = 'soulcoins', title = 'Verse Orbs and the Store', item = 6499, body = {
+            { 'p', "Verse Orbs are spent in the Store: the Store button on the top bar. Your balance belongs to the account and is shared by its characters." },
             { 'table', {
-                { "For", "Soul coins" },
+                { "For", "Verse Orbs" },
                 { "Premium, 30 / 90 days", "15 / 40" },
                 { "Pokemon addon, trainer outfit", "15" },
                 { "Create a guild", "5" },
@@ -1063,7 +1063,7 @@ WikiData = {
                 { "Remove a nickname", "free" },
                 { "Spirit Tonic, egg move capsule, guild rank", "1 each" },
             } },
-            { 'p', "A purchase uses your balance first, then Soul Coins in your bag. Withdraw turns balance into coins to trade (up to 10,000 at a time), and Deposit puts them back. History lists the account's last 50." },
+            { 'p', "A purchase uses your balance first, then Verse Orbs in your bag. Withdraw turns balance into orbs to trade (up to 10,000 at a time), and Deposit puts them back. History lists the account's last 50." },
             { 'p', "Referral Rewards in the Store are paid with referral points: 5 for each friend who reaches level 30 and buys Premium." },
         } },
         { key = 'casino', title = 'Slot machines and casino', item = 22154, body = {
@@ -1082,7 +1082,7 @@ WikiData = {
             { 'h', "Playing fair" },
             { 'p', "No cheating, bots, macros that play for you, modified clients that give an advantage, or abuse of bugs: report bugs instead. No harassment, hate speech, threats, scams, spam, or offensive names. Don't pretend to be staff. Trading items or Pokemon for real money or for things outside the game is not allowed." },
             { 'h', "What staff can do" },
-            { 'p', "Breaking these terms can lead to a warning, a mute, removal of items, Pokemon or Soul Coins gained unfairly, or a temporary or permanent ban of your accounts. Staff decide case by case; you can appeal through our Discord." },
+            { 'p', "Breaking these terms can lead to a warning, a mute, removal of items, Pokemon or Verse Orbs gained unfairly, or a temporary or permanent ban of your accounts. Staff decide case by case; you can appeal through our Discord." },
             { 'h', "The game can change" },
             { 'p', "PokeVerse is developed all the time: Pokemon, items, prices, rewards and features can be changed, rebalanced or removed, and the server can be down for maintenance. We do our best to keep your progress, but the game is provided as it is, without guarantees." },
             { 'h', "Changes to these terms" },
@@ -1090,14 +1090,14 @@ WikiData = {
             { 'tip', "PokeVerse is a fan project. It is not made, endorsed or supported by Nintendo, Game Freak, Creatures or The Pokemon Company. Pokemon and its names belong to their owners." },
             { 'see', { 'purchases', 'privacy', 'reports' } },
         } },
-        { key = 'purchases', title = 'Soul Coins and purchases', item = 6499, body = {
-            { 'p', "Soul Coins are a virtual currency for use in PokeVerse only. Whether you buy them, earn them by boosting our Discord or get them in the game:" },
+        { key = 'purchases', title = 'Verse Orbs and purchases', item = 6499, body = {
+            { 'p', "Verse Orbs are a virtual currency for use in PokeVerse only. Whether you buy them, earn them by boosting our Discord or get them in the game:" },
             { 'steps', {
-                "Soul Coins and everything bought with them (Premium, outfits, services) are a license to use them in the game. They are not your property, have no real-world value and can't be exchanged back for money.",
+                "Verse Orbs and everything bought with them (Premium, outfits, services) are a license to use them in the game. They are not your property, have no real-world value and can't be exchanged back for money.",
                 "Purchases are final and not refundable, except where the law requires it. Contact staff on Discord if something went wrong with a purchase.",
-                "Soul Coins can't be sold or traded for real money or anything outside the game.",
-                "Soul Coins and items gained through bugs, chargebacks, fraud or breaking the rules can be removed, and the account can be banned.",
-                "A banned or closed account loses its Soul Coins and purchases, without a refund.",
+                "Verse Orbs can't be sold or traded for real money or anything outside the game.",
+                "Verse Orbs and items gained through bugs, chargebacks, fraud or breaking the rules can be removed, and the account can be banned.",
+                "A banned or closed account loses its Verse Orbs and purchases, without a refund.",
                 "Prices, rewards and what the Store sells can change.",
             } },
             { 'p', "If you are under 18, ask a parent or guardian before buying anything." },

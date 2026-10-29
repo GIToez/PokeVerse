@@ -1329,7 +1329,7 @@ Can you buy a crystal statue for me?@Você pode comprar uma crystal statue para m
 Did you catch the Magikarp?@Você capturou o Magikarp?
 Did you find Chief Vaporeon and get the restore stones?@Você achou o Chief Vaporeon e pegou as Restore Stones?
 Do you have any friends? POKEMON you get in trades grow very quickly. I think it's worth a try!@Você tem amigos? POKEMONS que você obtem em trocas crescem muito rapidamente. Eu acho que vale a pena tentar!
-Do you know what a {SOUL COIN} is?@Você sabe o que é uma {SOUL COIN}?
+Do you know what a {VERSE ORB} is?@Você sabe o que é uma {VERSE ORB}?
 Do you mean {BATTLE}?@Você quer dizer {BATALHAR}?
 Do you really want to go to %s? This will cost you %s dollars. {Yes} or {No}@Você realmente quer ir para %s? Isso vai te custar %s dólares. {Sim} ou {Não}
 Do you really want to battle with me?%s%s {Yes} or {No}@Você realmente quer batalhar comigo?%s%s {Sim} ou {Não}
@@ -1344,7 +1344,7 @@ Do you want @Você quer
 Do you want to buy a sauce for 500 dollars?@Você quer comprar um molho por 500 dólares?
 Do you want to buy |ITEMCOUNT| |ITEMNAME| for |TOTALCOST| dollars? {Yes} or {No}@Você quer comprar |ITEMCOUNT| |ITEMNAME| por |TOTALCOST| doláres? {Sim} ou {Não}
 Do you want to change your 'password', request a 'recovery key', add a 'character', or 'delete' a character?@Você quer mudar o seu 'password', pedir uma 'chave de recuperação', adicione um 'personagem', ou 'deletar' um personagem?
-Do you want to change your sex? The price is 3 Soul Coins. {Yes} or {No}@Você quer alterar seu sexo? O preço é 3 Soul Coins. {Sim} ou {Não}
+Do you want to change your sex? The price is 3 Verse Orbs. {Yes} or {No}@Você quer alterar seu sexo? O preço é 3 Verse Orbs. {Sim} ou {Não}
 Do you want to enter the Cooperative Elite mode? This will cost you %s dollars. {Yes} or {No}@Você quer entrar no modo Cooperativo Elite? Isso vai te custar %s dólares. {Sim} ou {Não}
 Do you want to enter the Cooperative Titan mode? This will cost you %s dollars. {Yes} or {No}@Você quer entrar no modo Cooperativo Titan? Isso vai te custar %s dólares. {Sim} ou {Não}
 Do you want to enter the Fifteen mode? This will cost you %s dollars. {Yes} or {No}@Você quer entrar no modo Quinze? Isso vai te custar %s dólares. {Sim} ou {Não}
@@ -1896,7 +1896,7 @@ Hello |PLAYERNAME|, you can heal your pokemons.@Olá |PLAYERNAME|, você pode cura
 Hello |PLAYERNAME|, do you need something to brighten your home?@Olá |PLAYERNAME|, você precisa de algo para iluminar sua casa?
 Hello |PLAYERNAME|, do you want to hear a good story? {Yes} or {No}@Olá |PLAYERNAME|, quer ouvir uma boa história? {Sim} ou {Não}
 Hello |PLAYERNAME|.@Olá |PLAYERNAME|.
-Hello |PLAYERNAME|. Do you know what a {SOUL COIN} is?@Olá |PLAYERNAME|. Você sabe o que é uma {SOUL COIN}?
+Hello |PLAYERNAME|. Do you know what a {VERSE ORB} is?@Olá |PLAYERNAME|. Você sabe o que é uma {VERSE ORB}?
 Hello |PLAYERNAME|. Do you want to sell Technical Machines? Here you can also {remove} or {change} your Pokemon TMs!@Olá |PLAYERNAME|. Você quer vender technichal Machines? Aqui você também pode {remover} ou {mover} o movimento de TM do seu Pokemon!
 Hello |PLAYERNAME|. Do you want to {reset} your Smeargle's Sketches?@Olá |PLAYERNAME|. Você quer {resetar} seu Smeargle Sketchs?
 Hello |PLAYERNAME|. Here you can {remove}, {change}, {recover} or {fix} your Pokemon Egg move! You can also {generate} an Egg Move for an old Pokemon egg!@Olá |PLAYERNAME|. Aqui você pode {remover}, {mover}, {recuperar} ou {corrigir} o Movimento de Ovo do seu Pokemon! Além disso, você pode {gerar} um Movimento de Ovo a um Pokemon antigo que seja de ovo!
@@ -2094,7 +2094,7 @@ How good it is to feel the breeze in your hair and admire the earth from up high
 How many dollars would you like to deposit?@Quanto dólares que você deseja depositar?
 How many dollars would you like to transfer?@Quanto dólares que você que você deseja transferir?
 How many dollars would you like to withdraw?@Quanto dólares que você deseja sacar?
-How many soul coins do you want to withdraw?@Quantos Soul Coins você quer sacar?
+How many Verse Orbs do you want to withdraw?@Quantos Verse Orbs você quer sacar?
 How much you want for your %s?@Quanto você quer pelo seu %s?
 How nice to see you again! I have an emergency right now.@Que bom ver você de novo! Eu estou em uma situação de emergência agora.
 huge@enorme
@@ -2191,7 +2191,7 @@ I can't help you now.@Eu não posso ajudá-lo agora.
 I can't help you right now.@Eu não posso ajudá-lo agora.
 I can't sell you this right now, please check your backpack.@Eu não posso vender isso agora, por favor, verifique a sua mochila por espaço
 I can build a TV camera for you. The only thing you need to do is get some parts for me. Do you want that?@Eu posso construir uma câmera de TV para você. Você precisa buscar algumas peças para mim. Você quer?
-I can create or change your Pokemon's nickname for 1 Soul Coin. What nickname do you want?@Eu posso criar ou alterar o apelido do seu Pokemon por 1 Soul Coin. Qual apelido você quer?
+I can create or change your Pokemon's nickname for 1 Verse Orb. What nickname do you want?@Eu posso criar ou alterar o apelido do seu Pokemon por 1 Verse Orb. Qual apelido você quer?
 I can help new Pokemon trainers!@Eu posso ajudar treinadores Pokemon novatos!
 I can hold my breath for 10 minutes swimming with my Goldeen!@Eu posso segurar minha respiração por 10 minutos com a minha Goldeen!
 I can take you to these destinations: %s@Eu posso leva-lo para estes destinos: %s
@@ -2203,8 +2203,8 @@ I can offer you three challenges in the Stadium Arena: {Gladiator}, {Cooperative
 I can only allow premium players to travel there.@Eu só posso permitir jogadores Premium viajem para lá.
 I can only allow premium players to travel with me.@Eu só posso permitir que jogadores Premium viajem comigo.
 I can remove your Pokemon's nickname for free, do you want that? {Yes} or {No}@Eu posso remover o apelido do seu Pokemon sem qualquer custo, você quer isso? {Sim} ou {Não}
-I can reset your Pokemon's vitamins. Do you want that? This will cost %s soul coin. {Yes} or {No}@Eu posso remover as vitaminas do seu Pokemon. Você quer isso? Isso vai custar %s soul coin. {Sim} ou {Não}
-I can sell you a stamina recover for 1 Soul Coin, do you want it? {Yes} or {No}@Eu posso vender uma Stamina Recover para você por 1 Soul Coin, você aceita? {Sim} ou {Não}
+I can reset your Pokemon's vitamins. Do you want that? This will cost %s Verse Orb. {Yes} or {No}@Eu posso remover as vitaminas do seu Pokemon. Você quer isso? Isso vai custar %s Verse Orb. {Sim} ou {Não}
+I can sell you a stamina recover for 1 Verse Orb, do you want it? {Yes} or {No}@Eu posso vender uma Stamina Recover para você por 1 Verse Orb, você aceita? {Sim} ou {Não}
 I can beat you!@Eu posso ganhar de você!
 I can {remove} your Pokemon held! Do you want that? Your Pokemon's held item level will be reset if you do that. {Yes} or {No}@Eu posso {remover} o held do seu Pokemon! Você quer isso? {O nível do held do seu Pokemon será resetado se você fizer isso.} {Sim} ou {Não}
 I can {remove} your Pokemon Held.@Eu posso {remover} o Held do seu Pokemon.
@@ -3044,7 +3044,7 @@ Oh, thanks! So you want to help me with my excavations? {Yes} or {No}@Oh obrigad
 Oh, thanks. Take the key with you, maybe one day you'll find what you need.@Oh obrigado. Pegue a chave com você, talvez um dia você encontre o que precisa.
 Oh, thank you for your effort. Take your reward!@Oh, muito obrigado por seu esforço. Tome a sua recompensa!
 Oh, that's wonderful! I think we just are creating a better Easter to everyone! Yeah, I think this fits you, take as a reward!@Oh, isso é maravilhoso! Nós estamos criando uma Páscoa melhor para todos! Sim, acho que isso se encaixa você, tome como uma recompensa!
-Oh, then you want a premium account. You can buy 30 days for 10 Soul Coins. Do you want it? {Yes} or {No}@Oh, então você quer uma Conta Premium. Você pode comprar 30 dias por 10 Soul Coins. Você aceita? {Sim} ou {Não}
+Oh, then you want a premium account. You can buy 30 days for 10 Verse Orbs. Do you want it? {Yes} or {No}@Oh, então você quer uma Conta Premium. Você pode comprar 30 dias por 10 Verse Orbs. Você aceita? {Sim} ou {Não}
 So, ready for the {BATTLE}?@Oh, a {BATALHA}?
 Oh, you are Oak's pupil?@Oh, você é o aluno de Oak?
 Oh, you came to get the bow?@Oh, você veio para obter o arco?
@@ -3720,7 +3720,7 @@ Sorry, you do not have the required level to accept this mission. The minimum is
 Sorry, you do not meet the requirements to do my missions.@Desculpe, você não tem os requisitos para fazer minhas missões.
 Sorry, you must wait %s seconds to battle with me again.@Desculpe, você precisa aguardar %s para batalhar comigo novamente.
 Sorry, you need at least level %s to accept this mission.@Desculpe, você precisa estar no mínimo nível %s para aceitar esta missão.
-Sorry, your account does not have that number of Soul Coins.@Desculpe, sua conta não tem esse número de Soul Coins.
+Sorry, your account does not have that number of Verse Orbs.@Desculpe, sua conta não tem esse número de Verse Orbs.
 Sorry, your backpack is full.@Desculpe, sua mochila está cheia.
 Sorry, your Pokemon can not sleep while with insomnia.@Desculpe, seu Pokemon não pode dormir enquanto estiver com insônia.
 Sorry, your Pokemon can only use this move agaisnt Pokemon trained by players.@Desculpe, seu Pokemon só pode usar este movimento em Pokemon treinado por jogadores.
@@ -3746,7 +3746,7 @@ Sorry? You are able to defeat these bosses: %s@Desculpe? Você é capaz de derrota
 Soul ball, go!@Bola Soul, vá!
 Soul Gym@Soul Gym
 Soul Purifier@Purificador de Almas
-Souls are valuable coins that can be exchanged for the following benefits: {premium account}, {exchange of sex}, {Pokemon nick change}, {Pokemon nick remove}, {stamina recover}, forming a {guild}, creating a guild {rank}, buying an {Egg Move Capsule} and {Pokemon Addon}. You can also {withdraw} your Soul Coins or check your account {balance}.@As Soul Coins são valiosas moedas que podem ser trocados pelos seguintes benefícios: {conta premium}, {troca de sexo}, {troca de apelido Pokemon}, {remoção de apelido Pokemon}, {recuperar stamina}, {formar uma guilda}, {criar uma categoria de guilda}, comprar {Egg Move Capsule} e {Pokemon Addon}. Você também pode {sacar} ou consultar o {saldo} de Soul Coins da sua conta.
+Souls are valuable coins that can be exchanged for the following benefits: {premium account}, {exchange of sex}, {Pokemon nick change}, {Pokemon nick remove}, {stamina recover}, forming a {guild}, creating a guild {rank}, buying an {Egg Move Capsule} and {Pokemon Addon}. You can also {withdraw} your Verse Orbs or check your account {balance}.@As Verse Orbs são valiosas moedas que podem ser trocados pelos seguintes benefícios: {conta premium}, {troca de sexo}, {troca de apelido Pokemon}, {remoção de apelido Pokemon}, {recuperar stamina}, {formar uma guilda}, {criar uma categoria de guilda}, comprar {Egg Move Capsule} e {Pokemon Addon}. Você também pode {sacar} ou consultar o {saldo} de Verse Orbs da sua conta.
 Soundproof prevents all effect from sound moves, granting the user immunity from them.@Soundproof impede todos efeitos a partir de movimentos de som, concedendo a imunidade ao usuário dele.
 south-east@sudeste
 south-west@sudoeste
@@ -5091,8 +5091,8 @@ You can't win with just one strong POKEMON. It's tough, but you have to raise th
 You can't withdraw your Pokemon right now. There are %s minutes of training remaining. If you really want, you can {cancel} the training.@Você não pode retirar seu Pokemon agora. Faltam %s minutos de treinamento. Se você realmente quiser, você pode {cancelar} o treinamento.
 You can choose a {Charmander} or a {Squirtle} or a {Bulbasaur} or a {Cyndaquil} or a {Totodile} or a {Chikorita} or a {Treecko} or a {Torchic} or a {Mudkip}. What is your choice?@Você pode escolher um {Charmander} ou um {Squirtle} ou um {Bulbasaur} ou um {Cyndaquil} ou um {Totodile} ou uma {Chikorita} ou um {Treecko} ou um {Torchic} ou um {Mudkip}. Qual é a sua escolha?
 You can choose a {Fire Stone} or a {Water Stone} or a {Leaf Stone}. What is your choice?@Você pode escolher uma {Fire Stone} ou uma {Water Stone} ou uma {Leaf Stone}. Qual é a sua escolha?
-You can create a new rank for your guild for 1 soul coin. What will be the name of the new rank?@Eu posso criar uma nova categoria para a sua guilda por 1 Soul Coin. Qual vai ser o nome da nova categoria?
-You can create your own guild here for 5 Soul Coins. What will be the name of your guild?@Eu posso criar sua guilda por 5 Soul Coins. Qual será o nome dela?
+You can create a new rank for your guild for 1 Verse Orb. What will be the name of the new rank?@Eu posso criar uma nova categoria para a sua guilda por 1 Verse Orb. Qual vai ser o nome da nova categoria?
+You can create your own guild here for 5 Verse Orbs. What will be the name of your guild?@Eu posso criar sua guilda por 5 Verse Orbs. Qual será o nome dela?
 Can you find a lipstick for me?@Você pode encontrar um batomlipstickpara mim?
 You can find the entrance to the south, remember to use your dive equipment. Good luck!@Você pode encontrar a entrada ao sul, lembre-se de usar o seu equipamento de mergulho. Boa sorte!
 You can find the Mountain Tribe on Kumquat Island and the Sky Tribe on Fairchild Island.@Você pode encontrar a Tribo da Montanha na Ilha Kumquat e a Tribo do Céu na Ilha Fairchild.
@@ -5414,14 +5414,14 @@ You need a premium account.@Você precisa de uma conta premium.
 You need a premium account in order to be blessed.@Você precisa de uma conta premium para ser abençoado.
 You need a premium account in order to buy @Você precisa de uma conta premium para comprar 
 You need a premium account in order to get promoted.@Você precisa de uma conta premium para ser promovido.
-You need at least 1 Soul Coin to blessed.@Você precisa de pelo menos 1 Soul Coin para ser abençoado.
-You need at least 1 Soul Coin to buy a Stamina Recover.@Você precisa de pelo menos 1 Soul Coin para comprar um Stamina Recover.
-You need at least 1 Soul Coin to change your pokemon nickname.@Você precisa de pelo menos 1 Soul Coin para mudar o apelido do seu Pokemon.
-You need at least 1 Soul Coin to create a new guild rank.@Você precisa de pelo menos 1 Soul Coin para criar uma nova categoria de guilda.
-You need at least 3 Soul Coins to change your sex.@Você precisa de pelo menos 3 Soul Coins para mudar o seu sexo.
-You need at least 5 Soul Coins to change your hometown.@Você precisa de pelo menos 5 Soul Coins para mudar a sua cidade natal.
-You need at least 5 Soul Coins to form a guild.@Você precisa de pelo menos 5 Soul Coins para formar uma guilda.
-You need at least 10 Soul Coins to do it.@Você precisa de pelo menos 10 Soul Coins para fazer isto.
+You need at least 1 Verse Orb to blessed.@Você precisa de pelo menos 1 Verse Orb para ser abençoado.
+You need at least 1 Verse Orb to buy a Stamina Recover.@Você precisa de pelo menos 1 Verse Orb para comprar um Stamina Recover.
+You need at least 1 Verse Orb to change your pokemon nickname.@Você precisa de pelo menos 1 Verse Orb para mudar o apelido do seu Pokemon.
+You need at least 1 Verse Orb to create a new guild rank.@Você precisa de pelo menos 1 Verse Orb para criar uma nova categoria de guilda.
+You need at least 3 Verse Orbs to change your sex.@Você precisa de pelo menos 3 Verse Orbs para mudar o seu sexo.
+You need at least 5 Verse Orbs to change your hometown.@Você precisa de pelo menos 5 Verse Orbs para mudar a sua cidade natal.
+You need at least 5 Verse Orbs to form a guild.@Você precisa de pelo menos 5 Verse Orbs para formar uma guilda.
+You need at least 10 Verse Orbs to do it.@Você precisa de pelo menos 10 Verse Orbs para fazer isto.
 You need at least level 30 to enter the Safari Zone@Você precisa de pelo menos nível 30 para entrar na Zona Safari
 You need at least level@Você precisa de, pelo menos, nível
 You need at least level %s to advance.@Você precisa de pelo menos nível %s para avançar.
@@ -5435,7 +5435,7 @@ You need at least one Psychic-type Pokemon to do this!@Você precisa de pelo meno
 You need at least %s dollars to bet.@Você precisa no mínimo %s doláres para apostar.
 You need at least %s Pokemon to enter the tournament!@Você precisa de pelo menos de %s Pokemon para entrar no torneio!
 You need at least %sx artist palettes to do it.@Você precisa de pelo menos %sx Artist's Pallete para fazer isto.
-You need at least %sx Soul Coin to do it.@Você precisa de pelo menos %sx soul coin para fazê-lo.
+You need at least %sx Verse Orb to do it.@Você precisa de pelo menos %sx Verse Orb para fazê-lo.
 You need at least skill %s to use this fishing rod.@Você precisa de pelo menos habilidade de pesca %s para usar esta vara de pesca.
 You need pay %s respect points to battle against me.@Você precisa pagar %s pontos de respeito para batalhar comigo.
 You need %s dollars to travel there.@Você precisa de %s dólares para viajar.
@@ -5468,7 +5468,7 @@ Your account must have premium days to join here.@Sua conta precisa estar com di
 Your account name cannot be same as password, please choose another one.@O nome da conta não pode ser o mesmo da senha, por favor, escolha outro.
 Your account name contains invalid characters, please choose another one.@O nome da conta contém caracteres inválidos, por favor, escolha outro.
 Your account reach the limit of 15 players, you can 'delete' a character if you want to create a new one.@A sua conta atingir o limite de 15 jogadores, você pode "apagar" um personagem, se você deseja criar um novo.
-Your account's soul coin balance is: %s.@O saldo de Soul Coins da sua conta é: %s.
+Your account's Verse Orb balance is: %s.@O saldo de Verse Orbs da sua conta é: %s.
 You raise your fishing skill?@Você conseguiu evoluir sua habilidade de pesca?
 Your album already have this doll.@O seu álbum já tem esse boneco.
 Your backpack is full.@Sua mochila está cheia.
@@ -6910,7 +6910,7 @@ It is a Pokemon addon kit. Category: Common.@É um kit de addon Pokemon. Categori
 It is a Pokemon addon kit. Category: Uncommon.@É um kit de addon Pokemon. Categoria: Incomum.
 It is a Pokemon addon kit. Category: Rare.@É um kit de addon Pokemon. Categoria: Raro.
 It is a Pokemon addon kit. Category: Legendary.@É um kit de addon Pokemon. Categoria: Lendário.
-Yes, here you can exchange your soul coins for Pokemon addons. These are the options. Just say the name of what you want.@Sim, aqui você pode trocar suas Soul Coins por Pokemon addons. As opções são estas. Basta dizer o nome de qual você deseja.
+Yes, here you can exchange your Verse Orbs for Pokemon addons. These are the options. Just say the name of what you want.@Sim, aqui você pode trocar suas Verse Orbs por Pokemon addons. As opções são estas. Basta dizer o nome de qual você deseja.
 You can only take Pokemon of your Mastery's type!@Você só pode levar Pokemons que façam parte do tipo da sua Mastery!
 You do not have enough letters for it.@Você não tem letras suficientes.
 You already have a mastery. If you want to join here, you first need to leave it by talking to your mastery leader.@Você já possui uma Mastery, se você quiser se alistar aqui, primeiro você precisa deixar o seu líder atual.

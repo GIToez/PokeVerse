@@ -174,7 +174,7 @@ case " $kit " in *" 10:12282 "*) ;; *) echo "FAIL: Bag Trainer's bag was not mov
 links=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT COUNT(*) FROM discord_account_links")
 [ "$links" = 0 ] || { echo "FAIL: the bridge test should leave no Discord links, found $links"; exit 1; }
 boosted=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT CONCAT(a.soulcoins, ',', COUNT(r.id), ',', SUM(r.total)) FROM accounts a JOIN discord_booster_rewards r ON r.account_id = a.id WHERE a.name = 'bridgebooster' GROUP BY a.id")
-[ "$boosted" = "32,5,32" ] || { echo "FAIL: the booster account should hold 32 Soul Coins from 5 ledger rows (soulcoins,rows,total: $boosted)"; exit 1; }
+[ "$boosted" = "32,5,32" ] || { echo "FAIL: the booster account should hold 32 Verse Orbs from 5 ledger rows (soulcoins,rows,total: $boosted)"; exit 1; }
 boost_level=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT value FROM global_storage WHERE \`key\` = 7156")
 [ "$boost_level" = 2 ] || { echo "FAIL: the server boost level should be stored as 2, got '$boost_level'"; exit 1; }
 grep -q "> Discord boost perks: server boost level 2 -> 3 (14 boosts)." "$work/server.log" \
@@ -352,7 +352,7 @@ warp=$(python3 "$root/scripts/protocol-test.py" --account admin --password admin
   --say "/warpstyle beam teleport" --say "/warpstyle defeat defeat" \
   --say "/warpstyle pokeball teleport" --say "/warpstyle ghost defeat" --say "/warpstyle fireworks victory" || true)
 bought=$($db -upokeverse -ppokeverse -N pokeverse -e "SELECT CONCAT(a.soulcoins, ',', COUNT(w.style)) FROM accounts a JOIN players p ON p.account_id = a.id LEFT JOIN player_warp_styles w ON w.player_id = p.id AND w.style = 'pokeball' WHERE p.name = 'Admin' GROUP BY a.id")
-[ "$bought" = "2,1" ] || { echo "$warp" | grep "opcode 41" | tail -5; echo "FAIL: buying the Poke Ball Warp once should leave 2 Soul Coins and one owned row (coins,rows: $bought)"; exit 1; }
+[ "$bought" = "2,1" ] || { echo "$warp" | grep "opcode 41" | tail -5; echo "FAIL: buying the Poke Ball Warp once should leave 2 Verse Orbs and one owned row (coins,rows: $bought)"; exit 1; }
 echo "$warp" | grep -q "You already have this Warp Style" || { echo "FAIL: buying an owned Warp Style again should be refused"; exit 1; }
 echo "$warp" | grep "extended opcode 57" || true
 echo "$warp" | python3 -c '

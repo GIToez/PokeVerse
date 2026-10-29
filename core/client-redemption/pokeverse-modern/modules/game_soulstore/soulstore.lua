@@ -1,4 +1,4 @@
--- The Store: what Soul Coins buy (Store in the server lib). The top bar's Store button opens it. The server talks
+-- The Store: what Verse Orbs buy (Store in the server lib). The top bar's Store button opens it. The server talks
 -- JSON on ExtendedIds.Store: {type = "store", balance, held, buyOrbs, coin, bag, points, premiumDays, sex, ball, guild,
 -- categories, offers} fills the window, {type = "result", ok, text} answers a purchase, a withdraw or a deposit (a fresh
 -- "store" comes first when it worked), {type = "history", list} fills the history and {type = "buy-link", url} is the
@@ -297,12 +297,12 @@ local function refreshDetail()
         pane.buy:setText(tr('Get - %s referral points', thousands(price)))
         pane.buy:setEnabled(canAfford(offer, price))
     else
-        pane.buy:setText(price == 1 and tr('Buy - 1 Soul Coin') or tr('Buy - %s Soul Coins', thousands(price)))
+        pane.buy:setText(price == 1 and tr('Buy - 1 Verse Orb') or tr('Buy - %s Verse Orbs', thousands(price)))
         pane.buy:setEnabled(canAfford(offer, price))
     end
     local short = not offer.owned and price > 0 and not canAfford(offer, price)
     pane.buy:setTooltip(short and (offer.points and tr('You have %s referral points.', thousands(state.points or 0))
-        or tr('You have %s Soul Coins.', thousands((state.balance or 0) + (state.bag or 0)))) or '')
+        or tr('You have %s Verse Orbs.', thousands((state.balance or 0) + (state.bag or 0)))) or '')
 end
 
 -- Lists ------------------------------------------------------------------------------------------------
@@ -467,9 +467,9 @@ local function buy()
         return
     end
     local fromBag = math.max(0, price - (state.balance or 0))
-    local text2 = price == 1 and tr('Buy %s for 1 Soul Coin?', what) or tr('Buy %s for %s Soul Coins?', what, thousands(price))
+    local text2 = price == 1 and tr('Buy %s for 1 Verse Orb?', what) or tr('Buy %s for %s Verse Orbs?', what, thousands(price))
     if fromBag > 0 then
-        text2 = text2 .. '\n' .. tr('%s of them come from the coins in your bag.', thousands(fromBag))
+        text2 = text2 .. '\n' .. tr('%s of them come from the orbs in your bag.', thousands(fromBag))
     end
     openDialog(tr('Confirm purchase'), text2, tr('Buy'), function() send(request) end)
 end
@@ -479,11 +479,11 @@ local function withdraw()
     if max <= 0 then
         return
     end
-    local text = tr('Soul Coins from your balance go to your bag, to trade or carry.')
+    local text = tr('Verse Orbs from your balance go to your bag, to trade or carry.')
     if (state.held or 0) > 0 then
         text = text .. '\n' .. tr('%s bought in the last 7 days stay on the balance until then.', thousands(state.held))
     end
-    openDialog(tr('Withdraw Soul Coins'), text,
+    openDialog(tr('Withdraw Verse Orbs'), text,
         tr('Withdraw'), function(amount) send({ action = 'withdraw', amount = amount }) end, max)
 end
 
@@ -492,7 +492,7 @@ local function deposit()
     if max <= 0 then
         return
     end
-    openDialog(tr('Deposit Soul Coins'), tr('Soul Coins from your bag go to your balance, shared by your account.'),
+    openDialog(tr('Deposit Verse Orbs'), tr('Verse Orbs from your bag go to your balance, shared by your account.'),
         tr('Deposit'), function(amount) send({ action = 'deposit', amount = amount }) end, max)
 end
 

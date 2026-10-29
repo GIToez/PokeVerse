@@ -75,7 +75,7 @@ local NODES = {
 
           local playerSoulCoins = getPlayerAccountSoulCoins(cid)
           if (count > playerSoulCoins) then
-            npcHandler:say("Sorry, your account does not have that number of Soul Coins.", cid)
+            npcHandler:say("Sorry, your account does not have that number of Verse Orbs.", cid)
             return true
           end
 

@@ -132,13 +132,13 @@ NPCS["Gray"] = function(cid, type, msg)
     end
 end
 
--- Soul Coin Trader
+-- Verse Orb Trader
 NPCS["Jimi"] = function(cid, type, msg)
-    if (msgcontains(msg, 'soul')) then
-        npcHandler:sayStory(string.createStory("These are the game's virtual currency. With them you can get a Premium Account, which gives access to various locations on the map and full use of your Pokemon. They are not required to play, but if you want the full experience be sure to get some. You can buy them from other players or by donating to the project through the official site. It's a symbolic way to keep PokeVerse online for your enjoyment. They have several uses, so to see more details read the Wiki tab of the Pokepedia (press M) or ask in the Help channel."), cid)
+    if (msgcontains(msg, 'orb') or msgcontains(msg, 'soul')) then
+        npcHandler:sayStory(string.createStory("These are the game's virtual currency. With them you can get a Premium Account, which gives access to various locations on the map and full use of your Pokemon. They are not required to play, but if you want the full experience be sure to get some. You can buy them from other players, or with PayPal from Buy Verse Orbs in the Store; that's what keeps PokeVerse online. They have several uses, so to see more details read the Wiki tab of the Pokepedia (press M) or ask in the Help channel."), cid)
 
     else
-        selfSay("Do you know what a {SOUL COIN} is?", cid)
+        selfSay("Do you know what a {VERSE ORB} is?", cid)
     end
 end
 

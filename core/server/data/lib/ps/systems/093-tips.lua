@@ -34,7 +34,7 @@ Tips.LIST = {
     "Shiny Pokemon are stronger. Watch for shiny events on the calendar!",
     "Strange signs mean a legendary is near. Keep your eyes open!",
     "Try the Vibrant or Toon visual style in Options.",
-    "Soul Coins buy nicknames and more in the Store.",
+    "Verse Orbs buy nicknames and more in the Store.",
 }
 
 Tips.INTERVAL_MINUTES = 60 -- globalevents.xml runs globalMessages.lua this often
