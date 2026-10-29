@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Fixes from the Johto audit on the dev map: roof and wall pieces left hanging off houses,
-Cherrygrove's boardwalk that lay on the grass, and dirt roads that ran into the hills' cliffs.
+Cherrygrove's boardwalk that lay on the grass, dirt roads that ran into the hills' cliffs and
+Tohjo Falls' pool and trails.
 
-    scripts/mapper/fix_johto_audit.py [roofs] [pier] [cliffs] [--map mapper/map/dev.otbm] [--out <same>]
+    scripts/mapper/fix_johto_audit.py [roofs] [pier] [cliffs] [falls] [--map mapper/map/dev.otbm] [--out <same>]
 
 Does all the parts unless told which.
 
@@ -23,6 +24,9 @@ Does all the parts unless told which.
             along its top. The dirt in the cliff's face, in front of it and along the top's edge turns
             to grass, the cliff keeping its gravel; dirt that leaves under 2 wide or in small crumbs
             goes too. The ramps stay as they are; walking is not changed anywhere.
+  falls     Tohjo Falls: the two rock stubs standing in the pool below the falls become grass banks,
+            and the trails' dirt runs on along the open cuts to the falls, 2 wide, instead of ending
+            at the rock path (the ledge right behind each fall stays the 1-wide way under the water).
 
 Seeded, so the same map gives the same result; run it on a map without it (the dev map has it).
 """
@@ -43,7 +47,7 @@ import walkcheck  # noqa: E402
 ROOT = os.path.dirname(os.path.dirname(HERE))
 DEV = os.path.join(ROOT, 'mapper', 'map')
 SEED = 11
-PARTS = ['roofs', 'pier', 'cliffs']
+PARTS = ['roofs', 'pier', 'cliffs', 'falls']
 
 STRAYS = [
     (1892, 687, 1905, 691), (1904, 644, 1906, 653), (1946, 689, 1958, 694),                            # Cianwood
@@ -78,6 +82,16 @@ KEEP_PIECES = [(2832, 588, 2984, 738),   # Tohjo Falls, rebuilt by edit_tohjo_fa
 # buildings whose front stands out over the street on purpose: the centers and marts (rebuilt by
 # edit_johto_centers.py) and the Safari Zone gate's stall awning
 OWN_FRONTS = {'pokecenter', 'mart', 'safari-gate'}
+
+# Tohjo Falls (after edit_tohjo_falls.py): the rock stubs in the pool below the falls, the floor-6 grass
+# left over the east one, the columns of the open cuts each side of the falls and the ledge's 1-wide
+# bits outside them
+STUBS = [(2886, 669, 2898, 678), (2904, 669, 2913, 678)]
+FLOATING = [(2909, 670), (2910, 670), (2911, 670), (2912, 670), (2909, 671), (2910, 671)]
+FALL = 3569
+LEDGE = 667
+CUTS = list(range(2876, 2893)) + list(range(2911, 2930))
+WIDEN = [(2890, 666), (2891, 666), (2892, 666), (2911, 666)]
 
 PIER = (2529, 861, 2581, 863)                       # the boardwalk
 UNDER = [(2529, 864, 2581, 867), (2529, 868, 2571, 870)]   # grass and sand from it down to the bay
@@ -338,6 +352,58 @@ def pier(tiles, brushes, rng):
     return {k: v for k, v in new.items() if v != tiles.get(k)}
 
 
+def falls(tiles, brushes, rng):
+    """{(x, y, z): [item ids] or []} at Tohjo Falls: the two rock stubs in the pool below the falls
+    become grass banks (with what stood on them on the floors above), and the trails' dirt carries
+    on along the open cuts to the falls, 2 wide, instead of stopping at the rock path."""
+    import walkcheck
+    B = brushes
+
+    def br(k):
+        ids = tiles.get(k)
+        return B.by_item.get(ids[0]) if ids else None
+
+    paint, gone = {}, set()
+    for x0, y0, x1, y1 in STUBS:
+        stub = [(x, y) for x in range(x0, x1 + 1) for y in range(y0, y1 + 1) if br((x, y, 7)) is B['mountain']]
+        for x, y in stub:
+            paint[(x, y, 7)] = B['grass']
+        if stub:
+            for x in range(x0, x1 + 1):
+                for y in range(y0, y1 + 1):
+                    b = br((x, y, 7))
+                    if b is not None and b is not B['mountain'] and b is not B['grass']:
+                        paint[(x, y, 7)] = b
+        for x, y in stub + [p for p in FLOATING if x0 <= p[0] <= x1 and y0 <= p[1] <= y1]:
+            gone |= {(x, y, z) for z in range(1, 7) if tiles.get((x, y, z)) and FALL not in tiles[(x, y, z)]}
+    walk = walkcheck.Walker(tiles)
+    for x in CUTS:
+        for y in (LEDGE - 1, LEDGE, LEDGE + 1):
+            if br((x, y, 7)) is B['mountain top ground'] and walk.standable((x, y, 7)):
+                paint[(x, y, 7)] = B['dirt']
+    for x, y in WIDEN:
+        if br((x, y, 7)) is not B['dirt']:
+            paint[(x, y, 7)] = B['dirt']
+            gone.add((x, y, 6))
+    changed = repaint(tiles, B, paint, rng)
+    after = dict(tiles)
+    after.update(changed)
+    # the stubs' gravel goes where no rock is left beside it
+    x0, y0 = min(s[0] for s in STUBS), min(s[1] for s in STUBS)
+    x1, y1 = max(s[2] for s in STUBS) + 1, max(s[3] for s in STUBS) + 1
+    for x in range(x0 - 1, x1 + 1):
+        for y in range(y0, y1 + 1):
+            ids = after.get((x, y, 7))
+            if not ids or B.by_item.get(ids[0]) is B['mountain'] or not any(i in GRAVEL for i in ids):
+                continue
+            if any(B.by_item.get((after.get((x + dx, y + dy, 7)) or [0])[0]) is B['mountain']
+                   for dx in (-1, 0, 1) for dy in (-1, 0, 1)):
+                continue
+            changed[(x, y, 7)] = [i for i in ids if i not in GRAVEL]
+    changed.update({k: [] for k in gone if tiles.get(k)})
+    return changed
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--map', default=os.path.join(DEV, 'dev.otbm'))
@@ -374,6 +440,8 @@ def main():
         done.append('%d tiles at the pier' % apply(pier(tiles, B, rng)))
     if 'cliffs' in args.parts:
         done.append('%d tiles at the cliffs' % apply(repaint(tiles, B, verges(tiles, B), rng)))
+    if 'falls' in args.parts:
+        done.append('%d tiles at Tohjo Falls' % apply(falls(tiles, B, rng)))
     new_tiles, remove = edit.tiles()
     cut = pvmap.write_map(data, out, new_tiles, remove)
     print('%s: %s; %d written, %d removed (%d replaced)' % (out, ', '.join(done), len(new_tiles), len(remove), cut))
