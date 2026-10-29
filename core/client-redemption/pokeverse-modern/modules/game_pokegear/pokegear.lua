@@ -228,6 +228,13 @@ function toggleNearby()
     Nearby.toggle()
 end
 
+-- Tab (game_battle attackNext) cycles these, in the order Nearby lists them
+function nearbyCreatures()
+    if active and Nearby.isOpen() then
+        return Nearby.creatures()
+    end
+end
+
 -- the badge case shows in its own window (game_badgecase), so in Pokegear it gets no container window
 local function isBadgeCase(container)
     local badgeCase = modules.game_badgecase

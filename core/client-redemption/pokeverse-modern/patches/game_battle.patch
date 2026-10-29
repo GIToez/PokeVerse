@@ -255,7 +255,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
          else
              return {
                  name = battleButton.name
-@@ -1986,6 +2075,49 @@
+@@ -1986,6 +2075,61 @@
      end
  end
  
@@ -266,29 +266,41 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
 +    if not position then
 +        return false
 +    end
-+    local playerId = player:getId()
 +    local candidates = {}
-+    for _, creature in ipairs(getCreaturesAroundPlayer()) do
-+        if not creature:isLocalPlayer() and creature:isAttackable() and creature:canBeSeen()
-+            and creature:getMasterId() ~= playerId then
-+            local pos = creature:getPosition()
-+            candidates[#candidates + 1] = { creature = creature,
-+                distance = math.max(math.abs(pos.x - position.x), math.abs(pos.y - position.y)) }
++    -- the Pokegear layout's Nearby window: Tab follows its rows, with its sort and filters
++    local pokegear = modules.game_pokegear
++    local nearby = pokegear and pokegear.nearbyCreatures and pokegear.nearbyCreatures()
++    if nearby then
++        for _, creature in ipairs(nearby) do
++            if creature:isAttackable() then
++                candidates[#candidates + 1] = creature
++            end
 +        end
++    else
++        local playerId = player:getId()
++        local distances = {}
++        for _, creature in ipairs(getCreaturesAroundPlayer()) do
++            if not creature:isLocalPlayer() and creature:isAttackable() and creature:canBeSeen()
++                and creature:getMasterId() ~= playerId then
++                local pos = creature:getPosition()
++                candidates[#candidates + 1] = creature
++                distances[creature] = math.max(math.abs(pos.x - position.x), math.abs(pos.y - position.y))
++            end
++        end
++        table.sort(candidates, function(a, b)
++            if distances[a] ~= distances[b] then
++                return distances[a] < distances[b]
++            end
++            return a:getId() < b:getId()
++        end)
 +    end
 +    if #candidates == 0 then
 +        return false
 +    end
-+    table.sort(candidates, function(a, b)
-+        if a.distance ~= b.distance then
-+            return a.distance < b.distance
-+        end
-+        return a.creature:getId() < b.creature:getId()
-+    end)
 +    local current = g_game.getAttackingCreature()
 +    local index = 0
-+    for i, entry in ipairs(candidates) do
-+        if current and entry.creature:getId() == current:getId() then
++    for i, creature in ipairs(candidates) do
++        if current and creature:getId() == current:getId() then
 +            index = i
 +            break
 +        end
@@ -298,14 +310,14 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
 +    else
 +        index = index % #candidates + 1
 +    end
-+    g_game.attack(candidates[index].creature)
++    g_game.attack(candidates[index])
 +    return true
 +end
 +
  function attackNext(previous)
      local foundTarget = false
      local firstElement = nil
-@@ -1994,14 +2126,14 @@
+@@ -1994,14 +2138,14 @@
      local nextElement = nil
  
      local mainInstance = BattleListManager.instances[0]
@@ -323,7 +335,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
              -- select visible first child
              if not firstElement then
                  firstElement = battleButton
-@@ -2381,6 +2513,16 @@
+@@ -2381,6 +2525,16 @@
      end
  end
  
@@ -340,7 +352,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
  function onCreatureAppear(creature) -- Update battleButton once a creature appear (add)
      if creature:isLocalPlayer() then
          addEvent(updateStaticSquare)
-@@ -2540,7 +2682,22 @@
+@@ -2540,7 +2694,22 @@
  end
  
  
@@ -363,7 +375,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
      if battleButton:isOn() then
          battleWindow:close()
      else
-@@ -2609,6 +2766,7 @@
+@@ -2609,6 +2778,7 @@
      toggleFilterButton = nil
  
      Keybind.delete("Windows", "Show/hide battle list")
