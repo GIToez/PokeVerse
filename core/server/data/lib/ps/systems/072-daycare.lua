@@ -1,8 +1,8 @@
 -- Day Care window (docs/upcoming-features.md). Any daycare NPC (the Old Man and the Old Lady) opens the
 -- same window for the trainer's account: two slots for any two Pokemon, lines from each down to the egg
 -- slot, and what the pair can breed. Slot 1 is the daycare_female table and slot 2 daycare_male, so the
--- Pokemon left with the NPCs before the window stay where they are. Clients without the window keep the
--- NPCs' conversation (npc/scripts/daycareFemale.lua and daycareMale.lua).
+-- Pokemon left with the NPCs before the window stay where they are. The Old Man opens the window when greeted;
+-- the Old Lady, who also sells incubators, when the trainer says "daycare".
 --
 -- An egg is rolled from the pair, not from withdrawing one of them: from day 7 of the wait each day has one
 -- roll, on day 14 the egg is certain (as the NPCs). The rolls happen whenever the window is built; an egg
@@ -605,10 +605,13 @@ Daycare.eggState = function(cid)
     return egg
 end
 
--- A keeper greeting the trainer: opens the window, or (without one) hands over a waiting egg.
--- Returns what the keeper says about the egg, or nil.
-Daycare.onGreet = function(cid)
-    if (Daycare.open(cid)) then
+-- A keeper greeting the trainer: with the window, opens it (when openWindow) and leaves the egg to it;
+-- without, hands over a waiting egg. Returns what the keeper says about the egg, or nil.
+Daycare.onGreet = function(cid, openWindow)
+    if (Daycare.enabled(cid)) then
+        if (openWindow) then
+            Daycare.open(cid)
+        end
         return nil
     end
     Daycare.eggState(cid)

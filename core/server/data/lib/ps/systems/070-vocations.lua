@@ -35,7 +35,7 @@
 -- Where the perks are used:
 --   Ace Trainer  doPlayerPokemonAddExperience (functions/player.lua): Pokemon EXP from defeats
 --   Catcher      emptyBall and catchMiss (functions/ball/empty.lua)
---   Breeder      the incubator (events/actions/eggIncubator) and the daycare (npc/scripts/daycareFemale.lua)
+--   Breeder      the incubator (events/actions/eggIncubator) and the Day Care (systems/072-daycare.lua)
 --   Ranger       Vocations.radar, the !radar command
 --   Angler       Fishing (systems/043-fishing.lua), the Fishing Guide window (!fishing) and the cranes
 --   Medic        the health potions (events/actions/potions/healthPotions.lua)
