@@ -200,7 +200,11 @@ function Pokegear.makeMovable(window, handle, setting, placeDefault)
             placeDefault()
         end
     end
+    -- window.pokegearLocked (the chat's lock) keeps it where it is
     handle.onDragEnter = function(widget, mousePos)
+        if window.pokegearLocked then
+            return false
+        end
         local pos = window:getPosition()
         widget.dragOffset = { x = mousePos.x - pos.x, y = mousePos.y - pos.y }
         Pokegear.unhang(window)
@@ -221,6 +225,9 @@ function Pokegear.makeMovable(window, handle, setting, placeDefault)
         return true
     end
     handle.onDoubleClick = function()
+        if window.pokegearLocked then
+            return false
+        end
         g_settings.set(setting, { x = 0, y = 0 })
         Pokegear.unhang(window)
         window:breakAnchors()

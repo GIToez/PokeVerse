@@ -6,6 +6,7 @@
 -- NPC lines also show in Local, teal, so NPCs and players talk side by side there.
 local POSITION_SETTING = 'pokegearChatPosition'
 local OPEN_SETTING = 'pokegearChatOpen'
+local LOCK_SETTING = 'pokegearChatLocked'
 local MAX_ROWS = 120
 local MAX_FLOATS = 5
 local FLOAT_SECONDS = 8
@@ -525,6 +526,7 @@ refreshInput = function()
     local input = window.input
     local edit = textEdit()
     local typing = edit ~= nil and edit:isExplicitlyVisible()
+    local empty = not typing or edit:getText() == ''
     -- folded, the pill names the channel; open, the chips already do
     input.channel:setVisible(not open)
     if tab then
@@ -532,9 +534,12 @@ refreshInput = function()
     end
     input.channel:setWidth(open and 0 or input.channel:getTextSize().width + 24)
     input.channel:setMarginLeft(open and 0 or 6)
-    input.hint:setVisible(not typing)
+    -- the edit's own placeholder is a bitmap font that never lines up with the hint, so the hint stands in
+    input.hint:setVisible(empty)
     input.enterChip:setVisible(not typing)
-    if not open and unreadFolded > 0 then
+    if typing then
+        input.hint:setText(tr('Type here to chat'))
+    elseif not open and unreadFolded > 0 then
         input.hint:setText(tr('Press Enter to chat') .. '  \183  ' .. tr('%d new', unreadFolded))
     else
         input.hint:setText(tr('Press Enter to chat'))
@@ -584,7 +589,35 @@ function Chat.relayout()
     applyOpen()
 end
 
-function Chat.setOpen(on)
+-- a card you moved folds down onto its line and opens upwards from it, like the one in its corner
+local function keepBottom(change)
+    local saved = g_settings.getPoint(POSITION_SETTING)
+    if not window or not saved or (saved.x == 0 and saved.y == 0) then
+        change()
+        return
+    end
+    local bottom = window:getY() + window:getHeight()
+    change()
+    local pos = { x = window:getX(), y = math.max(0, bottom - window:getHeight()) }
+    window:setPosition(pos)
+    g_settings.set(POSITION_SETTING, pos)
+end
+
+local function applyLock()
+    if not window then
+        return
+    end
+    local locked = g_settings.getBoolean(LOCK_SETTING, false)
+    window.pokegearLocked = locked
+    local lock = window.header.lock
+    lock:setOn(locked)
+    lock.icon:setImageSource('/modules/game_pokegear/images/' .. (locked and 'lock' or 'unlock'))
+    lock.icon:setImageColor(locked and '#ffcb05' or '#8fa0c4')
+    lock:setTooltip(locked and tr('Locked: click to move the chat again') or tr('Lock the chat where it is'))
+    window.header:setTooltip(locked and '' or tr('Drag to move'))
+end
+
+local function setOpenNow(on)
     open = on
     -- what came in while folded is in front of you once it opens
     local tab = on and currentTab()
@@ -595,6 +628,14 @@ function Chat.setOpen(on)
         g_settings.set(openSetting(), on)
     end
     applyOpen()
+end
+
+function Chat.setOpen(on)
+    if window and on ~= open then
+        keepBottom(function() setOpenNow(on) end)
+    else
+        setOpenNow(on)
+    end
 end
 
 function Chat.isOpen()
@@ -622,14 +663,15 @@ local function adoptEdit()
     editHome.font = editHome.font or edit:getFont()
     editHome.align = editHome.align or edit:getTextAlign()
     edit:setImageColor('#00000000')
-    edit:mergeStyle({ ['ttf-font'] = '/fonts/ttf/arialb.ttf', ['ttf-font-size'] = 13 })
+    edit:mergeStyle({ ['ttf-font'] = '/fonts/ttf/arialb.ttf', ['ttf-font-size'] = 12 })
     editHome.paddingTop = editHome.paddingTop or edit:getPaddingTop()
     editHome.paddingLeft = editHome.paddingLeft or edit:getPaddingLeft()
     edit:setTextAlign(AlignLeft)
     -- a text edit places its text by padding, not text-offset
-    edit:setPaddingTop(9)
+    edit:setPaddingTop(11)
     edit:setPaddingLeft(4)
-    connect(edit, { onVisibilityChange = onEditVisibility })
+    edit:mergeStyle({ ['placeholder-color'] = '#00000000' })
+    connect(edit, { onVisibilityChange = onEditVisibility, onTextChange = onEditVisibility })
 end
 
 local function releaseEdit()
@@ -637,7 +679,8 @@ local function releaseEdit()
     if not edit or not editHome or edit:getParent() == editHome.parent then
         return
     end
-    disconnect(edit, { onVisibilityChange = onEditVisibility })
+    disconnect(edit, { onVisibilityChange = onEditVisibility, onTextChange = onEditVisibility })
+    edit:mergeStyle({ ['placeholder-color'] = '#707070' })
     edit:breakAnchors()
     edit:setParent(editHome.parent)
     edit:addAnchor(AnchorLeft, 'sayModeButton', AnchorRight)
@@ -755,6 +798,10 @@ local function build()
     window:hide()
     floats:hide()
     window.header.fold.onClick = function() Chat.setOpen(false) end
+    window.header.lock.onClick = function()
+        g_settings.set(LOCK_SETTING, not g_settings.getBoolean(LOCK_SETTING, false))
+        applyLock()
+    end
     window.send.onClick = sendLine
     window.input:setTooltip(tr('Click to chat'))
     window.input.onMouseRelease = function(widget, mousePos, button)
@@ -805,6 +852,7 @@ local function show()
         connect(tabBar, { onTabChange = onTabChange })
     end
     restorePosition()
+    applyLock()
     window:show()
     window:raise()
     floats:raise()
