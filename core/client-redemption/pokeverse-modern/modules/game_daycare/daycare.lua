@@ -372,7 +372,42 @@ function hide()
     end
 end
 
+-- Phone screens are shorter than the window. It gives up height in this order, so the plates and the egg
+-- panel's button stay on screen: the spacing around the cards (SPACING_CUT), the bottom row with Leave a
+-- Pokemon and Plate (BOTTOM_CUT), then the middle row with Compatibility, the egg and Egg (MIDDLE_CUT).
+local FULL_HEIGHT, MIDDLE_HEIGHT, EGG_SIZE, EGG_ITEM = 636, 128, 112, 64
+local CARDS_MARGIN, LINE_HEIGHT, MIDDLE_MARGIN, EGG_MARGIN = 14, 20, 12, 34
+local SPACING_CUT, BOTTOM_CUT, MIDDLE_CUT, SCREEN_MARGIN = 22, 60, 40, 12
+
+local function fitScreen()
+    local cutSpacing, cutBottom, cutMiddle = 0, 0, 0
+    if g_platform.isMobile() then
+        local over = math.max(0, FULL_HEIGHT + SCREEN_MARGIN - rootWidget:getHeight())
+        cutSpacing = math.min(over, SPACING_CUT)
+        cutBottom = math.min(over - cutSpacing, BOTTOM_CUT)
+        cutMiddle = math.min(over - cutSpacing - cutBottom, MIDDLE_CUT)
+    end
+    local cardsMargin = CARDS_MARGIN - math.floor(cutSpacing * 10 / 22)
+    local lineHeight = LINE_HEIGHT - math.floor(cutSpacing * 8 / 22)
+    local middleMargin = MIDDLE_MARGIN - (cutSpacing - (CARDS_MARGIN - cardsMargin) - (LINE_HEIGHT - lineHeight))
+    window:setHeight(FULL_HEIGHT - cutSpacing - cutBottom - cutMiddle)
+    window.slot1:setMarginTop(cardsMargin)
+    window.line1Down:setHeight(lineHeight)
+    window.line2Down:setHeight(lineHeight)
+    window.compatibility:setMarginTop(middleMargin)
+    window.compatibility:setHeight(MIDDLE_HEIGHT - cutMiddle)
+    local egg = EGG_SIZE - cutMiddle
+    window.egg:setSize({ width = egg, height = egg })
+    window.egg:setMarginTop(EGG_MARGIN - (LINE_HEIGHT - lineHeight) - (MIDDLE_MARGIN - middleMargin) - math.floor(cutMiddle / 4))
+    -- the egg's status line keeps the full gap between the side panels
+    window.compatibility:setMarginRight(18 + math.floor(cutMiddle / 2))
+    window.eggPanel:setMarginLeft(18 + math.floor(cutMiddle / 2))
+    local item = math.min(EGG_ITEM, egg - 24)
+    window.egg.item:setSize({ width = item, height = item })
+end
+
 local function show()
+    fitScreen()
     local root = rootWidget:getSize()
     if not window:isVisible() then
         window:setPosition({ x = math.floor((root.width - window:getWidth()) / 2),
