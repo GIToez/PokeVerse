@@ -43,8 +43,9 @@ function Pokegear.backpackItem()
 end
 
 -- the key bound now, in the current preset (empty when nothing is bound)
+-- no key chips on phones and tablets: there's no keyboard to press them on
 function Pokegear.boundKey(key)
-    if not key or not Keybind.getKeybindKeys then
+    if not key or not Keybind.getKeybindKeys or g_platform.isMobile() then
         return ''
     end
     local ok, keys = pcall(Keybind.getKeybindKeys, key[1], key[2], Keybind.chatMode, Keybind.currentPreset)
@@ -88,6 +89,7 @@ function Pokegear.topButton(id)
     local mainPanel = modules.game_mainpanel
     return (mainPanel and mainPanel.getButton and mainPanel.getButton(id))
         or (modules.client_topmenu and modules.client_topmenu.getButton(id))
+        or Phone.findButton(id)
 end
 
 function Pokegear.pressTopButton(id)

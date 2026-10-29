@@ -191,6 +191,7 @@ local function apply()
         Chat.apply(active)
         applyWalkLock()
         applyTopBar()
+        Phone.apply(active)
     end
     Hub.apply(active)
     Nearby.apply(active)
@@ -256,9 +257,14 @@ end
 local startEvent
 local compact
 
+-- full, compact, or a phone (smaller still; phone.lua)
+local function sizeClass()
+    return Pokegear.isCompact() and (Phone.isPhone() and 'phone' or 'compact') or 'full'
+end
+
 -- a window resize (or a phone turning) across the compact size re-fits every Pokegear window
 local function onRootGeometryChange()
-    local now = Pokegear.isCompact()
+    local now = sizeClass()
     if now == compact then
         return
     end
@@ -289,6 +295,7 @@ local function onGameEnd()
     startEvent = nil
     removeEvent(redirectEvent)
     redirectEvent = nil
+    Phone.apply(false)
     Hub.apply(false)
     Nearby.apply(false)
     Tracking.apply(false)
@@ -306,6 +313,7 @@ function init()
     g_ui.importStyle('hub')
     g_ui.importStyle('nearby')
     g_ui.importStyle('tracking')
+    g_ui.importStyle('phone')
     Social.init()
     Chat.init()
     Bag.init()
@@ -315,7 +323,7 @@ function init()
     Activity.init()
     OutfitWindow.init()
     active = isActive()
-    compact = Pokegear.isCompact()
+    compact = sizeClass()
     connect(rootWidget, { onGeometryChange = onRootGeometryChange })
     connect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     if g_game.isOnline() then
@@ -332,6 +340,7 @@ function terminate()
         active = false
         apply()
     end
+    Phone.terminate()
     Hub.terminate()
     Pokegear.terminateHang()
     Nearby.terminate()

@@ -89,7 +89,9 @@ local function updateKeyLabels()
     for _, slot in ipairs(slots()) do
         local index = tonumber(slot:getId():match('%d+'))
         if index then
-            slot.key:setText(Keybind.getShortLabel(KEYBIND_CATEGORY, moveAction(index)))
+            local label = Keybind.getShortLabel(KEYBIND_CATEGORY, moveAction(index))
+            slot.key:setText(label)
+            slot.key:setVisible(label ~= '')
         end
     end
 end
@@ -611,7 +613,9 @@ function onPokemonMoves(iconItemId, moves)
         local slot = g_ui.createWidget('MoveSlot', pokemonMovesWindow)
         slot:setId('move' .. k)
         slot.icon:setItemId(v)
-        slot.key:setText(Keybind.getShortLabel(KEYBIND_CATEGORY, moveAction(k)))
+        local keyLabel = Keybind.getShortLabel(KEYBIND_CATEGORY, moveAction(k))
+        slot.key:setText(keyLabel)
+        slot.key:setVisible(keyLabel ~= '')
         slot.moveName = getMoveNameByIconItemId(v)
         delegateDrag(slot)
         slot.onMousePress = function(self)

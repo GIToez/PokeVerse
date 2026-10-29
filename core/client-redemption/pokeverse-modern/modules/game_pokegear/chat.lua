@@ -15,6 +15,7 @@ local FLOAT_SECONDS = 8
 local OPEN_WIDTH, OPEN_HEIGHT = 540, 330
 local COMPACT_WIDTH, COMPACT_HEIGHT = 480, 230 -- small screens (Pokegear.isCompact)
 local FOLDED_WIDTH = 400
+local MOBILE_FOLDED_WIDTH = 300 -- beside the joystick, it ends before the moves bar
 
 -- text colours, and the fill and text of each channel's tag
 local COLORS = {
@@ -50,6 +51,10 @@ local tabBar
 local editHome -- where consoleTextEdit lived, to put it back
 
 Chat = {}
+
+local function foldedWidth()
+    return g_platform.isMobile() and MOBILE_FOLDED_WIDTH or FOLDED_WIDTH
+end
 
 local function console()
     return modules.game_console
@@ -516,7 +521,7 @@ refreshChips = function()
     header.faces:setWidth(facesWidth)
     window.foldedFaces:setWidth(facesWidth)
     if not open then
-        window:setWidth(FOLDED_WIDTH + (faceCount > 0 and facesWidth + 10 or 0))
+        window:setWidth(foldedWidth() + (faceCount > 0 and facesWidth + 10 or 0))
     end
 end
 
@@ -538,13 +543,14 @@ refreshInput = function()
     input.channel:setMarginLeft(open and 0 or 6)
     -- the edit's own placeholder is a bitmap font that never lines up with the hint, so the hint stands in
     input.hint:setVisible(empty)
-    input.enterChip:setVisible(not typing)
+    input.enterChip:setVisible(not typing and not g_platform.isMobile())
+    local call = g_platform.isMobile() and tr('Tap to chat') or tr('Press Enter to chat')
     if typing then
         input.hint:setText(tr('Type here to chat'))
     elseif not open and unreadFolded > 0 then
-        input.hint:setText(tr('Press Enter to chat') .. '  \183  ' .. tr('%d new', unreadFolded))
+        input.hint:setText(call .. '  \183  ' .. tr('%d new', unreadFolded))
     else
-        input.hint:setText(tr('Press Enter to chat'))
+        input.hint:setText(call)
     end
 end
 
@@ -620,7 +626,7 @@ local function applyOpen()
     floats:setVisible(not open)
     refreshChips()
     if not open then
-        window.input:setMarginRight(window:getWidth() - FOLDED_WIDTH)
+        window.input:setMarginRight(window:getWidth() - foldedWidth())
     else
         window.input:setMarginRight(8)
     end
@@ -908,7 +914,7 @@ local function build()
     restorePosition = Pokegear.makeMovable(window, window.header, POSITION_SETTING, function()
         window:addAnchor(AnchorLeft, 'parent', AnchorLeft)
         window:addAnchor(AnchorBottom, 'parent', AnchorBottom)
-        window:setMarginLeft(12)
+        window:setMarginLeft(Phone.chatMarginLeft(12, window:getParent()))
         window:setMarginBottom(12)
         if open then
             local size = openSize()

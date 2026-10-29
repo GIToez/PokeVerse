@@ -87,7 +87,12 @@ local function updateKeyLabels()
         return
     end
     for position, slot in ipairs(slots()) do
-        slot.key:setText(position <= CALL_KEYS and Keybind.getShortLabel(KEYBIND_CATEGORY, callAction(position)) or '')
+        -- phones and tablets have no F keys: the chip numbers the slot instead
+        if g_platform.isMobile() then
+            slot.key:setText(tostring(position))
+        else
+            slot.key:setText(position <= CALL_KEYS and Keybind.getShortLabel(KEYBIND_CATEGORY, callAction(position)) or '')
+        end
     end
 end
 

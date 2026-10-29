@@ -4,6 +4,7 @@
 -- the full-size geometry; small screens get it scaled down (Pokegear.isCompact), all but the ribbon,
 -- whose text keeps its size
 local COMPACT_SCALE = 0.75
+local PHONE_SCALE = 0.6 -- more room for Nearby under it (Phone.isPhone)
 local scale = 1
 local HUB_CENTER, MAP_RADIUS, ORB_RADIUS, BUTTON_RADIUS, SUN_RADIUS, RIBBON_TOP
 local RIBBON_HEIGHT = 46
@@ -13,7 +14,7 @@ local function px(n)
 end
 
 local function setScale(compact)
-    scale = compact and COMPACT_SCALE or 1
+    scale = compact and (Phone.isPhone() and PHONE_SCALE or COMPACT_SCALE) or 1
     HUB_CENTER = { x = px(205), y = px(182) }
     MAP_RADIUS = px(128)
     ORB_RADIUS = px(168)
