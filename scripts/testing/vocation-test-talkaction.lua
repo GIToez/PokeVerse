@@ -3137,6 +3137,88 @@ local function testPokemonOutfit(cid)
     end
 end
 
+local function testTurtleBlastoise(cid)
+    local TURTLES = { Leonardo = { 2130, 2656 }, Raphael = { 2139, 2654 }, Michelangelo = { 2140, 2655 }, Donatello = { 2131, 2657 } }
+    for turtle, looks in pairs(TURTLES) do
+        local name = turtle .. " Blastoise"
+        local normal, shiny = getMonsterInfo(name), getMonsterInfo("Shiny " .. name)
+        check("TMNT Blastoise: " .. name .. " and its shiny are Pokemon with Blastoise's number",
+            isPokemonName(name, true) and isPokemonName("Shiny " .. name, true)
+            and getPokemonNumberByName(name) == 9 and getPokemonNumberByName("Shiny " .. name) == 9)
+        check("TMNT Blastoise: " .. name .. " wears its Ninja Pack look, its shiny the green one",
+            normal and shiny and normal.outfit.lookType == looks[1] and shiny.outfit.lookType == looks[2],
+            string.format("%s/%s", normal and normal.outfit.lookType or "-", shiny and shiny.outfit.lookType or "-"))
+        local definition, blastoise = getPokemonDefinition(name), getPokemonDefinition("Blastoise")
+        check("TMNT Blastoise: " .. name .. " has Blastoise's stats and moves, and Ditto can't copy it",
+            definition and definition.atk == blastoise.atk and definition.spDef == blastoise.spDef
+            and #getPokemonDefaultSkills(name) == #getPokemonDefaultSkills("Blastoise")
+            and getPokemonBlockTransform(name) and getPokemonBlockTransform("Shiny " .. name)
+            and getPokemonFastcallPortraitId("Shiny " .. name) == getPokemonFastcallPortraitId("Shiny Blastoise"))
+    end
+
+    if (isPokemonOnline(cid) or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
+        check("TMNT Blastoise: ball slot free for the test", false)
+        return
+    end
+    local SWORD, GREEN_SWORD = 2130, 2656
+    local sent = {}
+    local sendOpcode = doSendPlayerExtendedOpcode
+    doSendPlayerExtendedOpcode = function(target, opcode, buffer)
+        if (target == cid and opcode == EXTENDED_IDS.POKEMON_OUTFIT) then
+            sent[#sent + 1] = buffer
+            return true
+        end
+        return sendOpcode(target, opcode, buffer)
+    end
+    local ok, err = pcall(function()
+        PokemonAddon.onClientMessage(cid, JSON.encode({ action = "hello" }))
+        for _, species in ipairs({ "Blastoise", "Shiny Blastoise" }) do
+            local ball = newBall(cid, species, 50, POKEMON_SEX_MALE)
+            doMovePlayerItem(cid, ball.uid, { y = PLAYER_SLOT_BALL, z = 0 })
+            doRemoveConditions(cid, false)
+            doPlayerUseBallOnSlot(cid)
+            local pokemon = getPlayerPokemon(cid)
+            if (not isPokemonOnline(cid) or not isCreature(pokemon)) then
+                check("TMNT Blastoise: " .. species .. " comes out", false)
+            else
+                local ballUid = getPlayerBall(cid).uid
+                doBallAddAddon(ballUid, PokemonAddon.IDS.SWORD_NINJA_PACK)
+                sent = {}
+                PokemonAddon.onClientMessage(cid, JSON.encode({ action = "open" }))
+                local window = sent[1] and JSON.decode(sent[1]) or {}
+                local wearable = {}
+                for _, entry in ipairs(window.outfits or {}) do
+                    wearable[entry.lookType] = true
+                end
+                local own, other = SWORD, GREEN_SWORD
+                if (species == "Shiny Blastoise") then
+                    own, other = GREEN_SWORD, SWORD
+                end
+                check("TMNT Blastoise: the Sword Ninja Pack on " .. species .. " is its own colour",
+                    wearable[own] and not wearable[other], sent[1])
+                PokemonAddon.onClientMessage(cid, JSON.encode({ action = "choose", lookType = other }))
+                check("TMNT Blastoise: " .. species .. " can't wear the other colour",
+                    getCreatureOutfit(pokemon).lookType ~= other, getCreatureOutfit(pokemon).lookType)
+                PokemonAddon.onClientMessage(cid, JSON.encode({ action = "choose", lookType = own }))
+                check("TMNT Blastoise: " .. species .. " puts its own on", getCreatureOutfit(pokemon).lookType == own,
+                    getCreatureOutfit(pokemon).lookType)
+            end
+            doRemoveConditions(cid, false)
+            if (isPokemonOnline(cid)) then
+                doPlayerUseBallOnSlot(cid)
+            end
+            doRemoveConditions(cid, false)
+            local slot = getPlayerSlotItem(cid, PLAYER_SLOT_BALL)
+            if (isItem(slot)) then
+                doRemoveItem(slot.uid)
+            end
+        end
+    end)
+    doSendPlayerExtendedOpcode = sendOpcode
+    PokemonAddon.onLogin(cid)
+    check("TMNT Blastoise: ran without errors", ok, err)
+end
+
 local function testPokemonHabitat(cid)
     check("Habitat: the empty stand is a habitat",
         getItemNameById(PokemonHabitat.EMPTY_ID):lower():find("habitat", 1, true) ~= nil)
@@ -5422,7 +5504,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "pokemon outfit", testPokemonOutfit }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "bag", testBag }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", testBreederIncubator }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "pokemon outfit", testPokemonOutfit }, { "tmnt blastoise", testTurtleBlastoise }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "bag", testBag }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then

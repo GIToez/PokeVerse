@@ -12,6 +12,10 @@
 	<monster name="Squirtle" file="Pokemons/squirtle.xml"/>
 	<monster name="Wartortle" file="Pokemons/wartortle.xml"/>
 	<monster name="Blastoise" file="Pokemons/blastoise.xml"/>
+	<monster name="Leonardo Blastoise" file="Pokemons/leonardo blastoise.xml"/>
+	<monster name="Raphael Blastoise" file="Pokemons/raphael blastoise.xml"/>
+	<monster name="Michelangelo Blastoise" file="Pokemons/michelangelo blastoise.xml"/>
+	<monster name="Donatello Blastoise" file="Pokemons/donatello blastoise.xml"/>
 	<monster name="Caterpie" file="Pokemons/caterpie.xml"/>
 	<monster name="Metapod" file="Pokemons/metapod.xml"/>
 	<monster name="Butterfree" file="Pokemons/butterfree.xml"/>
@@ -465,6 +469,10 @@
 	<monster name="Shiny Squirtle" file="Shiny/shiny squirtle.xml"/>
 	<monster name="Shiny Wartortle" file="Shiny/shiny wartortle.xml"/>
 	<monster name="Shiny Blastoise" file="Shiny/shiny blastoise.xml"/>
+	<monster name="Shiny Leonardo Blastoise" file="Shiny/shiny leonardo blastoise.xml"/>
+	<monster name="Shiny Raphael Blastoise" file="Shiny/shiny raphael blastoise.xml"/>
+	<monster name="Shiny Michelangelo Blastoise" file="Shiny/shiny michelangelo blastoise.xml"/>
+	<monster name="Shiny Donatello Blastoise" file="Shiny/shiny donatello blastoise.xml"/>
 	<monster name="Shiny Caterpie" file="Shiny/shiny caterpie.xml"/>
 	<monster name="Shiny Metapod" file="Shiny/shiny metapod.xml"/>
 	<monster name="Shiny Butterfree" file="Shiny/shiny butterfree.xml"/>
