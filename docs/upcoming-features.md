@@ -627,7 +627,7 @@ The old vocation entries in `data/XML/vocations.xml` go, and so does the old mas
 (see [the old masteries](#the-old-masteries)). Nobody has a mastery yet, so nothing needs
 refunding. The mastery items (type plates, mastery tokens, outfits) stay in the game. Ideas (not
 decided): give the outfits to the vocations (for example as rank rewards), and use the type
-plates and tokens as rank-up quest costs or for crafting.
+plates and tokens for crafting.
 
 ### Rules
 
@@ -941,9 +941,9 @@ do not change.
 ### To decide
 
 1. What the mastery items are used for. Ideas: outfits as vocation rewards, plates and
-   tokens for rank-ups or crafting.
-2. The vocation quest line and the rank-up quests and tasks that call `Vocations.open` and
-   `Vocations.rankUp`.
+   tokens for crafting.
+2. The vocation quest line that calls `Vocations.open`. Rank-ups need no quest: the
+   window's Rank up button gives the rank once the level and the trial are done.
 
 ### The old masteries
 
@@ -977,8 +977,7 @@ Keeping the masteries would mean at least removing or replacing that bonus.
 
 - The vocation quest line starts at level 20 and presents the vocations, with a
   confirmation before the permanent choice.
-- Rank-up quests and tasks in the task list, and a banner at each rank-up (reusing the
-  level-up banners).
+- A banner at each rank-up (reusing the level-up banners).
 - Server tests that check the bonuses never touch combat stats and never apply in PvP.
 - Vocation pages on the website. (Done: the values are in one table, `Vocations.PERKS` and
   `RANK_LEVELS`; Discord's trainer lookup shows the vocation and rank.)

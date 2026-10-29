@@ -1,6 +1,7 @@
 -- Vocations (docs/upcoming-features.md, section 6): from trainer level 20 a trainer picks one of
 -- six vocations, once and for good, and starts at rank 1. Ranks 2 to 5 need a trainer level
--- (Vocations.RANK_LEVELS) and are given by the vocation quests and tasks (Vocations.rankUp).
+-- (Vocations.RANK_LEVELS) and the rank's trial; then the vocation window's Rank up button gives them
+-- (Vocations.rankUp).
 -- Perks never touch Pokemon damage or stats and never work in duels, the PvP arena or NPC battles.
 --
 -- The client's vocation window (game_vocation) talks JSON on EXTENDED_IDS.VOCATION:
