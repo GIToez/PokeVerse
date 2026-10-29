@@ -84,6 +84,9 @@ we have is replaced without approval. Places to look:
 - pack folders 08 (recolours and edits of ours) and 09 (other art for Gen 1 to 3), listed in
   [sprite-pack-review](sprite-pack-review/README.md).
 
+The list is in [art-audit](art-audit/README.md), together with the trainer outfits, add-ons and
+Pokémon costumes we don't have.
+
 ## What each Pokémon needs
 
 Taken from Treecko, a Gen 3 Pokémon that has all of these.
