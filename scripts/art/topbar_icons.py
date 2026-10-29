@@ -48,11 +48,13 @@ def gear():
 
 # 24x24 line icons; class "a" strokes in the accent, "af" fills in it, "bg" fills in the tile colour
 ICONS = {
-    'pokepedia': ('#ff5a4f',
-        '<rect x="4" y="2.5" width="16" height="19" rx="2.5"/><path d="M7.4 2.5v19"/>'
-        '<path class="af" d="M9.4 12a4.6 4.6 0 0 1 9.2 0z"/>'
-        '<circle cx="14" cy="12" r="4.6"/><path d="M9.4 12h9.2"/>'
-        '<circle cx="14" cy="12" r="1.5" class="bg"/>'),
+    'pokepedia': ('#4fb3ff',
+        '<rect x="4.5" y="2.5" width="15" height="19" rx="2.5" fill="#c8362f"/>'
+        '<circle cx="9" cy="7" r="2.9" fill="#efe6cf" stroke-width="0"/>'
+        '<circle class="af" cx="9" cy="7" r="1.9"/>'
+        '<circle cx="13.6" cy="6" r=".5" fill="#ffd75a" stroke="#ffd75a"/>'
+        '<circle cx="15.8" cy="6" r=".5" fill="#6fe08a" stroke="#6fe08a"/>'
+        '<rect x="7.5" y="11.4" width="9" height="6" rx="1" fill="#1d3060"/>'),
     'tasks': ('#6fe08a',
         '<rect x="5" y="4" width="14" height="17.5" rx="2.5"/>'
         '<rect x="9" y="2.2" width="6" height="3.6" rx="1.2" class="bg"/>'
@@ -73,9 +75,10 @@ ICONS = {
         '<path d="M3 6.2 9 4l6 2.2L21 4v13.8L15 20l-6-2.2L3 20z"/><path d="M9 4v13.8M15 6.2V20" opacity=".55"/>'
         '<path class="af" d="M15 7.2a2.6 2.6 0 0 1 2.6 2.6c0 1.9-2.6 4.4-2.6 4.4s-2.6-2.5-2.6-4.4A2.6 2.6 0 0 1 15 7.2z"/>'),
     'inventory': ('#5ad1c4',
-        '<path d="M5.5 10a6.5 6.5 0 0 1 13 0v9a2.5 2.5 0 0 1-2.5 2.5H8A2.5 2.5 0 0 1 5.5 19z"/>'
-        '<path d="M9.2 4.6V4a2.8 2.8 0 0 1 5.6 0v.6"/>'
-        '<rect class="a" x="8.8" y="13.5" width="6.4" height="4.5" rx="1.2"/>'),
+        '<rect x="5" y="6.5" width="14" height="15" rx="3.5"/>'
+        '<path d="M9 6.5V5a3 3 0 0 1 6 0v1.5"/>'
+        '<path d="M5 12h14"/>'
+        '<rect class="a" x="8.6" y="14.6" width="6.8" height="4.2" rx="1.2"/>'),
     'skills': ('#6fe08a',
         '<path d="M3.5 20.5h17"/><path d="M6.5 20.5v-5M11 20.5v-8.5"/><path class="a" d="M15.5 20.5V8"/>'
         '<path class="a" d="M13 6.2l2.5-2.7 2.5 2.7"/>'),
