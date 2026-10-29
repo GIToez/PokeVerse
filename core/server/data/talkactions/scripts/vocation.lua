@@ -1,7 +1,7 @@
 -- Staff test tool for vocations until the vocation quest line opens the window:
 --   /vocation                 show the vocation and rank, and open the window (choosing still needs level 20)
 --   /vocation reset           back to a regular Trainer
---   /vocation rank,3          set the rank (1-5) without the rank-up quest
+--   /vocation rank,3          set the rank (1-5) without the level or the trial
 --   /vocation Trainer         the same for another online player: /vocation Trainer,reset, /vocation Trainer,rank,3
 function onSay(cid, words, param, channel)
     local args = string.explode(param, ",")

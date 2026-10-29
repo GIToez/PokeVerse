@@ -26,6 +26,7 @@ local TOOL_ACTION = 'Vocation: window or vocation tool'
 local WINDOW_ACTION = 'Show/hide the vocation window'
 local progressWindow
 local progress
+local rankingUp
 local showingAll = false
 local button, dot
 local barEvent
@@ -308,7 +309,10 @@ local function fillButtons(data)
     if next and next.ready then
         main:setText(tr('Rank up to %s', next.title or ''))
         main:setIcon(IMAGES .. 'perk_up')
-        main.onClick = function() send({ action = 'rankup' }) end
+        main.onClick = function()
+            rankingUp = true
+            send({ action = 'rankup' })
+        end
         return
     end
     local id, tool = activeTool()
@@ -481,7 +485,14 @@ local function onVocation(protocol, opcode, buffer)
         refreshCards()
         updateSubtitle()
     elseif data.type == 'progress' and data.key then
-        showProgress(data)
+        if rankingUp then
+            -- the window steps aside for the rank-up banner (game_levelup)
+            rankingUp = false
+            fillProgress(data)
+            close()
+        else
+            showProgress(data)
+        end
     elseif data.type == 'trial' then
         setDot(data.ready, data.choose)
         if progress and progress.next and progressWindow:isVisible() then
@@ -491,6 +502,7 @@ local function onVocation(protocol, opcode, buffer)
             fillButtons(progress)
         end
     elseif data.type == 'result' and data.text then
+        rankingUp = false
         if window:isVisible() then
             showMessage(data.text)
         elseif progressWindow:isVisible() then

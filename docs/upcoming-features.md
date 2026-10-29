@@ -627,7 +627,7 @@ The old vocation entries in `data/XML/vocations.xml` go, and so does the old mas
 (see [the old masteries](#the-old-masteries)). Nobody has a mastery yet, so nothing needs
 refunding. The mastery items (type plates, mastery tokens, outfits) stay in the game. Ideas (not
 decided): give the outfits to the vocations (for example as rank rewards), and use the type
-plates and tokens as rank-up quest costs or for crafting.
+plates and tokens for crafting.
 
 ### Rules
 
@@ -880,7 +880,9 @@ do not change.
   get the choice window. It shows the vocation's banner, the five ranks as a track (done,
   current, next, locked), the perks active now, and the next rank with its level, its new
   perks and the rank-up trial with a progress bar per goal. Rank up is enabled once the level and
-  every goal are done, and the top bar button shows a red dot when it is. Wear outfit puts the
+  every goal are done, and the top bar button shows a red dot when it is. Pressing it gives the rank
+  with fireworks and a congratulations message, closes the window and shows a rank-up banner
+  (`game_levelup`, kind "rank") with the new title and the perks that improved. Wear outfit puts the
   vocation's outfit on again. Artwork: `scripts/art/vocation_progress_ui.py`.
 - **Built, goals proposed: rank-up trials** (`Vocations.TRIALS`). Besides the trainer level,
   each rank has two or three goals about what the vocation does, and all of them have to be
@@ -941,9 +943,9 @@ do not change.
 ### To decide
 
 1. What the mastery items are used for. Ideas: outfits as vocation rewards, plates and
-   tokens for rank-ups or crafting.
-2. The vocation quest line and the rank-up quests and tasks that call `Vocations.open` and
-   `Vocations.rankUp`.
+   tokens for crafting.
+2. The vocation quest line that calls `Vocations.open`. Rank-ups need no quest: the
+   window's Rank up button gives the rank once the level and the trial are done.
 
 ### The old masteries
 
@@ -977,8 +979,6 @@ Keeping the masteries would mean at least removing or replacing that bonus.
 
 - The vocation quest line starts at level 20 and presents the vocations, with a
   confirmation before the permanent choice.
-- Rank-up quests and tasks in the task list, and a banner at each rank-up (reusing the
-  level-up banners).
 - Server tests that check the bonuses never touch combat stats and never apply in PvP.
 - Vocation pages on the website. (Done: the values are in one table, `Vocations.PERKS` and
   `RANK_LEVELS`; Discord's trainer lookup shows the vocation and rank.)
