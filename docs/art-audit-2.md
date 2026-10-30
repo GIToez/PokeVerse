@@ -126,7 +126,7 @@ These still show the old art of a Pokemon whose walk art changed. Most have no p
 | --- | --- | --- | --- |
 | Poliwrath | surf | 581 | 3194 |
 | Tentacruel | surf | 585 | - |
-| Rapidash | ride | 567 | 3187, 5493 |
+| Rapidash | ride | 567 | 5493 |
 | Dewgong | surf | 588 | - |
 | Porygon | fly | 607 | - |
 | Omastar | surf | 591 | - |
