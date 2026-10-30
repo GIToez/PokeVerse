@@ -107,6 +107,7 @@ local function take(button, index)
     -- the bar's 20px art is drawn with a frame border, so scaled up its middle tiles into copies: the
     -- tile shows it whole instead (the button's clip follows its pressed and on states)
     tile.icon:setImageSource(entry.source)
+    button.drawerImageSource = entry.source -- the ring's orbs (Hub) copy it
     button:setImageSource('')
     -- an icon size alone pins the icon to the button's top-left corner; Bag and Audio draw theirs as an icon
     local inset = (TILE_BUTTON_SIZE - TILE_ICON_SIZE) / 2
@@ -262,6 +263,7 @@ local function disableTopBar()
             button:setMarginTop(0)
             button:setSize(entry.size)
             button:setImageSource(entry.source)
+            button.drawerImageSource = nil
             button:setIconRect({ x = 0, y = 0, width = entry.iconSize.width, height = entry.iconSize.height })
             if panel then
                 panel:insertChild(math.min(entry.index, panel:getChildCount() + 1), button)

@@ -83,7 +83,8 @@ local function refreshOrbs()
             orb.icon:setImageSource(def.image)
             orb.icon:setImageClip({ x = 0, y = 0, width = 20, height = 20 })
         elseif button then
-            orb.icon:setImageSource(button:getImageSource())
+            -- on phones the button sits in the apps drawer with its art moved to the tile
+            orb.icon:setImageSource(button.drawerImageSource or button:getImageSource())
             orb.icon:setImageClip(button:getImageClip())
         end
         local key = Pokegear.boundKey(def.key)
