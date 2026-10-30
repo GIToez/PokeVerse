@@ -11,7 +11,7 @@ POKEMON["Murkrow"] = {
     dexPortrait = 15845,
     fastcallPortrait = 16045,
     catchStorage = 16198,
-    evolutions = {},
+    evolutions = { { name = "Honchkrow", requiredLevel = 40, requiredItems = { ITEMS.DUSK_STONE } } },
     description = "It is said that when chased, it lures its attacker onto dark mountain trails where the foe will get lost.",
     skills = { "Tackle", 1, "Peck", 5, "Drill Peck", 10, "Night Slash", 15, "Assurance", 20, "Wing Attack", 25, "Roost", 30, "Dark Pulse", 35, "Pursuit", 40, "Haze", 45, "Sucker Punch", 50, "Foul Play", 55, "Mirror Move", 60, "Sky Attack", 65, "Tailwind", 70 },
     abilities = { "Find" },

@@ -16,6 +16,18 @@ ITEMS = {
     DEEPSEATOOTH = 28893,
     DEEPSEASCALE = 28892,
     PRISM_SCALE = 28914,
+    SHINY_STONE = 31083,
+    DUSK_STONE = 31084,
+    DAWN_STONE = 31085,
+    ICE_STONE = 31086,
+    OVAL_STONE = 31087,
+    RAZOR_CLAW = 31088,
+    RAZOR_FANG = 31089,
+    ELECTIRIZER = 31090,
+    MAGMARIZER = 31091,
+    PROTECTOR = 31092,
+    REAPER_CLOTH = 31093,
+    DUBIOUS_DISC = 31094,
 }
 
 POKEMON = {}
@@ -1126,6 +1138,285 @@ POKEMONS["Shiny Mega Salamence"].fastcallPortrait = 28978
 POKEMONS["Shiny Mega Metagross"].portrait = 30337
 POKEMONS["Shiny Mega Metagross"].fastcallPortrait = 28980
 
+POKEMONS["Shiny Turtwig"].portrait = 30445
+POKEMONS["Shiny Turtwig"].fastcallPortrait = 29113
+
+POKEMONS["Shiny Grotle"].portrait = 30446
+POKEMONS["Shiny Grotle"].fastcallPortrait = 29114
+
+POKEMONS["Shiny Torterra"].portrait = 30447
+POKEMONS["Shiny Torterra"].fastcallPortrait = 29115
+
+POKEMONS["Shiny Chimchar"].portrait = 30448
+POKEMONS["Shiny Chimchar"].fastcallPortrait = 29116
+
+POKEMONS["Shiny Monferno"].portrait = 30449
+POKEMONS["Shiny Monferno"].fastcallPortrait = 29117
+
+POKEMONS["Shiny Infernape"].portrait = 30450
+POKEMONS["Shiny Infernape"].fastcallPortrait = 29118
+
+POKEMONS["Shiny Piplup"].portrait = 30451
+POKEMONS["Shiny Piplup"].fastcallPortrait = 29119
+
+POKEMONS["Shiny Prinplup"].portrait = 30452
+POKEMONS["Shiny Prinplup"].fastcallPortrait = 29120
+
+POKEMONS["Shiny Empoleon"].portrait = 30453
+POKEMONS["Shiny Empoleon"].fastcallPortrait = 29121
+
+POKEMONS["Shiny Starly"].portrait = 30454
+POKEMONS["Shiny Starly"].fastcallPortrait = 29122
+
+POKEMONS["Shiny Staravia"].portrait = 30455
+POKEMONS["Shiny Staravia"].fastcallPortrait = 29123
+
+POKEMONS["Shiny Staraptor"].portrait = 30456
+POKEMONS["Shiny Staraptor"].fastcallPortrait = 29124
+
+POKEMONS["Shiny Bidoof"].portrait = 30457
+POKEMONS["Shiny Bidoof"].fastcallPortrait = 29125
+
+POKEMONS["Shiny Bibarel"].portrait = 30458
+POKEMONS["Shiny Bibarel"].fastcallPortrait = 29126
+
+POKEMONS["Shiny Kricketot"].portrait = 30459
+POKEMONS["Shiny Kricketot"].fastcallPortrait = 29127
+
+POKEMONS["Shiny Kricketune"].portrait = 30460
+POKEMONS["Shiny Kricketune"].fastcallPortrait = 29128
+
+POKEMONS["Shiny Shinx"].portrait = 30461
+POKEMONS["Shiny Shinx"].fastcallPortrait = 29129
+
+POKEMONS["Shiny Luxio"].portrait = 30462
+POKEMONS["Shiny Luxio"].fastcallPortrait = 29130
+
+POKEMONS["Shiny Luxray"].portrait = 30463
+POKEMONS["Shiny Luxray"].fastcallPortrait = 29131
+
+POKEMONS["Shiny Budew"].portrait = 30464
+POKEMONS["Shiny Budew"].fastcallPortrait = 29132
+
+POKEMONS["Shiny Roserade"].portrait = 30465
+POKEMONS["Shiny Roserade"].fastcallPortrait = 29133
+
+POKEMONS["Shiny Cranidos"].portrait = 30466
+POKEMONS["Shiny Cranidos"].fastcallPortrait = 29134
+
+POKEMONS["Shiny Rampardos"].portrait = 30467
+POKEMONS["Shiny Rampardos"].fastcallPortrait = 29135
+
+POKEMONS["Shiny Shieldon"].portrait = 30468
+POKEMONS["Shiny Shieldon"].fastcallPortrait = 29136
+
+POKEMONS["Shiny Bastiodon"].portrait = 30469
+POKEMONS["Shiny Bastiodon"].fastcallPortrait = 29137
+
+POKEMONS["Shiny Burmy"].portrait = 30470
+POKEMONS["Shiny Burmy"].fastcallPortrait = 29138
+
+POKEMONS["Shiny Wormadam"].portrait = 30471
+POKEMONS["Shiny Wormadam"].fastcallPortrait = 29139
+
+POKEMONS["Shiny Mothim"].portrait = 30472
+POKEMONS["Shiny Mothim"].fastcallPortrait = 29140
+
+POKEMONS["Shiny Combee"].portrait = 30473
+POKEMONS["Shiny Combee"].fastcallPortrait = 29141
+
+POKEMONS["Shiny Vespiquen"].portrait = 30474
+POKEMONS["Shiny Vespiquen"].fastcallPortrait = 29142
+
+POKEMONS["Shiny Pachirisu"].portrait = 30475
+POKEMONS["Shiny Pachirisu"].fastcallPortrait = 29143
+
+POKEMONS["Shiny Buizel"].portrait = 30476
+POKEMONS["Shiny Buizel"].fastcallPortrait = 29144
+
+POKEMONS["Shiny Floatzel"].portrait = 30477
+POKEMONS["Shiny Floatzel"].fastcallPortrait = 29145
+
+POKEMONS["Shiny Cherubi"].portrait = 30478
+POKEMONS["Shiny Cherubi"].fastcallPortrait = 29146
+
+POKEMONS["Shiny Cherrim"].portrait = 30479
+POKEMONS["Shiny Cherrim"].fastcallPortrait = 29147
+
+POKEMONS["Shiny Shellos"].portrait = 30480
+POKEMONS["Shiny Shellos"].fastcallPortrait = 29148
+
+POKEMONS["Shiny Gastrodon"].portrait = 30481
+POKEMONS["Shiny Gastrodon"].fastcallPortrait = 29149
+
+POKEMONS["Shiny Ambipom"].portrait = 30482
+POKEMONS["Shiny Ambipom"].fastcallPortrait = 29150
+
+POKEMONS["Shiny Drifloon"].portrait = 30483
+POKEMONS["Shiny Drifloon"].fastcallPortrait = 29151
+
+POKEMONS["Shiny Drifblim"].portrait = 30484
+POKEMONS["Shiny Drifblim"].fastcallPortrait = 29152
+
+POKEMONS["Shiny Buneary"].portrait = 30485
+POKEMONS["Shiny Buneary"].fastcallPortrait = 29153
+
+POKEMONS["Shiny Lopunny"].portrait = 30486
+POKEMONS["Shiny Lopunny"].fastcallPortrait = 29154
+
+POKEMONS["Shiny Mismagius"].portrait = 30487
+POKEMONS["Shiny Mismagius"].fastcallPortrait = 29155
+
+POKEMONS["Shiny Honchkrow"].portrait = 30488
+POKEMONS["Shiny Honchkrow"].fastcallPortrait = 29156
+
+POKEMONS["Shiny Glameow"].portrait = 30489
+POKEMONS["Shiny Glameow"].fastcallPortrait = 29157
+
+POKEMONS["Shiny Purugly"].portrait = 30490
+POKEMONS["Shiny Purugly"].fastcallPortrait = 29158
+
+POKEMONS["Shiny Chingling"].portrait = 30491
+POKEMONS["Shiny Chingling"].fastcallPortrait = 29159
+
+POKEMONS["Shiny Stunky"].portrait = 30492
+POKEMONS["Shiny Stunky"].fastcallPortrait = 29160
+
+POKEMONS["Shiny Skuntank"].portrait = 30493
+POKEMONS["Shiny Skuntank"].fastcallPortrait = 29161
+
+POKEMONS["Shiny Bronzor"].portrait = 30494
+POKEMONS["Shiny Bronzor"].fastcallPortrait = 29162
+
+POKEMONS["Shiny Bronzong"].portrait = 30495
+POKEMONS["Shiny Bronzong"].fastcallPortrait = 29163
+
+POKEMONS["Shiny Bonsly"].portrait = 30496
+POKEMONS["Shiny Bonsly"].fastcallPortrait = 29164
+
+POKEMONS["Shiny Mime Jr."].portrait = 30497
+POKEMONS["Shiny Mime Jr."].fastcallPortrait = 29165
+
+POKEMONS["Shiny Happiny"].portrait = 30498
+POKEMONS["Shiny Happiny"].fastcallPortrait = 29166
+
+POKEMONS["Shiny Chatot"].portrait = 30499
+POKEMONS["Shiny Chatot"].fastcallPortrait = 29167
+
+POKEMONS["Shiny Spiritomb"].portrait = 30500
+POKEMONS["Shiny Spiritomb"].fastcallPortrait = 29168
+
+POKEMONS["Shiny Gible"].portrait = 30501
+POKEMONS["Shiny Gible"].fastcallPortrait = 29169
+
+POKEMONS["Shiny Gabite"].portrait = 30502
+POKEMONS["Shiny Gabite"].fastcallPortrait = 29170
+
+POKEMONS["Shiny Garchomp"].portrait = 30503
+POKEMONS["Shiny Garchomp"].fastcallPortrait = 29171
+
+POKEMONS["Shiny Munchlax"].portrait = 30504
+POKEMONS["Shiny Munchlax"].fastcallPortrait = 29172
+
+POKEMONS["Shiny Riolu"].portrait = 30505
+POKEMONS["Shiny Riolu"].fastcallPortrait = 29173
+
+POKEMONS["Shiny Lucario"].portrait = 30506
+POKEMONS["Shiny Lucario"].fastcallPortrait = 29174
+
+POKEMONS["Shiny Hippopotas"].portrait = 30507
+POKEMONS["Shiny Hippopotas"].fastcallPortrait = 29175
+
+POKEMONS["Shiny Hippowdon"].portrait = 30508
+POKEMONS["Shiny Hippowdon"].fastcallPortrait = 29176
+
+POKEMONS["Shiny Skorupi"].portrait = 30509
+POKEMONS["Shiny Skorupi"].fastcallPortrait = 29177
+
+POKEMONS["Shiny Drapion"].portrait = 30510
+POKEMONS["Shiny Drapion"].fastcallPortrait = 29178
+
+POKEMONS["Shiny Croagunk"].portrait = 30511
+POKEMONS["Shiny Croagunk"].fastcallPortrait = 29179
+
+POKEMONS["Shiny Toxicroak"].portrait = 30512
+POKEMONS["Shiny Toxicroak"].fastcallPortrait = 29180
+
+POKEMONS["Shiny Carnivine"].portrait = 30513
+POKEMONS["Shiny Carnivine"].fastcallPortrait = 29181
+
+POKEMONS["Shiny Finneon"].portrait = 30514
+POKEMONS["Shiny Finneon"].fastcallPortrait = 29182
+
+POKEMONS["Shiny Lumineon"].portrait = 30515
+POKEMONS["Shiny Lumineon"].fastcallPortrait = 29183
+
+POKEMONS["Shiny Mantyke"].portrait = 30516
+POKEMONS["Shiny Mantyke"].fastcallPortrait = 29184
+
+POKEMONS["Shiny Snover"].portrait = 30517
+POKEMONS["Shiny Snover"].fastcallPortrait = 29185
+
+POKEMONS["Shiny Abomasnow"].portrait = 30518
+POKEMONS["Shiny Abomasnow"].fastcallPortrait = 29186
+
+POKEMONS["Shiny Weavile"].portrait = 30519
+POKEMONS["Shiny Weavile"].fastcallPortrait = 29187
+
+POKEMONS["Shiny Magnezone"].portrait = 30520
+POKEMONS["Shiny Magnezone"].fastcallPortrait = 29188
+
+POKEMONS["Shiny Lickilicky"].portrait = 30521
+POKEMONS["Shiny Lickilicky"].fastcallPortrait = 29189
+
+POKEMONS["Shiny Rhyperior"].portrait = 30522
+POKEMONS["Shiny Rhyperior"].fastcallPortrait = 29190
+
+POKEMONS["Shiny Tangrowth"].portrait = 30523
+POKEMONS["Shiny Tangrowth"].fastcallPortrait = 29191
+
+POKEMONS["Shiny Electivire"].portrait = 30524
+POKEMONS["Shiny Electivire"].fastcallPortrait = 29192
+
+POKEMONS["Shiny Magmortar"].portrait = 30525
+POKEMONS["Shiny Magmortar"].fastcallPortrait = 29193
+
+POKEMONS["Shiny Togekiss"].portrait = 30526
+POKEMONS["Shiny Togekiss"].fastcallPortrait = 29194
+
+POKEMONS["Shiny Yanmega"].portrait = 30527
+POKEMONS["Shiny Yanmega"].fastcallPortrait = 29195
+
+POKEMONS["Shiny Leafeon"].portrait = 30528
+POKEMONS["Shiny Leafeon"].fastcallPortrait = 29196
+
+POKEMONS["Shiny Glaceon"].portrait = 30529
+POKEMONS["Shiny Glaceon"].fastcallPortrait = 29197
+
+POKEMONS["Shiny Gliscor"].portrait = 30530
+POKEMONS["Shiny Gliscor"].fastcallPortrait = 29198
+
+POKEMONS["Shiny Mamoswine"].portrait = 30531
+POKEMONS["Shiny Mamoswine"].fastcallPortrait = 29199
+
+POKEMONS["Shiny Porygon-Z"].portrait = 30532
+POKEMONS["Shiny Porygon-Z"].fastcallPortrait = 29200
+
+POKEMONS["Shiny Gallade"].portrait = 30533
+POKEMONS["Shiny Gallade"].fastcallPortrait = 29201
+
+POKEMONS["Shiny Probopass"].portrait = 30534
+POKEMONS["Shiny Probopass"].fastcallPortrait = 29202
+
+POKEMONS["Shiny Dusknoir"].portrait = 30535
+POKEMONS["Shiny Dusknoir"].fastcallPortrait = 29203
+
+POKEMONS["Shiny Froslass"].portrait = 30536
+POKEMONS["Shiny Froslass"].fastcallPortrait = 29204
+
+POKEMONS["Shiny Rotom"].portrait = 30537
+POKEMONS["Shiny Rotom"].fastcallPortrait = 29205
+
 for name, pokemon in pairs(POKEMONS) do
     if (pokemon.portrait == 0 and pokemon.fastcallPortrait == 0 and string.find(string.lower(name), "shiny")) then -- This shiny doenst exists yet
         POKEMONS[name] = nil
@@ -1329,6 +1620,44 @@ local POKEMON_NAME_BY_EGG_ID = {
     [28596] = "Zangoose",
     [28597] = "Zigzagoon",
     [28598] = "Kecleon",
+    [30938] = "Turtwig",
+    [30939] = "Chimchar",
+    [30940] = "Piplup",
+    [30941] = "Starly",
+    [30942] = "Bidoof",
+    [30943] = "Kricketot",
+    [30944] = "Shinx",
+    [30945] = "Budew",
+    [30946] = "Cranidos",
+    [30947] = "Shieldon",
+    [30948] = "Burmy",
+    [30949] = "Combee",
+    [30950] = "Pachirisu",
+    [30951] = "Buizel",
+    [30952] = "Cherubi",
+    [30953] = "Shellos",
+    [30954] = "Drifloon",
+    [30955] = "Buneary",
+    [30956] = "Glameow",
+    [30957] = "Chingling",
+    [30958] = "Stunky",
+    [30959] = "Bronzor",
+    [30960] = "Bonsly",
+    [30961] = "Mime Jr.",
+    [30962] = "Happiny",
+    [30963] = "Chatot",
+    [30964] = "Spiritomb",
+    [30965] = "Gible",
+    [30966] = "Munchlax",
+    [30967] = "Riolu",
+    [30968] = "Hippopotas",
+    [30969] = "Skorupi",
+    [30970] = "Croagunk",
+    [30971] = "Carnivine",
+    [30972] = "Finneon",
+    [30973] = "Mantyke",
+    [30974] = "Snover",
+    [30975] = "Rotom",
 }
 
 local EVOLVE_FROM = {}
@@ -1830,7 +2159,7 @@ end
 
 function doCheckPokemonEggMoves()
     for name, pokemon in pairs(POKEMONS) do
-        if (getPokemonGenerationByName(name) == 3) then
+        if ((getPokemonGenerationByName(name) or 0) >= 3) then
             for i = 1, #pokemon.eggMoves do
                 local move = pokemon.eggMoves[i]
                 if (not getPokemonSkillExists(move)) then

@@ -11,7 +11,7 @@ POKEMON["Sneasel"] = {
     dexPortrait = 15862,
     fastcallPortrait = 16062,
     catchStorage = 16215,
-    evolutions = {},
+    evolutions = { { name = "Weavile", requiredLevel = 40, requiredItems = { ITEMS.RAZOR_CLAW }, requiredTime = WORLD_LIGHT_STATE_NIGHT } },
     description = "Vicious in nature, it drives PIDGEY from their nests and feasts on the eggs that are left behind.",
     skills = { "Tackle", 1, "Bite", 5, "Quick Attack", 10, "Icy Wind", 15, "Ice Shard", 20, "Metal Claw", 25, "Agility", 30, "Knock Off", 35, "Slash", 40, "Punishment", 45, "Foul Play", 50, "Dark Pulse", 55, "Iron Tail", 60, "Ice Beam", 65 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Find", "Cut", "Rock Smash", "Headbutt" },

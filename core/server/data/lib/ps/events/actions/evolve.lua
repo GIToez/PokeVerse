@@ -4,6 +4,10 @@ local function doPlayerRemoveRequiredItems(cid, items)
     end
 end
 
+local function byItem(evolution)
+    return evolution.requiredItems ~= nil and #evolution.requiredItems > 0
+end
+
 function onUse(cid, item, fromPosition, itemEx, toPosition)
     if (not isPokemonOnline(cid) or isEvolving(cid) or getPlayerBattleing(cid) or getPlayerDueling(cid)) then
         doPlayerSendDefaultCancel(cid, RETURNVALUE_NOTPOSSIBLE)
@@ -44,12 +48,13 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
                         randomEvolves = { evolution }
                     end
 
-                elseif (evolve) then
+                elseif (not evolve or (byItem(evolution) and not byItem(evolve))) then
+                    -- an evolution by item beats the one by level only (Kirlia with a Dawn Stone is Gallade, not Gardevoir)
+                    evolve = evolution
+
+                elseif (byItem(evolution) == byItem(evolve)) then
                     doPlayerSendCancel(cid, "You need to carry the items of only one evolution to evolve this Pokemon.")
                     return true
-
-                else
-                    evolve = evolution
                 end
             end
         end

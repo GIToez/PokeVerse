@@ -11,7 +11,7 @@ POKEMON["Gligar"] = {
     dexPortrait = 15854,
     fastcallPortrait = 16054,
     catchStorage = 16207,
-    evolutions = {},
+    evolutions = { { name = "Gliscor", requiredLevel = 40, requiredItems = { ITEMS.RAZOR_FANG }, requiredTime = WORLD_LIGHT_STATE_NIGHT } },
     description = "It usually clings to cliffs. When it spots its prey, it spreads its wings and glides down to attack.",
     skills = { "Tackle", 1, "Poison Sting", 5, "Quick Attack", 10, "Sand-Attack", 15, "Wing Attack", 20, "Metal Claw", 25, "Acrobatics", 30, "X-Scissor", 35, "Bulldoze", 40, "Earth Power", 45, "Harden", 50, "Guillotine", 55, "Sky Uppercut", 60, "Iron Tail", 65 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Find", "Cut", "Rock Smash", "Headbutt" },

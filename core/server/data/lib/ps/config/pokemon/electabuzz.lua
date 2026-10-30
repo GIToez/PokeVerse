@@ -11,7 +11,7 @@ POKEMON["Electabuzz"] = {
     dexPortrait = 13626,
     fastcallPortrait = 10759,
     catchStorage = 16125,
-    evolutions = {},
+    evolutions = { { name = "Electivire", requiredLevel = 60, requiredItems = { ITEMS.ELECTIRIZER } } },
     description = "It loves to feed on strong electricity. It occasionally appears around large power plants and so on.",
     skills = { "Tackle", 1, "Quick Attack", 5, "Thunder Shock", 10, "Low Kick", 15, "Swift", 20, "Shock Wave", 25, "Electro Ball", 30, "Thunder Punch", 35, "Thunder Wave", 40, "Discharge", 45, "Thunderbolt", 50, "Focus Blast", 55, "Thunder", 60, "Iron Tail", 65 },
     abilities = { POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Flash", "Rock Smash", "Headbutt" },

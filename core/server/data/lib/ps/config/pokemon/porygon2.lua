@@ -11,7 +11,7 @@ POKEMON["Porygon2"] = {
     dexPortrait = 15880,
     fastcallPortrait = 16080,
     catchStorage = 16233,
-    evolutions = {},
+    evolutions = { { name = "Porygon-Z", requiredLevel = 60, requiredItems = { ITEMS.DUBIOUS_DISC } } },
     description = "Further research enhanced its abilities. Sometimes, it may exhibit motions that were not programmed.",
     skills = { "Tackle", 1, "Psybeam", 5, "Confusion", 10, "Discharge", 15, "Recover", 20, "Signal Beam", 25, "Agility", 30, "Tri Attack", 35, "Psychic", 40, "Magic Coat", 45, "Zap Cannon", 50, "Defense Curl", 60, "Electroweb", 65, "Hyper Beam", 70, "Conversion2", 75 },
     abilities = { "Flash", "Fly", "Blink", "Teleport" },

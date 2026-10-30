@@ -11,7 +11,7 @@ POKEMON["Piloswine"] = {
     dexPortrait = 15868,
     fastcallPortrait = 16068,
     catchStorage = 16221,
-    evolutions = {},
+    evolutions = { { name = "Mamoswine", requiredLevel = 60 } },
     description = "If it charges at an enemy, the hairs on its back stand up straight. It is very sensitive to sound.",
     skills = { "Tackle", 1, "Mud-Slap", 5, "Ice Shard", 10, "Powder Snow", 15, "Mud Bomb", 20, "Icy Wind", 25, "Freeze-Dry", 30, "Earthquake", 35, "Ancient Power", 45, "Ice Fang", 50, "Endeavor", 55, "Thrash", 60, "Blizzard", 65, "Mud Sport", 70 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Ride", "Headbutt" },

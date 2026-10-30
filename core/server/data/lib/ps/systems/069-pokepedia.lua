@@ -643,7 +643,7 @@ for _, name in ipairs({ "Nidoqueen", "Nidoking", "Farfetchd", "Hitmonlee", "Hitm
     "Magby", "Miltank", "Blissey", "Larvitar", "Pupitar", "Tyranitar", "Ninjask", "Shedinja", "Nosepass",
     "Sableye", "Mawile", "Wailmer", "Wailord", "Feebas", "Milotic", "Chimecho", "Absol", "Wynaut", "Bagon",
     "Shelgon", "Salamence", "Beldum", "Metang", "Metagross", "Lileep", "Cradily", "Anorith", "Armaldo",
-    "Relicanth" }) do
+    "Relicanth", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Gible", "Gabite", "Garchomp", "Riolu", "Lucario", "Spiritomb", "Rotom", "Happiny", "Munchlax", "Mantyke", "Togekiss", "Leafeon", "Glaceon", "Porygon-Z", "Magnezone", "Electivire", "Magmortar", "Rhyperior" }) do
     RARE[name] = true
 end
 

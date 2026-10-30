@@ -11,7 +11,7 @@ POKEMON["Tangela"] = {
     dexPortrait = 13615,
     fastcallPortrait = 10748,
     catchStorage = 16114,
-    evolutions = {},
+    evolutions = { { name = "Tangrowth", requiredLevel = 40 } },
     description = "Blue plant vines cloak the POKEMON's identity in a tangled mass. It entangles anything that gets close.",
     skills = { "Tackle", 1, "Absorb", 5, "Vine Whip", 10, "Seed Bomb", 15, "Mega Drain", 20, "Poison Powder", 25, "Ingrain", 30, "Ancient Power", 35, "Stun Spore", 40, "Sleep Powder", 45, "Leaf Storm", 50, "Wring Out", 55, "Grass Knot", 60, "Power Whip", 65 },
     abilities = { "Cut", "Headbutt" },

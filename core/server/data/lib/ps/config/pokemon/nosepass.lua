@@ -11,7 +11,7 @@ POKEMON["Nosepass"] = {
     dexPortrait = -1,
     fastcallPortrait = 27292,
     catchStorage = -1,
-    evolutions = {  },
+    evolutions = { { name = "Probopass", requiredLevel = 40, requiredItems = { ITEMS.THUNDERSTONE } } },
     description = "Its magnetic nose always faces north and draws iron objects to its body to protect itself better.",
     skills = { "Tackle", 1, "Rock Throw", 5, "Rock Slide", 10, "Rock Blast", 15, "Harden", 20, "Spark", 25, "Discharge", 30, "Rest", 35, "Thunder Wave", 40, "Earth Power", 45, "Power Gem", 50, "Sandstorm", 55, "Zap Cannon", 60, "Stone Edge", 65, "Explosion", 70 },
     abilities = { "Strenght", "Rock Smash" },

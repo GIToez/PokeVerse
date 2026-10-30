@@ -11,7 +11,7 @@ POKEMON["Snorunt"] = {
     dexPortrait = -1,
     fastcallPortrait = 27354,
     catchStorage = -1,
-    evolutions = { { name = "Glalie", requiredLevel = 30 } },
+    evolutions = { { name = "Glalie", requiredLevel = 30 }, { name = "Froslass", requiredLevel = 30, requiredItems = { ITEMS.DAWN_STONE } } },
     description = "It is said that several Snorunt gather under giant leaves and live together in harmony.",
     skills = { "Tackle", 1, "Powder Snow", 5, "Ice Shard", 10, "Icy Wind", 15, "Ice Fang", 20, "Protect", 25 },
     abilities = { "Flash", POKEMON_ABILITIES.HEADBUTT },

@@ -11,7 +11,7 @@ POKEMON["Magmar"] = {
     dexPortrait = 13627,
     fastcallPortrait = 10760,
     catchStorage = 16126,
-    evolutions = {},
+    evolutions = { { name = "Magmortar", requiredLevel = 60, requiredItems = { ITEMS.MAGMARIZER } } },
     description = "Found near the mouth of a volcano. This fire-breather's body temperature is nearly 2,200 degrees Fahrenheit.",
     skills = { "Tackle", 1, "Smog", 5, "Ember", 10, "Faint Attack", 15, "Fire Spin", 20, "Clear Smog", 25, "Sunny Day", 30, "Fire Punch", 35, "Flamethrower", 40, "Flare Blitz", 45, "Lava Plume", 50, "Flame Burst", 55, "Confuse Ray", 60, "Fire Blast", 65, "Focus Punch", 70 },
     abilities = { POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },

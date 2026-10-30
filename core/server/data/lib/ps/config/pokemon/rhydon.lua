@@ -11,7 +11,7 @@ POKEMON["Rhydon"] = {
     dexPortrait = 13613,
     fastcallPortrait = 10746,
     catchStorage = 16112,
-    evolutions = {},
+    evolutions = { { name = "Rhyperior", requiredLevel = 60, requiredItems = { ITEMS.PROTECTOR } } },
     description = "It begins walking on its hind legs after evolution. It can punch holes through boulders with its horn.",
     skills = { "Tackle", 1, "Horn Attack", 5, "Stomp", 10, "Rock Throw", 15, "Take Down", 20, "Rock Blast", 25, "Scary Face", 30, "Drill Run", 35, "Earthquake", 45, "Horn Drill", 50, "Earth Power", 55, "Megahorn", 60, "Stone Edge", 65, "Rock Wrecker", 70 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },

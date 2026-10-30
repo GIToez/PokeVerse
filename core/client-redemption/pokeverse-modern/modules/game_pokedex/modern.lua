@@ -16,8 +16,10 @@ local function faceItemId(number)
         return 11873 + number
     elseif number <= 251 then
         return 15647 + number
+    elseif number <= 386 then
+        return 26857 + number
     end
-    return 26857 + number
+    return 28819 + number
 end
 
 local function showCaughtFace(item, status)

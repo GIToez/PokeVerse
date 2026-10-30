@@ -23,7 +23,19 @@
 		Spin Machine, 18096;
 		Deepseascale, 28892;
 		Deepseatooth, 28893;
-		Prism Scale, 28914
+		Prism Scale, 28914;
+		Shiny Stone, 31083;
+		Dusk Stone, 31084;
+		Dawn Stone, 31085;
+		Ice Stone, 31086;
+		Oval Stone, 31087;
+		Razor Claw, 31088;
+		Razor Fang, 31089;
+		Electirizer, 31090;
+		Magmarizer, 31091;
+		Protector, 31092;
+		Reaper Cloth, 31093;
+		Dubious Disc, 31094
 		"/>
     </parameters>
 </npc>

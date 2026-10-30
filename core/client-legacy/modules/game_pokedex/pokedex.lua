@@ -53,8 +53,10 @@ local function updateItem(item, status)
         itemId = 11873 + id
     elseif (id <= 251) then
         itemId = (15798 - 151) + id
-    else
+    elseif (id <= 386) then
         itemId = (27108 - 251) + id
+    else
+        itemId = (29206 - 387) + id
     end
 
     item:setItemId(((status ~= ITEM_STATUS.UNKNOWN and status ~= ITEM_STATUS.CATCHED and

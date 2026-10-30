@@ -29,6 +29,7 @@ local CONFIG = {
         "Raikou", "Entei", "Suicune", "Lugia", "Ho-Oh", "Celebi",
         "Regirock", "Regice", "Registeel", "Latias", "Latios",
         "Kyogre", "Groudon", "Rayquaza", "Jirachi", "Deoxys",
+        "Uxie", "Mesprit", "Azelf", "Dialga", "Palkia", "Heatran", "Regigigas", "Giratina", "Cresselia", "Phione", "Manaphy", "Darkrai", "Shaymin", "Arceus",
         "Boss Articuno", "Frozen Boss Articuno", "Boss Zapdos", "Boss Moltres", "Final Mewtwo",
     },
 
