@@ -376,7 +376,8 @@ def main():
                        if i in NEW_ITEMS.values()})
     out += ['## New evolution items', '', ', '.join(i.replace('_', ' ').title() for i in newitems), '']
     out += ['## Moves Gen 4 Pokemon learn that the server doesn\'t have', '',
-            'Not used. Add any of them and run the script again to put them in the lists.', '',
+            'Not used. Add any of them and run the script again to put them in the lists. Which ones to add',
+            'first: [move-audit.md](move-audit.md).', '',
             '| Move | Learned by |', '| --- | --- |']
     for m, who in sorted(plan.missing.items(), key=lambda x: (-len(x[1]), x[0])):
         out.append('| %s | %s |' % (m, ', '.join(sorted(who))))

@@ -17,7 +17,8 @@ Dawn Stone, Dubious Disc, Dusk Stone, Electirizer, Ice Stone, Magmarizer, Oval S
 
 ## Moves Gen 4 Pokemon learn that the server doesn't have
 
-Not used. Add any of them and run the script again to put them in the lists.
+Not used. Add any of them and run the script again to put them in the lists. Which ones to add
+first: [move-audit.md](move-audit.md).
 
 | Move | Learned by |
 | --- | --- |
