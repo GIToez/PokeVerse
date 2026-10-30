@@ -768,6 +768,20 @@ local SPECIAL_ABILITIES = {
             return getPokemonSkillDamageType(move) == ELEMENT_NORMAL
         end
     },
+    [POKEMON_SPECIAL_ABILITY_IDS.AERILATE] = {
+        name = "Aerilate",
+        description = "Aerilate turns Normal-type moves into Flying-type moves and boosts their power by 20%.",
+        onCheck = function(cid, target, move)
+            return getPokemonSkillDamageType(move) == ELEMENT_NORMAL
+        end
+    },
+    [POKEMON_SPECIAL_ABILITY_IDS.PRANKSTER] = {
+        name = "Prankster",
+        description = "Prankster makes status moves, the ones that do no damage, recharge 30% faster.",
+        onCheck = function(cid, target, move)
+            return getPokemonSkillDamage(move) == 0
+        end
+    },
     [POKEMON_SPECIAL_ABILITY_IDS.DESOLATE_LAND] = {
         name = "Desolate Land",
         description = "Desolate Land brings extremely harsh sunlight around the Pokemon: its Fire moves are 50% stronger, and Water moves aimed at it evaporate.",

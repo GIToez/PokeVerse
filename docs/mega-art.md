@@ -17,7 +17,7 @@ sheets (100% = same size). A Mega should be clearly bigger than its normal form.
 | 2596 | Charizard X | 8231 | 96 | 123% | |
 | 2597 | Charizard Y | 8233 | 96 | 126% | |
 | 2598 | Blastoise | 1657 | 64 | 115% | |
-| 2599 | Alakazam | 1853 | 64 | 79% | too small: smaller than Alakazam |
+| 2599 | Alakazam | PokeZHero 1921 | 64 | | replaced the pack sheet (1853, smaller than Alakazam) |
 | 2600 | Gengar | 1851 | 64 | 197% | |
 | 2601 | Kangaskhan | 2060 | 64 | 109% | |
 | 2602 | Ampharos | 1858 | 64 | | |
@@ -35,19 +35,26 @@ sheets (100% = same size). A Mega should be clearly bigger than its normal form.
 | 2614 | Scizor | 1892 | 64 | 105% | about the same size as Scizor |
 | 2615 | Sceptile | 2071 | 64 | 109% | |
 | 2616 | Swampert | 7156 | 64 | 104% | about the same size as Swampert |
-| 2617 | Sableye | 2070 | 64 | 112% | |
+| 2617 | Sableye | PokeZHero 1945 | 64 | | replaced the pack sheet (2070); the gem is held in front |
 | 2618 | Sharpedo | 8120 | 64 | 159% | |
 | 2619 | Camerupt | 5853 | 96 | 127% | |
 | 2620 | Altaria | 2062 | 64 | 103% | needs work (trainer); about the same size as Altaria |
-| 2621 | Absol | 6414 | 64 | 109% | |
+| 2621 | Absol | PokeZHero 1918 | 64 | | replaced the pack sheet (6414) |
 | 2622 | Glalie | 2066 | 64 | 153% | |
-| 2623 | Abomasnow | 6136 | 96 | 130% | |
+| 2623 | Abomasnow | 6136 | 96 | 130% | kept over PokeZHero's, which is smaller than its own Abomasnow |
 | 2624 | Audino | 6211 | 64 | 165% | recolour: Mega Audino is white and cream, not pink |
 | 2625 | Mawile | 1859 | 64 | 127% | |
-| 2626 | Latias | 4089 | 64 | 75% | too small: our Latias is 96 px. Mega Latias has yellow eyes, Mega Latios red |
+| 2626 | Latias | PokeZHero 1935 | 64 | | the red Mega Latias; the blue pack sheet moved to Mega Latios (2684) |
 | 2627 | Primal Groudon | 4099 | 64 | 55% | too small: our Groudon is 96 px |
 | 2628 | Primal Kyogre | 4098 | 64 | 55% | too small: our Kyogre is 96 px |
 | 2629 | Dragonite | 8261 | 96 | 127% | |
+| 2684 | Latios | 4089 | 96 | | was Mega Latias's sheet (blue, so Latios); still a small 64 px drawing in a 96 px frame |
+| 2685 | Mewtwo Y | PokeZHero 1944 | 64 | | |
+| 2687 | Gardevoir | PokeZHero 1928 | 64 | | |
+| 2689 | Banette | PokeZHero 1923 | 64 | | |
+| 2691 | Salamence | PokeZHero 1946 | 96 | | |
+| 2693 | Metagross | PokeZHero 1943 | 128 | | |
+| 2695 | Diancie | PokeZHero 1940 | 64 | | art only: Diancie isn't in the game yet, so there is no form |
 
 Ampharos, Pidgeot and Gyarados have no size: their normal forms' pack sheets weren't found.
 
@@ -55,10 +62,10 @@ Shiny Megas without their own sheet will be recolours of the normal one (see the
 
 ### Still to find
 
-None of the candidates fit for these: Aggron, Metagross, Garchomp, Manectric, Houndoom,
-Gallade, Lopunny, Diancie (the one found looks unfinished), Feraligatr, Meganium (pack 8191 is
-close but not right) and Mega Latios. Nothing was found for Mewtwo X and Y, Heracross, Medicham,
-Banette, Pinsir, Rayquaza or Salamence, nor for the other Legends: Z-A Megas.
+None of the candidates fit for these: Aggron, Garchomp, Manectric, Houndoom, Gallade, Lopunny,
+Feraligatr and Meganium (pack 8191 is close but not right). Nothing was found for Mewtwo X,
+Heracross, Medicham, Pinsir or Rayquaza, nor for the other Legends: Z-A Megas. PokeZHero has no
+Mega Medicham either (its look 1915 is another Pokemon).
 
 ### Repainting our own sprites (proposed)
 
@@ -86,6 +93,9 @@ Each is drawn here, shown to the trainer, and swapped onto its look with `script
 - **Doesn't match the art:** compare with the official Mega design (Bulbapedia) for colours,
   eye colour and shape, and with our normal form so the outline style is the same.
 - **Shinies:** compare with the official shiny colours.
+- **Old sprites:** `dat-set-outfit.py` appends the new sprites and leaves the old ones in
+  `data.spr`. After a batch of swaps, `scripts/spr-drop-unused.py` blanks every sprite that no
+  item, outfit, effect or missile in `data.dat` uses (sprite ids stay the same).
 
 ## Item icons
 
@@ -147,8 +157,8 @@ Mega Venusaur, Mega Charizard X and Y and Mega Blastoise are playable (staff `/m
 ## The other Megas and the Primals
 
 Every Mega with a walk sprite above whose Pokemon is in the game, and Primal Groudon and Kyogre,
-built the same way (`scripts/art/mega_forms_art.py`). Faces are server items 30280-30326 drawing
-client items 28923-28969, normal then shiny for each form in this order.
+built the same way (`scripts/art/mega_forms_art.py`). Faces are server items 30280-30337 drawing
+client items 28923-28980, normal then shiny for each form in this order.
 
 | Form | Look | Shiny look | Ability |
 | --- | --- | --- | --- |
@@ -175,10 +185,16 @@ client items 28923-28969, normal then shiny for each form in this order.
 | Mega Absol | 2621 | 2652 | Magic Bounce (new) |
 | Mega Glalie | 2622 | 2653 | Refrigerate (new) |
 | Mega Latias | 2626 | none | Levitate |
+| Mega Latios | 2684 | none | Levitate |
+| Mega Mewtwo Y | 2685 | 2686 | Insomnia |
+| Mega Gardevoir | 2687 | 2688 | Pixilate |
+| Mega Banette | 2689 | 2690 | Prankster (new: status moves recharge 30% faster) |
+| Mega Salamence | 2691 | 2692 | Aerilate (new: Normal moves become Flying, 20% stronger) |
+| Mega Metagross | 2693 | 2694 | Tough Claws |
 | Primal Kyogre | 2628 | none | Primordial Sea (new) |
 | Primal Groudon | 2627 | none | Desolate Land (new) |
 
-Shiny Latias, Groudon and Kyogre aren't in the game, so their forms have no shiny.
+Shiny Latias, Latios, Groudon and Kyogre aren't in the game, so their forms have no shiny.
 
 - **The Primals** are our own 96 px Groudon (1562) and Kyogre (1561) repainted in the Primal
   colours from Showdown, replacing the 64 px pack placeholders on 2627 and 2628. Groudon's glowing
@@ -188,6 +204,12 @@ Shiny Latias, Groudon and Kyogre aren't in the game, so their forms have no shin
 - **Shiny recolours to rework:** Mega Alakazam and Mega Blaziken barely change, and Mega Altaria's
   cloud gets an orange rim (its shiny is a yellow-tinted cloud). The colours come from Showdown's
   normal and shiny sprites, so a pack sheet drawn in other colours picks up odd ones.
-- **Not built:** Mega Lucario, Abomasnow and Audino (the Pokemon aren't in the game), Mega Dragonite
-  (no box icon for its face yet) and every Mega in "Still to find". Mega Latias is still the small
+- **From PokeZHero (October 30):** the walk sheets of Mega Alakazam, Sableye, Absol and Latias
+  (replacing the pack's) and of Mega Mewtwo Y, Gardevoir, Banette, Salamence and Metagross, picked by
+  the trainer. They are exported with `/tmp/pz/export.py` into the pack folder as `outfit_pzN_.png`
+  (`"pzN"` in FORMS) and their shinies are recolours like the others. Mega Latios is the blue sheet
+  Mega Latias had (`look:2626`, copied before 2626 was redrawn).
+- **Not built:** Mega Lucario, Abomasnow, Audino and Diancie (the Pokemon aren't in the game), Mega
+  Dragonite (no box icon for its face yet), Mega Medicham (no art) and every Mega in "Still to
+  find". Mega Latios is still the small
   64 px sheet, and the faces are still pokesprite box icons.

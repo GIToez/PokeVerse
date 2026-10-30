@@ -20,5 +20,5 @@ POKEMON["Croconaw"] = {
     eggChance = 20,
     specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.TORRENT },
     learnableTms = { TM_IDS.AERIAL_ACE, TM_IDS.ROCK_TOMB, TM_IDS.WATER_PULSE, TM_IDS.FURY_CUTTER, TM_IDS.ICE_PUNCH, TM_IDS.IRON_TAIL, TM_IDS.RAIN_DANCE, TM_IDS.ICY_WIND, TM_IDS.HEADBUTT, TM_IDS.DYNAMIC_PUNCH, TM_IDS.BLIZZARD, TM_IDS.ROCK_SLIDE, TM_IDS.SWORDS_DANCE, TM_IDS.TOXIC, TM_IDS.DOUBLE_EDGE, TM_IDS.ICE_BEAM, TM_IDS.RAGE, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.REST, TM_IDS.BIDE, TM_IDS.SUBSTITUTE, TM_IDS.FOCUS_PUNCH, TM_IDS.DRAGON_CLAW, TM_IDS.BRICK_BREAK, TM_IDS.HAIL, TM_IDS.ROAR },
-    eggMoves = { "Ancient Power", "Aqua Jet", "Block", "Crunch", "Dragon Dance", "Fake Teasr", "Flatter", "Hydro Pump", "Ice Punch", "Metal Claw", "Mud Sport", "Thrash", "Water Pulse", "Water Sport" }
+    eggMoves = { "Ancient Power", "Aqua Jet", "Block", "Crunch", "Dragon Dance", "Fake Tears", "Flatter", "Hydro Pump", "Ice Punch", "Metal Claw", "Mud Sport", "Thrash", "Water Pulse", "Water Sport" }
 }

@@ -22,3 +22,8 @@ POKEMON["Elekid"] = {
     learnableTms = { TM_IDS.FIRE_PUNCH, TM_IDS.THUNDER_PUNCH, TM_IDS.ICE_PUNCH, TM_IDS.MUD_SLAP, TM_IDS.RAIN_DANCE, TM_IDS.ZAP_CANNON, TM_IDS.HEADBUTT, TM_IDS.DYNAMIC_PUNCH, TM_IDS.THUNDER_WAVE, TM_IDS.SWIFT, TM_IDS.TOXIC, TM_IDS.DOUBLE_EDGE, TM_IDS.RAGE, TM_IDS.THUNDERBOLT, TM_IDS.THUNDER, TM_IDS.PSYCHIC, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.REST, TM_IDS.BIDE, TM_IDS.SUBSTITUTE, TM_IDS.FOCUS_PUNCH, TM_IDS.LIGHT_SCREEN, TM_IDS.BRICK_BREAK, TM_IDS.SHOCK_WAVE },
     eggMoves = { "Barrier", "Cross Chop", "Dynamic Punch", "Feint", "Fire Punch", "Focus Punch", "Hammer Arm", "Ice Punch", "Karate Chop", "Meditate", "Rolling Kick" }
 }
+
+POKEMON["Christmas Elekid"] = table.deepcopy(POKEMON["Elekid"])
+POKEMON["Christmas Elekid"].blockTransform = true
+POKEMON["Christmas Elekid"].evolutions = {}
+POKEMON["Christmas Elekid"].ignoreBallCounter = true

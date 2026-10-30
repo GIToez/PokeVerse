@@ -22,3 +22,8 @@ POKEMON["Psyduck"] = {
     learnableTms = { TM_IDS.SOFTBOILED, TM_IDS.AERIAL_ACE, TM_IDS.WATER_PULSE, TM_IDS.ICE_PUNCH, TM_IDS.MUD_SLAP, TM_IDS.IRON_TAIL, TM_IDS.RAIN_DANCE, TM_IDS.ICY_WIND, TM_IDS.HEADBUTT, TM_IDS.DYNAMIC_PUNCH, TM_IDS.PSYCHIC, TM_IDS.MEGA_PUNCH, TM_IDS.MEGA_KICK, TM_IDS.TOXIC, TM_IDS.BODY_SLAM, TM_IDS.TAKE_DOWN, TM_IDS.DOUBLE_EDGE, TM_IDS.BUBBLEBEAM, TM_IDS.WATER_GUN, TM_IDS.ICE_BEAM, TM_IDS.BLIZZARD, TM_IDS.PAY_DAY, TM_IDS.SUBMISSION, TM_IDS.COUNTER, TM_IDS.SEISMIC_TOSS, TM_IDS.RAGE, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.BIDE, TM_IDS.SWIFT, TM_IDS.SKULL_BASH, TM_IDS.REST, TM_IDS.SUBSTITUTE, TM_IDS.FOCUS_PUNCH, TM_IDS.CALM_MIND, TM_IDS.HAIL, TM_IDS.LIGHT_SCREEN, TM_IDS.BRICK_BREAK },
     eggMoves = { "Clear Smog", "Confuse Ray", "Cross Chop", "Encore", "Foresight", "Future Sight", "Hypnosis", "Mud Bomb", "Psybeam", "Refresh", "Secret Power", "Simple Beam", "Sleep Talk", "Synchronoise", "Yawn" }
 }
+
+POKEMON["Christmas Psyduck"] = table.deepcopy(POKEMON["Psyduck"])
+POKEMON["Christmas Psyduck"].blockTransform = true
+POKEMON["Christmas Psyduck"].evolutions = {}
+POKEMON["Christmas Psyduck"].ignoreBallCounter = true

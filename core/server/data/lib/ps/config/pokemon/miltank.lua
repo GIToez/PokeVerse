@@ -20,5 +20,5 @@ POKEMON["Miltank"] = {
     eggChance = 20,
     specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.THICK_FAT, POKEMON_SPECIAL_ABILITY_IDS.SCRAPPY },
     learnableTms = { TM_IDS.ROCK_TOMB, TM_IDS.WATER_PULSE, TM_IDS.FIRE_PUNCH, TM_IDS.THUNDER_PUNCH, TM_IDS.DEFENSE_CURL, TM_IDS.ICE_PUNCH, TM_IDS.MUD_SLAP, TM_IDS.SHADOW_BALL, TM_IDS.IRON_TAIL, TM_IDS.RAIN_DANCE, TM_IDS.ICY_WIND, TM_IDS.ZAP_CANNON, TM_IDS.HEADBUTT, TM_IDS.DYNAMIC_PUNCH, TM_IDS.BLIZZARD, TM_IDS.ROCK_SLIDE, TM_IDS.THUNDER_WAVE, TM_IDS.TOXIC, TM_IDS.DOUBLE_EDGE, TM_IDS.ICE_BEAM, TM_IDS.HYPER_BEAM, TM_IDS.RAGE, TM_IDS.SOLAR_BEAM, TM_IDS.THUNDERBOLT, TM_IDS.THUNDER, TM_IDS.EARTHQUAKE, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.REST, TM_IDS.BIDE, TM_IDS.SUBSTITUTE, TM_IDS.FOCUS_PUNCH, TM_IDS.BRICK_BREAK, TM_IDS.SHOCK_WAVE, TM_IDS.SANDSTORM },
-    eggMoves = { "Belch", "Curse", "Dizzy Punch", "Double-Edge", "Endure", "Harmmer Arm", "Heart Stamp", "Helping Hand", "Natural Gift", "Present", "Punishment", "Reversal", "Seismic Toss", "Sleep Talk" }
+    eggMoves = { "Belch", "Curse", "Dizzy Punch", "Double-Edge", "Endure", "Hammer Arm", "Heart Stamp", "Helping Hand", "Natural Gift", "Present", "Punishment", "Reversal", "Seismic Toss", "Sleep Talk" }
 }

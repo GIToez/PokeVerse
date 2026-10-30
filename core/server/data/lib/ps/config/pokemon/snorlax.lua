@@ -25,3 +25,13 @@ POKEMON["Snorlax"] = {
 
 POKEMON["Cloned Snorlax"] = table.deepcopy(POKEMON["Snorlax"])
 POKEMON["Cloned Snorlax"].blockTransform = true
+
+POKEMON["Christmas Snorlax"] = table.deepcopy(POKEMON["Snorlax"])
+POKEMON["Christmas Snorlax"].blockTransform = true
+POKEMON["Christmas Snorlax"].evolutions = {}
+POKEMON["Christmas Snorlax"].ignoreBallCounter = true
+
+POKEMON["Santa Snorlax"] = table.deepcopy(POKEMON["Snorlax"])
+POKEMON["Santa Snorlax"].blockTransform = true
+POKEMON["Santa Snorlax"].evolutions = {}
+POKEMON["Santa Snorlax"].ignoreBallCounter = true

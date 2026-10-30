@@ -22,3 +22,8 @@ POKEMON["Mantine"] = {
     learnableTms = { TM_IDS.AERIAL_ACE, TM_IDS.ROCK_TOMB, TM_IDS.WATER_PULSE, TM_IDS.MUD_SLAP, TM_IDS.RAIN_DANCE, TM_IDS.ICY_WIND, TM_IDS.HEADBUTT, TM_IDS.BLIZZARD, TM_IDS.SWIFT, TM_IDS.TOXIC, TM_IDS.DOUBLE_EDGE, TM_IDS.ICE_BEAM, TM_IDS.HYPER_BEAM, TM_IDS.RAGE, TM_IDS.EARTHQUAKE, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.REST, TM_IDS.BIDE, TM_IDS.SUBSTITUTE, TM_IDS.ROCK_SLIDE, TM_IDS.HAIL, TM_IDS.BULLET_SEED },
     eggMoves = { "Amnesia", "Haze", "Hydro Pump", "Mirror Coat", "Mud Sport", "Signal Beam", "Slam", "Splash", "Tailwind", "Twister", "Water Sport", "Wide Guard" }
 }
+
+POKEMON["Christmas Mantine"] = table.deepcopy(POKEMON["Mantine"])
+POKEMON["Christmas Mantine"].blockTransform = true
+POKEMON["Christmas Mantine"].evolutions = {}
+POKEMON["Christmas Mantine"].ignoreBallCounter = true

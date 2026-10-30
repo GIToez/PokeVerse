@@ -26,3 +26,8 @@ POKEMON["Seel"] = {
 POKEMON["RC Seel"] = table.deepcopy(POKEMON["Seel"])
 POKEMON["RC Seel"].pTypes = { ELEMENT_POISON, ELEMENT_NORMAL }
 POKEMON["RC Seel"].blockTransform = true
+
+POKEMON["Christmas Seel"] = table.deepcopy(POKEMON["Seel"])
+POKEMON["Christmas Seel"].blockTransform = true
+POKEMON["Christmas Seel"].evolutions = {}
+POKEMON["Christmas Seel"].ignoreBallCounter = true

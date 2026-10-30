@@ -22,3 +22,8 @@ POKEMON["Togepi"] = {
     learnableTms = { TM_IDS.FLAMETHROWER, TM_IDS.WATER_PULSE, TM_IDS.DEFENSE_CURL, TM_IDS.MUD_SLAP, TM_IDS.SHADOW_BALL, TM_IDS.RAIN_DANCE, TM_IDS.ZAP_CANNON, TM_IDS.HEADBUTT, TM_IDS.THUNDER_WAVE, TM_IDS.DREAM_EATER, TM_IDS.SWIFT, TM_IDS.FIRE_BLAST, TM_IDS.REFLECT, TM_IDS.TOXIC, TM_IDS.DOUBLE_EDGE, TM_IDS.RAGE, TM_IDS.SOLAR_BEAM, TM_IDS.PSYCHIC, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.REST, TM_IDS.BIDE, TM_IDS.SUBSTITUTE, TM_IDS.LIGHT_SCREEN, TM_IDS.SAFEGUARD, TM_IDS.SHOCK_WAVE },
     eggMoves = { "Extrasensory", "Foresight", "Future Sight", "Lucky Chant", "Mirror Move", "Morning Sun", "Nasty Plot", "Peck", "Present", "Psycho Shift", "Secret Power", "Stored Power" }
 }
+
+POKEMON["Christmas Togepi"] = table.deepcopy(POKEMON["Togepi"])
+POKEMON["Christmas Togepi"].blockTransform = true
+POKEMON["Christmas Togepi"].evolutions = {}
+POKEMON["Christmas Togepi"].ignoreBallCounter = true

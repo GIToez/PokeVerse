@@ -22,3 +22,8 @@ POKEMON["Hitmontop"] = {
     learnableTms = { TM_IDS.AERIAL_ACE, TM_IDS.MUD_SLAP, TM_IDS.RAIN_DANCE, TM_IDS.HEADBUTT, TM_IDS.ROCK_SLIDE, TM_IDS.SWIFT, TM_IDS.TOXIC, TM_IDS.DOUBLE_EDGE, TM_IDS.RAGE, TM_IDS.EARTHQUAKE, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.REST, TM_IDS.BIDE, TM_IDS.SUBSTITUTE, TM_IDS.BULK_UP, TM_IDS.SANDSTORM },
     eggMoves = { "Ally Switch", "Bullet Punch", "Counter", "Endure", "Feint", "Helping Hand", "Hi Jump Kick", "Mach Punch", "Mind Reader", "Pursuit", "Rapid Spin", "Vacuum Wave" }
 }
+
+POKEMON["Christmas Hitmontop"] = table.deepcopy(POKEMON["Hitmontop"])
+POKEMON["Christmas Hitmontop"].blockTransform = true
+POKEMON["Christmas Hitmontop"].evolutions = {}
+POKEMON["Christmas Hitmontop"].ignoreBallCounter = true

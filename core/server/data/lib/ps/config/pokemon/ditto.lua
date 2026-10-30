@@ -23,3 +23,8 @@ POKEMON["Ditto"] = {
 }
 
 POKEMON["Unsettled Ditto"] = table.deepcopy(POKEMON["Ditto"])
+
+POKEMON["Christmas Ditto"] = table.deepcopy(POKEMON["Ditto"])
+POKEMON["Christmas Ditto"].blockTransform = true
+POKEMON["Christmas Ditto"].evolutions = {}
+POKEMON["Christmas Ditto"].ignoreBallCounter = true

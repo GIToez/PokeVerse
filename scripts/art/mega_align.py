@@ -11,6 +11,7 @@ bottom quarter of the sprite and its lowest row) on the Mega and on its base for
     moves it right and down by the largest shift any direction needs;
   - moves each direction's art left and up by what it needs less than that, growing the frame
     up and left when the art would leave it.
+No direction is moved past the right or bottom edge of the tile; a wide Mega stands further left.
 Run it on the outfits as drawn in; running it again changes nothing.
 """
 import os
@@ -69,6 +70,18 @@ def feet(sheet):
     return out
 
 
+def edges(sheet):
+    """Per direction: the art's right and bottom edge over all frames, from the frame's bottom right."""
+    a = np.array(sheet)
+    size = a.shape[1] // 4
+    out = []
+    for d in range(4):
+        seen = (a[:, d * size:(d + 1) * size, 3] > 0).reshape(-1, size, size).any(0)
+        ys, xs = np.nonzero(seen)
+        out.append((xs.max() + 1 - size, ys.max() + 1 - size))
+    return out
+
+
 def displacement(data, start):
     """The outfit's offset (x, y) and where its attributes end."""
     i, offset = start, (0, 0)
@@ -124,6 +137,8 @@ def main():
         mega, ours = feet(sheet), feet(mega_forms_art.outfit_sheet(base))
         # shifts right and down on the map, counting the offsets both already have
         need = [(round(ours[d][0] - bx - (mega[d][0] - ox)), int(ours[d][1] - by - (mega[d][1] - oy))) for d in range(4)]
+        # never past the tile's right or bottom edge: the next tiles' items are drawn over that
+        need = [(min(nx, ox - rx), min(ny, oy - ry)) for (nx, ny), (rx, ry) in zip(need, edges(sheet))]
         dx, dy = max(n[0] for n in need), max(n[1] for n in need)
         moves = [(dx - n[0], dy - n[1]) for n in need]
         if not (dx or dy or any(mx or my for mx, my in moves)):

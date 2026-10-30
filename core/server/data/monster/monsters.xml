@@ -952,6 +952,28 @@
 			<monster name="Christmas Spearow" file="Events/Christmas/christmas spearow.xml"/>
 			<monster name="Christmas Squirtle" file="Events/Christmas/christmas squirtle.xml"/>
 			<monster name="Christmas Weedle" file="Events/Christmas/christmas weedle.xml"/>
+			<monster name="Christmas Aipom" file="Events/Christmas/christmas aipom.xml"/>
+			<monster name="Christmas Chikorita" file="Events/Christmas/christmas chikorita.xml"/>
+			<monster name="Christmas Clefairy" file="Events/Christmas/christmas clefairy.xml"/>
+			<monster name="Christmas Cubone" file="Events/Christmas/christmas cubone.xml"/>
+			<monster name="Christmas Ditto" file="Events/Christmas/christmas ditto.xml"/>
+			<monster name="Christmas Eevee" file="Events/Christmas/christmas eevee.xml"/>
+			<monster name="Christmas Elekid" file="Events/Christmas/christmas elekid.xml"/>
+			<monster name="Christmas Golbat" file="Events/Christmas/christmas golbat.xml"/>
+			<monster name="Christmas Hitmontop" file="Events/Christmas/christmas hitmontop.xml"/>
+			<monster name="Christmas Jigglypuff" file="Events/Christmas/christmas jigglypuff.xml"/>
+			<monster name="Christmas Jynx" file="Events/Christmas/christmas jynx.xml"/>
+			<monster name="Christmas Ledyba" file="Events/Christmas/christmas ledyba.xml"/>
+			<monster name="Christmas Mantine" file="Events/Christmas/christmas mantine.xml"/>
+			<monster name="Christmas Psyduck" file="Events/Christmas/christmas psyduck.xml"/>
+			<monster name="Christmas Seel" file="Events/Christmas/christmas seel.xml"/>
+			<monster name="Christmas Teddiursa" file="Events/Christmas/christmas teddiursa.xml"/>
+			<monster name="Christmas Togepi" file="Events/Christmas/christmas togepi.xml"/>
+			<monster name="Christmas Totodile" file="Events/Christmas/christmas totodile.xml"/>
+			<monster name="Christmas Wooper" file="Events/Christmas/christmas wooper.xml"/>
+			<monster name="Santa Blissey" file="Events/Christmas/santa blissey.xml"/>
+			<monster name="Christmas Snorlax" file="Events/Christmas/christmas snorlax.xml"/>
+			<monster name="Santa Snorlax" file="Events/Christmas/santa snorlax.xml"/>
 		<!-- EASTER -->
 			<monster name="Easter Rabbit Shadow" file="Events/Easter/easter rabbit shadow.xml"/>
 			<monster name="Easter Bulbasaur" file="Events/Easter/easter bulbasaur.xml"/>
@@ -1291,4 +1313,15 @@
 	<monster name="Mega Latias" file="Mega/mega latias.xml"/>
 	<monster name="Primal Kyogre" file="Mega/primal kyogre.xml"/>
 	<monster name="Primal Groudon" file="Mega/primal groudon.xml"/>
+	<monster name="Mega Latios" file="Mega/mega latios.xml"/>
+	<monster name="Mega Mewtwo Y" file="Mega/mega mewtwo y.xml"/>
+	<monster name="Shiny Mega Mewtwo Y" file="Mega/shiny mega mewtwo y.xml"/>
+	<monster name="Mega Gardevoir" file="Mega/mega gardevoir.xml"/>
+	<monster name="Shiny Mega Gardevoir" file="Mega/shiny mega gardevoir.xml"/>
+	<monster name="Mega Banette" file="Mega/mega banette.xml"/>
+	<monster name="Shiny Mega Banette" file="Mega/shiny mega banette.xml"/>
+	<monster name="Mega Salamence" file="Mega/mega salamence.xml"/>
+	<monster name="Shiny Mega Salamence" file="Mega/shiny mega salamence.xml"/>
+	<monster name="Mega Metagross" file="Mega/mega metagross.xml"/>
+	<monster name="Shiny Mega Metagross" file="Mega/shiny mega metagross.xml"/>
 </monsters>

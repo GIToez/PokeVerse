@@ -1115,6 +1115,16 @@ POKEMONS["Shiny Mega Absol"].portrait = 30321
 POKEMONS["Shiny Mega Absol"].fastcallPortrait = 28964
 POKEMONS["Shiny Mega Glalie"].portrait = 30323
 POKEMONS["Shiny Mega Glalie"].fastcallPortrait = 28966
+POKEMONS["Shiny Mega Mewtwo Y"].portrait = 30329
+POKEMONS["Shiny Mega Mewtwo Y"].fastcallPortrait = 28972
+POKEMONS["Shiny Mega Gardevoir"].portrait = 30331
+POKEMONS["Shiny Mega Gardevoir"].fastcallPortrait = 28974
+POKEMONS["Shiny Mega Banette"].portrait = 30333
+POKEMONS["Shiny Mega Banette"].fastcallPortrait = 28976
+POKEMONS["Shiny Mega Salamence"].portrait = 30335
+POKEMONS["Shiny Mega Salamence"].fastcallPortrait = 28978
+POKEMONS["Shiny Mega Metagross"].portrait = 30337
+POKEMONS["Shiny Mega Metagross"].fastcallPortrait = 28980
 
 for name, pokemon in pairs(POKEMONS) do
     if (pokemon.portrait == 0 and pokemon.fastcallPortrait == 0 and string.find(string.lower(name), "shiny")) then -- This shiny doenst exists yet
