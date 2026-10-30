@@ -26,7 +26,6 @@ first: [move-audit.md](move-audit.md).
 | Swagger | Abomasnow, Bastiodon, Croagunk, Empoleon, Honchkrow, Luxio, Luxray, Piplup, Prinplup, Purugly, Shieldon, Shinx, Snover, Toxicroak, Vespiquen |
 | Baton Pass | Ambipom, Buneary, Drifblim, Drifloon, Glaceon, Leafeon, Lopunny, Mime Jr., Togekiss |
 | Taunt | Bastiodon, Chatot, Chimchar, Croagunk, Kricketune, Monferno, Shieldon, Toxicroak, Weavile |
-| Feint | Gallade, Infernape, Lucario, Monferno, Riolu, Skuntank, Stunky, Yanmega |
 | Growth | Budew, Carnivine, Cherrim, Cherubi, Roserade, Shaymin, Tangrowth, Wormadam |
 | Helping Hand | Cherrim, Cherubi, Gallade, Glaceon, Leafeon, Lucario, Riolu |
 | Imprison | Azelf, Bronzong, Bronzor, Gallade, Mesprit, Uxie |
@@ -49,10 +48,8 @@ first: [move-audit.md](move-audit.md).
 | Gravity | Arceus, Dusknoir, Probopass |
 | Life Dew | Gallade, Lucario, Togekiss |
 | Lock-On | Magnezone, Porygon-Z, Probopass |
-| Mystical Power | Azelf, Mesprit, Uxie |
 | Recycle | Mime Jr., Munchlax, Porygon-Z |
 | Torment | Chimchar, Infernape, Monferno |
-| Wave Crash | Buizel, Empoleon, Floatzel |
 | Whirlwind | Staraptor, Staravia, Starly |
 | Withdraw | Grotle, Torterra, Turtwig |
 | Acupressure | Drapion, Skorupi |
@@ -60,49 +57,29 @@ first: [move-audit.md](move-audit.md).
 | Aurora Veil | Abomasnow, Froslass |
 | Belly Drum | Lickilicky, Munchlax |
 | Electric Terrain | Luxray, Magnezone |
-| Liquidation | Buizel, Floatzel |
 | Magnetic Flux | Magnezone, Probopass |
 | Minimize | Drifblim, Drifloon |
 | Morning Sun | Cherrim, Cherubi |
 | Perish Song | Arceus, Kricketune |
 | Snowscape | Froslass, Glaceon |
 | Take Heart | Manaphy, Phione |
-| Vacuum Wave | Lucario, Riolu |
 | Work Up | Lucario, Riolu |
-| Aqua Cutter | Gallade |
 | Aromatic Mist | Vespiquen |
-| Attack Order | Vespiquen |
 | Beat Up | Weavile |
-| Body Press | Regigigas |
-| Chatter | Chatot |
 | Comeuppance | Honchkrow |
 | Confide | Chatot |
 | Conversion | Porygon-Z |
-| Crush Grip | Regigigas |
-| Dark Void | Darkrai |
-| Defend Order | Vespiquen |
 | False Swipe | Gallade |
 | Follow Me | Togekiss |
-| Headlong Rush | Torterra |
 | Heart Swap | Manaphy |
 | High Jump Kick | Lopunny |
-| Judgment | Arceus |
 | Lunar Blessing | Cresselia |
 | Lunar Dance | Cresselia |
-| Magma Storm | Heatran |
 | Mean Look | Dusknoir |
-| Mystical Fire | Mismagius |
 | Pain Split | Giratina |
 | Quash | Honchkrow |
-| Raging Fury | Infernape |
-| Roar of Time | Dialga |
-| Rock Wrecker | Rhyperior |
 | Rototiller | Bibarel |
 | Round | Chatot |
-| Sacred Sword | Gallade |
-| Seed Flare | Shaymin |
-| Shadow Force | Giratina |
-| Spacial Rend | Palkia |
 | Sticky Web | Kricketune |
 | Strength Sap | Drifblim |
 | Tail Glow | Manaphy |
@@ -158,7 +135,7 @@ first: [move-audit.md](move-audit.md).
 
 **#389 Torterra** (Grass/Ground). HP 95, Atk 109, Def 105, SpA 75, SpD 85, Spe 56. Catch 800. From Grotle at level 55.
 
-1 Tackle, 5 Curse, 10 Absorb, 15 Mega Drain, 20 Razor Leaf, 25 Bite, 30 Crunch, 40 Giga Drain, 45 Leech Seed, 50 Leaf Storm, 60 Earthquake, 65 Wood Hammer, 70 Synthesis, 75 Frenzy Plant
+1 Tackle, 5 Curse, 10 Absorb, 15 Mega Drain, 20 Razor Leaf, 25 Bite, 30 Crunch, 40 Giga Drain, 45 Leech Seed, 50 Leaf Storm, 60 Earthquake, 65 Headlong Rush, 70 Synthesis, 75 Frenzy Plant
 
 ### Chimchar > Monferno > Infernape
 
@@ -168,11 +145,11 @@ first: [move-audit.md](move-audit.md).
 
 **#391 Monferno** (Fire/Fighting). HP 64, Atk 78, Def 52, SpA 78, SpD 52, Spe 81. Catch 300. From Chimchar at level 35.
 
-1 Scratch, 5 Fury Swipes, 10 Nasty Plot, 15 Fire Spin, 20 Ember, 25 Flame Wheel, 30 Facade, 40 Mach Punch, 45 Acrobatics, 50 Close Combat
+1 Scratch, 5 Fury Swipes, 10 Nasty Plot, 15 Fire Spin, 20 Ember, 25 Flame Wheel, 30 Facade, 40 Feint, 45 Mach Punch, 50 Close Combat
 
 **#392 Infernape** (Fire/Fighting). HP 76, Atk 104, Def 71, SpA 104, SpD 71, Spe 108. Catch 800. From Monferno at level 55.
 
-1 Scratch, 5 Fury Swipes, 10 Nasty Plot, 15 Fire Spin, 20 Ember, 25 Flame Wheel, 30 Facade, 40 Mach Punch, 45 Acrobatics, 50 Close Combat, 60 Flare Blitz, 65 Overheat, 70 Calm Mind, 75 Focus Punch
+1 Scratch, 5 Fury Swipes, 10 Nasty Plot, 15 Fire Spin, 20 Ember, 25 Flame Wheel, 30 Facade, 40 Feint, 45 Mach Punch, 50 Close Combat, 60 Acrobatics, 65 Flare Blitz, 70 Calm Mind, 75 Raging Fury
 
 ### Piplup > Prinplup > Empoleon
 
@@ -186,7 +163,7 @@ first: [move-audit.md](move-audit.md).
 
 **#395 Empoleon** (Water/Steel). HP 84, Atk 86, Def 88, SpA 111, SpD 101, Spe 60. Catch 800. From Prinplup at level 55.
 
-1 Pound, 5 Growl, 10 Fury Attack, 15 Peck, 20 Water Gun, 25 Bubblebeam, 30 Brine, 40 Whirlpool, 45 Mist, 50 Metal Claw, 60 Aqua Jet, 65 Drill Peck, 70 Hydro Pump, 75 Hydro Cannon
+1 Pound, 5 Growl, 10 Fury Attack, 15 Peck, 20 Water Gun, 25 Bubblebeam, 30 Brine, 40 Whirlpool, 45 Mist, 50 Metal Claw, 60 Aqua Jet, 65 Drill Peck, 70 Hydro Pump, 75 Wave Crash
 
 ### Starly > Staravia > Staraptor
 
@@ -288,7 +265,7 @@ first: [move-audit.md](move-audit.md).
 
 **#416 Vespiquen** (Bug/Flying). HP 70, Atk 80, Def 102, SpA 80, SpD 102, Spe 40. Catch 500. From Combee at level 30. (official: female only)
 
-1 Gust, 5 Struggle Bug, 10 Bug Bite, 15 Air Cutter, 20 Lunge, 25 Bug Buzz, 35 Slash, 40 Air Slash, 45 Roost, 50 Signal Beam, 55 Toxic, 60 Power Gem, 65 X-Scissor, 70 Hurricane
+1 Gust, 5 Struggle Bug, 10 Bug Bite, 15 Air Cutter, 20 Lunge, 25 Bug Buzz, 35 Slash, 40 Air Slash, 45 Roost, 50 Power Gem, 55 Toxic, 60 X-Scissor, 65 Attack Order, 70 Hurricane
 
 ### Pachirisu
 
@@ -304,7 +281,7 @@ first: [move-audit.md](move-audit.md).
 
 **#419 Floatzel** (Water). HP 85, Atk 105, Def 55, SpA 85, SpD 50, Spe 115. Catch 500. From Buizel at level 35.
 
-1 Tackle, 5 Growl, 10 Quick Attack, 15 Water Gun, 20 Aqua Jet, 25 Bite, 30 Swift, 40 Double Hit, 45 Whirlpool, 50 Aqua Tail, 55 Surf, 60 Agility, 65 Muddy Water, 70 Hydro Pump
+1 Tackle, 5 Growl, 10 Quick Attack, 15 Water Gun, 20 Aqua Jet, 25 Bite, 30 Swift, 40 Double Hit, 45 Whirlpool, 50 Liquidation, 55 Aqua Tail, 60 Agility, 65 Hydro Pump, 70 Wave Crash
 
 ### Cherubi > Cherrim
 
@@ -324,7 +301,7 @@ first: [move-audit.md](move-audit.md).
 
 **#423 Gastrodon** (Water/Ground). HP 111, Atk 83, Def 68, SpA 92, SpD 82, Spe 39. Catch 500. From Shellos at level 35.
 
-1 Water Gun, 5 Harden, 10 Mud-Slap, 15 Water Pulse, 20 Ancient Power, 25 Body Slam, 30 Muddy Water, 40 Dig, 45 Waterfall, 50 Earth Power, 55 Surf, 60 Rain Dance, 65 Earthquake, 70 Hydro Pump
+1 Water Gun, 5 Harden, 10 Mud-Slap, 15 Water Pulse, 20 Ancient Power, 25 Body Slam, 30 Muddy Water, 40 Dig, 45 Liquidation, 50 Earth Power, 55 Surf, 60 Rain Dance, 65 Earthquake, 70 Hydro Pump
 
 ### Aipom (ours) > Ambipom
 
@@ -384,11 +361,11 @@ first: [move-audit.md](move-audit.md).
 
 **#434 Stunky** (Poison/Dark). HP 63, Atk 63, Def 47, SpA 41, SpD 41, Spe 74. Catch 150.
 
-1 Scratch, 5 Poison Gas, 10 Fury Swipes, 15 Acid Spray, 20 Bite, 25 Venoshock, 30 Sucker Punch
+1 Scratch, 5 Poison Gas, 10 Fury Swipes, 15 Feint, 20 Acid Spray, 25 Bite, 30 Venoshock
 
 **#435 Skuntank** (Poison/Dark). HP 103, Atk 93, Def 67, SpA 71, SpD 61, Spe 84. Catch 500. From Stunky at level 35.
 
-1 Scratch, 5 Poison Gas, 10 Fury Swipes, 15 Acid Spray, 20 Bite, 25 Venoshock, 30 Sucker Punch, 40 Night Slash, 45 Flamethrower, 50 Sludge Wave, 55 Foul Play, 60 Belch, 65 Gunk Shot, 70 Explosion
+1 Scratch, 5 Poison Gas, 10 Fury Swipes, 15 Feint, 20 Acid Spray, 25 Bite, 30 Venoshock, 40 Night Slash, 45 Flamethrower, 50 Sludge Wave, 55 Foul Play, 60 Belch, 65 Gunk Shot, 70 Explosion
 
 ### Bronzor > Bronzong
 
@@ -422,7 +399,7 @@ first: [move-audit.md](move-audit.md).
 
 **#441 Chatot** (Normal/Flying). HP 76, Atk 65, Def 45, SpA 92, SpD 42, Spe 91. Catch 400.
 
-1 Peck, 5 Growl, 10 Sing, 15 Mirror Move, 20 Fury Attack, 25 Echoed Voice, 30 Gust, 35 Snore, 40 Swift, 45 Hidden Power, 50 Air Cutter, 55 Hyper Voice, 60 Uproar, 65 Synchronoise
+1 Peck, 5 Growl, 10 Sing, 15 Mirror Move, 20 Fury Attack, 25 Echoed Voice, 30 Gust, 35 Snore, 40 Swift, 45 Hidden Power, 50 Chatter, 55 Hyper Voice, 60 Uproar, 65 Synchronoise
 
 ### Spiritomb
 
@@ -454,11 +431,11 @@ first: [move-audit.md](move-audit.md).
 
 **#447 Riolu** (Fighting). HP 40, Atk 70, Def 40, SpA 35, SpD 40, Spe 60. Catch 150.
 
-1 Quick Attack, 5 Endure, 10 Counter, 15 Reversal, 20 Low Kick, 25 Metal Claw, 30 Force Palm
+1 Quick Attack, 5 Endure, 10 Counter, 15 Feint, 20 Vacuum Wave, 25 Metal Claw, 30 Force Palm
 
 **#448 Lucario** (Fighting/Steel). HP 70, Atk 110, Def 70, SpA 115, SpD 70, Spe 90. Catch 500. From Riolu at level 35.
 
-1 Quick Attack, 5 Endure, 10 Counter, 15 Reversal, 20 Low Kick, 25 Metal Claw, 30 Force Palm, 40 Bone Rush, 45 Screech, 50 Aura Sphere, 55 Extreme Speed, 60 Dragon Pulse, 65 Meteor Mash, 70 Close Combat
+1 Quick Attack, 5 Endure, 10 Counter, 15 Feint, 20 Vacuum Wave, 25 Metal Claw, 30 Force Palm, 40 Reversal, 45 Screech, 50 Bone Rush, 55 Aura Sphere, 60 Extreme Speed, 65 Dragon Pulse, 70 Meteor Mash
 
 ### Hippopotas > Hippowdon
 
@@ -544,7 +521,7 @@ first: [move-audit.md](move-audit.md).
 
 **#464 Rhyperior** (Ground/Rock). HP 115, Atk 140, Def 130, SpA 55, SpD 55, Spe 40. Catch 1400. From Rhydon at level 60 + Protector.
 
-1 Tackle, 5 Horn Attack, 10 Stomp, 15 Rock Throw, 20 Take Down, 25 Rock Blast, 30 Scary Face, 35 Drill Run, 45 Earthquake, 50 Horn Drill, 55 Earth Power, 60 Megahorn, 65 Stone Edge, 70 Smack Down, 75 Bulldoze, 80 Hammer Arm
+1 Tackle, 5 Horn Attack, 10 Stomp, 15 Rock Throw, 20 Take Down, 25 Rock Blast, 30 Scary Face, 35 Drill Run, 45 Earthquake, 50 Horn Drill, 55 Earth Power, 60 Megahorn, 65 Stone Edge, 70 Rock Wrecker, 75 Smack Down, 80 Bulldoze, 85 Hammer Arm
 
 ### Tangela (ours) > Tangrowth
 
@@ -638,49 +615,49 @@ first: [move-audit.md](move-audit.md).
 
 **#480 Uxie** (Psychic). HP 75, Atk 75, Def 130, SpA 75, SpD 130, Spe 95. Catch 10000.
 
-1 Confusion, 5 Rest, 10 Flail, 15 Endure, 20 Stored Power, 25 Swift, 30 Psybeam, 35 Psycho Cut, 40 Amnesia, 45 Extrasensory, 50 Zen Headbutt, 55 Psyshock, 60 Psychic, 65 Dream Eater, 70 Future Sight
+1 Confusion, 5 Rest, 10 Flail, 15 Endure, 20 Stored Power, 25 Swift, 30 Psybeam, 35 Mystical Power, 40 Amnesia, 45 Psycho Cut, 50 Extrasensory, 55 Zen Headbutt, 60 Psyshock, 65 Psychic, 70 Future Sight
 
 ### Mesprit
 
 **#481 Mesprit** (Psychic). HP 80, Atk 105, Def 105, SpA 105, SpD 105, Spe 80. Catch 10000.
 
-1 Confusion, 5 Rest, 10 Grass Knot, 15 Protect, 20 Stored Power, 25 Swift, 30 Psybeam, 35 Psycho Cut, 40 Charm, 45 Extrasensory, 50 Zen Headbutt, 55 Psyshock, 60 Psychic, 65 Dream Eater, 70 Future Sight
+1 Confusion, 5 Rest, 10 Stored Power, 15 Protect, 20 Swift, 25 Psybeam, 30 Mystical Power, 35 Psycho Cut, 40 Charm, 45 Extrasensory, 50 Zen Headbutt, 55 Psyshock, 60 Psychic, 65 Dream Eater, 70 Future Sight
 
 ### Azelf
 
 **#482 Azelf** (Psychic). HP 75, Atk 125, Def 70, SpA 125, SpD 70, Spe 115. Catch 10000.
 
-1 Confusion, 5 Rest, 10 Stored Power, 15 Detect, 20 Swift, 25 Psybeam, 30 Psycho Cut, 35 Extrasensory, 40 Nasty Plot, 45 Zen Headbutt, 50 Psychic, 55 Uproar, 60 Future Sight, 65 Last Resort, 70 Explosion
+1 Confusion, 5 Rest, 10 Stored Power, 15 Detect, 20 Swift, 25 Psybeam, 30 Mystical Power, 35 Psycho Cut, 40 Nasty Plot, 45 Extrasensory, 50 Psychic, 55 Uproar, 60 Future Sight, 65 Last Resort, 70 Explosion
 
 ### Dialga
 
 **#483 Dialga** (Steel/Dragon). HP 100, Atk 120, Def 120, SpA 150, SpD 100, Spe 90. Catch 10000.
 
-1 Scary Face, 5 Metal Burst, 10 Heavy Slam, 15 Twister, 20 Metal Claw, 25 Dragon Breath, 30 Ancient Power, 35 Dragon Tail, 40 Slash, 45 Flash Cannon, 50 Dragon Claw, 55 Aura Sphere, 60 Power Gem, 65 Earth Power, 70 Iron Tail
+1 Scary Face, 5 Metal Burst, 10 Heavy Slam, 15 Twister, 20 Metal Claw, 25 Dragon Breath, 30 Ancient Power, 35 Slash, 40 Flash Cannon, 45 Dragon Claw, 50 Aura Sphere, 55 Power Gem, 60 Earth Power, 65 Iron Tail, 70 Roar of Time
 
 ### Palkia
 
 **#484 Palkia** (Water/Dragon). HP 90, Atk 120, Def 100, SpA 150, SpD 120, Spe 100. Catch 10000.
 
-1 Scary Face, 5 Whirlpool, 10 Twister, 15 Water Pulse, 20 Dragon Breath, 25 Ancient Power, 30 Aqua Ring, 35 Dragon Tail, 40 Brine, 45 Slash, 50 Aura Sphere, 55 Power Gem, 60 Aqua Tail, 65 Earth Power, 70 Hydro Pump
+1 Scary Face, 5 Whirlpool, 10 Twister, 15 Water Pulse, 20 Dragon Breath, 25 Ancient Power, 30 Aqua Ring, 35 Dragon Tail, 40 Slash, 45 Aura Sphere, 50 Power Gem, 55 Aqua Tail, 60 Earth Power, 65 Spacial Rend, 70 Hydro Pump
 
 ### Heatran
 
 **#485 Heatran** (Fire/Steel). HP 91, Atk 90, Def 106, SpA 130, SpD 106, Spe 77. Catch 10000.
 
-1 Fire Spin, 5 Heavy Slam, 10 Ember, 15 Metal Claw, 20 Scary Face, 25 Flame Charge, 30 Ancient Power, 35 Fire Fang, 40 Iron Head, 45 Crunch, 50 Metal Sound, 55 Lava Plume, 60 Earth Power, 65 Heat Wave, 70 Stone Edge
+1 Fire Spin, 5 Heavy Slam, 10 Ember, 15 Metal Claw, 20 Scary Face, 25 Ancient Power, 30 Fire Fang, 35 Iron Head, 40 Crunch, 45 Lava Plume, 50 Metal Sound, 55 Earth Power, 60 Heat Wave, 65 Stone Edge, 70 Magma Storm
 
 ### Regigigas
 
 **#486 Regigigas** (Normal). HP 110, Atk 160, Def 110, SpA 80, SpD 110, Spe 100. Catch 10000.
 
-1 Pound, 5 Confuse Ray, 10 Heavy Slam, 15 Tackle, 20 Payback, 25 Protect, 30 Snore, 35 Hidden Power, 40 Stomp, 45 Knock Off, 50 Facade, 55 Mega Punch, 60 Zen Headbutt, 65 Hammer Arm, 70 Giga Impact
+1 Pound, 5 Confuse Ray, 10 Heavy Slam, 15 Crush Grip, 20 Tackle, 25 Protect, 30 Payback, 35 Stomp, 40 Knock Off, 45 Facade, 50 Mega Punch, 55 Body Press, 60 Zen Headbutt, 65 Hammer Arm, 70 Giga Impact
 
 ### Giratina
 
 **#487 Giratina** (Ghost/Dragon). HP 150, Atk 100, Def 120, SpA 100, SpD 120, Spe 90. Catch 10000.
 
-1 Shadow Sneak, 5 Defog, 10 Twister, 15 Dragon Breath, 20 Ancient Power, 25 Ominous Wind, 30 Scary Face, 35 Dragon Tail, 40 Hex, 45 Slash, 50 Shadow Claw, 55 Aura Sphere, 60 Dragon Claw, 65 Earth Power, 70 Destiny Bond
+1 Shadow Sneak, 5 Defog, 10 Twister, 15 Dragon Breath, 20 Ancient Power, 25 Ominous Wind, 30 Scary Face, 35 Hex, 40 Slash, 45 Shadow Claw, 50 Aura Sphere, 55 Dragon Claw, 60 Earth Power, 65 Shadow Force, 70 Destiny Bond
 
 ### Cresselia
 
@@ -696,7 +673,7 @@ first: [move-audit.md](move-audit.md).
 
 **#490 Manaphy** (Water). HP 100, Atk 100, Def 100, SpA 100, SpD 100, Spe 100. Catch 100000. From Phione at level 35.
 
-1 Water Gun, 5 Charm, 10 Whirlpool, 15 Bubble, 20 Water Pulse, 25 Bubblebeam, 30 Dive, 40 Brine, 45 Supersonic, 50 Waterfall, 55 Scald, 60 Surf, 65 Hydro Pump, 70 Hyper Beam
+1 Water Gun, 5 Charm, 10 Whirlpool, 15 Bubble, 20 Water Pulse, 25 Bubblebeam, 30 Dive, 40 Brine, 45 Supersonic, 50 Waterfall, 55 Scald, 60 Liquidation, 65 Surf, 70 Hydro Pump
 
 ### Darkrai
 
@@ -708,11 +685,11 @@ first: [move-audit.md](move-audit.md).
 
 **#492 Shaymin** (Grass). HP 100, Atk 100, Def 100, SpA 100, SpD 100, Spe 100. Catch 100000.
 
-1 Magical Leaf, 5 Grass Knot, 10 Endeavor, 15 Leech Seed, 20 Mud-Slap, 25 Synthesis, 30 Bullet Seed, 35 Giga Drain, 40 Seed Bomb, 45 Play Rough, 50 Energy Ball, 55 Worry Seed, 60 Petal Blizzard, 65 Solar Beam, 70 Leaf Storm
+1 Magical Leaf, 5 Grass Knot, 10 Endeavor, 15 Leech Seed, 20 Bullet Seed, 25 Synthesis, 30 Giga Drain, 35 Seed Bomb, 40 Play Rough, 45 Energy Ball, 50 Petal Blizzard, 55 Worry Seed, 60 Seed Flare, 65 Solar Beam, 70 Leaf Storm
 
 ### Arceus
 
 **#493 Arceus** (Normal). HP 120, Atk 120, Def 120, SpA 120, SpD 120, Spe 120. Catch 100000.
 
-1 Seismic Toss, 5 Cosmic Power, 10 Quick Attack, 15 Echoed Voice, 20 Snore, 25 Swift, 30 Hidden Power, 35 Headbutt, 40 Extreme Speed, 45 Healing Wish, 50 Earth Power, 55 Hyper Voice, 60 Future Sight, 65 Hyper Beam, 70 Recover
+1 Seismic Toss, 5 Cosmic Power, 10 Quick Attack, 15 Echoed Voice, 20 Snore, 25 Swift, 30 Hidden Power, 35 Extreme Speed, 40 Earth Power, 45 Healing Wish, 50 Hyper Voice, 55 Judgment, 60 Future Sight, 65 Hyper Beam, 70 Recover
 

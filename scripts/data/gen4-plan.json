@@ -185,7 +185,7 @@
     60
    ],
    [
-    "Wood Hammer",
+    "Headlong Rush",
     65
    ],
    [
@@ -308,11 +308,11 @@
     30
    ],
    [
-    "Mach Punch",
+    "Feint",
     40
    ],
    [
-    "Acrobatics",
+    "Mach Punch",
     45
    ],
    [
@@ -380,11 +380,11 @@
     30
    ],
    [
-    "Mach Punch",
+    "Feint",
     40
    ],
    [
-    "Acrobatics",
+    "Mach Punch",
     45
    ],
    [
@@ -392,11 +392,11 @@
     50
    ],
    [
-    "Flare Blitz",
+    "Acrobatics",
     60
    ],
    [
-    "Overheat",
+    "Flare Blitz",
     65
    ],
    [
@@ -404,7 +404,7 @@
     70
    ],
    [
-    "Focus Punch",
+    "Raging Fury",
     75
    ]
   ],
@@ -614,7 +614,7 @@
     70
    ],
    [
-    "Hydro Cannon",
+    "Wave Crash",
     75
    ]
   ],
@@ -2066,7 +2066,7 @@
     45
    ],
    [
-    "Signal Beam",
+    "Power Gem",
     50
    ],
    [
@@ -2074,11 +2074,11 @@
     55
    ],
    [
-    "Power Gem",
+    "X-Scissor",
     60
    ],
    [
-    "X-Scissor",
+    "Attack Order",
     65
    ],
    [
@@ -2283,11 +2283,11 @@
     45
    ],
    [
-    "Aqua Tail",
+    "Liquidation",
     50
    ],
    [
-    "Surf",
+    "Aqua Tail",
     55
    ],
    [
@@ -2295,11 +2295,11 @@
     60
    ],
    [
-    "Muddy Water",
+    "Hydro Pump",
     65
    ],
    [
-    "Hydro Pump",
+    "Wave Crash",
     70
    ]
   ],
@@ -2556,7 +2556,7 @@
     40
    ],
    [
-    "Waterfall",
+    "Liquidation",
     45
    ],
    [
@@ -3387,19 +3387,19 @@
     10
    ],
    [
-    "Acid Spray",
+    "Feint",
     15
    ],
    [
-    "Bite",
+    "Acid Spray",
     20
    ],
    [
-    "Venoshock",
+    "Bite",
     25
    ],
    [
-    "Sucker Punch",
+    "Venoshock",
     30
    ]
   ],
@@ -3441,19 +3441,19 @@
     10
    ],
    [
-    "Acid Spray",
+    "Feint",
     15
    ],
    [
-    "Bite",
+    "Acid Spray",
     20
    ],
    [
-    "Venoshock",
+    "Bite",
     25
    ],
    [
-    "Sucker Punch",
+    "Venoshock",
     30
    ],
    [
@@ -3831,7 +3831,7 @@
     45
    ],
    [
-    "Air Cutter",
+    "Chatter",
     50
    ],
    [
@@ -4227,11 +4227,11 @@
     10
    ],
    [
-    "Reversal",
+    "Feint",
     15
    ],
    [
-    "Low Kick",
+    "Vacuum Wave",
     20
    ],
    [
@@ -4281,11 +4281,11 @@
     10
    ],
    [
-    "Reversal",
+    "Feint",
     15
    ],
    [
-    "Low Kick",
+    "Vacuum Wave",
     20
    ],
    [
@@ -4297,7 +4297,7 @@
     30
    ],
    [
-    "Bone Rush",
+    "Reversal",
     40
    ],
    [
@@ -4305,23 +4305,23 @@
     45
    ],
    [
-    "Aura Sphere",
+    "Bone Rush",
     50
    ],
    [
-    "Extreme Speed",
+    "Aura Sphere",
     55
    ],
    [
-    "Dragon Pulse",
+    "Extreme Speed",
     60
    ],
    [
-    "Meteor Mash",
+    "Dragon Pulse",
     65
    ],
    [
-    "Close Combat",
+    "Meteor Mash",
     70
    ]
   ],
@@ -5533,16 +5533,20 @@
     65
    ],
    [
-    "Smack Down",
+    "Rock Wrecker",
     70
    ],
    [
-    "Bulldoze",
+    "Smack Down",
     75
    ],
    [
-    "Hammer Arm",
+    "Bulldoze",
     80
+   ],
+   [
+    "Hammer Arm",
+    85
    ]
   ],
   "from": "Rhydon",
@@ -7031,7 +7035,7 @@
     30
    ],
    [
-    "Psycho Cut",
+    "Mystical Power",
     35
    ],
    [
@@ -7039,23 +7043,23 @@
     40
    ],
    [
-    "Extrasensory",
+    "Psycho Cut",
     45
    ],
    [
-    "Zen Headbutt",
+    "Extrasensory",
     50
    ],
    [
-    "Psyshock",
+    "Zen Headbutt",
     55
    ],
    [
-    "Psychic",
+    "Psyshock",
     60
    ],
    [
-    "Dream Eater",
+    "Psychic",
     65
    ],
    [
@@ -7094,7 +7098,7 @@
     5
    ],
    [
-    "Grass Knot",
+    "Stored Power",
     10
    ],
    [
@@ -7102,15 +7106,15 @@
     15
    ],
    [
-    "Stored Power",
+    "Swift",
     20
    ],
    [
-    "Swift",
+    "Psybeam",
     25
    ],
    [
-    "Psybeam",
+    "Mystical Power",
     30
    ],
    [
@@ -7193,11 +7197,11 @@
     25
    ],
    [
-    "Psycho Cut",
+    "Mystical Power",
     30
    ],
    [
-    "Extrasensory",
+    "Psycho Cut",
     35
    ],
    [
@@ -7205,7 +7209,7 @@
     40
    ],
    [
-    "Zen Headbutt",
+    "Extrasensory",
     45
    ],
    [
@@ -7281,35 +7285,35 @@
     30
    ],
    [
-    "Dragon Tail",
+    "Slash",
     35
    ],
    [
-    "Slash",
+    "Flash Cannon",
     40
    ],
    [
-    "Flash Cannon",
+    "Dragon Claw",
     45
    ],
    [
-    "Dragon Claw",
+    "Aura Sphere",
     50
    ],
    [
-    "Aura Sphere",
+    "Power Gem",
     55
    ],
    [
-    "Power Gem",
+    "Earth Power",
     60
    ],
    [
-    "Earth Power",
+    "Iron Tail",
     65
    ],
    [
-    "Iron Tail",
+    "Roar of Time",
     70
    ]
   ],
@@ -7369,27 +7373,27 @@
     35
    ],
    [
-    "Brine",
+    "Slash",
     40
    ],
    [
-    "Slash",
+    "Aura Sphere",
     45
    ],
    [
-    "Aura Sphere",
+    "Power Gem",
     50
    ],
    [
-    "Power Gem",
+    "Aqua Tail",
     55
    ],
    [
-    "Aqua Tail",
+    "Earth Power",
     60
    ],
    [
-    "Earth Power",
+    "Spacial Rend",
     65
    ],
    [
@@ -7441,23 +7445,23 @@
     20
    ],
    [
-    "Flame Charge",
+    "Ancient Power",
     25
    ],
    [
-    "Ancient Power",
+    "Fire Fang",
     30
    ],
    [
-    "Fire Fang",
+    "Iron Head",
     35
    ],
    [
-    "Iron Head",
+    "Crunch",
     40
    ],
    [
-    "Crunch",
+    "Lava Plume",
     45
    ],
    [
@@ -7465,19 +7469,19 @@
     50
    ],
    [
-    "Lava Plume",
+    "Earth Power",
     55
    ],
    [
-    "Earth Power",
+    "Heat Wave",
     60
    ],
    [
-    "Heat Wave",
+    "Stone Edge",
     65
    ],
    [
-    "Stone Edge",
+    "Magma Storm",
     70
    ]
   ],
@@ -7516,11 +7520,11 @@
     10
    ],
    [
-    "Tackle",
+    "Crush Grip",
     15
    ],
    [
-    "Payback",
+    "Tackle",
     20
    ],
    [
@@ -7528,27 +7532,27 @@
     25
    ],
    [
-    "Snore",
+    "Payback",
     30
    ],
    [
-    "Hidden Power",
+    "Stomp",
     35
    ],
    [
-    "Stomp",
+    "Knock Off",
     40
    ],
    [
-    "Knock Off",
+    "Facade",
     45
    ],
    [
-    "Facade",
+    "Mega Punch",
     50
    ],
    [
-    "Mega Punch",
+    "Body Press",
     55
    ],
    [
@@ -7616,31 +7620,31 @@
     30
    ],
    [
-    "Dragon Tail",
+    "Hex",
     35
    ],
    [
-    "Hex",
+    "Slash",
     40
    ],
    [
-    "Slash",
+    "Shadow Claw",
     45
    ],
    [
-    "Shadow Claw",
+    "Aura Sphere",
     50
    ],
    [
-    "Aura Sphere",
+    "Dragon Claw",
     55
    ],
    [
-    "Dragon Claw",
+    "Earth Power",
     60
    ],
    [
-    "Earth Power",
+    "Shadow Force",
     65
    ],
    [
@@ -7851,15 +7855,15 @@
     55
    ],
    [
-    "Surf",
+    "Liquidation",
     60
    ],
    [
-    "Hydro Pump",
+    "Surf",
     65
    ],
    [
-    "Hyper Beam",
+    "Hydro Pump",
     70
    ]
   ],
@@ -7991,7 +7995,7 @@
     15
    ],
    [
-    "Mud-Slap",
+    "Bullet Seed",
     20
    ],
    [
@@ -7999,23 +8003,23 @@
     25
    ],
    [
-    "Bullet Seed",
+    "Giga Drain",
     30
    ],
    [
-    "Giga Drain",
+    "Seed Bomb",
     35
    ],
    [
-    "Seed Bomb",
+    "Play Rough",
     40
    ],
    [
-    "Play Rough",
+    "Energy Ball",
     45
    ],
    [
-    "Energy Ball",
+    "Petal Blizzard",
     50
    ],
    [
@@ -8023,7 +8027,7 @@
     55
    ],
    [
-    "Petal Blizzard",
+    "Seed Flare",
     60
    ],
    [
@@ -8086,11 +8090,11 @@
     30
    ],
    [
-    "Headbutt",
+    "Extreme Speed",
     35
    ],
    [
-    "Extreme Speed",
+    "Earth Power",
     40
    ],
    [
@@ -8098,11 +8102,11 @@
     45
    ],
    [
-    "Earth Power",
+    "Hyper Voice",
     50
    ],
    [
-    "Hyper Voice",
+    "Judgment",
     55
    ],
    [
