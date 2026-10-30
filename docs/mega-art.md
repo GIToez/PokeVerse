@@ -93,6 +93,9 @@ Each is drawn here, shown to the trainer, and swapped onto its look with `script
 - **Doesn't match the art:** compare with the official Mega design (Bulbapedia) for colours,
   eye colour and shape, and with our normal form so the outline style is the same.
 - **Shinies:** compare with the official shiny colours.
+- **Old sprites:** `dat-set-outfit.py` appends the new sprites and leaves the old ones in
+  `data.spr`. After a batch of swaps, `scripts/spr-drop-unused.py` blanks every sprite that no
+  item, outfit, effect or missile in `data.dat` uses (sprite ids stay the same).
 
 ## Item icons
 
