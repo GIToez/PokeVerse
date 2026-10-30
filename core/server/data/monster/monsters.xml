@@ -1313,4 +1313,15 @@
 	<monster name="Mega Latias" file="Mega/mega latias.xml"/>
 	<monster name="Primal Kyogre" file="Mega/primal kyogre.xml"/>
 	<monster name="Primal Groudon" file="Mega/primal groudon.xml"/>
+	<monster name="Mega Latios" file="Mega/mega latios.xml"/>
+	<monster name="Mega Mewtwo Y" file="Mega/mega mewtwo y.xml"/>
+	<monster name="Shiny Mega Mewtwo Y" file="Mega/shiny mega mewtwo y.xml"/>
+	<monster name="Mega Gardevoir" file="Mega/mega gardevoir.xml"/>
+	<monster name="Shiny Mega Gardevoir" file="Mega/shiny mega gardevoir.xml"/>
+	<monster name="Mega Banette" file="Mega/mega banette.xml"/>
+	<monster name="Shiny Mega Banette" file="Mega/shiny mega banette.xml"/>
+	<monster name="Mega Salamence" file="Mega/mega salamence.xml"/>
+	<monster name="Shiny Mega Salamence" file="Mega/shiny mega salamence.xml"/>
+	<monster name="Mega Metagross" file="Mega/mega metagross.xml"/>
+	<monster name="Shiny Mega Metagross" file="Mega/shiny mega metagross.xml"/>
 </monsters>

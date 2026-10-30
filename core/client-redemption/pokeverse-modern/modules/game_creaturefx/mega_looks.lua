@@ -5,5 +5,6 @@ MegaLooks = {
     [2616] = true, [2617] = true, [2618] = true, [2619] = true, [2620] = true, [2621] = true, [2622] = true, [2625] = true, [2626] = true, [2627] = true,
     [2628] = true, [2630] = true, [2631] = true, [2632] = true, [2633] = true, [2634] = true, [2635] = true, [2636] = true, [2637] = true, [2638] = true,
     [2639] = true, [2640] = true, [2641] = true, [2642] = true, [2643] = true, [2644] = true, [2645] = true, [2646] = true, [2647] = true, [2648] = true,
-    [2649] = true, [2650] = true, [2651] = true, [2652] = true, [2653] = true,
+    [2649] = true, [2650] = true, [2651] = true, [2652] = true, [2653] = true, [2684] = true, [2685] = true, [2686] = true, [2687] = true, [2688] = true,
+    [2689] = true, [2690] = true, [2691] = true, [2692] = true, [2693] = true, [2694] = true,
 }

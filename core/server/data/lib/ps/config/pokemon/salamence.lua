@@ -22,3 +22,16 @@ POKEMON["Salamence"] = {
     learnableTms = { TM_IDS.TOXIC, TM_IDS.HYPER_BEAM, TM_IDS.PROTECT, TM_IDS.RAIN_DANCE, TM_IDS.EARTHQUAKE, TM_IDS.DOUBLE_TEAM, TM_IDS.FLAMETHROWER, TM_IDS.FIRE_BLAST, TM_IDS.ROCK_TOMB, TM_IDS.AERIAL_ACE, TM_IDS.REST, TM_IDS.STEEL_WING, TM_IDS.ROCK_SLIDE, TM_IDS.SUBSTITUTE, TM_IDS.DRAGON_CLAW, TM_IDS.ROAR, TM_IDS.BRICK_BREAK },
     eggMoves = { "Defense Curl", "Dragon Dance", "Dragon Pulse", "Dragon Rage", "Dragon Rush", "Endure", "Fire Fang", "Hydro Pump", "Thrash", "Twister" }
 }
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Salamence"] = table.deepcopy(POKEMON["Salamence"])
+POKEMON["Mega Salamence"].megaOf = "Salamence"
+POKEMON["Mega Salamence"].pTypes = { ELEMENT_DRAGON, ELEMENT_FLYING }
+POKEMON["Mega Salamence"].atk = 145
+POKEMON["Mega Salamence"].def = 130
+POKEMON["Mega Salamence"].spAtk = 120
+POKEMON["Mega Salamence"].spDef = 90
+POKEMON["Mega Salamence"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.AERILATE }
+POKEMON["Mega Salamence"].portrait = 30334
+POKEMON["Mega Salamence"].fastcallPortrait = 28977
+POKEMON["Mega Salamence"].blockTransform = true

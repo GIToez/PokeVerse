@@ -3927,6 +3927,12 @@ local function testMoreMegas(cid)
         { "Mega Absol", 2621, 2652, E(ELEMENT_DARK), "MAGIC_BOUNCE" },
         { "Mega Glalie", 2622, 2653, E(ELEMENT_ICE), "REFRIGERATE" },
         { "Mega Latias", 2626, nil, E(ELEMENT_DRAGON, ELEMENT_PSYCHIC), "LEVITATE" },
+        { "Mega Latios", 2684, nil, E(ELEMENT_DRAGON, ELEMENT_PSYCHIC), "LEVITATE" },
+        { "Mega Mewtwo Y", 2685, 2686, E(ELEMENT_PSYCHIC), "INSOMNIA" },
+        { "Mega Gardevoir", 2687, 2688, E(ELEMENT_PSYCHIC, ELEMENT_FAIRY), "PIXILATE" },
+        { "Mega Banette", 2689, 2690, E(ELEMENT_GHOST), "PRANKSTER" },
+        { "Mega Salamence", 2691, 2692, E(ELEMENT_DRAGON, ELEMENT_FLYING), "AERILATE" },
+        { "Mega Metagross", 2693, 2694, E(ELEMENT_STEEL, ELEMENT_PSYCHIC), "TOUGH_CLAWS" },
         { "Primal Kyogre", 2628, nil, E(ELEMENT_WATER), "PRIMORDIAL_SEA" },
         { "Primal Groudon", 2627, nil, E(ELEMENT_GROUND, ELEMENT_FIRE), "DESOLATE_LAND" },
     }
@@ -3961,7 +3967,7 @@ local function testMoreMegas(cid)
             inGame = inGame + 1
         end
     end
-    check("more megas: 29 stones and orbs work", inGame == 29, inGame)
+    check("more megas: 35 stones and orbs work", inGame == 35, inGame)
 
     local ids, moveCheck = POKEMON_SPECIAL_ABILITY_IDS, getPokemonSpecialAbilityMoveCheck
     check("more megas: Strong Jaw, Sand Force and Sheer Force pick their moves",
@@ -3972,6 +3978,9 @@ local function testMoreMegas(cid)
     check("more megas: Desolate Land boosts Fire, Primordial Sea boosts Water",
         moveCheck(ids.DESOLATE_LAND, "Flamethrower") and not moveCheck(ids.DESOLATE_LAND, "Water Pulse")
         and moveCheck(ids.PRIMORDIAL_SEA, "Water Pulse") and not moveCheck(ids.PRIMORDIAL_SEA, "Flamethrower"))
+    check("more megas: Aerilate takes Normal moves, Prankster status moves",
+        moveCheck(ids.AERILATE, "Tackle") and not moveCheck(ids.AERILATE, "Dragon Pulse")
+        and moveCheck(ids.PRANKSTER, "Growl") and not moveCheck(ids.PRANKSTER, "Tackle"))
 
     if (isPokemonOnline(cid) or isItem(getPlayerSlotItem(cid, PLAYER_SLOT_BALL))) then
         check("more megas: ball slot free for the test", false)

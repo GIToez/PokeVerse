@@ -26,3 +26,16 @@ POKEMON["Mewtwo"] = {
 POKEMON["Final Mewtwo"] = table.deepcopy(POKEMON["Mewtwo"])
 POKEMON["Final Mewtwo"].pTypes = { ELEMENT_POISON, ELEMENT_NORMAL }
 POKEMON["Final Mewtwo"].blocTraknsform = true
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Mewtwo Y"] = table.deepcopy(POKEMON["Mewtwo"])
+POKEMON["Mega Mewtwo Y"].megaOf = "Mewtwo"
+POKEMON["Mega Mewtwo Y"].pTypes = { ELEMENT_PSYCHIC }
+POKEMON["Mega Mewtwo Y"].atk = 150
+POKEMON["Mega Mewtwo Y"].def = 70
+POKEMON["Mega Mewtwo Y"].spAtk = 194
+POKEMON["Mega Mewtwo Y"].spDef = 120
+POKEMON["Mega Mewtwo Y"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.INSOMNIA }
+POKEMON["Mega Mewtwo Y"].portrait = 30328
+POKEMON["Mega Mewtwo Y"].fastcallPortrait = 28971
+POKEMON["Mega Mewtwo Y"].blockTransform = true

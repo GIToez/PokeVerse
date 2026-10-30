@@ -190,10 +190,11 @@ SKILL_ELEMENT_MULTIPLIER_MAX = 2.5
 
 local NORMAL_MOVES_BECOME = {
     [POKEMON_SPECIAL_ABILITY_IDS.PIXILATE] = ELEMENT_FAIRY,
-    [POKEMON_SPECIAL_ABILITY_IDS.REFRIGERATE] = ELEMENT_ICE
+    [POKEMON_SPECIAL_ABILITY_IDS.REFRIGERATE] = ELEMENT_ICE,
+    [POKEMON_SPECIAL_ABILITY_IDS.AERILATE] = ELEMENT_FLYING
 }
 
--- The move's type when this attacker uses it: Pixilate and Refrigerate turn Normal moves Fairy and Ice
+-- The move's type when this attacker uses it: Pixilate, Refrigerate and Aerilate turn Normal moves Fairy, Ice and Flying
 function getPokemonSkillDamageTypeOf(fromCid, skillName)
     local skillType = getPokemonSkillDamageType(skillName)
     if (skillType == ELEMENT_NORMAL and isMonster(fromCid)) then
@@ -298,7 +299,8 @@ local function finalDamage(fromCid, toCid, skillName, skillBasePower)
                 doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.SHEER_FORCE, nil, skillName)) then
             skillDamage = skillDamage * 1.3
         elseif (doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.PIXILATE, nil, skillName) or
-                doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.REFRIGERATE, nil, skillName)) then
+                doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.REFRIGERATE, nil, skillName) or
+                doPokemonSpecialAbilityCheck(fromCid, POKEMON_SPECIAL_ABILITY_IDS.AERILATE, nil, skillName)) then
             skillDamage = skillDamage * 1.2
         end
         if (isMonster(toCid) and getMonsterSpecialAbility(toCid) == POKEMON_SPECIAL_ABILITY_IDS.DROUGHT

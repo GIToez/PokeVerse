@@ -22,3 +22,16 @@ POKEMON["Metagross"] = {
     learnableTms = { TM_IDS.TOXIC, TM_IDS.HYPER_BEAM, TM_IDS.PROTECT, TM_IDS.RAIN_DANCE, TM_IDS.EARTHQUAKE, TM_IDS.PSYCHIC, TM_IDS.SHADOW_BALL, TM_IDS.DOUBLE_TEAM, TM_IDS.REFLECT, TM_IDS.SLUDGE_BOMB, TM_IDS.ROCK_TOMB, TM_IDS.AERIAL_ACE, TM_IDS.REST, TM_IDS.EXPLOSION, TM_IDS.ROCK_SLIDE, TM_IDS.SUBSTITUTE, TM_IDS.LIGHT_SCREEN, TM_IDS.BRICK_BREAK, TM_IDS.SANDSTORM },
     eggMoves = { --[[ TODO ]] }
 }
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Metagross"] = table.deepcopy(POKEMON["Metagross"])
+POKEMON["Mega Metagross"].megaOf = "Metagross"
+POKEMON["Mega Metagross"].pTypes = { ELEMENT_STEEL, ELEMENT_PSYCHIC }
+POKEMON["Mega Metagross"].atk = 145
+POKEMON["Mega Metagross"].def = 150
+POKEMON["Mega Metagross"].spAtk = 105
+POKEMON["Mega Metagross"].spDef = 110
+POKEMON["Mega Metagross"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.TOUGH_CLAWS }
+POKEMON["Mega Metagross"].portrait = 30336
+POKEMON["Mega Metagross"].fastcallPortrait = 28979
+POKEMON["Mega Metagross"].blockTransform = true
