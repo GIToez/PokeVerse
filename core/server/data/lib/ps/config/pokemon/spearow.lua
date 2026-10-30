@@ -20,7 +20,7 @@ POKEMON["Spearow"] = {
     eggChance = 20,
     specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.KEEN_EYE },
     learnableTms = { TM_IDS.AERIAL_ACE, TM_IDS.STEEL_WING, TM_IDS.MUD_SLAP, TM_IDS.RAIN_DANCE, TM_IDS.RAZOR_WIND, TM_IDS.WHIRLWIND, TM_IDS.TOXIC, TM_IDS.TAKE_DOWN, TM_IDS.DOUBLE_EDGE, TM_IDS.RAGE, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.BIDE, TM_IDS.SWIFT, TM_IDS.SKY_ATTACK, TM_IDS.REST, TM_IDS.SUBSTITUTE },
-    eggMoves = { "Astonish", "Feather Dance", "Faint Attack", "Quick Attack", "Razor Wind", "Sacry Face", "Sky Attack", "Steel Wing", "Tri Attack", "Uproar", "Whirlwind" }
+    eggMoves = { "Astonish", "Feather Dance", "Faint Attack", "Quick Attack", "Razor Wind", "Scary Face", "Sky Attack", "Steel Wing", "Tri Attack", "Uproar", "Whirlwind" }
 }
 
 POKEMON["Christmas Spearow"] = table.deepcopy(POKEMON["Spearow"])

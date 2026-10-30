@@ -20,5 +20,5 @@ POKEMON["Lapras"] = {
     eggChance = 10,
     specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.WATER_ABSORB, POKEMON_SPECIAL_ABILITY_IDS.SHELL_ARMOR },
     learnableTms = { TM_IDS.SOFTBOILED, TM_IDS.AVALANCHE, TM_IDS.WATER_PULSE, TM_IDS.NIGHTMARE, TM_IDS.IRON_TAIL, TM_IDS.RAIN_DANCE, TM_IDS.ICY_WIND, TM_IDS.ZAP_CANNON, TM_IDS.HEADBUTT, TM_IDS.DREAM_EATER, TM_IDS.TOXIC, TM_IDS.HORN_DRILL, TM_IDS.BODY_SLAM, TM_IDS.TAKE_DOWN, TM_IDS.DOUBLE_EDGE, TM_IDS.BUBBLEBEAM, TM_IDS.WATER_GUN, TM_IDS.ICE_BEAM, TM_IDS.BLIZZARD, TM_IDS.HYPER_BEAM, TM_IDS.RAGE, TM_IDS.SOLAR_BEAM, TM_IDS.DRAGON_RAGE, TM_IDS.THUNDERBOLT, TM_IDS.THUNDER, TM_IDS.PSYCHIC, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.REFLECT, TM_IDS.BIDE, TM_IDS.SKULL_BASH, TM_IDS.REST, TM_IDS.PSYWAVE, TM_IDS.SUBSTITUTE, TM_IDS.ROAR, TM_IDS.HAIL, TM_IDS.SAFEGUARD, TM_IDS.SHOCK_WAVE },
-    eggMoves = { "Ancient Power", "Avalanche", "Curse", "Dragon Dance", "Dragon Pulse", "Fissure", "Foresight", "Freezy-Dry", "Future Sight", "Horn Drill", "Refresh", "Sleep Talk", "Tickle", "Whirlpool" }
+    eggMoves = { "Ancient Power", "Avalanche", "Curse", "Dragon Dance", "Dragon Pulse", "Fissure", "Foresight", "Freeze-Dry", "Future Sight", "Horn Drill", "Refresh", "Sleep Talk", "Tickle", "Whirlpool" }
 }

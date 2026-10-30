@@ -20,5 +20,5 @@ POKEMON["Gligar"] = {
     eggChance = 20,
     specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.HYPER_CUTTER, POKEMON_SPECIAL_ABILITY_IDS.SAND_VEIL },
     learnableTms = { TM_IDS.POISON_JAB, TM_IDS.AERIAL_ACE, TM_IDS.ROCK_TOMB, TM_IDS.FURY_CUTTER, TM_IDS.STEEL_WING, TM_IDS.SLUDGE_BOMB, TM_IDS.IRON_TAIL, TM_IDS.RAIN_DANCE, TM_IDS.HEADBUTT, TM_IDS.ROCK_SLIDE, TM_IDS.SWIFT, TM_IDS.SWORDS_DANCE, TM_IDS.TOXIC, TM_IDS.DOUBLE_EDGE, TM_IDS.RAGE, TM_IDS.EARTHQUAKE, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.REST, TM_IDS.BIDE, TM_IDS.SUBSTITUTE, TM_IDS.TAUNT, TM_IDS.BRICK_BREAK, TM_IDS.SANDSTORM },
-    eggMoves = { "Agility", "Baton Pass", "Counter", "Cross Poison", "Double-Edge", "Feint", "Metal Claw", "Night Slash", "Posil Tail", "Power Trick", "Razor Wind", "Rock Climb", "Sand Tomb", "Wing Attack" }
+    eggMoves = { "Agility", "Baton Pass", "Counter", "Cross Poison", "Double-Edge", "Feint", "Metal Claw", "Night Slash", "Poison Tail", "Power Trick", "Razor Wind", "Rock Climb", "Sand Tomb", "Wing Attack" }
 }

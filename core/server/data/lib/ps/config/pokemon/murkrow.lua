@@ -20,5 +20,5 @@ POKEMON["Murkrow"] = {
     eggChance = 20,
     specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.INSOMNIA, POKEMON_SPECIAL_ABILITY_IDS.SUPER_LUCK },
     learnableTms = { TM_IDS.AERIAL_ACE, TM_IDS.NIGHTMARE, TM_IDS.STEEL_WING, TM_IDS.MUD_SLAP, TM_IDS.SHADOW_BALL, TM_IDS.RAIN_DANCE, TM_IDS.ICY_WIND, TM_IDS.THUNDER_WAVE, TM_IDS.DREAM_EATER, TM_IDS.SWIFT, TM_IDS.TOXIC, TM_IDS.DOUBLE_EDGE, TM_IDS.RAGE, TM_IDS.PSYCHIC, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.REST, TM_IDS.BIDE, TM_IDS.SUBSTITUTE, TM_IDS.CALM_MIND, TM_IDS.TAUNT },
-    eggMoves = { "Assurance", "Brave Bird", "Confuse Ray", "Drill Peck", "Feather Dance", "Faint Attack", "Flatter", "Mirro Move", "Perish Song", "Psycho Shift", "Roost", "Screech", "Sky Attack", "Whirlwind", "Wing Attack" }
+    eggMoves = { "Assurance", "Brave Bird", "Confuse Ray", "Drill Peck", "Feather Dance", "Faint Attack", "Flatter", "Mirror Move", "Perish Song", "Psycho Shift", "Roost", "Screech", "Sky Attack", "Whirlwind", "Wing Attack" }
 }
