@@ -45,7 +45,7 @@ TYPE_COLORS = {
     "Rock": "#b6a136", "Ghost": "#735797", "Dragon": "#6f35fc", "Dark": "#705746",
     "Steel": "#b7b7ce", "Fairy": "#d685ad",
 }
-GENERATIONS = ((1, 151, "Kanto"), (152, 251, "Johto"), (252, 386, "Hoenn"))
+GENERATIONS = ((1, 151, "Kanto"), (152, 251, "Johto"), (252, 386, "Hoenn"), (387, 493, "Sinnoh"))
 ABILITY_FIXES = {"Strenght": "Strength", "RockMSmash": "Rock Smash"}
 TRAILER_YOUTUBE_ID = "g5Fr0ctX77c"
 
@@ -66,7 +66,19 @@ def label(constant):
             text = text[len(prefix):]
     words = text.replace("_", " ").title()
     return {"Fight": "Fighting", "Human Like": "Human-Like", "Thunderstone": "Thunder Stone",
-            "Deepseatooth": "Deep Sea Tooth", "Deepseascale": "Deep Sea Scale"}.get(words, words)
+            "Deepseatooth": "Deep Sea Tooth", "Deepseascale": "Deep Sea Scale", "Upgrade": "Up-Grade",
+            "Kings Rock": "King's Rock"}.get(words, words)
+
+
+def with_article(name):
+    return ("an " if name[0].lower() in "aeiou" else "a ") + name
+
+
+def load_evolution_items():
+    """ITEMS constant -> server id, from the ITEMS table at the top of config/pokemon.lua."""
+    with open(os.path.join(CONFIG, "pokemon.lua"), encoding="latin-1") as f:
+        block = re.search(r"^ITEMS = \{(.*?)^\}", f.read(), re.M | re.S).group(1)
+    return {name: int(value) for name, value in re.findall(r"^\s*(\w+) = (\d+),", block, re.M)}
 
 
 def ability_name(value):
@@ -194,7 +206,8 @@ class Site:
         depth = rel.count("/")
         up = "../" * depth
         nav = [("index.html", "Home", "home"), ("pokedex/index.html", "Pokédex", "pokedex"),
-               ("moves/index.html", "Moves", "moves"), ("map/index.html", "Map", "map"),
+               ("moves/index.html", "Moves", "moves"), ("items/index.html", "Items", "items"),
+               ("map/index.html", "Map", "map"),
                ("index.html#download", "Download", "download")]
         links = "".join('<a href="%s%s"%s>%s</a>' % (up, href, ' class="active"' if key == active else "", text)
                         for href, text, key in nav)
@@ -315,6 +328,7 @@ class Site:
                                [f for f in forms.get(number, []) if f != name and f in config and f not in stones],
                                portrait, sprite, megas, mega_loot.get(re.sub(r"^Shiny ", "", name), []))
         self.write_pokedex(cards)
+        self.write_items(species)
         self.write_home(len(species), len(moves))
         self.write_map()
         print("website: %d Pokémon, %d moves, %d item pictures in %s"
@@ -394,6 +408,7 @@ class Site:
     <ul class="links">
       <li><a href="pokedex/index.html">Pokédex</a>: types, stats, evolutions, moves, drops and wild levels</li>
       <li><a href="moves/index.html">Moves</a>: power, energy, cooldown and what each one does</li>
+      <li><a href="items/index.html">Items</a>: the evolution items, what they evolve and who drops them</li>
       <li><a href="map/index.html">World map</a>: Kanto, Johto, Hoenn and the Orange Islands, with every city and route</li>
     </ul>
   </div>
@@ -438,10 +453,11 @@ class Site:
 """
         self.page("pokedex/index.html", "Pokédex", body, "pokedex")
 
-    def evolution_text(self, evo):
+    def evolution_text(self, evo, without=None):
         parts = ["level %d" % evo["requiredLevel"]] if evo.get("requiredLevel") else []
         for item in evo.get("requiredItems") or []:
-            parts.append("with a %s" % label(item))
+            if str(item).split(".")[-1] != without:
+                parts.append("with %s" % with_article(label(item)))
         if evo.get("requiredTime"):
             parts.append("during the %s" % label(evo["requiredTime"]).lower())
         if evo.get("random"):
@@ -633,6 +649,51 @@ class Site:
 </section>
 """
         self.page("moves/index.html", "Moves", body, "moves")
+
+    def write_items(self, species):
+        """items/index.html: every evolution item, the evolutions that use it and the wild Pokémon
+        that drop it."""
+        uses, drops = {}, {}
+        for _, name, entry, wild in species:
+            if name.startswith("Shiny "):
+                continue
+            for evo in entry.get("evolutions") or []:
+                for item in evo.get("requiredItems") or []:
+                    uses.setdefault(str(item).split(".")[-1], []).append((name, evo))
+            for item_id, _, chance in wild["loot"]:
+                drops.setdefault(item_id, []).append((name, chance))
+        rows = []
+        for constant, item_id in load_evolution_items().items():
+            name = label(constant)
+            img = self.item_image(item_id)
+            icon = '<img src="../%s" alt="" width="32" height="32" loading="lazy">' % img if img else ""
+            evolves = "".join(
+                f'<li><a href="../pokedex/{slug(parent)}.html">{esc(parent)}</a> into '
+                f'<a href="../pokedex/{slug(evo["name"])}.html">{esc(evo["name"])}</a>: '
+                f'{esc(self.evolution_text(evo, without=constant))}</li>' for parent, evo in uses.get(constant, []))
+            dropped = ", ".join(
+                f'<a href="../pokedex/{slug(mon)}.html">{esc(mon)}</a> ({chance / 1000:.3g}%)'
+                for mon, chance in sorted(drops.get(item_id, []), key=lambda d: d[0]))
+            rows.append(f'<tr id="{slug(name)}" data-name="{esc(name.lower())}"><td class="icon">{icon}</td>'
+                        f'<td>{esc(name)}</td><td><ul class="links">{evolves or "<li>–</li>"}</ul></td>'
+                        f'<td class="desc">{dropped or "–"}</td></tr>')
+        body = f"""
+<section class="wrap">
+  <h1>Evolution items</h1>
+  <p>Carry the item and choose Evolve on your Pokémon once it reaches the level; the item is used up.
+  If an evolution by item and one by level both fit, the item one wins (Kirlia carrying a Dawn Stone becomes
+  Gallade). Each item drops from the Pokémon it evolves, and from some legendaries, and the stone buyers
+  in the cities take the ones you don't need. Shiny Pokémon evolve the same way, into the shiny form.</p>
+  <div class="filters" data-filter=".items tbody tr">
+    <input type="search" placeholder="Search items" data-field="text" aria-label="Search">
+    <span class="count" aria-live="polite"></span>
+  </div>
+  <div class="scroll"><table class="list items"><thead><tr><th></th><th>Item</th><th>Evolves</th>
+  <th>Dropped by (chance)</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
+</section>
+"""
+        self.page("items/index.html", "Evolution items", body, "items",
+                  "PokeVerse evolution items: what each stone and item evolves and which Pokémon drop it.")
 
     def write_map(self):
         """map/index.html, and map/tiles from the Pokepedia's render when --map is given (without
