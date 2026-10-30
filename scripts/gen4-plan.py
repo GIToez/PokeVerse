@@ -194,8 +194,12 @@ class Plan:
             slug = node['species']['name']
             nodes.append({'slug': slug, 'parent': parent, 'depth': depth, 'node': node})
             for e in node['evolves_to']:
-                walk(e, slug, depth + 1)
+                if self.sp(e['species']['name'])['s']['id'] <= GEN4[-1]:
+                    walk(e, slug, depth + 1)
         walk(root, None, 0)
+        for x in nodes:
+            x['node'] = dict(x['node'], evolves_to=[e for e in x['node']['evolves_to']
+                                                    if self.sp(e['species']['name'])['s']['id'] <= GEN4[-1]])
         by = {x['slug']: x for x in nodes}
         for x in nodes:
             info = self.sp(x['slug'])

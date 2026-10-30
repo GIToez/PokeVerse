@@ -21,35 +21,35 @@ Not used. Add any of them and run the script again to put them in the lists.
 
 | Move | Learned by |
 | --- | --- |
-| Leer | Abomasnow, Chimchar, Cranidos, Drapion, Dusknoir, Electivire, Froslass, Gallade, Heatran, Infernape, Luxio, Luxray, Magmortar, Monferno, Rampardos, Shinx, Skorupi, Sneasler, Snover, Weavile |
+| Leer | Abomasnow, Chimchar, Cranidos, Drapion, Dusknoir, Electivire, Froslass, Gallade, Heatran, Infernape, Luxio, Luxray, Magmortar, Monferno, Rampardos, Shinx, Skorupi, Snover, Weavile |
 | Swagger | Abomasnow, Bastiodon, Croagunk, Empoleon, Honchkrow, Luxio, Luxray, Piplup, Prinplup, Purugly, Shieldon, Shinx, Snover, Toxicroak, Vespiquen |
-| Baton Pass | Ambipom, Buneary, Drifblim, Drifloon, Glaceon, Leafeon, Lopunny, Mime Jr., Mr. Rime, Sylveon, Togekiss |
-| Taunt | Bastiodon, Chatot, Chimchar, Croagunk, Kricketune, Monferno, Shieldon, Sneasler, Toxicroak, Weavile |
+| Baton Pass | Ambipom, Buneary, Drifblim, Drifloon, Glaceon, Leafeon, Lopunny, Mime Jr., Togekiss |
+| Taunt | Bastiodon, Chatot, Chimchar, Croagunk, Kricketune, Monferno, Shieldon, Toxicroak, Weavile |
 | Feint | Gallade, Infernape, Lucario, Monferno, Riolu, Skuntank, Stunky, Yanmega |
 | Growth | Budew, Carnivine, Cherrim, Cherubi, Roserade, Shaymin, Tangrowth, Wormadam |
-| Helping Hand | Cherrim, Cherubi, Gallade, Glaceon, Leafeon, Lucario, Riolu, Sylveon |
-| Block | Bastiodon, Bonsly, Bronzong, Mr. Rime, Probopass, Tangrowth |
+| Helping Hand | Cherrim, Cherubi, Gallade, Glaceon, Leafeon, Lucario, Riolu |
 | Imprison | Azelf, Bronzong, Bronzor, Gallade, Mesprit, Uxie |
 | Attract | Finneon, Glameow, Lumineon, Purugly, Wormadam |
-| Baby-Doll Eyes | Buneary, Glaceon, Leafeon, Lopunny, Sylveon |
+| Block | Bastiodon, Bonsly, Bronzong, Probopass, Tangrowth |
 | Final Gambit | Lucario, Riolu, Staraptor, Staravia, Starly |
-| Rock Smash | Cranidos, Lucario, Rampardos, Riolu, Sneasler |
-| Slack Off | Chimchar, Hippopotas, Hippowdon, Monferno, Mr. Rime |
 | Sweet Scent | Carnivine, Combee, Roserade, Shaymin, Vespiquen |
-| Tail Whip | Ambipom, Glaceon, Leafeon, Rhyperior, Sylveon |
-| After You | Buneary, Lopunny, Mr. Rime, Togekiss |
-| Fling | Ambipom, Munchlax, Sneasler, Weavile |
+| Baby-Doll Eyes | Buneary, Glaceon, Leafeon, Lopunny |
 | Leafage | Abomasnow, Cherrim, Cherubi, Snover |
-| Recycle | Mime Jr., Mr. Rime, Munchlax, Porygon-Z |
+| Rock Smash | Cranidos, Lucario, Rampardos, Riolu |
+| Slack Off | Chimchar, Hippopotas, Hippowdon, Monferno |
 | Soak | Buizel, Finneon, Floatzel, Lumineon |
+| Tail Whip | Ambipom, Glaceon, Leafeon, Rhyperior |
 | Wide Guard | Gallade, Mantyke, Probopass, Regigigas |
+| After You | Buneary, Lopunny, Togekiss |
 | Bind | Carnivine, Dusknoir, Tangrowth |
 | Entrainment | Buneary, Chingling, Lopunny |
 | Feint Attack | Carnivine, Glameow, Purugly |
+| Fling | Ambipom, Munchlax, Weavile |
 | Gravity | Arceus, Dusknoir, Probopass |
 | Life Dew | Gallade, Lucario, Togekiss |
 | Lock-On | Magnezone, Porygon-Z, Probopass |
 | Mystical Power | Azelf, Mesprit, Uxie |
+| Recycle | Mime Jr., Munchlax, Porygon-Z |
 | Torment | Chimchar, Infernape, Monferno |
 | Wave Crash | Buizel, Empoleon, Floatzel |
 | Whirlwind | Staraptor, Staravia, Starly |
@@ -66,7 +66,6 @@ Not used. Add any of them and run the script again to put them in the lists.
 | Perish Song | Arceus, Kricketune |
 | Snowscape | Froslass, Glaceon |
 | Take Heart | Manaphy, Phione |
-| Teeter Dance | Mime Jr., Mr. Rime |
 | Vacuum Wave | Lucario, Riolu |
 | Work Up | Lucario, Riolu |
 | Aqua Cutter | Gallade |
@@ -81,7 +80,6 @@ Not used. Add any of them and run the script again to put them in the lists.
 | Crush Grip | Regigigas |
 | Dark Void | Darkrai |
 | Defend Order | Vespiquen |
-| Dire Claw | Sneasler |
 | False Swipe | Gallade |
 | Follow Me | Togekiss |
 | Headlong Rush | Torterra |
@@ -94,7 +92,6 @@ Not used. Add any of them and run the script again to put them in the lists.
 | Mean Look | Dusknoir |
 | Mystical Fire | Mismagius |
 | Pain Split | Giratina |
-| Psych Up | Sylveon |
 | Quash | Honchkrow |
 | Raging Fury | Infernape |
 | Roar of Time | Dialga |
@@ -104,12 +101,12 @@ Not used. Add any of them and run the script again to put them in the lists.
 | Sacred Sword | Gallade |
 | Seed Flare | Shaymin |
 | Shadow Force | Giratina |
-| Skill Swap | Sylveon |
 | Spacial Rend | Palkia |
 | Sticky Web | Kricketune |
 | Strength Sap | Drifblim |
 | Tail Glow | Manaphy |
 | Tearful Look | Bonsly |
+| Teeter Dance | Mime Jr. |
 | Teleport | Gallade |
 | Trick | Rotom |
 | Trick Room | Porygon-Z |
@@ -408,7 +405,7 @@ Not used. Add any of them and run the script again to put them in the lists.
 
 1 Fake Tears, 5 Flail, 10 Rock Throw, 15 Rock Tomb, 20 Sucker Punch
 
-### Mime Jr. > Mr. Mime (ours) > Mr. Rime (ours)
+### Mime Jr. > Mr. Mime (ours)
 
 **#439 Mime Jr.** (Psychic/Fairy). HP 20, Atk 25, Def 45, SpA 70, SpD 90, Spe 60. Catch 150.
 
@@ -524,7 +521,7 @@ Not used. Add any of them and run the script again to put them in the lists.
 
 1 Powder Snow, 5 Mist, 10 Ice Shard, 15 Razor Leaf, 20 Ingrain, 25 Icy Wind, 30 Blizzard, 35 Wood Hammer, 45 Sheer Cold, 50 Ice Punch, 55 Ice Beam, 60 Energy Ball, 65 Solar Beam, 70 Leaf Storm
 
-### Sneasel (ours) > Weavile > Sneasler (ours)
+### Sneasel (ours) > Weavile
 
 **#461 Weavile** (Dark/Ice). HP 70, Atk 120, Def 65, SpA 45, SpD 85, Spe 125. Catch 800. From Sneasel at level 40 + Razor Claw + by night.
 
@@ -578,7 +575,7 @@ Not used. Add any of them and run the script again to put them in the lists.
 
 1 Tackle, 5 Quick Attack, 10 Sonic Boom, 15 U-turn, 20 Bug Buzz, 25 Aerial Ace, 30 Air Slash, 35 Hypnosis, 40 Wing Attack, 45 Pursuit, 50 Double-Edge, 55 Ancient Power, 60 Screech, 65 Uproar, 70 Bug Bite, 75 Double Team, 80 Night Slash
 
-### Eevee (ours) > Vaporeon (ours) > Jolteon (ours) > Flareon (ours) > Espeon (ours) > Umbreon (ours) > Leafeon > Glaceon > Sylveon (ours)
+### Eevee (ours) > Vaporeon (ours) > Jolteon (ours) > Flareon (ours) > Espeon (ours) > Umbreon (ours) > Leafeon > Glaceon
 
 **#470 Leafeon** (Grass). HP 65, Atk 110, Def 130, SpA 60, SpD 65, Spe 95. Catch 500. From Eevee at level 30 + Leaf Stone.
 
