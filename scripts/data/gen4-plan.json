@@ -7762,88 +7762,39 @@
     1
    ],
    [
-    "Charm",
+    "Whirlpool",
     5
    ],
    [
-    "Whirlpool",
-    10
-   ],
-   [
-    "Bubble",
-    15
-   ],
-   [
-    "Water Pulse",
-    20
-   ],
-   [
-    "Bubblebeam",
-    25
-   ],
-   [
-    "Dive",
-    30
-   ]
-  ],
-  "from": null,
-  "evolve": null,
-  "legendary": true,
-  "baby": false,
-  "evolvesTo": [
-   "Manaphy"
-  ]
- },
- {
-  "number": 490,
-  "name": "Manaphy",
-  "types": [
-   "water"
-  ],
-  "stats": {
-   "hp": 100,
-   "atk": 100,
-   "def": 100,
-   "spAtk": 100,
-   "spDef": 100,
-   "speed": 100
-  },
-  "chance": 100000,
-  "skills": [
-   [
-    "Water Gun",
-    1
-   ],
-   [
     "Charm",
-    5
-   ],
-   [
-    "Whirlpool",
     10
    ],
    [
-    "Bubble",
+    "Supersonic",
     15
    ],
    [
-    "Water Pulse",
+    "Bubble",
     20
    ],
    [
-    "Bubblebeam",
+    "Water Pulse",
     25
    ],
    [
-    "Dive",
+    "Acid Armor",
     30
+   ],
+   [
+    "Bubblebeam",
+    35
    ],
    [
     "Brine",
     40
    ],
    [
-    "Supersonic",
+    "Dive",
     45
    ],
    [
@@ -7867,14 +7818,91 @@
     70
    ]
   ],
-  "from": "Phione",
-  "evolve": {
-   "level": 35,
-   "items": [],
-   "time": null,
-   "note": "",
-   "random": false
+  "from": null,
+  "evolve": null,
+  "legendary": true,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 490,
+  "name": "Manaphy",
+  "types": [
+   "water"
+  ],
+  "stats": {
+   "hp": 100,
+   "atk": 100,
+   "def": 100,
+   "spAtk": 100,
+   "spDef": 100,
+   "speed": 100
   },
+  "chance": 100000,
+  "skills": [
+   [
+    "Water Gun",
+    1
+   ],
+   [
+    "Whirlpool",
+    5
+   ],
+   [
+    "Charm",
+    10
+   ],
+   [
+    "Supersonic",
+    15
+   ],
+   [
+    "Bubble",
+    20
+   ],
+   [
+    "Water Pulse",
+    25
+   ],
+   [
+    "Acid Armor",
+    30
+   ],
+   [
+    "Bubblebeam",
+    35
+   ],
+   [
+    "Brine",
+    40
+   ],
+   [
+    "Dive",
+    45
+   ],
+   [
+    "Waterfall",
+    50
+   ],
+   [
+    "Scald",
+    55
+   ],
+   [
+    "Liquidation",
+    60
+   ],
+   [
+    "Surf",
+    65
+   ],
+   [
+    "Hydro Pump",
+    70
+   ]
+  ],
+  "from": null,
+  "evolve": null,
   "legendary": true,
   "baby": false,
   "evolvesTo": []

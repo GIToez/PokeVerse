@@ -665,15 +665,17 @@ first: [move-audit.md](move-audit.md).
 
 1 Confusion, 5 Mist, 10 Double Team, 15 Stored Power, 20 Aurora Beam, 25 Ally Switch, 30 Psybeam, 35 Slash, 40 Psycho Cut, 45 Zen Headbutt, 50 Psyshock, 55 Psychic, 60 Moonblast, 65 Dream Eater, 70 Future Sight
 
-### Phione > Manaphy
+### Phione
 
 **#489 Phione** (Water). HP 80, Atk 80, Def 80, SpA 80, SpD 80, Spe 80. Catch 100000.
 
-1 Water Gun, 5 Charm, 10 Whirlpool, 15 Bubble, 20 Water Pulse, 25 Bubblebeam, 30 Dive
+1 Water Gun, 5 Whirlpool, 10 Charm, 15 Supersonic, 20 Bubble, 25 Water Pulse, 30 Acid Armor, 35 Bubblebeam, 40 Brine, 45 Dive, 50 Waterfall, 55 Scald, 60 Liquidation, 65 Surf, 70 Hydro Pump
 
-**#490 Manaphy** (Water). HP 100, Atk 100, Def 100, SpA 100, SpD 100, Spe 100. Catch 100000. From Phione at level 35.
+### Manaphy
 
-1 Water Gun, 5 Charm, 10 Whirlpool, 15 Bubble, 20 Water Pulse, 25 Bubblebeam, 30 Dive, 40 Brine, 45 Supersonic, 50 Waterfall, 55 Scald, 60 Liquidation, 65 Surf, 70 Hydro Pump
+**#490 Manaphy** (Water). HP 100, Atk 100, Def 100, SpA 100, SpD 100, Spe 100. Catch 100000.
+
+1 Water Gun, 5 Whirlpool, 10 Charm, 15 Supersonic, 20 Bubble, 25 Water Pulse, 30 Acid Armor, 35 Bubblebeam, 40 Brine, 45 Dive, 50 Waterfall, 55 Scald, 60 Liquidation, 65 Surf, 70 Hydro Pump
 
 ### Darkrai
 

@@ -179,27 +179,32 @@ class Plan:
         lines, seen = [], set()
         for n in GEN4:
             slug = self.api.get(f'pokemon-species/{n}')['name']
+            if slug in seen:
+                continue
             root = self.chain(slug)
             if root['species']['name'] in seen:
-                continue
-            seen.add(root['species']['name'])
+                root = {'species': {'name': slug}, 'evolves_to': []}
             lines.append(self.line(root))
+            seen.update(x['slug'] for x in lines[-1])
         return lines
 
     def line(self, root):
         """Every Pokemon of one evolution line, first form first."""
         nodes = []
 
+        # PokeAPI puts Manaphy under Phione with no way to evolve; Phione doesn't evolve
+        def keep(e):
+            return e['evolution_details'] and self.sp(e['species']['name'])['s']['id'] <= GEN4[-1]
+
         def walk(node, parent, depth):
             slug = node['species']['name']
             nodes.append({'slug': slug, 'parent': parent, 'depth': depth, 'node': node})
             for e in node['evolves_to']:
-                if self.sp(e['species']['name'])['s']['id'] <= GEN4[-1]:
+                if keep(e):
                     walk(e, slug, depth + 1)
         walk(root, None, 0)
         for x in nodes:
-            x['node'] = dict(x['node'], evolves_to=[e for e in x['node']['evolves_to']
-                                                    if self.sp(e['species']['name'])['s']['id'] <= GEN4[-1]])
+            x['node'] = dict(x['node'], evolves_to=[e for e in x['node']['evolves_to'] if keep(e)])
         by = {x['slug']: x for x in nodes}
         for x in nodes:
             info = self.sp(x['slug'])
