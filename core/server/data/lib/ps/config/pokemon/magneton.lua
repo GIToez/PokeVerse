@@ -11,7 +11,7 @@ POKEMON["Magneton"] = {
     dexPortrait = 13583,
     fastcallPortrait = 10716,
     catchStorage = 16082,
-    evolutions = {},
+    evolutions = { { name = "Magnezone", requiredLevel = 60, requiredItems = { ITEMS.THUNDERSTONE } } },
     description = "A linked cluster formed of several MAGNEMITE. It discharges powerful magnetic waves at high voltage.",
     skills = { "Tackle", 1, "Thunder Shock", 5, "Supersonic", 10, "Sonic Boom", 15, "Thunder Wave", 20, "Electro Ball", 25, "Thunderbolt", 35, "Magnet Bomb", 40, "Discharge", 45, "Mirror Shot", 50, "Flash Cannon", 55, "Metal Sound", 60, "Zap Cannon", 65 },
     abilities = { "Flash" },

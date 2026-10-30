@@ -14,7 +14,8 @@ local FORBIDDEN_POKEMON = {"Unown", "Aerodactyl", "Articuno", "Zapdos", "Moltres
     "Raikou", "Entei", "Suicune", "Lugia", "Ho-Oh", "Celebi", "Shiny Aerodactyl",
     "Shiny Articuno", "Shiny Zapdos", "Shiny Moltres", "Shiny Mewtwo", "Shiny Mew",
     "Shiny Raikou", "Shiny Entei", "Shiny Suicune", "Shiny Lugia", "Shiny Ho-Oh", "Shiny Celebi",
-    "Regice", "Registeel", "Regirock", "Latias", "Latios", "Groudon", "Kyogre", "Rayquaza", "Jirachi", "Deoxys"}
+    "Regice", "Registeel", "Regirock", "Latias", "Latios", "Groudon", "Kyogre", "Rayquaza", "Jirachi", "Deoxys",
+    "Uxie", "Mesprit", "Azelf", "Dialga", "Palkia", "Heatran", "Regigigas", "Giratina", "Cresselia", "Phione", "Manaphy", "Darkrai", "Shaymin", "Arceus"}
 
 -- TODO: Check run - yes they are free at the world
 

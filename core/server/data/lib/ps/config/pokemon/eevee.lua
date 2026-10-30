@@ -16,7 +16,8 @@ POKEMON["Eevee"] = {
         { name = "Jolteon", requiredLevel = 30, requiredItems = { ITEMS.THUNDERSTONE } },
         { name = "Flareon", requiredLevel = 30, requiredItems = { ITEMS.FIRE_STONE } },
         { name = "Espeon", requiredLevel = 30, requiredItems = { ITEMS.SOOTHE_BELL }, requiredTime = WORLD_LIGHT_STATE_DAY },
-        { name = "Umbreon", requiredLevel = 30, requiredItems = { ITEMS.SOOTHE_BELL }, requiredTime = WORLD_LIGHT_STATE_NIGHT }
+        { name = "Umbreon", requiredLevel = 30, requiredItems = { ITEMS.SOOTHE_BELL }, requiredTime = WORLD_LIGHT_STATE_NIGHT },
+        { name = "Leafeon", requiredLevel = 30, requiredItems = { ITEMS.LEAF_STONE } }
     },
     description = "An extremely rare POKEMON that may evolve in a number of different ways depending on stimuli.",
     skills = { "Tackle", 1, "Quick Attack", 5, "Sand-Attack", 10, "Bite", 15, "Headbutt", 20, "Agility", 25 },

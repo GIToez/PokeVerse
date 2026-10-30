@@ -11,7 +11,7 @@ POKEMON["Lickitung"] = {
     dexPortrait = 13609,
     fastcallPortrait = 10742,
     catchStorage = 16108,
-    evolutions = {},
+    evolutions = { { name = "Lickilicky", requiredLevel = 40 } },
     description = "Its tongue is twice the length of its body. It can be moved like an arm for grabbing food and attacking.",
     skills = { "Tackle", 1, "Lick", 5, "Stomp", 10, "Slam", 15, "Rollout", 20, "Defense Curl", 25, "Knock Off", 30, "Chip Away", 35, "Iron Tail", 40, "Zen Headbutt", 45, "Disable", 50, "Power Whip", 55, "Giga Impact", 60, "Focus Punch", 65 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },

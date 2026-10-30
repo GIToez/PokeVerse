@@ -5929,6 +5929,1604 @@ local POKEMON = {
             { name = "held twisted spoon", countmax = 1, chance = 100 },
         }
     },
+    ["Turtwig"] = {
+        profit = 8,
+        loots = {
+            { name = "leaf" },
+            { name = "seed" },
+            { name = "gracidea" },
+            { name = "revival herb" },
+            { name = "bamboo leaves" },
+            { name = "thorn seed" },
+            { name = "meadow plate", countmax = 1, chance = 2 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "turtwig doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Grotle"] = {
+        profit = 35,
+        loots = {
+            { name = "leaf" },
+            { name = "seed" },
+            { name = "gracidea" },
+            { name = "revival herb" },
+            { name = "bamboo leaves" },
+            { name = "tropical leaf" },
+            { name = "dark claws" },
+            { name = "dark crystal" },
+            { name = "forbidden fruit" },
+            { name = "meadow plate", countmax = 1, chance = 25 },
+            { name = "dread plate", countmax = 1, chance = 25 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "grotle doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Torterra"] = {
+        profit = 60,
+        loots = {
+            { name = "leaf" },
+            { name = "seed" },
+            { name = "gracidea" },
+            { name = "revival herb" },
+            { name = "bamboo leaves" },
+            { name = "bunch of ripe rice" },
+            { name = "frostbite herb" },
+            { name = "leaf pendant" },
+            { name = "cure herb" },
+            { name = "tropical leaf" },
+            { name = "dark claws" },
+            { name = "dark crystal" },
+            { name = "astral source" },
+            { name = "forbidden fruit" },
+            { name = "grey-blue powder" },
+            { name = "exotic feather" },
+            { name = "sharp razor" },
+            { name = "meadow plate", countmax = 1, chance = 50 },
+            { name = "dread plate", countmax = 1, chance = 50 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "torterra doll", countmax = 1, chance = 100 },
+            { name = "held miracle seed", countmax = 1, chance = 10 },
+            { name = "held black glasses", countmax = 1, chance = 10 },
+            { name = "Leaf Stone", countmax = 1, chance = 20 },
+        }
+    },
+    ["Chimchar"] = {
+        profit = 8,
+        loots = {
+            { name = "pot of lava" },
+            { name = "fire element" },
+            { name = "flame orb" },
+            { name = "magmarizer" },
+            { name = "stone orb" },
+            { name = "rare sandbag" },
+            { name = "flame plate", countmax = 1, chance = 2 },
+            { name = "earth plate", countmax = 1, chance = 2 },
+            { name = "lava cookie", countmax = 5, chance = 5000 },
+            { name = "chimchar doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Monferno"] = {
+        profit = 35,
+        loots = {
+            { name = "pot of lava" },
+            { name = "fire element" },
+            { name = "flame orb" },
+            { name = "magmarizer" },
+            { name = "burning heart" },
+            { name = "eternal flames" },
+            { name = "fire pendant" },
+            { name = "fire orb" },
+            { name = "stone orb" },
+            { name = "rare sandbag" },
+            { name = "flame plate", countmax = 1, chance = 50 },
+            { name = "earth plate", countmax = 1, chance = 50 },
+            { name = "lava cookie", countmax = 5, chance = 5000 },
+            { name = "monferno doll", countmax = 1, chance = 100 },
+            { name = "held charcoal", countmax = 1, chance = 10 },
+            { name = "held soft sand", countmax = 1, chance = 10 },
+        }
+    },
+    ["Infernape"] = {
+        profit = 35,
+        loots = {
+            { name = "pot of lava" },
+            { name = "fire element" },
+            { name = "flame orb" },
+            { name = "magmarizer" },
+            { name = "burning heart" },
+            { name = "eternal flames" },
+            { name = "fire pendant" },
+            { name = "fire orb" },
+            { name = "blazing bone" },
+            { name = "coal" },
+            { name = "pot of flames" },
+            { name = "flame plate", countmax = 1, chance = 50 },
+            { name = "lava cookie", countmax = 5, chance = 5000 },
+            { name = "infernape doll", countmax = 1, chance = 100 },
+            { name = "held charcoal", countmax = 1, chance = 10 },
+        }
+    },
+    ["Piplup"] = {
+        profit = 8,
+        loots = {
+            { name = "water gem" },
+            { name = "splash plate", countmax = 1, chance = 2 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "piplup doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Prinplup"] = {
+        profit = 35,
+        loots = {
+            { name = "razor fang" },
+            { name = "water gem" },
+            { name = "cutting fang" },
+            { name = "pot of water" },
+            { name = "leaf" },
+            { name = "seed" },
+            { name = "frostbite herb" },
+            { name = "splash plate", countmax = 1, chance = 25 },
+            { name = "meadow plate", countmax = 1, chance = 25 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "prinplup doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Empoleon"] = {
+        profit = 60,
+        loots = {
+            { name = "razor fang" },
+            { name = "water gem" },
+            { name = "cutting fang" },
+            { name = "pot of water" },
+            { name = "blue sphere" },
+            { name = "leaf" },
+            { name = "seed" },
+            { name = "frostbite herb" },
+            { name = "leaf pendant" },
+            { name = "cure herb" },
+            { name = "lion's mane flower" },
+            { name = "splash plate", countmax = 1, chance = 50 },
+            { name = "meadow plate", countmax = 1, chance = 50 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "empoleon doll", countmax = 1, chance = 100 },
+            { name = "held mystic water", countmax = 1, chance = 10 },
+            { name = "held miracle seed", countmax = 1, chance = 10 },
+            { name = "Water Stone", countmax = 1, chance = 20 },
+        }
+    },
+    ["Starly"] = {
+        profit = 8,
+        loots = {
+            { name = "feather" },
+            { name = "bunch of sugar cane" },
+            { name = "bunch of wheat" },
+            { name = "colourful feather" },
+            { name = "downy feather" },
+            { name = "love plate", countmax = 1, chance = 2 },
+            { name = "sky plate", countmax = 1, chance = 2 },
+            { name = "starly doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Staravia"] = {
+        profit = 35,
+        loots = {
+            { name = "bitten apple" },
+            { name = "bamboo leaves" },
+            { name = "bunch of wheat" },
+            { name = "acorn" },
+            { name = "bamboo stick" },
+            { name = "love plate", countmax = 1, chance = 25 },
+            { name = "cookie", countmax = 5, chance = 5000 },
+            { name = "red apple", countmax = 5, chance = 5000 },
+            { name = "staravia doll", countmax = 1, chance = 100 },
+            { name = "held silk scarf", countmax = 1, chance = 10 },
+        }
+    },
+    ["Staraptor"] = {
+        profit = 60,
+        loots = {
+            { name = "bitten apple" },
+            { name = "bamboo leaves" },
+            { name = "bunch of wheat" },
+            { name = "acorn" },
+            { name = "bamboo stick" },
+            { name = "cutting fang" },
+            { name = "forbidden fruit" },
+            { name = "hard claws" },
+            { name = "love plate", countmax = 1, chance = 100 },
+            { name = "cookie", countmax = 5, chance = 5000 },
+            { name = "red apple", countmax = 5, chance = 5000 },
+            { name = "staraptor doll", countmax = 1, chance = 100 },
+            { name = "held silk scarf", countmax = 1, chance = 20 },
+        }
+    },
+    ["Bidoof"] = {
+        profit = 8,
+        loots = {
+            { name = "feather" },
+            { name = "bunch of sugar cane" },
+            { name = "bunch of wheat" },
+            { name = "colourful feather" },
+            { name = "downy feather" },
+            { name = "love plate", countmax = 1, chance = 2 },
+            { name = "sky plate", countmax = 1, chance = 2 },
+            { name = "bidoof doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Bibarel"] = {
+        profit = 35,
+        loots = {
+            { name = "bunch of wheat" },
+            { name = "bunch of sugar cane" },
+            { name = "bamboo leaves" },
+            { name = "antlers" },
+            { name = "bamboo stick" },
+            { name = "iron loadstone" },
+            { name = "love plate", countmax = 1, chance = 50 },
+            { name = "bibarel doll", countmax = 1, chance = 100 },
+            { name = "held silk scarf", countmax = 1, chance = 10 },
+        }
+    },
+    ["Kricketot"] = {
+        profit = 8,
+        loots = {
+            { name = "pot of moss mug" },
+            { name = "big mushroom" },
+            { name = "acorn" },
+            { name = "stone orb" },
+            { name = "rare sandbag" },
+            { name = "beetle carapace" },
+            { name = "kricketot doll", countmax = 1, chance = 100 },
+            { name = "insect plate", countmax = 1, chance = 1 },
+            { name = "earth plate", countmax = 1, chance = 1 },
+        }
+    },
+    ["Kricketune"] = {
+        profit = 35,
+        loots = {
+            { name = "pot of moss mug" },
+            { name = "big mushroom" },
+            { name = "acorn" },
+            { name = "reaper cloth" },
+            { name = "essence of a bad dream" },
+            { name = "grey-blue powder" },
+            { name = "kricketune doll", countmax = 1, chance = 100 },
+            { name = "insect plate", countmax = 1, chance = 25 },
+            { name = "spooky plate", countmax = 1, chance = 25 },
+            { name = "held silver powder", countmax = 1, chance = 10 },
+            { name = "held spell tag", countmax = 1, chance = 10 },
+        }
+    },
+    ["Shinx"] = {
+        profit = 8,
+        loots = {
+            { name = "electrizer" },
+            { name = "bamboo leaves" },
+            { name = "bunch of sugar cane" },
+            { name = "bunch of wheat" },
+            { name = "bamboo stick" },
+            { name = "wool" },
+            { name = "blueberry", countmax = 5, chance = 5000 },
+            { name = "shinx doll", countmax = 1, chance = 100 },
+            { name = "zap plate", countmax = 1, chance = 2 },
+        }
+    },
+    ["Luxio"] = {
+        profit = 25,
+        loots = {
+            { name = "electrizer" },
+            { name = "metal spike" },
+            { name = "gear wheel" },
+            { name = "hard nail" },
+            { name = "piece of royal steel" },
+            { name = "magnet" },
+            { name = "frozen lightning" },
+            { name = "zap plate", countmax = 1, chance = 25 },
+            { name = "luxio doll", countmax = 1, chance = 100 },
+            { name = "held magnet", countmax = 1, chance = 10 },
+        }
+    },
+    ["Luxray"] = {
+        profit = 60,
+        loots = {
+            { name = "electrizer" },
+            { name = "bamboo leaves" },
+            { name = "bunch of sugar cane" },
+            { name = "bunch of wheat" },
+            { name = "bamboo stick" },
+            { name = "wool" },
+            { name = "zap plate", countmax = 1, chance = 100 },
+            { name = "blueberry", countmax = 5, chance = 5000 },
+            { name = "luxray doll", countmax = 1, chance = 100 },
+            { name = "held magnet", countmax = 1, chance = 20 },
+        }
+    },
+    ["Budew"] = {
+        profit = 8,
+        loots = {
+            { name = "leaf" },
+            { name = "seed" },
+            { name = "gracidea" },
+            { name = "revival herb" },
+            { name = "bamboo leaves" },
+            { name = "thorn seed" },
+            { name = "meadow plate", countmax = 1, chance = 2 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "budew doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Roserade"] = {
+        profit = 60,
+        loots = {
+            { name = "leaf" },
+            { name = "seed" },
+            { name = "gracidea" },
+            { name = "revival herb" },
+            { name = "bamboo leaves" },
+            { name = "bunch of ripe rice" },
+            { name = "frostbite herb" },
+            { name = "leaf pendant" },
+            { name = "cure herb" },
+            { name = "tropical leaf" },
+            { name = "dark claws" },
+            { name = "dark crystal" },
+            { name = "astral source" },
+            { name = "forbidden fruit" },
+            { name = "grey-blue powder" },
+            { name = "exotic feather" },
+            { name = "sharp razor" },
+            { name = "meadow plate", countmax = 1, chance = 50 },
+            { name = "dread plate", countmax = 1, chance = 50 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "roserade doll", countmax = 1, chance = 100 },
+            { name = "held miracle seed", countmax = 1, chance = 10 },
+            { name = "held black glasses", countmax = 1, chance = 10 },
+            { name = "Leaf Stone", countmax = 1, chance = 20 },
+        }
+    },
+    ["Cranidos"] = {
+        profit = 8,
+        loots = {
+            { name = "sandbag" },
+            { name = "stone orb" },
+            { name = "heavy stone" },
+            { name = "shadow rock" },
+            { name = "night orb" },
+            { name = "rare sandbag" },
+            { name = "pot of moss mug" },
+            { name = "sample of sand wasp honey" },
+            { name = "hard claws" },
+            { name = "stone plate", countmax = 1, chance = 1 },
+            { name = "insect plate", countmax = 1, chance = 1 },
+            { name = "cranidos doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Rampardos"] = {
+        profit = 35,
+        loots = {
+            { name = "sandbag" },
+            { name = "stone orb" },
+            { name = "heavy stone" },
+            { name = "shadow rock" },
+            { name = "night orb" },
+            { name = "rare sandbag" },
+            { name = "battle stone" },
+            { name = "clay lump" },
+            { name = "pot of moss mug" },
+            { name = "sample of sand wasp honey" },
+            { name = "hard claws" },
+            { name = "stone plate", countmax = 1, chance = 25 },
+            { name = "insect plate", countmax = 1, chance = 25 },
+            { name = "rampardos doll", countmax = 1, chance = 100 },
+            { name = "held hard stone", countmax = 1, chance = 10 },
+            { name = "held silver powder", countmax = 1, chance = 10 },
+        }
+    },
+    ["Shieldon"] = {
+        profit = 8,
+        loots = {
+            { name = "sandbag" },
+            { name = "stone orb" },
+            { name = "heavy stone" },
+            { name = "shadow rock" },
+            { name = "night orb" },
+            { name = "rare sandbag" },
+            { name = "pot of moss mug" },
+            { name = "sample of sand wasp honey" },
+            { name = "hard claws" },
+            { name = "stone plate", countmax = 1, chance = 1 },
+            { name = "insect plate", countmax = 1, chance = 1 },
+            { name = "shieldon doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Bastiodon"] = {
+        profit = 35,
+        loots = {
+            { name = "sandbag" },
+            { name = "stone orb" },
+            { name = "heavy stone" },
+            { name = "shadow rock" },
+            { name = "night orb" },
+            { name = "rare sandbag" },
+            { name = "battle stone" },
+            { name = "clay lump" },
+            { name = "pot of moss mug" },
+            { name = "sample of sand wasp honey" },
+            { name = "hard claws" },
+            { name = "stone plate", countmax = 1, chance = 25 },
+            { name = "insect plate", countmax = 1, chance = 25 },
+            { name = "bastiodon doll", countmax = 1, chance = 100 },
+            { name = "held hard stone", countmax = 1, chance = 10 },
+            { name = "held silver powder", countmax = 1, chance = 10 },
+        }
+    },
+    ["Burmy"] = {
+        profit = 8,
+        loots = {
+            { name = "pot of moss mug" },
+            { name = "big mushroom" },
+            { name = "acorn" },
+            { name = "stone orb" },
+            { name = "rare sandbag" },
+            { name = "beetle carapace" },
+            { name = "burmy doll", countmax = 1, chance = 100 },
+            { name = "insect plate", countmax = 1, chance = 1 },
+            { name = "earth plate", countmax = 1, chance = 1 },
+        }
+    },
+    ["Wormadam"] = {
+        profit = 35,
+        loots = {
+            { name = "pot of moss mug" },
+            { name = "big mushroom" },
+            { name = "acorn" },
+            { name = "reaper cloth" },
+            { name = "essence of a bad dream" },
+            { name = "grey-blue powder" },
+            { name = "wormadam doll", countmax = 1, chance = 100 },
+            { name = "insect plate", countmax = 1, chance = 25 },
+            { name = "spooky plate", countmax = 1, chance = 25 },
+            { name = "held silver powder", countmax = 1, chance = 10 },
+            { name = "held spell tag", countmax = 1, chance = 10 },
+        }
+    },
+    ["Mothim"] = {
+        profit = 35,
+        loots = {
+            { name = "pot of moss mug" },
+            { name = "big mushroom" },
+            { name = "acorn" },
+            { name = "reaper cloth" },
+            { name = "essence of a bad dream" },
+            { name = "grey-blue powder" },
+            { name = "mothim doll", countmax = 1, chance = 100 },
+            { name = "insect plate", countmax = 1, chance = 25 },
+            { name = "spooky plate", countmax = 1, chance = 25 },
+            { name = "held silver powder", countmax = 1, chance = 10 },
+            { name = "held spell tag", countmax = 1, chance = 10 },
+        }
+    },
+    ["Combee"] = {
+        profit = 8,
+        loots = {
+            { name = "pot of moss mug" },
+            { name = "big mushroom" },
+            { name = "acorn" },
+            { name = "stone orb" },
+            { name = "rare sandbag" },
+            { name = "beetle carapace" },
+            { name = "combee doll", countmax = 1, chance = 100 },
+            { name = "insect plate", countmax = 1, chance = 1 },
+            { name = "earth plate", countmax = 1, chance = 1 },
+        }
+    },
+    ["Vespiquen"] = {
+        profit = 35,
+        loots = {
+            { name = "pot of moss mug" },
+            { name = "big mushroom" },
+            { name = "acorn" },
+            { name = "reaper cloth" },
+            { name = "essence of a bad dream" },
+            { name = "grey-blue powder" },
+            { name = "vespiquen doll", countmax = 1, chance = 100 },
+            { name = "insect plate", countmax = 1, chance = 25 },
+            { name = "spooky plate", countmax = 1, chance = 25 },
+            { name = "held silver powder", countmax = 1, chance = 10 },
+            { name = "held spell tag", countmax = 1, chance = 10 },
+        }
+    },
+    ["Pachirisu"] = {
+        profit = 35,
+        loots = {
+            { name = "screw" },
+            { name = "electrizer" },
+            { name = "metal spike" },
+            { name = "hard nail" },
+            { name = "gear wheel" },
+            { name = "piece of royal steel" },
+            { name = "magnet" },
+            { name = "zap plate", countmax = 1, chance = 50 },
+            { name = "iron plate", countmax = 1, chance = 50 },
+            { name = "pachirisu doll", countmax = 1, chance = 100 },
+            { name = "held magnet", countmax = 1, chance = 10 },
+            { name = "held metal coat", countmax = 1, chance = 10 },
+        }
+    },
+    ["Buizel"] = {
+        profit = 8,
+        loots = {
+            { name = "water gem" },
+            { name = "splash plate", countmax = 1, chance = 2 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "buizel doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Floatzel"] = {
+        profit = 35,
+        loots = {
+            { name = "razor fang" },
+            { name = "water gem" },
+            { name = "cutting fang" },
+            { name = "pot of water" },
+            { name = "blue sphere" },
+            { name = "splash plate", countmax = 1, chance = 50 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "floatzel doll", countmax = 1, chance = 100 },
+            { name = "held mystic water", countmax = 1, chance = 20 },
+            { name = "Prism Scale", countmax = 1, chance = 20 },
+        }
+    },
+    ["Cherubi"] = {
+        profit = 8,
+        loots = {
+            { name = "leaf" },
+            { name = "seed" },
+            { name = "gracidea" },
+            { name = "revival herb" },
+            { name = "bamboo leaves" },
+            { name = "thorn seed" },
+            { name = "meadow plate", countmax = 1, chance = 2 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "cherubi doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Cherrim"] = {
+        profit = 35,
+        loots = {
+            { name = "leaf" },
+            { name = "seed" },
+            { name = "gracidea" },
+            { name = "revival herb" },
+            { name = "bamboo leaves" },
+            { name = "bunch of ripe rice" },
+            { name = "frostbite herb" },
+            { name = "leaf pendant" },
+            { name = "cure herb" },
+            { name = "tropical leaf" },
+            { name = "night orb" },
+            { name = "black orb" },
+            { name = "astral source" },
+            { name = "forbidden fruit" },
+            { name = "lion's mane flower" },
+            { name = "sharp razor" },
+            { name = "thorn seed" },
+            { name = "meadow plate", countmax = 1, chance = 50 },
+            { name = "dread plate", countmax = 1, chance = 50 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "cherrim doll", countmax = 1, chance = 100 },
+            { name = "held miracle seed", countmax = 1, chance = 20 },
+            { name = "held black glasses", countmax = 1, chance = 20 },
+        }
+    },
+    ["Shellos"] = {
+        profit = 8,
+        loots = {
+            { name = "water gem" },
+            { name = "splash plate", countmax = 1, chance = 2 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "shellos doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Gastrodon"] = {
+        profit = 35,
+        loots = {
+            { name = "razor fang" },
+            { name = "water gem" },
+            { name = "cutting fang" },
+            { name = "pot of water" },
+            { name = "blue sphere" },
+            { name = "splash plate", countmax = 1, chance = 50 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "gastrodon doll", countmax = 1, chance = 100 },
+            { name = "held mystic water", countmax = 1, chance = 20 },
+            { name = "Prism Scale", countmax = 1, chance = 20 },
+        }
+    },
+    ["Ambipom"] = {
+        profit = 60,
+        loots = {
+            { name = "bitten apple" },
+            { name = "bamboo leaves" },
+            { name = "bunch of wheat" },
+            { name = "acorn" },
+            { name = "bamboo stick" },
+            { name = "cutting fang" },
+            { name = "forbidden fruit" },
+            { name = "hard claws" },
+            { name = "love plate", countmax = 1, chance = 100 },
+            { name = "cookie", countmax = 5, chance = 5000 },
+            { name = "red apple", countmax = 5, chance = 5000 },
+            { name = "ambipom doll", countmax = 1, chance = 100 },
+            { name = "held silk scarf", countmax = 1, chance = 20 },
+        }
+    },
+    ["Drifloon"] = {
+        profit = 8,
+        loots = {
+            { name = "reaper cloth" },
+            { name = "essence of a bad dream" },
+            { name = "drifloon doll", countmax = 1, chance = 100 },
+            { name = "toxic plate", countmax = 1, chance = 1 },
+            { name = "spooky plate", countmax = 1, chance = 1 },
+        }
+    },
+    ["Drifblim"] = {
+        profit = 35,
+        loots = {
+            { name = "shadow orb" },
+            { name = "reaper cloth" },
+            { name = "cursed hand" },
+            { name = "energy soil" },
+            { name = "essence of a bad dream" },
+            { name = "petrified scream" },
+            { name = "black orb" },
+            { name = "luminous orb" },
+            { name = "astral source" },
+            { name = "grey-blue powder" },
+            { name = "spooky plate", countmax = 1, chance = 50 },
+            { name = "drifblim doll", countmax = 1, chance = 100 },
+            { name = "held spell tag", countmax = 1, chance = 20 },
+        }
+    },
+    ["Buneary"] = {
+        profit = 8,
+        loots = {
+            { name = "feather" },
+            { name = "bunch of sugar cane" },
+            { name = "bunch of wheat" },
+            { name = "colourful feather" },
+            { name = "downy feather" },
+            { name = "love plate", countmax = 1, chance = 2 },
+            { name = "sky plate", countmax = 1, chance = 2 },
+            { name = "buneary doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Lopunny"] = {
+        profit = 35,
+        loots = {
+            { name = "bunch of wheat" },
+            { name = "bunch of sugar cane" },
+            { name = "bamboo leaves" },
+            { name = "antlers" },
+            { name = "bamboo stick" },
+            { name = "iron loadstone" },
+            { name = "love plate", countmax = 1, chance = 50 },
+            { name = "lopunny doll", countmax = 1, chance = 100 },
+            { name = "held silk scarf", countmax = 1, chance = 10 },
+        }
+    },
+    ["Mismagius"] = {
+        profit = 60,
+        loots = {
+            { name = "reaper cloth" },
+            { name = "essence of a bad dream" },
+            { name = "cursed hand" },
+            { name = "petrified scream" },
+            { name = "night orb" },
+            { name = "old bandage", countmax = 1, chance = 4166 },
+            { name = "spooky plate", countmax = 1, chance = 50 },
+            { name = "toxic plate", countmax = 1, chance = 50 },
+            { name = "mismagius doll", countmax = 1, chance = 100 },
+            { name = "held poison barb", countmax = 1, chance = 10 },
+            { name = "held spell tag", countmax = 1, chance = 10 },
+        }
+    },
+    ["Honchkrow"] = {
+        profit = 60,
+        loots = {
+            { name = "shadow orb" },
+            { name = "cutting fang" },
+            { name = "night orb" },
+            { name = "black orb" },
+            { name = "dark claws" },
+            { name = "dark crystal" },
+            { name = "luminous orb" },
+            { name = "astral source" },
+            { name = "forbidden fruit" },
+            { name = "grey-blue powder" },
+            { name = "dark feather" },
+            { name = "hard claws" },
+            { name = "dread plate", countmax = 1, chance = 100 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "honchkrow doll", countmax = 1, chance = 100 },
+            { name = "held black glasses", countmax = 1, chance = 20 },
+        }
+    },
+    ["Glameow"] = {
+        profit = 8,
+        loots = {
+            { name = "feather" },
+            { name = "bunch of sugar cane" },
+            { name = "bunch of wheat" },
+            { name = "colourful feather" },
+            { name = "downy feather" },
+            { name = "love plate", countmax = 1, chance = 2 },
+            { name = "sky plate", countmax = 1, chance = 2 },
+            { name = "glameow doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Purugly"] = {
+        profit = 35,
+        loots = {
+            { name = "bunch of wheat" },
+            { name = "bunch of sugar cane" },
+            { name = "bamboo leaves" },
+            { name = "antlers" },
+            { name = "bamboo stick" },
+            { name = "iron loadstone" },
+            { name = "love plate", countmax = 1, chance = 50 },
+            { name = "purugly doll", countmax = 1, chance = 100 },
+            { name = "held silk scarf", countmax = 1, chance = 10 },
+        }
+    },
+    ["Chingling"] = {
+        profit = 8,
+        loots = {
+            { name = "twisted spoon" },
+            { name = "shadow orb" },
+            { name = "mind plate", countmax = 1, chance = 2 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "chingling doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Stunky"] = {
+        profit = 8,
+        loots = {
+            { name = "bottle of poison" },
+            { name = "venon pendant" },
+            { name = "petrified goo" },
+            { name = "toxic plate", countmax = 1, chance = 2 },
+            { name = "stunky doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Skuntank"] = {
+        profit = 60,
+        loots = {
+            { name = "razor fang" },
+            { name = "bottle of poison" },
+            { name = "cutting fang" },
+            { name = "venon pendant" },
+            { name = "cookie", countmax = 5, chance = 3000 },
+            { name = "lemon", countmax = 5, chance = 3000 },
+            { name = "toxic plate", countmax = 1, chance = 50 },
+            { name = "earth plate", countmax = 1, chance = 50 },
+            { name = "skuntank doll", countmax = 1, chance = 100 },
+            { name = "Moon Stone", countmax = 1, chance = 20 },
+            { name = "held poison barb", countmax = 1, chance = 10 },
+            { name = "held soft sand", countmax = 1, chance = 10 },
+        }
+    },
+    ["Bronzor"] = {
+        profit = 8,
+        loots = {
+            { name = "stone orb" },
+            { name = "magnet" },
+            { name = "metal spike" },
+            { name = "hard claws" },
+            { name = "stone plate", countmax = 1, chance = 2 },
+            { name = "iron plate", countmax = 1, chance = 2 },
+            { name = "bronzor doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Bronzong"] = {
+        profit = 8,
+        loots = {
+            { name = "stone orb" },
+            { name = "magnet" },
+            { name = "metal spike" },
+            { name = "prismatic quartz" },
+            { name = "mind plate", countmax = 1, chance = 1 },
+            { name = "iron plate", countmax = 1, chance = 1 },
+            { name = "bronzong doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Bonsly"] = {
+        profit = 8,
+        loots = {
+            { name = "sandbag" },
+            { name = "stone orb" },
+            { name = "heavy stone" },
+            { name = "shadow rock" },
+            { name = "night orb" },
+            { name = "rare sandbag" },
+            { name = "pot of moss mug" },
+            { name = "sample of sand wasp honey" },
+            { name = "hard claws" },
+            { name = "stone plate", countmax = 1, chance = 1 },
+            { name = "insect plate", countmax = 1, chance = 1 },
+            { name = "bonsly doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Mime Jr."] = {
+        profit = 8,
+        loots = {
+            { name = "twisted spoon" },
+            { name = "shadow orb" },
+            { name = "mind plate", countmax = 1, chance = 2 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "mime jr. doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Happiny"] = {
+        profit = 8,
+        loots = {
+            { name = "feather" },
+            { name = "bunch of sugar cane" },
+            { name = "bunch of wheat" },
+            { name = "colourful feather" },
+            { name = "downy feather" },
+            { name = "love plate", countmax = 1, chance = 2 },
+            { name = "sky plate", countmax = 1, chance = 2 },
+            { name = "happiny doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Chatot"] = {
+        profit = 35,
+        loots = {
+            { name = "bitten apple" },
+            { name = "bamboo leaves" },
+            { name = "bunch of wheat" },
+            { name = "acorn" },
+            { name = "bamboo stick" },
+            { name = "forbidden fruit" },
+            { name = "hard claws" },
+            { name = "love plate", countmax = 1, chance = 50 },
+            { name = "cookie", countmax = 5, chance = 5000 },
+            { name = "red apple", countmax = 5, chance = 5000 },
+            { name = "chatot doll", countmax = 1, chance = 100 },
+            { name = "held silk scarf", countmax = 1, chance = 10 },
+        }
+    },
+    ["Spiritomb"] = {
+        profit = 35,
+        loots = {
+            { name = "reaper cloth" },
+            { name = "essence of a bad dream" },
+            { name = "cursed hand" },
+            { name = "petrified scream" },
+            { name = "spooky plate", countmax = 1, chance = 25 },
+            { name = "toxic plate", countmax = 1, chance = 25 },
+            { name = "spiritomb doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Gible"] = {
+        profit = 35,
+        loots = {
+            { name = "feather" },
+            { name = "bunch of sugar cane" },
+            { name = "bunch of wheat" },
+            { name = "colourful feather" },
+            { name = "downy feather" },
+            { name = "light feather" },
+            { name = "royal feather" },
+            { name = "acorn" },
+            { name = "exotic feather" },
+            { name = "draco plate", countmax = 1, chance = 50 },
+            { name = "sky plate", countmax = 1, chance = 50 },
+            { name = "gible doll", countmax = 1, chance = 100 },
+            { name = "held sharp beak", countmax = 1, chance = 10 },
+            { name = "held dragon fang", countmax = 1, chance = 10 },
+        }
+    },
+    ["Gabite"] = {
+        profit = 60,
+        loots = {
+            { name = "sandbag" },
+            { name = "stone orb" },
+            { name = "shadow rock" },
+            { name = "rare sandbag" },
+            { name = "battle stone" },
+            { name = "clay lump" },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "gabite doll", countmax = 1, chance = 100 },
+            { name = "draco plate", countmax = 1, chance = 50 },
+            { name = "sky plate", countmax = 1, chance = 50 },
+            { name = "held dragon fang", countmax = 1, chance = 10 },
+            { name = "held sharp beak", countmax = 1, chance = 10 },
+        }
+    },
+    ["Garchomp"] = {
+        profit = 60,
+        loots = {
+            { name = "sandbag" },
+            { name = "stone orb" },
+            { name = "shadow rock" },
+            { name = "rare sandbag" },
+            { name = "battle stone" },
+            { name = "clay lump" },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "garchomp doll", countmax = 1, chance = 100 },
+            { name = "draco plate", countmax = 1, chance = 50 },
+            { name = "sky plate", countmax = 1, chance = 50 },
+            { name = "held dragon fang", countmax = 1, chance = 10 },
+            { name = "held sharp beak", countmax = 1, chance = 10 },
+        }
+    },
+    ["Munchlax"] = {
+        profit = 8,
+        loots = {
+            { name = "feather" },
+            { name = "bunch of sugar cane" },
+            { name = "bunch of wheat" },
+            { name = "colourful feather" },
+            { name = "downy feather" },
+            { name = "love plate", countmax = 1, chance = 2 },
+            { name = "sky plate", countmax = 1, chance = 2 },
+            { name = "munchlax doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Riolu"] = {
+        profit = 8,
+        loots = {
+            { name = "box gloves" },
+            { name = "bandage" },
+            { name = "fist plate", countmax = 1, chance = 2 },
+            { name = "riolu doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Lucario"] = {
+        profit = 35,
+        loots = {
+            { name = "box gloves" },
+            { name = "bandage" },
+            { name = "fist plate", countmax = 1, chance = 50 },
+            { name = "lucario doll", countmax = 1, chance = 100 },
+            { name = "held black belt", countmax = 1, chance = 20 }
+        }
+    },
+    ["Hippopotas"] = {
+        profit = 8,
+        loots = {
+            { name = "thick club" },
+            { name = "rare sandbag" },
+            { name = "shadow rock" },
+            { name = "onigiri", countmax = 3, chance = 3000 },
+            { name = "hippopotas doll", countmax = 1, chance = 100 },
+            { name = "earth plate", countmax = 1, chance = 2 },
+        }
+    },
+    ["Hippowdon"] = {
+        profit = 35,
+        loots = {
+            { name = "horn" },
+            { name = "cutting fang" },
+            { name = "heavy stone" },
+            { name = "shadow rock" },
+            { name = "sandbag" },
+            { name = "rare sandbag" },
+            { name = "clay lump" },
+            { name = "astral glyph" },
+            { name = "grey-blue powder" },
+            { name = "plasmatic lightning" },
+            { name = "earth plate", countmax = 1, chance = 50 },
+            { name = "mind plate", countmax = 1, chance = 50 },
+            { name = "hippowdon doll", countmax = 1, chance = 100 },
+            { name = "held soft sand", countmax = 1, chance = 10 },
+            { name = "held twisted spoon", countmax = 1, chance = 10 },
+        }
+    },
+    ["Skorupi"] = {
+        profit = 8,
+        loots = {
+            { name = "bottle of poison" },
+            { name = "venon pendant" },
+            { name = "petrified goo" },
+            { name = "toxic plate", countmax = 1, chance = 2 },
+            { name = "skorupi doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Drapion"] = {
+        profit = 60,
+        loots = {
+            { name = "razor fang" },
+            { name = "bottle of poison" },
+            { name = "cutting fang" },
+            { name = "venon pendant" },
+            { name = "cookie", countmax = 5, chance = 3000 },
+            { name = "lemon", countmax = 5, chance = 3000 },
+            { name = "toxic plate", countmax = 1, chance = 50 },
+            { name = "earth plate", countmax = 1, chance = 50 },
+            { name = "drapion doll", countmax = 1, chance = 100 },
+            { name = "Moon Stone", countmax = 1, chance = 20 },
+            { name = "held poison barb", countmax = 1, chance = 10 },
+            { name = "held soft sand", countmax = 1, chance = 10 },
+        }
+    },
+    ["Croagunk"] = {
+        profit = 8,
+        loots = {
+            { name = "bottle of poison" },
+            { name = "venon pendant" },
+            { name = "petrified goo" },
+            { name = "toxic plate", countmax = 1, chance = 2 },
+            { name = "croagunk doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Toxicroak"] = {
+        profit = 60,
+        loots = {
+            { name = "razor fang" },
+            { name = "bottle of poison" },
+            { name = "cutting fang" },
+            { name = "venon pendant" },
+            { name = "cookie", countmax = 5, chance = 3000 },
+            { name = "lemon", countmax = 5, chance = 3000 },
+            { name = "toxic plate", countmax = 1, chance = 50 },
+            { name = "earth plate", countmax = 1, chance = 50 },
+            { name = "toxicroak doll", countmax = 1, chance = 100 },
+            { name = "Moon Stone", countmax = 1, chance = 20 },
+            { name = "held poison barb", countmax = 1, chance = 10 },
+            { name = "held soft sand", countmax = 1, chance = 10 },
+        }
+    },
+    ["Carnivine"] = {
+        profit = 35,
+        loots = {
+            { name = "leaf" },
+            { name = "seed" },
+            { name = "gracidea" },
+            { name = "revival herb" },
+            { name = "bamboo leaves" },
+            { name = "bunch of ripe rice" },
+            { name = "frostbite herb" },
+            { name = "leaf pendant" },
+            { name = "cure herb" },
+            { name = "bottle of poison" },
+            { name = "venon pendant" },
+            { name = "forbidden fruit" },
+            { name = "lion's mane flower" },
+            { name = "sharp razor" },
+            { name = "thorn seed" },
+            { name = "meadow plate", countmax = 1, chance = 25 },
+            { name = "toxic plate", countmax = 1, chance = 25 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "carnivine doll", countmax = 1, chance = 100 },
+            { name = "held miracle seed", countmax = 1, chance = 20 },
+            { name = "held poison barb", countmax = 1, chance = 20 },
+        }
+    },
+    ["Finneon"] = {
+        profit = 8,
+        loots = {
+            { name = "water gem" },
+            { name = "splash plate", countmax = 1, chance = 2 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "finneon doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Lumineon"] = {
+        profit = 35,
+        loots = {
+            { name = "razor fang" },
+            { name = "water gem" },
+            { name = "cutting fang" },
+            { name = "pot of water" },
+            { name = "blue sphere" },
+            { name = "splash plate", countmax = 1, chance = 50 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "lumineon doll", countmax = 1, chance = 100 },
+            { name = "held mystic water", countmax = 1, chance = 20 },
+            { name = "Prism Scale", countmax = 1, chance = 20 },
+        }
+    },
+    ["Mantyke"] = {
+        profit = 8,
+        loots = {
+            { name = "water gem" },
+            { name = "splash plate", countmax = 1, chance = 2 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "mantyke doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Snover"] = {
+        profit = 8,
+        loots = {
+            { name = "leaf" },
+            { name = "seed" },
+            { name = "gracidea" },
+            { name = "revival herb" },
+            { name = "bamboo leaves" },
+            { name = "thorn seed" },
+            { name = "meadow plate", countmax = 1, chance = 2 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "snover doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Abomasnow"] = {
+        profit = 35,
+        loots = {
+            { name = "leaf" },
+            { name = "seed" },
+            { name = "gracidea" },
+            { name = "revival herb" },
+            { name = "bamboo leaves" },
+            { name = "bunch of ripe rice" },
+            { name = "frostbite herb" },
+            { name = "leaf pendant" },
+            { name = "cure herb" },
+            { name = "tropical leaf" },
+            { name = "night orb" },
+            { name = "black orb" },
+            { name = "astral source" },
+            { name = "forbidden fruit" },
+            { name = "lion's mane flower" },
+            { name = "sharp razor" },
+            { name = "thorn seed" },
+            { name = "meadow plate", countmax = 1, chance = 50 },
+            { name = "dread plate", countmax = 1, chance = 50 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "abomasnow doll", countmax = 1, chance = 100 },
+            { name = "held miracle seed", countmax = 1, chance = 20 },
+            { name = "held black glasses", countmax = 1, chance = 20 },
+        }
+    },
+    ["Weavile"] = {
+        profit = 60,
+        loots = {
+            { name = "fire element" },
+            { name = "pot of lava" },
+            { name = "flame orb" },
+            { name = "magmarizer" },
+            { name = "burning heart" },
+            { name = "cutting fang" },
+            { name = "eternal flames" },
+            { name = "night orb" },
+            { name = "fire pendant" },
+            { name = "fire orb" },
+            { name = "blazing bone" },
+            { name = "coal" },
+            { name = "dark claws" },
+            { name = "dark crystal" },
+            { name = "pot of flames" },
+            { name = "flame plate", countmax = 1, chance = 50 },
+            { name = "dread plate", countmax = 1, chance = 50 },
+            { name = "lava cookie", countmax = 5, chance = 5000 },
+            { name = "weavile doll", countmax = 1, chance = 100 },
+            { name = "held black glasses", countmax = 1, chance = 10 },
+            { name = "held charcoal", countmax = 1, chance = 10 },
+        }
+    },
+    ["Magnezone"] = {
+        profit = 60,
+        loots = {
+            { name = "electrizer" },
+            { name = "bamboo leaves" },
+            { name = "bunch of sugar cane" },
+            { name = "bunch of wheat" },
+            { name = "bamboo stick" },
+            { name = "wool" },
+            { name = "zap plate", countmax = 1, chance = 100 },
+            { name = "blueberry", countmax = 5, chance = 5000 },
+            { name = "magnezone doll", countmax = 1, chance = 100 },
+            { name = "held magnet", countmax = 1, chance = 20 },
+        }
+    },
+    ["Lickilicky"] = {
+        profit = 60,
+        loots = {
+            { name = "bitten apple" },
+            { name = "bamboo leaves" },
+            { name = "bunch of wheat" },
+            { name = "acorn" },
+            { name = "bamboo stick" },
+            { name = "cutting fang" },
+            { name = "forbidden fruit" },
+            { name = "hard claws" },
+            { name = "love plate", countmax = 1, chance = 100 },
+            { name = "cookie", countmax = 5, chance = 5000 },
+            { name = "red apple", countmax = 5, chance = 5000 },
+            { name = "lickilicky doll", countmax = 1, chance = 100 },
+            { name = "held silk scarf", countmax = 1, chance = 20 },
+        }
+    },
+    ["Rhyperior"] = {
+        profit = 60,
+        loots = {
+            { name = "horn" },
+            { name = "cutting fang" },
+            { name = "heavy stone" },
+            { name = "shadow rock" },
+            { name = "sandbag" },
+            { name = "rare sandbag" },
+            { name = "clay lump" },
+            { name = "exotic feather" },
+            { name = "sharp razor" },
+            { name = "earth plate", countmax = 1, chance = 50 },
+            { name = "draco plate", countmax = 1, chance = 50 },
+            { name = "rhyperior doll", countmax = 1, chance = 100 },
+            { name = "held soft sand", countmax = 1, chance = 10 },
+            { name = "held dragon fang", countmax = 1, chance = 10 },
+        }
+    },
+    ["Tangrowth"] = {
+        profit = 60,
+        loots = {
+            { name = "leaf" },
+            { name = "seed" },
+            { name = "gracidea" },
+            { name = "revival herb" },
+            { name = "bamboo leaves" },
+            { name = "bunch of ripe rice" },
+            { name = "frostbite herb" },
+            { name = "leaf pendant" },
+            { name = "cure herb" },
+            { name = "tropical leaf" },
+            { name = "dark claws" },
+            { name = "dark crystal" },
+            { name = "astral source" },
+            { name = "forbidden fruit" },
+            { name = "grey-blue powder" },
+            { name = "exotic feather" },
+            { name = "sharp razor" },
+            { name = "meadow plate", countmax = 1, chance = 50 },
+            { name = "dread plate", countmax = 1, chance = 50 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "tangrowth doll", countmax = 1, chance = 100 },
+            { name = "held miracle seed", countmax = 1, chance = 10 },
+            { name = "held black glasses", countmax = 1, chance = 10 },
+            { name = "Leaf Stone", countmax = 1, chance = 20 },
+        }
+    },
+    ["Electivire"] = {
+        profit = 60,
+        loots = {
+            { name = "electrizer" },
+            { name = "bamboo leaves" },
+            { name = "bunch of sugar cane" },
+            { name = "bunch of wheat" },
+            { name = "bamboo stick" },
+            { name = "wool" },
+            { name = "zap plate", countmax = 1, chance = 100 },
+            { name = "blueberry", countmax = 5, chance = 5000 },
+            { name = "electivire doll", countmax = 1, chance = 100 },
+            { name = "held magnet", countmax = 1, chance = 20 },
+        }
+    },
+    ["Magmortar"] = {
+        profit = 35,
+        loots = {
+            { name = "pot of lava" },
+            { name = "fire element" },
+            { name = "flame orb" },
+            { name = "magmarizer" },
+            { name = "burning heart" },
+            { name = "eternal flames" },
+            { name = "fire pendant" },
+            { name = "fire orb" },
+            { name = "blazing bone" },
+            { name = "coal" },
+            { name = "pot of flames" },
+            { name = "flame plate", countmax = 1, chance = 50 },
+            { name = "lava cookie", countmax = 5, chance = 5000 },
+            { name = "magmortar doll", countmax = 1, chance = 100 },
+            { name = "held charcoal", countmax = 1, chance = 10 },
+        }
+    },
+    ["Togekiss"] = {
+        profit = 35,
+        loots = {
+            { name = "razor fang" },
+            { name = "ruby" },
+            { name = "thick club" },
+            { name = "comb" },
+            { name = "coral comb" },
+            { name = "pixie plate", countmax = 1, chance = 50 },
+            { name = "togekiss doll", countmax = 1, chance = 100 },
+            { name = "held pink bow", countmax = 1, chance = 20 },
+        }
+    },
+    ["Yanmega"] = {
+        profit = 60,
+        loots = {
+            { name = "pot of moss mug" },
+            { name = "sandbag" },
+            { name = "heavy stone" },
+            { name = "sample of sand wasp honey" },
+            { name = "shadow rock" },
+            { name = "battle stone" },
+            { name = "insect plate", countmax = 1, chance = 50 },
+            { name = "stone plate", countmax = 1, chance = 50 },
+            { name = "yanmega doll", countmax = 1, chance = 100 },
+            { name = "held hard stone", countmax = 1, chance = 10 },
+            { name = "held silver powder", countmax = 1, chance = 10 },
+        }
+    },
+    ["Leafeon"] = {
+        profit = 35,
+        loots = {
+            { name = "leaf" },
+            { name = "seed" },
+            { name = "gracidea" },
+            { name = "revival herb" },
+            { name = "bamboo leaves" },
+            { name = "bunch of ripe rice" },
+            { name = "frostbite herb" },
+            { name = "leaf pendant" },
+            { name = "cure herb" },
+            { name = "tropical leaf" },
+            { name = "night orb" },
+            { name = "black orb" },
+            { name = "astral source" },
+            { name = "forbidden fruit" },
+            { name = "lion's mane flower" },
+            { name = "sharp razor" },
+            { name = "thorn seed" },
+            { name = "meadow plate", countmax = 1, chance = 50 },
+            { name = "dread plate", countmax = 1, chance = 50 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "leafeon doll", countmax = 1, chance = 100 },
+            { name = "held miracle seed", countmax = 1, chance = 20 },
+            { name = "held black glasses", countmax = 1, chance = 20 },
+        }
+    },
+    ["Glaceon"] = {
+        profit = 35,
+        loots = {
+            { name = "ice cub" },
+            { name = "flawless ice crystal" },
+            { name = "icicle" },
+            { name = "giant ice cube" },
+            { name = "frozen tear" },
+            { name = "galatic scale" },
+            { name = "icicle plate", countmax = 1, chance = 50 },
+            { name = "glaceon doll", countmax = 1, chance = 100 },
+            { name = "held never melt ice", countmax = 1, chance = 20 },
+        }
+    },
+    ["Gliscor"] = {
+        profit = 60,
+        loots = {
+            { name = "horn" },
+            { name = "cutting fang" },
+            { name = "heavy stone" },
+            { name = "shadow rock" },
+            { name = "sandbag" },
+            { name = "rare sandbag" },
+            { name = "clay lump" },
+            { name = "exotic feather" },
+            { name = "sharp razor" },
+            { name = "earth plate", countmax = 1, chance = 50 },
+            { name = "draco plate", countmax = 1, chance = 50 },
+            { name = "gliscor doll", countmax = 1, chance = 100 },
+            { name = "held soft sand", countmax = 1, chance = 10 },
+            { name = "held dragon fang", countmax = 1, chance = 10 },
+        }
+    },
+    ["Mamoswine"] = {
+        profit = 60,
+        loots = {
+            { name = "ice cub" },
+            { name = "flawless ice crystal" },
+            { name = "icicle" },
+            { name = "giant ice cube" },
+            { name = "frozen tear" },
+            { name = "galatic scale" },
+            { name = "icicle plate", countmax = 1, chance = 50 },
+            { name = "splash plate", countmax = 1, chance = 50 },
+            { name = "mamoswine doll", countmax = 1, chance = 100 },
+            { name = "held never melt ice", countmax = 1, chance = 10 },
+            { name = "held mystic water", countmax = 1, chance = 10 },
+        }
+    },
+    ["Porygon-Z"] = {
+        profit = 60,
+        loots = {
+            { name = "egg" },
+            { name = "decorative ribbon" },
+            { name = "white orb" },
+            { name = "love plate", countmax = 1, chance = 100 },
+            { name = "porygon-z doll", countmax = 1, chance = 100 },
+            { name = "Soothe Bell", countmax = 1, chance = 20 },
+            { name = "held silk scarf", countmax = 1, chance = 10 },
+        }
+    },
+    ["Gallade"] = {
+        profit = 60,
+        loots = {
+            { name = "twisted spoon" },
+            { name = "shadow orb" },
+            { name = "linearly guided hypnose pendant" },
+            { name = "cutting fang" },
+            { name = "luminous orb" },
+            { name = "black diamond" },
+            { name = "astral glyph" },
+            { name = "grey-blue powder" },
+            { name = "plasmatic lightning" },
+            { name = "mind plate", countmax = 1, chance = 50 },
+            { name = "pixie plate", countmax = 1, chance = 50 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "gallade doll", countmax = 1, chance = 100 },
+            { name = "held twisted spoon", countmax = 1, chance = 10 },
+            { name = "held pink bow", countmax = 1, chance = 10 },
+        }
+    },
+    ["Probopass"] = {
+        profit = 0,
+        loots = {
+            { name = "stone plate", countmax = 1, chance = 100 },
+            { name = "sky plate", countmax = 1, chance = 100 },
+            { name = "probopass doll", countmax = 1, chance = 100 },
+            { name = "held hard stone", countmax = 1, chance = 10 },
+            { name = "held sharp beak", countmax = 1, chance = 10 },
+        }
+    },
+    ["Dusknoir"] = {
+        profit = 60,
+        loots = {
+            { name = "reaper cloth" },
+            { name = "essence of a bad dream" },
+            { name = "cursed hand" },
+            { name = "petrified scream" },
+            { name = "night orb" },
+            { name = "old bandage", countmax = 1, chance = 4166 },
+            { name = "spooky plate", countmax = 1, chance = 50 },
+            { name = "toxic plate", countmax = 1, chance = 50 },
+            { name = "dusknoir doll", countmax = 1, chance = 100 },
+            { name = "held poison barb", countmax = 1, chance = 10 },
+            { name = "held spell tag", countmax = 1, chance = 10 },
+        }
+    },
+    ["Froslass"] = {
+        profit = 35,
+        loots = {
+            { name = "ice cub" },
+            { name = "flawless ice crystal" },
+            { name = "icicle" },
+            { name = "giant ice cube" },
+            { name = "frozen tear" },
+            { name = "galatic scale" },
+            { name = "icicle plate", countmax = 1, chance = 50 },
+            { name = "froslass doll", countmax = 1, chance = 100 },
+            { name = "held never melt ice", countmax = 1, chance = 20 },
+        }
+    },
+    ["Rotom"] = {
+        profit = 35,
+        loots = {
+            { name = "screw" },
+            { name = "electrizer" },
+            { name = "metal spike" },
+            { name = "hard nail" },
+            { name = "gear wheel" },
+            { name = "piece of royal steel" },
+            { name = "magnet" },
+            { name = "zap plate", countmax = 1, chance = 50 },
+            { name = "iron plate", countmax = 1, chance = 50 },
+            { name = "rotom doll", countmax = 1, chance = 100 },
+            { name = "held magnet", countmax = 1, chance = 10 },
+            { name = "held metal coat", countmax = 1, chance = 10 },
+        }
+    },
+    ["Uxie"] = {
+        profit = 0,
+        loots = {
+            { name = "uxie doll", countmax = 1, chance = 100 },
+            { name = "mind plate", countmax = 10, chance = 100000 },
+        }
+    },
+    ["Mesprit"] = {
+        profit = 0,
+        loots = {
+            { name = "mesprit doll", countmax = 1, chance = 100 },
+            { name = "mind plate", countmax = 10, chance = 100000 },
+        }
+    },
+    ["Azelf"] = {
+        profit = 0,
+        loots = {
+            { name = "azelf doll", countmax = 1, chance = 100 },
+            { name = "mind plate", countmax = 10, chance = 100000 },
+        }
+    },
+    ["Dialga"] = {
+        profit = 100,
+        loots = {
+            { name = "mind plate", countmax = 1, chance = 100 },
+            { name = "iron plate", countmax = 1, chance = 100 },
+            { name = "dialga doll", countmax = 1, chance = 100 },
+            { name = "Metal Coat", countmax = 1, chance = 200 },
+            { name = "held metal coat", countmax = 1, chance = 100 },
+            { name = "held twisted spoon", countmax = 1, chance = 100 },
+        }
+    },
+    ["Palkia"] = {
+        profit = 100,
+        loots = {
+            { name = "splash plate", countmax = 1, chance = 100 },
+            { name = "onigiri", countmax = 5, chance = 5000 },
+            { name = "palkia doll", countmax = 1, chance = 100 },
+            { name = "held mystic water", countmax = 1, chance = 100 },
+        }
+    },
+    ["Heatran"] = {
+        profit = 0,
+        loots = {
+            -- {name = "moltres feather", countmax = 1, chance = 100000},
+            { name = "flame plate", countmax = 5, chance = 100000 },
+            { name = "sky plate", countmax = 5, chance = 100000 },
+            { name = "heatran doll", countmax = 1, chance = 100 },
+        }
+    },
+    ["Regigigas"] = {
+        profit = 0,
+        loots = {
+            { name = "regigigas doll", countmax = 1, chance = 100 },
+            { name = "mind plate", countmax = 10, chance = 100000 },
+        }
+    },
+    ["Giratina"] = {
+        profit = 0,
+        loots = {
+            { name = "giratina doll", countmax = 1, chance = 100 },
+            { name = "mind plate", countmax = 10, chance = 100000 },
+        }
+    },
+    ["Cresselia"] = {
+        profit = 0,
+        loots = {
+            { name = "cresselia doll", countmax = 1, chance = 100 },
+            { name = "mind plate", countmax = 10, chance = 100000 },
+        }
+    },
+    ["Phione"] = {
+        profit = 0,
+        loots = {
+            { name = "phione doll", countmax = 1, chance = 100 },
+            { name = "splash plate", countmax = 5, chance = 100000 },
+        }
+    },
+    ["Manaphy"] = {
+        profit = 0,
+        loots = {
+            { name = "manaphy doll", countmax = 1, chance = 100 },
+            { name = "splash plate", countmax = 5, chance = 100000 },
+        }
+    },
+    ["Darkrai"] = {
+        profit = 0,
+        loots = {
+            { name = "darkrai doll", countmax = 1, chance = 100 },
+            { name = "mind plate", countmax = 5, chance = 100000 },
+            { name = "meadow plate", countmax = 5, chance = 100000 },
+        }
+    },
+    ["Shaymin"] = {
+        profit = 0,
+        loots = {
+            { name = "shaymin doll", countmax = 1, chance = 100 },
+            { name = "mind plate", countmax = 5, chance = 100000 },
+            { name = "meadow plate", countmax = 5, chance = 100000 },
+        }
+    },
+    ["Arceus"] = {
+        profit = 0,
+        loots = {
+            { name = "arceus doll", countmax = 1, chance = 100 },
+            { name = "mind plate", countmax = 5, chance = 100000 },
+            { name = "meadow plate", countmax = 5, chance = 100000 },
+        }
+    },
     --[[["Shiny Bulbasaur"] = {
            profit = 0,
            loots = {

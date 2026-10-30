@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster name="Shiny Kricketune" nickname="Kricketune" nameDescription="a Shiny Kricketune" race="blood" experience="10" speed="265" manacost="0" minLevel="40" maxLevel="50">
+	<health now="77" max="77"/>
+	<look type="2818" corpse="30782"/>
+	<targetchange interval="5000" chance="8"/>
+	<strategy attack="100" defense="0"/>
+	<flags>
+		<flag shiny="1"/>
+		<flag pacific="0"/>
+		<flag summonable="0"/>
+		<flag attackable="1"/>
+		<flag hostile="1"/>
+		<flag illusionable="1"/>
+		<flag convinceable="1"/>
+		<flag pushable="1"/>
+		<flag canpushitems="1"/>
+		<flag canpushcreatures="0"/>
+		<flag targetdistance="0"/>
+		<flag staticattack="90"/>
+		<flag runonhealth="0"/>
+	</flags>
+	<attacks>
+		<attack name="melee" interval="1538" skill="24" attack="85"/>
+		<attack name="Moves" interval="500"/>
+		<attack name="Evolve" inverval="15000" chance="1"/>
+		<attack name="Berries" inverval="60000" chance="1" target="1"/>
+	</attacks>
+	<defenses armor="10" defense="51"/>
+	<elements>
+	</elements>
+	<voices interval="5000" chance="10">
+		<voice sentence="KRICKETUNE!"/>
+	</voices>
+	
+<loot><item id="12113" countmax="1" chance="41666"/><item id="13302" countmax="1" chance="29166"/><item id="17786" countmax="1" chance="38888"/><item id="12146" countmax="1" chance="12962"/><item id="14481" countmax="1" chance="11666"/><item id="28879" countmax="1" chance="7291"/><item id="30991" countmax="1" chance="100"/><item id="12241" countmax="1" chance="25"/><item id="18082" countmax="1" chance="25"/><item id="23528" countmax="1" chance="10"/><item id="23530" countmax="1" chance="10"/></loot></monster>

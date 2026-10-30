@@ -368,6 +368,113 @@
 	<monster name="Torkoal" file="Pokemons/torkoal.xml"/>	
 	<monster name="Luvdisc" file="Pokemons/luvdisc.xml"/>	
 	<monster name="Deoxys" file="Pokemons/deoxys.xml"/>	
+	<monster name="Turtwig" file="Pokemons/turtwig.xml"/>	
+	<monster name="Grotle" file="Pokemons/grotle.xml"/>	
+	<monster name="Torterra" file="Pokemons/torterra.xml"/>	
+	<monster name="Chimchar" file="Pokemons/chimchar.xml"/>	
+	<monster name="Monferno" file="Pokemons/monferno.xml"/>	
+	<monster name="Infernape" file="Pokemons/infernape.xml"/>	
+	<monster name="Piplup" file="Pokemons/piplup.xml"/>	
+	<monster name="Prinplup" file="Pokemons/prinplup.xml"/>	
+	<monster name="Empoleon" file="Pokemons/empoleon.xml"/>	
+	<monster name="Starly" file="Pokemons/starly.xml"/>	
+	<monster name="Staravia" file="Pokemons/staravia.xml"/>	
+	<monster name="Staraptor" file="Pokemons/staraptor.xml"/>	
+	<monster name="Bidoof" file="Pokemons/bidoof.xml"/>	
+	<monster name="Bibarel" file="Pokemons/bibarel.xml"/>	
+	<monster name="Kricketot" file="Pokemons/kricketot.xml"/>	
+	<monster name="Kricketune" file="Pokemons/kricketune.xml"/>	
+	<monster name="Shinx" file="Pokemons/shinx.xml"/>	
+	<monster name="Luxio" file="Pokemons/luxio.xml"/>	
+	<monster name="Luxray" file="Pokemons/luxray.xml"/>	
+	<monster name="Budew" file="Pokemons/budew.xml"/>	
+	<monster name="Roserade" file="Pokemons/roserade.xml"/>	
+	<monster name="Cranidos" file="Pokemons/cranidos.xml"/>	
+	<monster name="Rampardos" file="Pokemons/rampardos.xml"/>	
+	<monster name="Shieldon" file="Pokemons/shieldon.xml"/>	
+	<monster name="Bastiodon" file="Pokemons/bastiodon.xml"/>	
+	<monster name="Burmy" file="Pokemons/burmy.xml"/>	
+	<monster name="Wormadam" file="Pokemons/wormadam.xml"/>	
+	<monster name="Mothim" file="Pokemons/mothim.xml"/>	
+	<monster name="Combee" file="Pokemons/combee.xml"/>	
+	<monster name="Vespiquen" file="Pokemons/vespiquen.xml"/>	
+	<monster name="Pachirisu" file="Pokemons/pachirisu.xml"/>	
+	<monster name="Buizel" file="Pokemons/buizel.xml"/>	
+	<monster name="Floatzel" file="Pokemons/floatzel.xml"/>	
+	<monster name="Cherubi" file="Pokemons/cherubi.xml"/>	
+	<monster name="Cherrim" file="Pokemons/cherrim.xml"/>	
+	<monster name="Shellos" file="Pokemons/shellos.xml"/>	
+	<monster name="Gastrodon" file="Pokemons/gastrodon.xml"/>	
+	<monster name="Ambipom" file="Pokemons/ambipom.xml"/>	
+	<monster name="Drifloon" file="Pokemons/drifloon.xml"/>	
+	<monster name="Drifblim" file="Pokemons/drifblim.xml"/>	
+	<monster name="Buneary" file="Pokemons/buneary.xml"/>	
+	<monster name="Lopunny" file="Pokemons/lopunny.xml"/>	
+	<monster name="Mismagius" file="Pokemons/mismagius.xml"/>	
+	<monster name="Honchkrow" file="Pokemons/honchkrow.xml"/>	
+	<monster name="Glameow" file="Pokemons/glameow.xml"/>	
+	<monster name="Purugly" file="Pokemons/purugly.xml"/>	
+	<monster name="Chingling" file="Pokemons/chingling.xml"/>	
+	<monster name="Stunky" file="Pokemons/stunky.xml"/>	
+	<monster name="Skuntank" file="Pokemons/skuntank.xml"/>	
+	<monster name="Bronzor" file="Pokemons/bronzor.xml"/>	
+	<monster name="Bronzong" file="Pokemons/bronzong.xml"/>	
+	<monster name="Bonsly" file="Pokemons/bonsly.xml"/>	
+	<monster name="Mime Jr." file="Pokemons/mime jr.xml"/>	
+	<monster name="Happiny" file="Pokemons/happiny.xml"/>	
+	<monster name="Chatot" file="Pokemons/chatot.xml"/>	
+	<monster name="Spiritomb" file="Pokemons/spiritomb.xml"/>	
+	<monster name="Gible" file="Pokemons/gible.xml"/>	
+	<monster name="Gabite" file="Pokemons/gabite.xml"/>	
+	<monster name="Garchomp" file="Pokemons/garchomp.xml"/>	
+	<monster name="Munchlax" file="Pokemons/munchlax.xml"/>	
+	<monster name="Riolu" file="Pokemons/riolu.xml"/>	
+	<monster name="Lucario" file="Pokemons/lucario.xml"/>	
+	<monster name="Hippopotas" file="Pokemons/hippopotas.xml"/>	
+	<monster name="Hippowdon" file="Pokemons/hippowdon.xml"/>	
+	<monster name="Skorupi" file="Pokemons/skorupi.xml"/>	
+	<monster name="Drapion" file="Pokemons/drapion.xml"/>	
+	<monster name="Croagunk" file="Pokemons/croagunk.xml"/>	
+	<monster name="Toxicroak" file="Pokemons/toxicroak.xml"/>	
+	<monster name="Carnivine" file="Pokemons/carnivine.xml"/>	
+	<monster name="Finneon" file="Pokemons/finneon.xml"/>	
+	<monster name="Lumineon" file="Pokemons/lumineon.xml"/>	
+	<monster name="Mantyke" file="Pokemons/mantyke.xml"/>	
+	<monster name="Snover" file="Pokemons/snover.xml"/>	
+	<monster name="Abomasnow" file="Pokemons/abomasnow.xml"/>	
+	<monster name="Weavile" file="Pokemons/weavile.xml"/>	
+	<monster name="Magnezone" file="Pokemons/magnezone.xml"/>	
+	<monster name="Lickilicky" file="Pokemons/lickilicky.xml"/>	
+	<monster name="Rhyperior" file="Pokemons/rhyperior.xml"/>	
+	<monster name="Tangrowth" file="Pokemons/tangrowth.xml"/>	
+	<monster name="Electivire" file="Pokemons/electivire.xml"/>	
+	<monster name="Magmortar" file="Pokemons/magmortar.xml"/>	
+	<monster name="Togekiss" file="Pokemons/togekiss.xml"/>	
+	<monster name="Yanmega" file="Pokemons/yanmega.xml"/>	
+	<monster name="Leafeon" file="Pokemons/leafeon.xml"/>	
+	<monster name="Glaceon" file="Pokemons/glaceon.xml"/>	
+	<monster name="Gliscor" file="Pokemons/gliscor.xml"/>	
+	<monster name="Mamoswine" file="Pokemons/mamoswine.xml"/>	
+	<monster name="Porygon-Z" file="Pokemons/porygon-z.xml"/>	
+	<monster name="Gallade" file="Pokemons/gallade.xml"/>	
+	<monster name="Probopass" file="Pokemons/probopass.xml"/>	
+	<monster name="Dusknoir" file="Pokemons/dusknoir.xml"/>	
+	<monster name="Froslass" file="Pokemons/froslass.xml"/>	
+	<monster name="Rotom" file="Pokemons/rotom.xml"/>	
+	<monster name="Uxie" file="Pokemons/uxie.xml"/>	
+	<monster name="Mesprit" file="Pokemons/mesprit.xml"/>	
+	<monster name="Azelf" file="Pokemons/azelf.xml"/>	
+	<monster name="Dialga" file="Pokemons/dialga.xml"/>	
+	<monster name="Palkia" file="Pokemons/palkia.xml"/>	
+	<monster name="Heatran" file="Pokemons/heatran.xml"/>	
+	<monster name="Regigigas" file="Pokemons/regigigas.xml"/>	
+	<monster name="Giratina" file="Pokemons/giratina.xml"/>	
+	<monster name="Cresselia" file="Pokemons/cresselia.xml"/>	
+	<monster name="Phione" file="Pokemons/phione.xml"/>	
+	<monster name="Manaphy" file="Pokemons/manaphy.xml"/>	
+	<monster name="Darkrai" file="Pokemons/darkrai.xml"/>	
+	<monster name="Shaymin" file="Pokemons/shaymin.xml"/>	
+	<monster name="Arceus" file="Pokemons/arceus.xml"/>	
 	<monster name="Dusclops" file="Pokemons/dusclops.xml"/>	
 	<monster name="Spheal" file="Pokemons/spheal.xml"/>	
 	<monster name="Absol" file="Pokemons/absol.xml"/>	
@@ -818,6 +925,99 @@
 	<monster name="Shiny Torkoal" file="Shiny/shiny torkoal.xml"/>	
 	<monster name="Shiny Luvdisc" file="Shiny/shiny luvdisc.xml"/>	
 	<!--<monster name="Shiny Deoxys" file="Shiny/shiny deoxys.xml"/>	-->
+	<monster name="Shiny Turtwig" file="Shiny/shiny turtwig.xml"/>	
+	<monster name="Shiny Grotle" file="Shiny/shiny grotle.xml"/>	
+	<monster name="Shiny Torterra" file="Shiny/shiny torterra.xml"/>	
+	<monster name="Shiny Chimchar" file="Shiny/shiny chimchar.xml"/>	
+	<monster name="Shiny Monferno" file="Shiny/shiny monferno.xml"/>	
+	<monster name="Shiny Infernape" file="Shiny/shiny infernape.xml"/>	
+	<monster name="Shiny Piplup" file="Shiny/shiny piplup.xml"/>	
+	<monster name="Shiny Prinplup" file="Shiny/shiny prinplup.xml"/>	
+	<monster name="Shiny Empoleon" file="Shiny/shiny empoleon.xml"/>	
+	<monster name="Shiny Starly" file="Shiny/shiny starly.xml"/>	
+	<monster name="Shiny Staravia" file="Shiny/shiny staravia.xml"/>	
+	<monster name="Shiny Staraptor" file="Shiny/shiny staraptor.xml"/>	
+	<monster name="Shiny Bidoof" file="Shiny/shiny bidoof.xml"/>	
+	<monster name="Shiny Bibarel" file="Shiny/shiny bibarel.xml"/>	
+	<monster name="Shiny Kricketot" file="Shiny/shiny kricketot.xml"/>	
+	<monster name="Shiny Kricketune" file="Shiny/shiny kricketune.xml"/>	
+	<monster name="Shiny Shinx" file="Shiny/shiny shinx.xml"/>	
+	<monster name="Shiny Luxio" file="Shiny/shiny luxio.xml"/>	
+	<monster name="Shiny Luxray" file="Shiny/shiny luxray.xml"/>	
+	<monster name="Shiny Budew" file="Shiny/shiny budew.xml"/>	
+	<monster name="Shiny Roserade" file="Shiny/shiny roserade.xml"/>	
+	<monster name="Shiny Cranidos" file="Shiny/shiny cranidos.xml"/>	
+	<monster name="Shiny Rampardos" file="Shiny/shiny rampardos.xml"/>	
+	<monster name="Shiny Shieldon" file="Shiny/shiny shieldon.xml"/>	
+	<monster name="Shiny Bastiodon" file="Shiny/shiny bastiodon.xml"/>	
+	<monster name="Shiny Burmy" file="Shiny/shiny burmy.xml"/>	
+	<monster name="Shiny Wormadam" file="Shiny/shiny wormadam.xml"/>	
+	<monster name="Shiny Mothim" file="Shiny/shiny mothim.xml"/>	
+	<monster name="Shiny Combee" file="Shiny/shiny combee.xml"/>	
+	<monster name="Shiny Vespiquen" file="Shiny/shiny vespiquen.xml"/>	
+	<monster name="Shiny Pachirisu" file="Shiny/shiny pachirisu.xml"/>	
+	<monster name="Shiny Buizel" file="Shiny/shiny buizel.xml"/>	
+	<monster name="Shiny Floatzel" file="Shiny/shiny floatzel.xml"/>	
+	<monster name="Shiny Cherubi" file="Shiny/shiny cherubi.xml"/>	
+	<monster name="Shiny Cherrim" file="Shiny/shiny cherrim.xml"/>	
+	<monster name="Shiny Shellos" file="Shiny/shiny shellos.xml"/>	
+	<monster name="Shiny Gastrodon" file="Shiny/shiny gastrodon.xml"/>	
+	<monster name="Shiny Ambipom" file="Shiny/shiny ambipom.xml"/>	
+	<monster name="Shiny Drifloon" file="Shiny/shiny drifloon.xml"/>	
+	<monster name="Shiny Drifblim" file="Shiny/shiny drifblim.xml"/>	
+	<monster name="Shiny Buneary" file="Shiny/shiny buneary.xml"/>	
+	<monster name="Shiny Lopunny" file="Shiny/shiny lopunny.xml"/>	
+	<monster name="Shiny Mismagius" file="Shiny/shiny mismagius.xml"/>	
+	<monster name="Shiny Honchkrow" file="Shiny/shiny honchkrow.xml"/>	
+	<monster name="Shiny Glameow" file="Shiny/shiny glameow.xml"/>	
+	<monster name="Shiny Purugly" file="Shiny/shiny purugly.xml"/>	
+	<monster name="Shiny Chingling" file="Shiny/shiny chingling.xml"/>	
+	<monster name="Shiny Stunky" file="Shiny/shiny stunky.xml"/>	
+	<monster name="Shiny Skuntank" file="Shiny/shiny skuntank.xml"/>	
+	<monster name="Shiny Bronzor" file="Shiny/shiny bronzor.xml"/>	
+	<monster name="Shiny Bronzong" file="Shiny/shiny bronzong.xml"/>	
+	<monster name="Shiny Bonsly" file="Shiny/shiny bonsly.xml"/>	
+	<monster name="Shiny Mime Jr." file="Shiny/shiny mime jr.xml"/>	
+	<monster name="Shiny Happiny" file="Shiny/shiny happiny.xml"/>	
+	<monster name="Shiny Chatot" file="Shiny/shiny chatot.xml"/>	
+	<monster name="Shiny Spiritomb" file="Shiny/shiny spiritomb.xml"/>	
+	<monster name="Shiny Gible" file="Shiny/shiny gible.xml"/>	
+	<monster name="Shiny Gabite" file="Shiny/shiny gabite.xml"/>	
+	<monster name="Shiny Garchomp" file="Shiny/shiny garchomp.xml"/>	
+	<monster name="Shiny Munchlax" file="Shiny/shiny munchlax.xml"/>	
+	<monster name="Shiny Riolu" file="Shiny/shiny riolu.xml"/>	
+	<monster name="Shiny Lucario" file="Shiny/shiny lucario.xml"/>	
+	<monster name="Shiny Hippopotas" file="Shiny/shiny hippopotas.xml"/>	
+	<monster name="Shiny Hippowdon" file="Shiny/shiny hippowdon.xml"/>	
+	<monster name="Shiny Skorupi" file="Shiny/shiny skorupi.xml"/>	
+	<monster name="Shiny Drapion" file="Shiny/shiny drapion.xml"/>	
+	<monster name="Shiny Croagunk" file="Shiny/shiny croagunk.xml"/>	
+	<monster name="Shiny Toxicroak" file="Shiny/shiny toxicroak.xml"/>	
+	<monster name="Shiny Carnivine" file="Shiny/shiny carnivine.xml"/>	
+	<monster name="Shiny Finneon" file="Shiny/shiny finneon.xml"/>	
+	<monster name="Shiny Lumineon" file="Shiny/shiny lumineon.xml"/>	
+	<monster name="Shiny Mantyke" file="Shiny/shiny mantyke.xml"/>	
+	<monster name="Shiny Snover" file="Shiny/shiny snover.xml"/>	
+	<monster name="Shiny Abomasnow" file="Shiny/shiny abomasnow.xml"/>	
+	<monster name="Shiny Weavile" file="Shiny/shiny weavile.xml"/>	
+	<monster name="Shiny Magnezone" file="Shiny/shiny magnezone.xml"/>	
+	<monster name="Shiny Lickilicky" file="Shiny/shiny lickilicky.xml"/>	
+	<monster name="Shiny Rhyperior" file="Shiny/shiny rhyperior.xml"/>	
+	<monster name="Shiny Tangrowth" file="Shiny/shiny tangrowth.xml"/>	
+	<monster name="Shiny Electivire" file="Shiny/shiny electivire.xml"/>	
+	<monster name="Shiny Magmortar" file="Shiny/shiny magmortar.xml"/>	
+	<monster name="Shiny Togekiss" file="Shiny/shiny togekiss.xml"/>	
+	<monster name="Shiny Yanmega" file="Shiny/shiny yanmega.xml"/>	
+	<monster name="Shiny Leafeon" file="Shiny/shiny leafeon.xml"/>	
+	<monster name="Shiny Glaceon" file="Shiny/shiny glaceon.xml"/>	
+	<monster name="Shiny Gliscor" file="Shiny/shiny gliscor.xml"/>	
+	<monster name="Shiny Mamoswine" file="Shiny/shiny mamoswine.xml"/>	
+	<monster name="Shiny Porygon-Z" file="Shiny/shiny porygon-z.xml"/>	
+	<monster name="Shiny Gallade" file="Shiny/shiny gallade.xml"/>	
+	<monster name="Shiny Probopass" file="Shiny/shiny probopass.xml"/>	
+	<monster name="Shiny Dusknoir" file="Shiny/shiny dusknoir.xml"/>	
+	<monster name="Shiny Froslass" file="Shiny/shiny froslass.xml"/>	
+	<monster name="Shiny Rotom" file="Shiny/shiny rotom.xml"/>	
 	<monster name="Shiny Dusclops" file="Shiny/shiny dusclops.xml"/>	
 	<monster name="Shiny Spheal" file="Shiny/shiny spheal.xml"/>	
 	<monster name="Shiny Absol" file="Shiny/shiny absol.xml"/>	

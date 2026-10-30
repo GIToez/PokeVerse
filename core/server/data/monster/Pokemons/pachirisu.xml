@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster name="Pachirisu" nameDescription="a Pachirisu" race="blood" experience="10" speed="295" manacost="0" minLevel="40" maxLevel="50">
+	<health now="60" max="60"/>
+	<look type="2726" corpse="30598"/>
+	<targetchange interval="5000" chance="8"/>
+	<strategy attack="100" defense="0"/>
+	<flags>
+		<flag pacific="0"/>
+		<flag summonable="0"/>
+		<flag attackable="1"/>
+		<flag hostile="1"/>
+		<flag illusionable="1"/>
+		<flag convinceable="1"/>
+		<flag pushable="1"/>
+		<flag canpushitems="1"/>
+		<flag canpushcreatures="0"/>
+		<flag targetdistance="0"/>
+		<flag staticattack="90"/>
+		<flag runonhealth="0"/>
+	</flags>
+	<attacks>
+		<attack name="melee" interval="1053" skill="24" attack="45"/>
+		<attack name="Moves" interval="500"/>
+		<attack name="Evolve" inverval="15000" chance="1"/>
+		<attack name="Berries" inverval="60000" chance="1" target="1"/>
+	</attacks>
+	<defenses armor="10" defense="70"/>
+	<elements>
+	</elements>
+	<voices interval="5000" chance="10">
+		<voice sentence="PACHIRISU!"/>
+	</voices>
+	
+<loot><item id="12103" countmax="7" chance="100000"/><item id="12118" countmax="1" chance="27777"/><item id="13308" countmax="1" chance="19230"/><item id="14498" countmax="1" chance="16666"/><item id="14490" countmax="1" chance="100000"/><item id="14500" countmax="1" chance="25000"/><item id="12140" countmax="1" chance="33333"/><item id="12237" countmax="1" chance="50"/><item id="17814" countmax="1" chance="50"/><item id="31006" countmax="1" chance="100"/><item id="23518" countmax="1" chance="10"/><item id="23519" countmax="1" chance="10"/></loot></monster>

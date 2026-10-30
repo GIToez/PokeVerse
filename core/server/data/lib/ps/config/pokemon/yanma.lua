@@ -11,7 +11,7 @@ POKEMON["Yanma"] = {
     dexPortrait = 15840,
     fastcallPortrait = 16040,
     catchStorage = 16193,
-    evolutions = {},
+    evolutions = { { name = "Yanmega", requiredLevel = 40 } },
     description = "Its large eyes can scan 360 degrees. It looks in all directions to seek out insects as its prey.",
     skills = { "Tackle", 1, "Quick Attack", 5, "Sonic Boom", 10, "U-turn", 15, "Bug Buzz", 20, "Aerial Ace", 25, "Air Slash", 30, "Hypnosis", 35, "Wing Attack", 40, "Pursuit", 45, "Double-Edge", 50, "Ancient Power", 55, "Screech", 60, "Uproar", 65 },
     abilities = { "Find", "Flash", "Headbutt" },

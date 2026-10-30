@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster name="Shiny Honchkrow" nickname="Honchkrow" nameDescription="a Shiny Honchkrow" race="blood" experience="12" speed="271" manacost="0" minLevel="50" maxLevel="60">
+	<health now="100" max="100"/>
+	<look type="2846" corpse="30838"/>
+	<targetchange interval="5000" chance="8"/>
+	<strategy attack="100" defense="0"/>
+	<flags>
+		<flag shiny="1"/>
+		<flag pacific="0"/>
+		<flag summonable="0"/>
+		<flag attackable="1"/>
+		<flag hostile="1"/>
+		<flag illusionable="1"/>
+		<flag convinceable="1"/>
+		<flag pushable="1"/>
+		<flag canpushitems="1"/>
+		<flag canpushcreatures="0"/>
+		<flag targetdistance="0"/>
+		<flag staticattack="90"/>
+		<flag runonhealth="0"/>
+	</flags>
+	<attacks>
+		<attack name="melee" interval="1408" skill="24" attack="125"/>
+		<attack name="Moves" interval="500"/>
+		<attack name="Evolve" inverval="15000" chance="1"/>
+		<attack name="Berries" inverval="60000" chance="1" target="1"/>
+	</attacks>
+	<defenses armor="10" defense="52"/>
+	<elements>
+	</elements>
+	<voices interval="5000" chance="10">
+		<voice sentence="HONCHKROW!"/>
+	</voices>
+	
+<loot><item id="12136" countmax="1" chance="10000"/><item id="14477" countmax="1" chance="10000"/><item id="14512" countmax="1" chance="16666"/><item id="14518" countmax="1" chance="50000"/><item id="17803" countmax="1" chance="8333"/><item id="17804" countmax="1" chance="5000"/><item id="17807" countmax="1" chance="5000"/><item id="28871" countmax="1" chance="5000"/><item id="28876" countmax="1" chance="10000"/><item id="28879" countmax="1" chance="6250"/><item id="28883" countmax="1" chance="16666"/><item id="28888" countmax="1" chance="12500"/><item id="12242" countmax="1" chance="100"/><item id="14464" countmax="5" chance="5000"/><item id="31019" countmax="1" chance="100"/><item id="23514" countmax="1" chance="20"/></loot></monster>
