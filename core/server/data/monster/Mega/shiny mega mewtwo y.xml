@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<monster name="Shiny Mega Mewtwo Y" nickname="Mega Mewtwo Y" nameDescription="a Shiny Mega Mewtwo Y" nickname="Mewtwo" race="blood" experience="17" speed="330" manacost="0" minLevel="100" maxLevel="100">
+<monster name="Shiny Mega Mewtwo Y" nickname="Mega Mewtwo Y" nameDescription="a Shiny Mega Mewtwo Y" race="blood" experience="17" speed="330" manacost="0" minLevel="100" maxLevel="100">
 	<health now="106" max="106" rate="1.1"/>
 	<look type="2686" head="0" body="0" legs="0" feet="0" corpse="14255"/>
 	<targetchange interval="5000" chance="8"/>
