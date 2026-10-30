@@ -43,7 +43,7 @@ local SPECIAL_POKEMON = {
     ["Totodile"] = "Christmas Totodile",
     ["Wooper"] = "Christmas Wooper",
     ["Blissey"] = "Santa Blissey",
-    ["Snorlax"] = { "Christmas Snorlax", "Santa Snorlax" },
+    ["Snorlax"] = "Santa Snorlax",
 }
 local SPECIAL_POKEMON_CHANCE = 10
 
