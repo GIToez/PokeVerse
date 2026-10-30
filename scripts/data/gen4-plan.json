@@ -1,0 +1,8159 @@
+[
+ {
+  "number": 387,
+  "name": "Turtwig",
+  "types": [
+   "grass"
+  ],
+  "stats": {
+   "hp": 55,
+   "atk": 68,
+   "def": 64,
+   "spAtk": 45,
+   "spDef": 55,
+   "speed": 31
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Curse",
+    5
+   ],
+   [
+    "Absorb",
+    10
+   ],
+   [
+    "Mega Drain",
+    15
+   ],
+   [
+    "Razor Leaf",
+    20
+   ],
+   [
+    "Bite",
+    25
+   ],
+   [
+    "Crunch",
+    30
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Grotle"
+  ]
+ },
+ {
+  "number": 388,
+  "name": "Grotle",
+  "types": [
+   "grass"
+  ],
+  "stats": {
+   "hp": 75,
+   "atk": 89,
+   "def": 85,
+   "spAtk": 55,
+   "spDef": 65,
+   "speed": 36
+  },
+  "chance": 300,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Curse",
+    5
+   ],
+   [
+    "Absorb",
+    10
+   ],
+   [
+    "Mega Drain",
+    15
+   ],
+   [
+    "Razor Leaf",
+    20
+   ],
+   [
+    "Bite",
+    25
+   ],
+   [
+    "Crunch",
+    30
+   ],
+   [
+    "Giga Drain",
+    40
+   ],
+   [
+    "Leech Seed",
+    45
+   ],
+   [
+    "Leaf Storm",
+    50
+   ]
+  ],
+  "from": "Turtwig",
+  "evolve": {
+   "level": 35,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Torterra"
+  ]
+ },
+ {
+  "number": 389,
+  "name": "Torterra",
+  "types": [
+   "grass",
+   "ground"
+  ],
+  "stats": {
+   "hp": 95,
+   "atk": 109,
+   "def": 105,
+   "spAtk": 75,
+   "spDef": 85,
+   "speed": 56
+  },
+  "chance": 800,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Curse",
+    5
+   ],
+   [
+    "Absorb",
+    10
+   ],
+   [
+    "Mega Drain",
+    15
+   ],
+   [
+    "Razor Leaf",
+    20
+   ],
+   [
+    "Bite",
+    25
+   ],
+   [
+    "Crunch",
+    30
+   ],
+   [
+    "Giga Drain",
+    40
+   ],
+   [
+    "Leech Seed",
+    45
+   ],
+   [
+    "Leaf Storm",
+    50
+   ],
+   [
+    "Earthquake",
+    60
+   ],
+   [
+    "Headlong Rush",
+    65
+   ],
+   [
+    "Synthesis",
+    70
+   ],
+   [
+    "Frenzy Plant",
+    75
+   ]
+  ],
+  "from": "Grotle",
+  "evolve": {
+   "level": 55,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 390,
+  "name": "Chimchar",
+  "types": [
+   "fire"
+  ],
+  "stats": {
+   "hp": 44,
+   "atk": 58,
+   "def": 44,
+   "spAtk": 58,
+   "spDef": 44,
+   "speed": 61
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Scratch",
+    1
+   ],
+   [
+    "Fury Swipes",
+    5
+   ],
+   [
+    "Nasty Plot",
+    10
+   ],
+   [
+    "Fire Spin",
+    15
+   ],
+   [
+    "Ember",
+    20
+   ],
+   [
+    "Flame Wheel",
+    25
+   ],
+   [
+    "Facade",
+    30
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Monferno"
+  ]
+ },
+ {
+  "number": 391,
+  "name": "Monferno",
+  "types": [
+   "fire",
+   "fighting"
+  ],
+  "stats": {
+   "hp": 64,
+   "atk": 78,
+   "def": 52,
+   "spAtk": 78,
+   "spDef": 52,
+   "speed": 81
+  },
+  "chance": 300,
+  "skills": [
+   [
+    "Scratch",
+    1
+   ],
+   [
+    "Fury Swipes",
+    5
+   ],
+   [
+    "Nasty Plot",
+    10
+   ],
+   [
+    "Fire Spin",
+    15
+   ],
+   [
+    "Ember",
+    20
+   ],
+   [
+    "Flame Wheel",
+    25
+   ],
+   [
+    "Facade",
+    30
+   ],
+   [
+    "Feint",
+    40
+   ],
+   [
+    "Mach Punch",
+    45
+   ],
+   [
+    "Close Combat",
+    50
+   ]
+  ],
+  "from": "Chimchar",
+  "evolve": {
+   "level": 35,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Infernape"
+  ]
+ },
+ {
+  "number": 392,
+  "name": "Infernape",
+  "types": [
+   "fire",
+   "fighting"
+  ],
+  "stats": {
+   "hp": 76,
+   "atk": 104,
+   "def": 71,
+   "spAtk": 104,
+   "spDef": 71,
+   "speed": 108
+  },
+  "chance": 800,
+  "skills": [
+   [
+    "Scratch",
+    1
+   ],
+   [
+    "Fury Swipes",
+    5
+   ],
+   [
+    "Nasty Plot",
+    10
+   ],
+   [
+    "Fire Spin",
+    15
+   ],
+   [
+    "Ember",
+    20
+   ],
+   [
+    "Flame Wheel",
+    25
+   ],
+   [
+    "Facade",
+    30
+   ],
+   [
+    "Feint",
+    40
+   ],
+   [
+    "Mach Punch",
+    45
+   ],
+   [
+    "Close Combat",
+    50
+   ],
+   [
+    "Acrobatics",
+    60
+   ],
+   [
+    "Flare Blitz",
+    65
+   ],
+   [
+    "Calm Mind",
+    70
+   ],
+   [
+    "Raging Fury",
+    75
+   ]
+  ],
+  "from": "Monferno",
+  "evolve": {
+   "level": 55,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 393,
+  "name": "Piplup",
+  "types": [
+   "water"
+  ],
+  "stats": {
+   "hp": 53,
+   "atk": 51,
+   "def": 53,
+   "spAtk": 61,
+   "spDef": 56,
+   "speed": 40
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Pound",
+    1
+   ],
+   [
+    "Growl",
+    5
+   ],
+   [
+    "Fury Attack",
+    10
+   ],
+   [
+    "Peck",
+    15
+   ],
+   [
+    "Water Gun",
+    20
+   ],
+   [
+    "Bubblebeam",
+    25
+   ],
+   [
+    "Brine",
+    30
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Prinplup"
+  ]
+ },
+ {
+  "number": 394,
+  "name": "Prinplup",
+  "types": [
+   "water"
+  ],
+  "stats": {
+   "hp": 64,
+   "atk": 66,
+   "def": 68,
+   "spAtk": 81,
+   "spDef": 76,
+   "speed": 50
+  },
+  "chance": 300,
+  "skills": [
+   [
+    "Pound",
+    1
+   ],
+   [
+    "Growl",
+    5
+   ],
+   [
+    "Fury Attack",
+    10
+   ],
+   [
+    "Peck",
+    15
+   ],
+   [
+    "Water Gun",
+    20
+   ],
+   [
+    "Bubblebeam",
+    25
+   ],
+   [
+    "Brine",
+    30
+   ],
+   [
+    "Whirlpool",
+    40
+   ],
+   [
+    "Mist",
+    45
+   ],
+   [
+    "Metal Claw",
+    50
+   ]
+  ],
+  "from": "Piplup",
+  "evolve": {
+   "level": 35,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Empoleon"
+  ]
+ },
+ {
+  "number": 395,
+  "name": "Empoleon",
+  "types": [
+   "water",
+   "steel"
+  ],
+  "stats": {
+   "hp": 84,
+   "atk": 86,
+   "def": 88,
+   "spAtk": 111,
+   "spDef": 101,
+   "speed": 60
+  },
+  "chance": 800,
+  "skills": [
+   [
+    "Pound",
+    1
+   ],
+   [
+    "Growl",
+    5
+   ],
+   [
+    "Fury Attack",
+    10
+   ],
+   [
+    "Peck",
+    15
+   ],
+   [
+    "Water Gun",
+    20
+   ],
+   [
+    "Bubblebeam",
+    25
+   ],
+   [
+    "Brine",
+    30
+   ],
+   [
+    "Whirlpool",
+    40
+   ],
+   [
+    "Mist",
+    45
+   ],
+   [
+    "Metal Claw",
+    50
+   ],
+   [
+    "Aqua Jet",
+    60
+   ],
+   [
+    "Drill Peck",
+    65
+   ],
+   [
+    "Hydro Pump",
+    70
+   ],
+   [
+    "Wave Crash",
+    75
+   ]
+  ],
+  "from": "Prinplup",
+  "evolve": {
+   "level": 55,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 396,
+  "name": "Starly",
+  "types": [
+   "normal",
+   "flying"
+  ],
+  "stats": {
+   "hp": 40,
+   "atk": 55,
+   "def": 30,
+   "spAtk": 30,
+   "spDef": 30,
+   "speed": 60
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Growl",
+    5
+   ],
+   [
+    "Endeavor",
+    10
+   ],
+   [
+    "Quick Attack",
+    15
+   ],
+   [
+    "Wing Attack",
+    20
+   ],
+   [
+    "Aerial Ace",
+    25
+   ],
+   [
+    "Take Down",
+    30
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Staravia"
+  ]
+ },
+ {
+  "number": 397,
+  "name": "Staravia",
+  "types": [
+   "normal",
+   "flying"
+  ],
+  "stats": {
+   "hp": 55,
+   "atk": 75,
+   "def": 50,
+   "spAtk": 40,
+   "spDef": 40,
+   "speed": 80
+  },
+  "chance": 300,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Growl",
+    5
+   ],
+   [
+    "Endeavor",
+    10
+   ],
+   [
+    "Quick Attack",
+    15
+   ],
+   [
+    "Wing Attack",
+    20
+   ],
+   [
+    "Aerial Ace",
+    25
+   ],
+   [
+    "Take Down",
+    30
+   ],
+   [
+    "Brave Bird",
+    40
+   ],
+   [
+    "Agility",
+    45
+   ]
+  ],
+  "from": "Starly",
+  "evolve": {
+   "level": 35,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Staraptor"
+  ]
+ },
+ {
+  "number": 398,
+  "name": "Staraptor",
+  "types": [
+   "normal",
+   "flying"
+  ],
+  "stats": {
+   "hp": 85,
+   "atk": 120,
+   "def": 70,
+   "spAtk": 50,
+   "spDef": 60,
+   "speed": 100
+  },
+  "chance": 800,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Growl",
+    5
+   ],
+   [
+    "Endeavor",
+    10
+   ],
+   [
+    "Quick Attack",
+    15
+   ],
+   [
+    "Wing Attack",
+    20
+   ],
+   [
+    "Aerial Ace",
+    25
+   ],
+   [
+    "Take Down",
+    30
+   ],
+   [
+    "Brave Bird",
+    40
+   ],
+   [
+    "Agility",
+    45
+   ],
+   [
+    "Close Combat",
+    55
+   ],
+   [
+    "Double-Edge",
+    60
+   ],
+   [
+    "Sky Attack",
+    65
+   ],
+   [
+    "Hyper Beam",
+    70
+   ],
+   [
+    "Giga Impact",
+    75
+   ]
+  ],
+  "from": "Staravia",
+  "evolve": {
+   "level": 50,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 399,
+  "name": "Bidoof",
+  "types": [
+   "normal"
+  ],
+  "stats": {
+   "hp": 59,
+   "atk": 45,
+   "def": 40,
+   "spAtk": 35,
+   "spDef": 40,
+   "speed": 31
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Growl",
+    5
+   ],
+   [
+    "Rollout",
+    10
+   ],
+   [
+    "Headbutt",
+    15
+   ],
+   [
+    "Hyper Fang",
+    20
+   ],
+   [
+    "Crunch",
+    25
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Bibarel"
+  ]
+ },
+ {
+  "number": 400,
+  "name": "Bibarel",
+  "types": [
+   "normal",
+   "water"
+  ],
+  "stats": {
+   "hp": 79,
+   "atk": 85,
+   "def": 60,
+   "spAtk": 55,
+   "spDef": 60,
+   "speed": 71
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Growl",
+    5
+   ],
+   [
+    "Rollout",
+    10
+   ],
+   [
+    "Headbutt",
+    15
+   ],
+   [
+    "Hyper Fang",
+    20
+   ],
+   [
+    "Crunch",
+    25
+   ],
+   [
+    "Super Fang",
+    35
+   ],
+   [
+    "Water Gun",
+    40
+   ],
+   [
+    "Yawn",
+    45
+   ],
+   [
+    "Take Down",
+    50
+   ],
+   [
+    "Swords Dance",
+    55
+   ],
+   [
+    "Superpower",
+    60
+   ],
+   [
+    "Hyper Beam",
+    65
+   ],
+   [
+    "Giga Impact",
+    70
+   ]
+  ],
+  "from": "Bidoof",
+  "evolve": {
+   "level": 30,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 401,
+  "name": "Kricketot",
+  "types": [
+   "bug"
+  ],
+  "stats": {
+   "hp": 37,
+   "atk": 25,
+   "def": 41,
+   "spAtk": 25,
+   "spDef": 41,
+   "speed": 25
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Growl",
+    5
+   ],
+   [
+    "Bide",
+    10
+   ],
+   [
+    "Struggle Bug",
+    15
+   ],
+   [
+    "Bug Bite",
+    20
+   ],
+   [
+    "Lunge",
+    25
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Kricketune"
+  ]
+ },
+ {
+  "number": 402,
+  "name": "Kricketune",
+  "types": [
+   "bug"
+  ],
+  "stats": {
+   "hp": 77,
+   "atk": 85,
+   "def": 51,
+   "spAtk": 55,
+   "spDef": 51,
+   "speed": 65
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Growl",
+    5
+   ],
+   [
+    "Bide",
+    10
+   ],
+   [
+    "Struggle Bug",
+    15
+   ],
+   [
+    "Bug Bite",
+    20
+   ],
+   [
+    "Lunge",
+    25
+   ],
+   [
+    "Absorb",
+    35
+   ],
+   [
+    "Fury Cutter",
+    40
+   ],
+   [
+    "Focus Energy",
+    45
+   ],
+   [
+    "Sing",
+    50
+   ],
+   [
+    "Fell Stinger",
+    55
+   ],
+   [
+    "Slash",
+    60
+   ],
+   [
+    "Night Slash",
+    65
+   ],
+   [
+    "X-Scissor",
+    70
+   ]
+  ],
+  "from": "Kricketot",
+  "evolve": {
+   "level": 30,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 403,
+  "name": "Shinx",
+  "types": [
+   "electric"
+  ],
+  "stats": {
+   "hp": 45,
+   "atk": 65,
+   "def": 34,
+   "spAtk": 40,
+   "spDef": 34,
+   "speed": 45
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Charge",
+    5
+   ],
+   [
+    "Thunder Shock",
+    10
+   ],
+   [
+    "Bite",
+    15
+   ],
+   [
+    "Spark",
+    20
+   ],
+   [
+    "Volt Switch",
+    25
+   ],
+   [
+    "Crunch",
+    30
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Luxio"
+  ]
+ },
+ {
+  "number": 404,
+  "name": "Luxio",
+  "types": [
+   "electric"
+  ],
+  "stats": {
+   "hp": 60,
+   "atk": 85,
+   "def": 49,
+   "spAtk": 60,
+   "spDef": 49,
+   "speed": 60
+  },
+  "chance": 300,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Charge",
+    5
+   ],
+   [
+    "Thunder Shock",
+    10
+   ],
+   [
+    "Bite",
+    15
+   ],
+   [
+    "Spark",
+    20
+   ],
+   [
+    "Volt Switch",
+    25
+   ],
+   [
+    "Crunch",
+    30
+   ],
+   [
+    "Discharge",
+    40
+   ],
+   [
+    "Roar",
+    45
+   ]
+  ],
+  "from": "Shinx",
+  "evolve": {
+   "level": 35,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Luxray"
+  ]
+ },
+ {
+  "number": 405,
+  "name": "Luxray",
+  "types": [
+   "electric"
+  ],
+  "stats": {
+   "hp": 80,
+   "atk": 120,
+   "def": 79,
+   "spAtk": 95,
+   "spDef": 79,
+   "speed": 70
+  },
+  "chance": 800,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Charge",
+    5
+   ],
+   [
+    "Thunder Shock",
+    10
+   ],
+   [
+    "Bite",
+    15
+   ],
+   [
+    "Spark",
+    20
+   ],
+   [
+    "Volt Switch",
+    25
+   ],
+   [
+    "Crunch",
+    30
+   ],
+   [
+    "Discharge",
+    40
+   ],
+   [
+    "Roar",
+    45
+   ],
+   [
+    "Thunder Fang",
+    55
+   ],
+   [
+    "Wild Charge",
+    60
+   ],
+   [
+    "Scary Face",
+    65
+   ],
+   [
+    "Thunderbolt",
+    70
+   ],
+   [
+    "Thunder",
+    75
+   ]
+  ],
+  "from": "Luxio",
+  "evolve": {
+   "level": 50,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 406,
+  "name": "Budew",
+  "types": [
+   "grass",
+   "poison"
+  ],
+  "stats": {
+   "hp": 40,
+   "atk": 30,
+   "def": 35,
+   "spAtk": 50,
+   "spDef": 70,
+   "speed": 55
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Absorb",
+    1
+   ],
+   [
+    "Stun Spore",
+    5
+   ],
+   [
+    "Grass Knot",
+    10
+   ],
+   [
+    "Poison Sting",
+    15
+   ],
+   [
+    "Bullet Seed",
+    20
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": true,
+  "evolvesTo": [
+   "Roselia"
+  ]
+ },
+ {
+  "number": 407,
+  "name": "Roserade",
+  "types": [
+   "grass",
+   "poison"
+  ],
+  "stats": {
+   "hp": 60,
+   "atk": 70,
+   "def": 65,
+   "spAtk": 125,
+   "spDef": 105,
+   "speed": 90
+  },
+  "chance": 800,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Absorb",
+    5
+   ],
+   [
+    "Poison Sting",
+    10
+   ],
+   [
+    "Magical Leaf",
+    15
+   ],
+   [
+    "Stun Spore",
+    20
+   ],
+   [
+    "Sludge Bomb",
+    25
+   ],
+   [
+    "Synthesis",
+    30
+   ],
+   [
+    "Razor Leaf",
+    35
+   ],
+   [
+    "Dazzling Gleam",
+    40
+   ],
+   [
+    "Energy Ball",
+    45
+   ],
+   [
+    "Grass Whistle",
+    50
+   ],
+   [
+    "Giga Drain",
+    55
+   ],
+   [
+    "Petal Blizzard",
+    60
+   ],
+   [
+    "Petal Dance",
+    65
+   ],
+   [
+    "Aromatherapy",
+    70
+   ],
+   [
+    "Mega Drain",
+    75
+   ],
+   [
+    "Leech Seed",
+    80
+   ],
+   [
+    "Leaf Storm",
+    85
+   ]
+  ],
+  "from": "Roselia",
+  "evolve": {
+   "level": 60,
+   "items": [
+    "SHINY_STONE"
+   ],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 408,
+  "name": "Cranidos",
+  "types": [
+   "rock"
+  ],
+  "stats": {
+   "hp": 67,
+   "atk": 125,
+   "def": 40,
+   "spAtk": 30,
+   "spDef": 30,
+   "speed": 58
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Headbutt",
+    1
+   ],
+   [
+    "Focus Energy",
+    5
+   ],
+   [
+    "Assurance",
+    10
+   ],
+   [
+    "Ancient Power",
+    15
+   ],
+   [
+    "Slam",
+    20
+   ],
+   [
+    "Zen Headbutt",
+    25
+   ],
+   [
+    "Take Down",
+    30
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Rampardos"
+  ]
+ },
+ {
+  "number": 409,
+  "name": "Rampardos",
+  "types": [
+   "rock"
+  ],
+  "stats": {
+   "hp": 97,
+   "atk": 165,
+   "def": 60,
+   "spAtk": 65,
+   "spDef": 50,
+   "speed": 58
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Headbutt",
+    1
+   ],
+   [
+    "Focus Energy",
+    5
+   ],
+   [
+    "Assurance",
+    10
+   ],
+   [
+    "Ancient Power",
+    15
+   ],
+   [
+    "Slam",
+    20
+   ],
+   [
+    "Zen Headbutt",
+    25
+   ],
+   [
+    "Take Down",
+    30
+   ],
+   [
+    "Endeavor",
+    40
+   ],
+   [
+    "Rock Tomb",
+    45
+   ],
+   [
+    "Rock Slide",
+    50
+   ],
+   [
+    "Stone Edge",
+    55
+   ],
+   [
+    "Screech",
+    60
+   ],
+   [
+    "Head Smash",
+    65
+   ],
+   [
+    "Hyper Beam",
+    70
+   ]
+  ],
+  "from": "Cranidos",
+  "evolve": {
+   "level": 35,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 410,
+  "name": "Shieldon",
+  "types": [
+   "rock",
+   "steel"
+  ],
+  "stats": {
+   "hp": 30,
+   "atk": 42,
+   "def": 118,
+   "spAtk": 42,
+   "spDef": 88,
+   "speed": 30
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Protect",
+    5
+   ],
+   [
+    "Metal Burst",
+    10
+   ],
+   [
+    "Heavy Slam",
+    15
+   ],
+   [
+    "Ancient Power",
+    20
+   ],
+   [
+    "Iron Head",
+    25
+   ],
+   [
+    "Take Down",
+    30
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Bastiodon"
+  ]
+ },
+ {
+  "number": 411,
+  "name": "Bastiodon",
+  "types": [
+   "rock",
+   "steel"
+  ],
+  "stats": {
+   "hp": 60,
+   "atk": 52,
+   "def": 168,
+   "spAtk": 47,
+   "spDef": 138,
+   "speed": 30
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Protect",
+    5
+   ],
+   [
+    "Metal Burst",
+    10
+   ],
+   [
+    "Heavy Slam",
+    15
+   ],
+   [
+    "Ancient Power",
+    20
+   ],
+   [
+    "Iron Head",
+    25
+   ],
+   [
+    "Take Down",
+    30
+   ],
+   [
+    "Rock Tomb",
+    40
+   ],
+   [
+    "Rock Slide",
+    45
+   ],
+   [
+    "Power Gem",
+    50
+   ],
+   [
+    "Endure",
+    55
+   ],
+   [
+    "Flash Cannon",
+    60
+   ],
+   [
+    "Iron Tail",
+    65
+   ],
+   [
+    "Stone Edge",
+    70
+   ]
+  ],
+  "from": "Shieldon",
+  "evolve": {
+   "level": 35,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 412,
+  "name": "Burmy",
+  "types": [
+   "bug"
+  ],
+  "stats": {
+   "hp": 40,
+   "atk": 29,
+   "def": 45,
+   "spAtk": 29,
+   "spDef": 45,
+   "speed": 36
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Protect",
+    1
+   ],
+   [
+    "Tackle",
+    5
+   ],
+   [
+    "Struggle Bug",
+    10
+   ],
+   [
+    "Snore",
+    15
+   ],
+   [
+    "Bug Bite",
+    20
+   ],
+   [
+    "Hidden Power",
+    25
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Wormadam",
+   "Mothim"
+  ]
+ },
+ {
+  "number": 413,
+  "name": "Wormadam",
+  "types": [
+   "bug",
+   "grass"
+  ],
+  "stats": {
+   "hp": 60,
+   "atk": 59,
+   "def": 85,
+   "spAtk": 79,
+   "spDef": 105,
+   "speed": 36
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Protect",
+    1
+   ],
+   [
+    "Tackle",
+    5
+   ],
+   [
+    "Struggle Bug",
+    10
+   ],
+   [
+    "Snore",
+    15
+   ],
+   [
+    "Bug Bite",
+    20
+   ],
+   [
+    "Hidden Power",
+    25
+   ],
+   [
+    "Flail",
+    35
+   ],
+   [
+    "Quiver Dance",
+    40
+   ],
+   [
+    "Confusion",
+    45
+   ],
+   [
+    "Razor Leaf",
+    50
+   ],
+   [
+    "Captivate",
+    55
+   ],
+   [
+    "Psybeam",
+    60
+   ],
+   [
+    "Psychic",
+    65
+   ],
+   [
+    "Leaf Storm",
+    70
+   ]
+  ],
+  "from": "Burmy",
+  "evolve": {
+   "level": 30,
+   "items": [],
+   "time": null,
+   "note": "official: female only",
+   "random": true
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 414,
+  "name": "Mothim",
+  "types": [
+   "bug",
+   "flying"
+  ],
+  "stats": {
+   "hp": 70,
+   "atk": 94,
+   "def": 50,
+   "spAtk": 94,
+   "spDef": 50,
+   "speed": 66
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Protect",
+    1
+   ],
+   [
+    "Tackle",
+    5
+   ],
+   [
+    "Struggle Bug",
+    10
+   ],
+   [
+    "Snore",
+    15
+   ],
+   [
+    "Bug Bite",
+    20
+   ],
+   [
+    "Hidden Power",
+    25
+   ],
+   [
+    "Gust",
+    35
+   ],
+   [
+    "Quiver Dance",
+    40
+   ],
+   [
+    "Confusion",
+    45
+   ],
+   [
+    "Poison Powder",
+    50
+   ],
+   [
+    "Silver Wind",
+    55
+   ],
+   [
+    "Psybeam",
+    60
+   ],
+   [
+    "Air Slash",
+    65
+   ],
+   [
+    "Psychic",
+    70
+   ]
+  ],
+  "from": "Burmy",
+  "evolve": {
+   "level": 30,
+   "items": [],
+   "time": null,
+   "note": "official: male only",
+   "random": true
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 415,
+  "name": "Combee",
+  "types": [
+   "bug",
+   "flying"
+  ],
+  "stats": {
+   "hp": 30,
+   "atk": 30,
+   "def": 42,
+   "spAtk": 30,
+   "spDef": 42,
+   "speed": 70
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Gust",
+    1
+   ],
+   [
+    "Struggle Bug",
+    5
+   ],
+   [
+    "Bug Bite",
+    10
+   ],
+   [
+    "Air Cutter",
+    15
+   ],
+   [
+    "Lunge",
+    20
+   ],
+   [
+    "Bug Buzz",
+    25
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Vespiquen"
+  ]
+ },
+ {
+  "number": 416,
+  "name": "Vespiquen",
+  "types": [
+   "bug",
+   "flying"
+  ],
+  "stats": {
+   "hp": 70,
+   "atk": 80,
+   "def": 102,
+   "spAtk": 80,
+   "spDef": 102,
+   "speed": 40
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Gust",
+    1
+   ],
+   [
+    "Struggle Bug",
+    5
+   ],
+   [
+    "Bug Bite",
+    10
+   ],
+   [
+    "Air Cutter",
+    15
+   ],
+   [
+    "Lunge",
+    20
+   ],
+   [
+    "Bug Buzz",
+    25
+   ],
+   [
+    "Slash",
+    35
+   ],
+   [
+    "Air Slash",
+    40
+   ],
+   [
+    "Roost",
+    45
+   ],
+   [
+    "Power Gem",
+    50
+   ],
+   [
+    "Toxic",
+    55
+   ],
+   [
+    "X-Scissor",
+    60
+   ],
+   [
+    "Attack Order",
+    65
+   ],
+   [
+    "Hurricane",
+    70
+   ]
+  ],
+  "from": "Combee",
+  "evolve": {
+   "level": 30,
+   "items": [],
+   "time": null,
+   "note": "official: female only",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 417,
+  "name": "Pachirisu",
+  "types": [
+   "electric"
+  ],
+  "stats": {
+   "hp": 60,
+   "atk": 45,
+   "def": 70,
+   "spAtk": 45,
+   "spDef": 90,
+   "speed": 95
+  },
+  "chance": 400,
+  "skills": [
+   [
+    "Growl",
+    1
+   ],
+   [
+    "Electro Ball",
+    5
+   ],
+   [
+    "Charm",
+    10
+   ],
+   [
+    "Endure",
+    15
+   ],
+   [
+    "Super Fang",
+    20
+   ],
+   [
+    "Nuzzle",
+    25
+   ],
+   [
+    "Thunder Shock",
+    30
+   ],
+   [
+    "Quick Attack",
+    35
+   ],
+   [
+    "Charge Beam",
+    40
+   ],
+   [
+    "Swift",
+    45
+   ],
+   [
+    "Spark",
+    50
+   ],
+   [
+    "Discharge",
+    55
+   ],
+   [
+    "Thunder",
+    60
+   ],
+   [
+    "Last Resort",
+    65
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 418,
+  "name": "Buizel",
+  "types": [
+   "water"
+  ],
+  "stats": {
+   "hp": 55,
+   "atk": 65,
+   "def": 35,
+   "spAtk": 60,
+   "spDef": 30,
+   "speed": 85
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Growl",
+    5
+   ],
+   [
+    "Quick Attack",
+    10
+   ],
+   [
+    "Water Gun",
+    15
+   ],
+   [
+    "Aqua Jet",
+    20
+   ],
+   [
+    "Bite",
+    25
+   ],
+   [
+    "Swift",
+    30
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Floatzel"
+  ]
+ },
+ {
+  "number": 419,
+  "name": "Floatzel",
+  "types": [
+   "water"
+  ],
+  "stats": {
+   "hp": 85,
+   "atk": 105,
+   "def": 55,
+   "spAtk": 85,
+   "spDef": 50,
+   "speed": 115
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Growl",
+    5
+   ],
+   [
+    "Quick Attack",
+    10
+   ],
+   [
+    "Water Gun",
+    15
+   ],
+   [
+    "Aqua Jet",
+    20
+   ],
+   [
+    "Bite",
+    25
+   ],
+   [
+    "Swift",
+    30
+   ],
+   [
+    "Double Hit",
+    40
+   ],
+   [
+    "Whirlpool",
+    45
+   ],
+   [
+    "Liquidation",
+    50
+   ],
+   [
+    "Aqua Tail",
+    55
+   ],
+   [
+    "Agility",
+    60
+   ],
+   [
+    "Hydro Pump",
+    65
+   ],
+   [
+    "Wave Crash",
+    70
+   ]
+  ],
+  "from": "Buizel",
+  "evolve": {
+   "level": 35,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 420,
+  "name": "Cherubi",
+  "types": [
+   "grass"
+  ],
+  "stats": {
+   "hp": 45,
+   "atk": 35,
+   "def": 45,
+   "spAtk": 62,
+   "spDef": 53,
+   "speed": 35
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Grass Knot",
+    5
+   ],
+   [
+    "Leech Seed",
+    10
+   ],
+   [
+    "Magical Leaf",
+    15
+   ],
+   [
+    "Take Down",
+    20
+   ],
+   [
+    "Petal Blizzard",
+    25
+   ],
+   [
+    "Solar Beam",
+    30
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Cherrim"
+  ]
+ },
+ {
+  "number": 421,
+  "name": "Cherrim",
+  "types": [
+   "grass"
+  ],
+  "stats": {
+   "hp": 70,
+   "atk": 60,
+   "def": 70,
+   "spAtk": 87,
+   "spDef": 78,
+   "speed": 85
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Grass Knot",
+    5
+   ],
+   [
+    "Leech Seed",
+    10
+   ],
+   [
+    "Magical Leaf",
+    15
+   ],
+   [
+    "Take Down",
+    20
+   ],
+   [
+    "Petal Blizzard",
+    25
+   ],
+   [
+    "Solar Beam",
+    30
+   ],
+   [
+    "Giga Drain",
+    40
+   ],
+   [
+    "Sunny Day",
+    45
+   ],
+   [
+    "Seed Bomb",
+    50
+   ],
+   [
+    "Energy Ball",
+    55
+   ],
+   [
+    "Petal Dance",
+    60
+   ],
+   [
+    "Hyper Beam",
+    65
+   ],
+   [
+    "Giga Impact",
+    70
+   ]
+  ],
+  "from": "Cherubi",
+  "evolve": {
+   "level": 35,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 422,
+  "name": "Shellos",
+  "types": [
+   "water"
+  ],
+  "stats": {
+   "hp": 76,
+   "atk": 48,
+   "def": 48,
+   "spAtk": 57,
+   "spDef": 62,
+   "speed": 34
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Water Gun",
+    1
+   ],
+   [
+    "Harden",
+    5
+   ],
+   [
+    "Mud-Slap",
+    10
+   ],
+   [
+    "Water Pulse",
+    15
+   ],
+   [
+    "Ancient Power",
+    20
+   ],
+   [
+    "Body Slam",
+    25
+   ],
+   [
+    "Muddy Water",
+    30
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Gastrodon"
+  ]
+ },
+ {
+  "number": 423,
+  "name": "Gastrodon",
+  "types": [
+   "water",
+   "ground"
+  ],
+  "stats": {
+   "hp": 111,
+   "atk": 83,
+   "def": 68,
+   "spAtk": 92,
+   "spDef": 82,
+   "speed": 39
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Water Gun",
+    1
+   ],
+   [
+    "Harden",
+    5
+   ],
+   [
+    "Mud-Slap",
+    10
+   ],
+   [
+    "Water Pulse",
+    15
+   ],
+   [
+    "Ancient Power",
+    20
+   ],
+   [
+    "Body Slam",
+    25
+   ],
+   [
+    "Muddy Water",
+    30
+   ],
+   [
+    "Dig",
+    40
+   ],
+   [
+    "Liquidation",
+    45
+   ],
+   [
+    "Earth Power",
+    50
+   ],
+   [
+    "Surf",
+    55
+   ],
+   [
+    "Rain Dance",
+    60
+   ],
+   [
+    "Earthquake",
+    65
+   ],
+   [
+    "Hydro Pump",
+    70
+   ]
+  ],
+  "from": "Shellos",
+  "evolve": {
+   "level": 35,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 424,
+  "name": "Ambipom",
+  "types": [
+   "normal"
+  ],
+  "stats": {
+   "hp": 75,
+   "atk": 100,
+   "def": 66,
+   "spAtk": 60,
+   "spDef": 66,
+   "speed": 115
+  },
+  "chance": 800,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Scratch",
+    5
+   ],
+   [
+    "Sand-Attack",
+    10
+   ],
+   [
+    "Fury Swipes",
+    15
+   ],
+   [
+    "Swift",
+    20
+   ],
+   [
+    "Astonish",
+    25
+   ],
+   [
+    "Low Sweep",
+    30
+   ],
+   [
+    "Shadow Claw",
+    35
+   ],
+   [
+    "Rest",
+    40
+   ],
+   [
+    "Agility",
+    45
+   ],
+   [
+    "Brick Break",
+    50
+   ],
+   [
+    "Uproar",
+    55
+   ],
+   [
+    "Iron Tail",
+    60
+   ],
+   [
+    "Last Resort",
+    65
+   ],
+   [
+    "Double Hit",
+    70
+   ],
+   [
+    "Tickle",
+    75
+   ],
+   [
+    "Hyper Beam",
+    80
+   ]
+  ],
+  "from": "Aipom",
+  "evolve": {
+   "level": 40,
+   "items": [],
+   "time": null,
+   "note": "official: knows double-hit",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 425,
+  "name": "Drifloon",
+  "types": [
+   "ghost",
+   "flying"
+  ],
+  "stats": {
+   "hp": 90,
+   "atk": 50,
+   "def": 34,
+   "spAtk": 60,
+   "spDef": 44,
+   "speed": 70
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Astonish",
+    1
+   ],
+   [
+    "Focus Energy",
+    5
+   ],
+   [
+    "Spit Up",
+    10
+   ],
+   [
+    "Gust",
+    15
+   ],
+   [
+    "Payback",
+    20
+   ],
+   [
+    "Hex",
+    25
+   ],
+   [
+    "Shadow Ball",
+    30
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Drifblim"
+  ]
+ },
+ {
+  "number": 426,
+  "name": "Drifblim",
+  "types": [
+   "ghost",
+   "flying"
+  ],
+  "stats": {
+   "hp": 150,
+   "atk": 80,
+   "def": 44,
+   "spAtk": 90,
+   "spDef": 54,
+   "speed": 80
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Astonish",
+    1
+   ],
+   [
+    "Focus Energy",
+    5
+   ],
+   [
+    "Spit Up",
+    10
+   ],
+   [
+    "Gust",
+    15
+   ],
+   [
+    "Payback",
+    20
+   ],
+   [
+    "Hex",
+    25
+   ],
+   [
+    "Shadow Ball",
+    30
+   ],
+   [
+    "Air Cutter",
+    40
+   ],
+   [
+    "Air Slash",
+    45
+   ],
+   [
+    "Phantom Force",
+    50
+   ],
+   [
+    "Destiny Bond",
+    55
+   ],
+   [
+    "Fly",
+    60
+   ],
+   [
+    "Selfdestruct",
+    65
+   ],
+   [
+    "Explosion",
+    70
+   ]
+  ],
+  "from": "Drifloon",
+  "evolve": {
+   "level": 35,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 427,
+  "name": "Buneary",
+  "types": [
+   "normal"
+  ],
+  "stats": {
+   "hp": 55,
+   "atk": 66,
+   "def": 44,
+   "spAtk": 44,
+   "spDef": 56,
+   "speed": 85
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Pound",
+    1
+   ],
+   [
+    "Splash",
+    5
+   ],
+   [
+    "Flail",
+    10
+   ],
+   [
+    "Double Kick",
+    15
+   ],
+   [
+    "Quick Attack",
+    20
+   ],
+   [
+    "Headbutt",
+    25
+   ],
+   [
+    "Bounce",
+    30
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Lopunny"
+  ]
+ },
+ {
+  "number": 428,
+  "name": "Lopunny",
+  "types": [
+   "normal"
+  ],
+  "stats": {
+   "hp": 65,
+   "atk": 76,
+   "def": 84,
+   "spAtk": 54,
+   "spDef": 96,
+   "speed": 105
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Pound",
+    1
+   ],
+   [
+    "Splash",
+    5
+   ],
+   [
+    "Flail",
+    10
+   ],
+   [
+    "Double Kick",
+    15
+   ],
+   [
+    "Quick Attack",
+    20
+   ],
+   [
+    "Headbutt",
+    25
+   ],
+   [
+    "Bounce",
+    30
+   ],
+   [
+    "Mirror Coat",
+    40
+   ],
+   [
+    "Defense Curl",
+    45
+   ],
+   [
+    "Mega Kick",
+    50
+   ],
+   [
+    "Double-Edge",
+    55
+   ],
+   [
+    "Last Resort",
+    60
+   ],
+   [
+    "Hyper Beam",
+    65
+   ],
+   [
+    "Giga Impact",
+    70
+   ]
+  ],
+  "from": "Buneary",
+  "evolve": {
+   "level": 35,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 429,
+  "name": "Mismagius",
+  "types": [
+   "ghost"
+  ],
+  "stats": {
+   "hp": 60,
+   "atk": 60,
+   "def": 60,
+   "spAtk": 105,
+   "spDef": 105,
+   "speed": 105
+  },
+  "chance": 1000,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Psywave",
+    5
+   ],
+   [
+    "Astonish",
+    10
+   ],
+   [
+    "Psybeam",
+    15
+   ],
+   [
+    "Hex",
+    20
+   ],
+   [
+    "Heal Bell",
+    25
+   ],
+   [
+    "Shadow Ball",
+    30
+   ],
+   [
+    "Curse",
+    35
+   ],
+   [
+    "Payback",
+    40
+   ],
+   [
+    "Dark Pulse",
+    45
+   ],
+   [
+    "Hyper Voice",
+    50
+   ],
+   [
+    "Spite",
+    55
+   ],
+   [
+    "Uproar",
+    60
+   ],
+   [
+    "Power Gem",
+    65
+   ],
+   [
+    "Magical Leaf",
+    70
+   ],
+   [
+    "Growl",
+    75
+   ],
+   [
+    "Phantom Force",
+    80
+   ]
+  ],
+  "from": "Misdreavus",
+  "evolve": {
+   "level": 40,
+   "items": [
+    "DUSK_STONE"
+   ],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 430,
+  "name": "Honchkrow",
+  "types": [
+   "dark",
+   "flying"
+  ],
+  "stats": {
+   "hp": 100,
+   "atk": 125,
+   "def": 52,
+   "spAtk": 105,
+   "spDef": 52,
+   "speed": 71
+  },
+  "chance": 1000,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Peck",
+    5
+   ],
+   [
+    "Drill Peck",
+    10
+   ],
+   [
+    "Night Slash",
+    15
+   ],
+   [
+    "Assurance",
+    20
+   ],
+   [
+    "Wing Attack",
+    25
+   ],
+   [
+    "Roost",
+    30
+   ],
+   [
+    "Dark Pulse",
+    35
+   ],
+   [
+    "Pursuit",
+    40
+   ],
+   [
+    "Haze",
+    45
+   ],
+   [
+    "Sucker Punch",
+    50
+   ],
+   [
+    "Foul Play",
+    55
+   ],
+   [
+    "Mirror Move",
+    60
+   ],
+   [
+    "Sky Attack",
+    65
+   ],
+   [
+    "Tailwind",
+    70
+   ],
+   [
+    "Astonish",
+    75
+   ],
+   [
+    "Nasty Plot",
+    80
+   ],
+   [
+    "Brave Bird",
+    85
+   ]
+  ],
+  "from": "Murkrow",
+  "evolve": {
+   "level": 40,
+   "items": [
+    "DUSK_STONE"
+   ],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 431,
+  "name": "Glameow",
+  "types": [
+   "normal"
+  ],
+  "stats": {
+   "hp": 49,
+   "atk": 55,
+   "def": 42,
+   "spAtk": 42,
+   "spDef": 37,
+   "speed": 85
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Fake Out",
+    1
+   ],
+   [
+    "Hypnosis",
+    5
+   ],
+   [
+    "Growl",
+    10
+   ],
+   [
+    "Fury Swipes",
+    15
+   ],
+   [
+    "Scratch",
+    20
+   ],
+   [
+    "Slash",
+    25
+   ],
+   [
+    "Sucker Punch",
+    30
+   ],
+   [
+    "Play Rough",
+    35
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Purugly"
+  ]
+ },
+ {
+  "number": 432,
+  "name": "Purugly",
+  "types": [
+   "normal"
+  ],
+  "stats": {
+   "hp": 71,
+   "atk": 82,
+   "def": 64,
+   "spAtk": 64,
+   "spDef": 59,
+   "speed": 112
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Fake Out",
+    1
+   ],
+   [
+    "Hypnosis",
+    5
+   ],
+   [
+    "Growl",
+    10
+   ],
+   [
+    "Fury Swipes",
+    15
+   ],
+   [
+    "Scratch",
+    20
+   ],
+   [
+    "Slash",
+    25
+   ],
+   [
+    "Sucker Punch",
+    30
+   ],
+   [
+    "Play Rough",
+    35
+   ],
+   [
+    "Body Slam",
+    45
+   ],
+   [
+    "Double-Edge",
+    50
+   ],
+   [
+    "Last Resort",
+    55
+   ],
+   [
+    "Hyper Beam",
+    60
+   ],
+   [
+    "Hone Claws",
+    65
+   ],
+   [
+    "Giga Impact",
+    70
+   ]
+  ],
+  "from": "Glameow",
+  "evolve": {
+   "level": 40,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 433,
+  "name": "Chingling",
+  "types": [
+   "psychic"
+  ],
+  "stats": {
+   "hp": 45,
+   "atk": 30,
+   "def": 50,
+   "spAtk": 65,
+   "spDef": 50,
+   "speed": 45
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Wrap",
+    1
+   ],
+   [
+    "Growl",
+    5
+   ],
+   [
+    "Astonish",
+    10
+   ],
+   [
+    "Confusion",
+    15
+   ],
+   [
+    "Last Resort",
+    20
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": true,
+  "evolvesTo": [
+   "Chimecho"
+  ]
+ },
+ {
+  "number": 434,
+  "name": "Stunky",
+  "types": [
+   "poison",
+   "dark"
+  ],
+  "stats": {
+   "hp": 63,
+   "atk": 63,
+   "def": 47,
+   "spAtk": 41,
+   "spDef": 41,
+   "speed": 74
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Scratch",
+    1
+   ],
+   [
+    "Poison Gas",
+    5
+   ],
+   [
+    "Fury Swipes",
+    10
+   ],
+   [
+    "Feint",
+    15
+   ],
+   [
+    "Acid Spray",
+    20
+   ],
+   [
+    "Bite",
+    25
+   ],
+   [
+    "Venoshock",
+    30
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Skuntank"
+  ]
+ },
+ {
+  "number": 435,
+  "name": "Skuntank",
+  "types": [
+   "poison",
+   "dark"
+  ],
+  "stats": {
+   "hp": 103,
+   "atk": 93,
+   "def": 67,
+   "spAtk": 71,
+   "spDef": 61,
+   "speed": 84
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Scratch",
+    1
+   ],
+   [
+    "Poison Gas",
+    5
+   ],
+   [
+    "Fury Swipes",
+    10
+   ],
+   [
+    "Feint",
+    15
+   ],
+   [
+    "Acid Spray",
+    20
+   ],
+   [
+    "Bite",
+    25
+   ],
+   [
+    "Venoshock",
+    30
+   ],
+   [
+    "Night Slash",
+    40
+   ],
+   [
+    "Flamethrower",
+    45
+   ],
+   [
+    "Sludge Wave",
+    50
+   ],
+   [
+    "Foul Play",
+    55
+   ],
+   [
+    "Belch",
+    60
+   ],
+   [
+    "Gunk Shot",
+    65
+   ],
+   [
+    "Explosion",
+    70
+   ]
+  ],
+  "from": "Stunky",
+  "evolve": {
+   "level": 35,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 436,
+  "name": "Bronzor",
+  "types": [
+   "steel",
+   "psychic"
+  ],
+  "stats": {
+   "hp": 57,
+   "atk": 24,
+   "def": 86,
+   "spAtk": 24,
+   "spDef": 86,
+   "speed": 23
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Confuse Ray",
+    5
+   ],
+   [
+    "Gyro Ball",
+    10
+   ],
+   [
+    "Heavy Slam",
+    15
+   ],
+   [
+    "Confusion",
+    20
+   ],
+   [
+    "Payback",
+    25
+   ],
+   [
+    "Extrasensory",
+    30
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Bronzong"
+  ]
+ },
+ {
+  "number": 437,
+  "name": "Bronzong",
+  "types": [
+   "steel",
+   "psychic"
+  ],
+  "stats": {
+   "hp": 67,
+   "atk": 89,
+   "def": 116,
+   "spAtk": 79,
+   "spDef": 116,
+   "speed": 33
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Confuse Ray",
+    5
+   ],
+   [
+    "Gyro Ball",
+    10
+   ],
+   [
+    "Heavy Slam",
+    15
+   ],
+   [
+    "Confusion",
+    20
+   ],
+   [
+    "Payback",
+    25
+   ],
+   [
+    "Extrasensory",
+    30
+   ],
+   [
+    "Zen Headbutt",
+    40
+   ],
+   [
+    "Flash Cannon",
+    45
+   ],
+   [
+    "Iron Head",
+    50
+   ],
+   [
+    "Iron Defense",
+    55
+   ],
+   [
+    "Psychic",
+    60
+   ],
+   [
+    "Dream Eater",
+    65
+   ],
+   [
+    "Future Sight",
+    70
+   ]
+  ],
+  "from": "Bronzor",
+  "evolve": {
+   "level": 35,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 438,
+  "name": "Bonsly",
+  "types": [
+   "rock"
+  ],
+  "stats": {
+   "hp": 50,
+   "atk": 80,
+   "def": 95,
+   "spAtk": 10,
+   "spDef": 45,
+   "speed": 10
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Fake Tears",
+    1
+   ],
+   [
+    "Flail",
+    5
+   ],
+   [
+    "Rock Throw",
+    10
+   ],
+   [
+    "Rock Tomb",
+    15
+   ],
+   [
+    "Sucker Punch",
+    20
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": true,
+  "evolvesTo": [
+   "Sudowoodo"
+  ]
+ },
+ {
+  "number": 439,
+  "name": "Mime Jr.",
+  "types": [
+   "psychic",
+   "fairy"
+  ],
+  "stats": {
+   "hp": 20,
+   "atk": 25,
+   "def": 45,
+   "spAtk": 70,
+   "spDef": 90,
+   "speed": 60
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Pound",
+    1
+   ],
+   [
+    "Copycat",
+    5
+   ],
+   [
+    "Confusion",
+    10
+   ],
+   [
+    "Psybeam",
+    15
+   ],
+   [
+    "Sucker Punch",
+    20
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": true,
+  "evolvesTo": [
+   "Mr. Mime"
+  ]
+ },
+ {
+  "number": 440,
+  "name": "Happiny",
+  "types": [
+   "normal"
+  ],
+  "stats": {
+   "hp": 100,
+   "atk": 5,
+   "def": 5,
+   "spAtk": 15,
+   "spDef": 65,
+   "speed": 30
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Pound",
+    1
+   ],
+   [
+    "Copycat",
+    5
+   ],
+   [
+    "Present",
+    10
+   ],
+   [
+    "Disarming Voice",
+    15
+   ],
+   [
+    "Covet",
+    20
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": true,
+  "evolvesTo": [
+   "Chansey"
+  ]
+ },
+ {
+  "number": 441,
+  "name": "Chatot",
+  "types": [
+   "normal",
+   "flying"
+  ],
+  "stats": {
+   "hp": 76,
+   "atk": 65,
+   "def": 45,
+   "spAtk": 92,
+   "spDef": 42,
+   "speed": 91
+  },
+  "chance": 400,
+  "skills": [
+   [
+    "Peck",
+    1
+   ],
+   [
+    "Growl",
+    5
+   ],
+   [
+    "Sing",
+    10
+   ],
+   [
+    "Mirror Move",
+    15
+   ],
+   [
+    "Fury Attack",
+    20
+   ],
+   [
+    "Echoed Voice",
+    25
+   ],
+   [
+    "Gust",
+    30
+   ],
+   [
+    "Snore",
+    35
+   ],
+   [
+    "Swift",
+    40
+   ],
+   [
+    "Hidden Power",
+    45
+   ],
+   [
+    "Chatter",
+    50
+   ],
+   [
+    "Hyper Voice",
+    55
+   ],
+   [
+    "Uproar",
+    60
+   ],
+   [
+    "Synchronoise",
+    65
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 442,
+  "name": "Spiritomb",
+  "types": [
+   "ghost",
+   "dark"
+  ],
+  "stats": {
+   "hp": 50,
+   "atk": 92,
+   "def": 108,
+   "spAtk": 92,
+   "spDef": 108,
+   "speed": 35
+  },
+  "chance": 400,
+  "skills": [
+   [
+    "Night Shade",
+    1
+   ],
+   [
+    "Confuse Ray",
+    5
+   ],
+   [
+    "Spite",
+    10
+   ],
+   [
+    "Shadow Sneak",
+    15
+   ],
+   [
+    "Nasty Plot",
+    20
+   ],
+   [
+    "Pursuit",
+    25
+   ],
+   [
+    "Payback",
+    30
+   ],
+   [
+    "Thief",
+    35
+   ],
+   [
+    "Ominous Wind",
+    40
+   ],
+   [
+    "Hex",
+    45
+   ],
+   [
+    "Sucker Punch",
+    50
+   ],
+   [
+    "Shadow Ball",
+    55
+   ],
+   [
+    "Dark Pulse",
+    60
+   ],
+   [
+    "Dream Eater",
+    65
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 443,
+  "name": "Gible",
+  "types": [
+   "dragon",
+   "ground"
+  ],
+  "stats": {
+   "hp": 58,
+   "atk": 70,
+   "def": 45,
+   "spAtk": 40,
+   "spDef": 45,
+   "speed": 42
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Sand-Attack",
+    5
+   ],
+   [
+    "Sand Tomb",
+    10
+   ],
+   [
+    "Dragon Breath",
+    15
+   ],
+   [
+    "Bulldoze",
+    20
+   ],
+   [
+    "Bite",
+    25
+   ],
+   [
+    "Slash",
+    30
+   ],
+   [
+    "Dragon Claw",
+    35
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Gabite"
+  ]
+ },
+ {
+  "number": 444,
+  "name": "Gabite",
+  "types": [
+   "dragon",
+   "ground"
+  ],
+  "stats": {
+   "hp": 68,
+   "atk": 90,
+   "def": 65,
+   "spAtk": 50,
+   "spDef": 55,
+   "speed": 82
+  },
+  "chance": 1200,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Sand-Attack",
+    5
+   ],
+   [
+    "Sand Tomb",
+    10
+   ],
+   [
+    "Dragon Breath",
+    15
+   ],
+   [
+    "Bulldoze",
+    20
+   ],
+   [
+    "Bite",
+    25
+   ],
+   [
+    "Slash",
+    30
+   ],
+   [
+    "Dragon Claw",
+    35
+   ],
+   [
+    "Dig",
+    45
+   ],
+   [
+    "Take Down",
+    50
+   ],
+   [
+    "Sandstorm",
+    55
+   ]
+  ],
+  "from": "Gible",
+  "evolve": {
+   "level": 40,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Garchomp"
+  ]
+ },
+ {
+  "number": 445,
+  "name": "Garchomp",
+  "types": [
+   "dragon",
+   "ground"
+  ],
+  "stats": {
+   "hp": 108,
+   "atk": 130,
+   "def": 95,
+   "spAtk": 80,
+   "spDef": 85,
+   "speed": 102
+  },
+  "chance": 2000,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Sand-Attack",
+    5
+   ],
+   [
+    "Sand Tomb",
+    10
+   ],
+   [
+    "Dragon Breath",
+    15
+   ],
+   [
+    "Bulldoze",
+    20
+   ],
+   [
+    "Bite",
+    25
+   ],
+   [
+    "Slash",
+    30
+   ],
+   [
+    "Dragon Claw",
+    35
+   ],
+   [
+    "Dig",
+    45
+   ],
+   [
+    "Take Down",
+    50
+   ],
+   [
+    "Sandstorm",
+    55
+   ],
+   [
+    "Crunch",
+    65
+   ],
+   [
+    "Dragon Rush",
+    70
+   ],
+   [
+    "Outrage",
+    75
+   ]
+  ],
+  "from": "Gabite",
+  "evolve": {
+   "level": 60,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 446,
+  "name": "Munchlax",
+  "types": [
+   "normal"
+  ],
+  "stats": {
+   "hp": 135,
+   "atk": 85,
+   "def": 40,
+   "spAtk": 40,
+   "spDef": 85,
+   "speed": 5
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Defense Curl",
+    5
+   ],
+   [
+    "Lick",
+    10
+   ],
+   [
+    "Covet",
+    15
+   ],
+   [
+    "Bite",
+    20
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": true,
+  "evolvesTo": [
+   "Snorlax"
+  ]
+ },
+ {
+  "number": 447,
+  "name": "Riolu",
+  "types": [
+   "fighting"
+  ],
+  "stats": {
+   "hp": 40,
+   "atk": 70,
+   "def": 40,
+   "spAtk": 35,
+   "spDef": 40,
+   "speed": 60
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Quick Attack",
+    1
+   ],
+   [
+    "Endure",
+    5
+   ],
+   [
+    "Counter",
+    10
+   ],
+   [
+    "Feint",
+    15
+   ],
+   [
+    "Vacuum Wave",
+    20
+   ],
+   [
+    "Metal Claw",
+    25
+   ],
+   [
+    "Force Palm",
+    30
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Lucario"
+  ]
+ },
+ {
+  "number": 448,
+  "name": "Lucario",
+  "types": [
+   "fighting",
+   "steel"
+  ],
+  "stats": {
+   "hp": 70,
+   "atk": 110,
+   "def": 70,
+   "spAtk": 115,
+   "spDef": 70,
+   "speed": 90
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Quick Attack",
+    1
+   ],
+   [
+    "Endure",
+    5
+   ],
+   [
+    "Counter",
+    10
+   ],
+   [
+    "Feint",
+    15
+   ],
+   [
+    "Vacuum Wave",
+    20
+   ],
+   [
+    "Metal Claw",
+    25
+   ],
+   [
+    "Force Palm",
+    30
+   ],
+   [
+    "Reversal",
+    40
+   ],
+   [
+    "Screech",
+    45
+   ],
+   [
+    "Bone Rush",
+    50
+   ],
+   [
+    "Aura Sphere",
+    55
+   ],
+   [
+    "Extreme Speed",
+    60
+   ],
+   [
+    "Dragon Pulse",
+    65
+   ],
+   [
+    "Meteor Mash",
+    70
+   ]
+  ],
+  "from": "Riolu",
+  "evolve": {
+   "level": 35,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 449,
+  "name": "Hippopotas",
+  "types": [
+   "ground"
+  ],
+  "stats": {
+   "hp": 68,
+   "atk": 72,
+   "def": 78,
+   "spAtk": 38,
+   "spDef": 42,
+   "speed": 32
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Sand-Attack",
+    1
+   ],
+   [
+    "Sand Tomb",
+    5
+   ],
+   [
+    "Tackle",
+    10
+   ],
+   [
+    "Bite",
+    15
+   ],
+   [
+    "Dig",
+    20
+   ],
+   [
+    "Crunch",
+    25
+   ],
+   [
+    "Take Down",
+    30
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Hippowdon"
+  ]
+ },
+ {
+  "number": 450,
+  "name": "Hippowdon",
+  "types": [
+   "ground"
+  ],
+  "stats": {
+   "hp": 108,
+   "atk": 112,
+   "def": 118,
+   "spAtk": 68,
+   "spDef": 72,
+   "speed": 47
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Sand-Attack",
+    1
+   ],
+   [
+    "Sand Tomb",
+    5
+   ],
+   [
+    "Tackle",
+    10
+   ],
+   [
+    "Bite",
+    15
+   ],
+   [
+    "Dig",
+    20
+   ],
+   [
+    "Crunch",
+    25
+   ],
+   [
+    "Take Down",
+    30
+   ],
+   [
+    "Fissure",
+    40
+   ],
+   [
+    "Bulldoze",
+    45
+   ],
+   [
+    "Mud Bomb",
+    50
+   ],
+   [
+    "Rest",
+    55
+   ],
+   [
+    "Earth Power",
+    60
+   ],
+   [
+    "Earthquake",
+    65
+   ],
+   [
+    "Double-Edge",
+    70
+   ]
+  ],
+  "from": "Hippopotas",
+  "evolve": {
+   "level": 35,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 451,
+  "name": "Skorupi",
+  "types": [
+   "poison",
+   "bug"
+  ],
+  "stats": {
+   "hp": 40,
+   "atk": 50,
+   "def": 90,
+   "spAtk": 30,
+   "spDef": 55,
+   "speed": 65
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Poison Sting",
+    1
+   ],
+   [
+    "Hone Claws",
+    5
+   ],
+   [
+    "Toxic Spikes",
+    10
+   ],
+   [
+    "Fell Stinger",
+    15
+   ],
+   [
+    "Poison Fang",
+    20
+   ],
+   [
+    "Bite",
+    25
+   ],
+   [
+    "Bug Bite",
+    30
+   ],
+   [
+    "Venoshock",
+    35
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Drapion"
+  ]
+ },
+ {
+  "number": 452,
+  "name": "Drapion",
+  "types": [
+   "poison",
+   "dark"
+  ],
+  "stats": {
+   "hp": 70,
+   "atk": 90,
+   "def": 110,
+   "spAtk": 60,
+   "spDef": 75,
+   "speed": 95
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Poison Sting",
+    1
+   ],
+   [
+    "Hone Claws",
+    5
+   ],
+   [
+    "Toxic Spikes",
+    10
+   ],
+   [
+    "Fell Stinger",
+    15
+   ],
+   [
+    "Poison Fang",
+    20
+   ],
+   [
+    "Bite",
+    25
+   ],
+   [
+    "Bug Bite",
+    30
+   ],
+   [
+    "Venoshock",
+    35
+   ],
+   [
+    "Night Slash",
+    45
+   ],
+   [
+    "X-Scissor",
+    50
+   ],
+   [
+    "Crunch",
+    55
+   ],
+   [
+    "Poison Jab",
+    60
+   ],
+   [
+    "Dark Pulse",
+    65
+   ],
+   [
+    "Sludge Bomb",
+    70
+   ]
+  ],
+  "from": "Skorupi",
+  "evolve": {
+   "level": 40,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 453,
+  "name": "Croagunk",
+  "types": [
+   "poison",
+   "fighting"
+  ],
+  "stats": {
+   "hp": 48,
+   "atk": 61,
+   "def": 40,
+   "spAtk": 61,
+   "spDef": 40,
+   "speed": 50
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Poison Sting",
+    1
+   ],
+   [
+    "Flatter",
+    5
+   ],
+   [
+    "Low Kick",
+    10
+   ],
+   [
+    "Mud-Slap",
+    15
+   ],
+   [
+    "Astonish",
+    20
+   ],
+   [
+    "Venoshock",
+    25
+   ],
+   [
+    "Sucker Punch",
+    30
+   ],
+   [
+    "Poison Jab",
+    35
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Toxicroak"
+  ]
+ },
+ {
+  "number": 454,
+  "name": "Toxicroak",
+  "types": [
+   "poison",
+   "fighting"
+  ],
+  "stats": {
+   "hp": 83,
+   "atk": 106,
+   "def": 65,
+   "spAtk": 86,
+   "spDef": 65,
+   "speed": 85
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Poison Sting",
+    1
+   ],
+   [
+    "Flatter",
+    5
+   ],
+   [
+    "Low Kick",
+    10
+   ],
+   [
+    "Mud-Slap",
+    15
+   ],
+   [
+    "Astonish",
+    20
+   ],
+   [
+    "Venoshock",
+    25
+   ],
+   [
+    "Sucker Punch",
+    30
+   ],
+   [
+    "Poison Jab",
+    35
+   ],
+   [
+    "Sludge Bomb",
+    45
+   ],
+   [
+    "Belch",
+    50
+   ],
+   [
+    "Close Combat",
+    55
+   ],
+   [
+    "Nasty Plot",
+    60
+   ],
+   [
+    "Focus Blast",
+    65
+   ],
+   [
+    "Focus Punch",
+    70
+   ]
+  ],
+  "from": "Croagunk",
+  "evolve": {
+   "level": 40,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 455,
+  "name": "Carnivine",
+  "types": [
+   "grass"
+  ],
+  "stats": {
+   "hp": 74,
+   "atk": 100,
+   "def": 72,
+   "spAtk": 90,
+   "spDef": 72,
+   "speed": 46
+  },
+  "chance": 400,
+  "skills": [
+   [
+    "Bite",
+    1
+   ],
+   [
+    "Spit Up",
+    5
+   ],
+   [
+    "Wring Out",
+    10
+   ],
+   [
+    "Ingrain",
+    15
+   ],
+   [
+    "Grass Knot",
+    20
+   ],
+   [
+    "Absorb",
+    25
+   ],
+   [
+    "Stockpile",
+    30
+   ],
+   [
+    "Swallow",
+    35
+   ],
+   [
+    "Bullet Seed",
+    40
+   ],
+   [
+    "Vine Whip",
+    45
+   ],
+   [
+    "Razor Leaf",
+    50
+   ],
+   [
+    "Leaf Tornado",
+    55
+   ],
+   [
+    "Crunch",
+    60
+   ],
+   [
+    "Power Whip",
+    65
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 456,
+  "name": "Finneon",
+  "types": [
+   "water"
+  ],
+  "stats": {
+   "hp": 49,
+   "atk": 49,
+   "def": 56,
+   "spAtk": 49,
+   "spDef": 61,
+   "speed": 66
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Pound",
+    1
+   ],
+   [
+    "Rain Dance",
+    5
+   ],
+   [
+    "Whirlpool",
+    10
+   ],
+   [
+    "Water Gun",
+    15
+   ],
+   [
+    "Gust",
+    20
+   ],
+   [
+    "Water Pulse",
+    25
+   ],
+   [
+    "U-turn",
+    30
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Lumineon"
+  ]
+ },
+ {
+  "number": 457,
+  "name": "Lumineon",
+  "types": [
+   "water"
+  ],
+  "stats": {
+   "hp": 69,
+   "atk": 69,
+   "def": 76,
+   "spAtk": 69,
+   "spDef": 86,
+   "speed": 91
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Pound",
+    1
+   ],
+   [
+    "Rain Dance",
+    5
+   ],
+   [
+    "Whirlpool",
+    10
+   ],
+   [
+    "Water Gun",
+    15
+   ],
+   [
+    "Gust",
+    20
+   ],
+   [
+    "Water Pulse",
+    25
+   ],
+   [
+    "U-turn",
+    30
+   ],
+   [
+    "Waterfall",
+    40
+   ],
+   [
+    "Dive",
+    45
+   ],
+   [
+    "Bounce",
+    50
+   ],
+   [
+    "Aqua Ring",
+    55
+   ],
+   [
+    "Surf",
+    60
+   ],
+   [
+    "Aqua Tail",
+    65
+   ],
+   [
+    "Hydro Pump",
+    70
+   ]
+  ],
+  "from": "Finneon",
+  "evolve": {
+   "level": 35,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 458,
+  "name": "Mantyke",
+  "types": [
+   "water",
+   "flying"
+  ],
+  "stats": {
+   "hp": 45,
+   "atk": 20,
+   "def": 50,
+   "spAtk": 60,
+   "spDef": 120,
+   "speed": 50
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Supersonic",
+    5
+   ],
+   [
+    "Water Gun",
+    10
+   ],
+   [
+    "Wing Attack",
+    15
+   ],
+   [
+    "Water Pulse",
+    20
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": true,
+  "evolvesTo": [
+   "Mantine"
+  ]
+ },
+ {
+  "number": 459,
+  "name": "Snover",
+  "types": [
+   "grass",
+   "ice"
+  ],
+  "stats": {
+   "hp": 60,
+   "atk": 62,
+   "def": 50,
+   "spAtk": 62,
+   "spDef": 60,
+   "speed": 40
+  },
+  "chance": 150,
+  "skills": [
+   [
+    "Powder Snow",
+    1
+   ],
+   [
+    "Mist",
+    5
+   ],
+   [
+    "Ice Shard",
+    10
+   ],
+   [
+    "Razor Leaf",
+    15
+   ],
+   [
+    "Ingrain",
+    20
+   ],
+   [
+    "Icy Wind",
+    25
+   ],
+   [
+    "Blizzard",
+    30
+   ],
+   [
+    "Wood Hammer",
+    35
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": [
+   "Abomasnow"
+  ]
+ },
+ {
+  "number": 460,
+  "name": "Abomasnow",
+  "types": [
+   "grass",
+   "ice"
+  ],
+  "stats": {
+   "hp": 90,
+   "atk": 92,
+   "def": 75,
+   "spAtk": 92,
+   "spDef": 85,
+   "speed": 60
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Powder Snow",
+    1
+   ],
+   [
+    "Mist",
+    5
+   ],
+   [
+    "Ice Shard",
+    10
+   ],
+   [
+    "Razor Leaf",
+    15
+   ],
+   [
+    "Ingrain",
+    20
+   ],
+   [
+    "Icy Wind",
+    25
+   ],
+   [
+    "Blizzard",
+    30
+   ],
+   [
+    "Wood Hammer",
+    35
+   ],
+   [
+    "Sheer Cold",
+    45
+   ],
+   [
+    "Ice Punch",
+    50
+   ],
+   [
+    "Ice Beam",
+    55
+   ],
+   [
+    "Energy Ball",
+    60
+   ],
+   [
+    "Solar Beam",
+    65
+   ],
+   [
+    "Leaf Storm",
+    70
+   ]
+  ],
+  "from": "Snover",
+  "evolve": {
+   "level": 40,
+   "items": [],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 461,
+  "name": "Weavile",
+  "types": [
+   "dark",
+   "ice"
+  ],
+  "stats": {
+   "hp": 70,
+   "atk": 120,
+   "def": 65,
+   "spAtk": 45,
+   "spDef": 85,
+   "speed": 125
+  },
+  "chance": 800,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Bite",
+    5
+   ],
+   [
+    "Quick Attack",
+    10
+   ],
+   [
+    "Icy Wind",
+    15
+   ],
+   [
+    "Ice Shard",
+    20
+   ],
+   [
+    "Metal Claw",
+    25
+   ],
+   [
+    "Agility",
+    30
+   ],
+   [
+    "Knock Off",
+    35
+   ],
+   [
+    "Slash",
+    40
+   ],
+   [
+    "Punishment",
+    45
+   ],
+   [
+    "Foul Play",
+    50
+   ],
+   [
+    "Dark Pulse",
+    55
+   ],
+   [
+    "Iron Tail",
+    60
+   ],
+   [
+    "Ice Beam",
+    65
+   ],
+   [
+    "Fury Swipes",
+    70
+   ],
+   [
+    "Scratch",
+    75
+   ],
+   [
+    "Assurance",
+    80
+   ]
+  ],
+  "from": "Sneasel",
+  "evolve": {
+   "level": 40,
+   "items": [
+    "RAZOR_CLAW"
+   ],
+   "time": "NIGHT",
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 462,
+  "name": "Magnezone",
+  "types": [
+   "electric",
+   "steel"
+  ],
+  "stats": {
+   "hp": 70,
+   "atk": 70,
+   "def": 115,
+   "spAtk": 130,
+   "spDef": 90,
+   "speed": 60
+  },
+  "chance": 800,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Thunder Shock",
+    5
+   ],
+   [
+    "Supersonic",
+    10
+   ],
+   [
+    "Sonic Boom",
+    15
+   ],
+   [
+    "Thunder Wave",
+    20
+   ],
+   [
+    "Electro Ball",
+    25
+   ],
+   [
+    "Thunderbolt",
+    35
+   ],
+   [
+    "Magnet Bomb",
+    40
+   ],
+   [
+    "Discharge",
+    45
+   ],
+   [
+    "Mirror Shot",
+    50
+   ],
+   [
+    "Flash Cannon",
+    55
+   ],
+   [
+    "Metal Sound",
+    60
+   ],
+   [
+    "Zap Cannon",
+    65
+   ],
+   [
+    "Mirror Coat",
+    70
+   ],
+   [
+    "Gyro Ball",
+    75
+   ],
+   [
+    "Tri Attack",
+    80
+   ]
+  ],
+  "from": "Magneton",
+  "evolve": {
+   "level": 60,
+   "items": [
+    "THUNDERSTONE"
+   ],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 463,
+  "name": "Lickilicky",
+  "types": [
+   "normal"
+  ],
+  "stats": {
+   "hp": 110,
+   "atk": 85,
+   "def": 95,
+   "spAtk": 80,
+   "spDef": 95,
+   "speed": 50
+  },
+  "chance": 800,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Lick",
+    5
+   ],
+   [
+    "Stomp",
+    10
+   ],
+   [
+    "Slam",
+    15
+   ],
+   [
+    "Rollout",
+    20
+   ],
+   [
+    "Defense Curl",
+    25
+   ],
+   [
+    "Knock Off",
+    30
+   ],
+   [
+    "Chip Away",
+    35
+   ],
+   [
+    "Iron Tail",
+    40
+   ],
+   [
+    "Zen Headbutt",
+    45
+   ],
+   [
+    "Disable",
+    50
+   ],
+   [
+    "Power Whip",
+    55
+   ],
+   [
+    "Giga Impact",
+    60
+   ],
+   [
+    "Focus Punch",
+    65
+   ],
+   [
+    "Wrap",
+    70
+   ],
+   [
+    "Supersonic",
+    75
+   ],
+   [
+    "Explosion",
+    80
+   ]
+  ],
+  "from": "Lickitung",
+  "evolve": {
+   "level": 40,
+   "items": [],
+   "time": null,
+   "note": "official: knows rollout",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 464,
+  "name": "Rhyperior",
+  "types": [
+   "ground",
+   "rock"
+  ],
+  "stats": {
+   "hp": 115,
+   "atk": 140,
+   "def": 130,
+   "spAtk": 55,
+   "spDef": 55,
+   "speed": 40
+  },
+  "chance": 1400,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Horn Attack",
+    5
+   ],
+   [
+    "Stomp",
+    10
+   ],
+   [
+    "Rock Throw",
+    15
+   ],
+   [
+    "Take Down",
+    20
+   ],
+   [
+    "Rock Blast",
+    25
+   ],
+   [
+    "Scary Face",
+    30
+   ],
+   [
+    "Drill Run",
+    35
+   ],
+   [
+    "Earthquake",
+    45
+   ],
+   [
+    "Horn Drill",
+    50
+   ],
+   [
+    "Earth Power",
+    55
+   ],
+   [
+    "Megahorn",
+    60
+   ],
+   [
+    "Stone Edge",
+    65
+   ],
+   [
+    "Rock Wrecker",
+    70
+   ],
+   [
+    "Smack Down",
+    75
+   ],
+   [
+    "Bulldoze",
+    80
+   ],
+   [
+    "Hammer Arm",
+    85
+   ]
+  ],
+  "from": "Rhydon",
+  "evolve": {
+   "level": 60,
+   "items": [
+    "PROTECTOR"
+   ],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 465,
+  "name": "Tangrowth",
+  "types": [
+   "grass"
+  ],
+  "stats": {
+   "hp": 100,
+   "atk": 100,
+   "def": 125,
+   "spAtk": 110,
+   "spDef": 50,
+   "speed": 50
+  },
+  "chance": 800,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Absorb",
+    5
+   ],
+   [
+    "Vine Whip",
+    10
+   ],
+   [
+    "Seed Bomb",
+    15
+   ],
+   [
+    "Mega Drain",
+    20
+   ],
+   [
+    "Poison Powder",
+    25
+   ],
+   [
+    "Ingrain",
+    30
+   ],
+   [
+    "Ancient Power",
+    35
+   ],
+   [
+    "Stun Spore",
+    40
+   ],
+   [
+    "Sleep Powder",
+    45
+   ],
+   [
+    "Leaf Storm",
+    50
+   ],
+   [
+    "Wring Out",
+    55
+   ],
+   [
+    "Grass Knot",
+    60
+   ],
+   [
+    "Power Whip",
+    65
+   ],
+   [
+    "Knock Off",
+    70
+   ],
+   [
+    "Giga Drain",
+    75
+   ],
+   [
+    "Slam",
+    80
+   ]
+  ],
+  "from": "Tangela",
+  "evolve": {
+   "level": 40,
+   "items": [],
+   "time": null,
+   "note": "official: knows ancient-power",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 466,
+  "name": "Electivire",
+  "types": [
+   "electric"
+  ],
+  "stats": {
+   "hp": 75,
+   "atk": 123,
+   "def": 67,
+   "spAtk": 95,
+   "spDef": 85,
+   "speed": 95
+  },
+  "chance": 1600,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Quick Attack",
+    5
+   ],
+   [
+    "Thunder Shock",
+    10
+   ],
+   [
+    "Low Kick",
+    15
+   ],
+   [
+    "Swift",
+    20
+   ],
+   [
+    "Shock Wave",
+    25
+   ],
+   [
+    "Electro Ball",
+    30
+   ],
+   [
+    "Thunder Punch",
+    35
+   ],
+   [
+    "Thunder Wave",
+    40
+   ],
+   [
+    "Discharge",
+    45
+   ],
+   [
+    "Thunderbolt",
+    50
+   ],
+   [
+    "Focus Blast",
+    55
+   ],
+   [
+    "Thunder",
+    60
+   ],
+   [
+    "Iron Tail",
+    65
+   ],
+   [
+    "Wild Charge",
+    70
+   ],
+   [
+    "Charge",
+    75
+   ],
+   [
+    "Giga Impact",
+    80
+   ]
+  ],
+  "from": "Electabuzz",
+  "evolve": {
+   "level": 60,
+   "items": [
+    "ELECTIRIZER"
+   ],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 467,
+  "name": "Magmortar",
+  "types": [
+   "fire"
+  ],
+  "stats": {
+   "hp": 75,
+   "atk": 95,
+   "def": 67,
+   "spAtk": 125,
+   "spDef": 95,
+   "speed": 83
+  },
+  "chance": 1600,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Smog",
+    5
+   ],
+   [
+    "Ember",
+    10
+   ],
+   [
+    "Faint Attack",
+    15
+   ],
+   [
+    "Fire Spin",
+    20
+   ],
+   [
+    "Clear Smog",
+    25
+   ],
+   [
+    "Sunny Day",
+    30
+   ],
+   [
+    "Fire Punch",
+    35
+   ],
+   [
+    "Flamethrower",
+    40
+   ],
+   [
+    "Flare Blitz",
+    45
+   ],
+   [
+    "Lava Plume",
+    50
+   ],
+   [
+    "Flame Burst",
+    55
+   ],
+   [
+    "Confuse Ray",
+    60
+   ],
+   [
+    "Fire Blast",
+    65
+   ],
+   [
+    "Focus Punch",
+    70
+   ],
+   [
+    "Low Kick",
+    75
+   ],
+   [
+    "Smoke Screen",
+    80
+   ],
+   [
+    "Flame Wheel",
+    85
+   ]
+  ],
+  "from": "Magmar",
+  "evolve": {
+   "level": 60,
+   "items": [
+    "MAGMARIZER"
+   ],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 468,
+  "name": "Togekiss",
+  "types": [
+   "fairy",
+   "flying"
+  ],
+  "stats": {
+   "hp": 85,
+   "atk": 50,
+   "def": 95,
+   "spAtk": 120,
+   "spDef": 115,
+   "speed": 80
+  },
+  "chance": 1200,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Fairy Wind",
+    5
+   ],
+   [
+    "Ancient Power",
+    10
+   ],
+   [
+    "Metronome",
+    15
+   ],
+   [
+    "Covet",
+    20
+   ],
+   [
+    "Wish",
+    25
+   ],
+   [
+    "Magical Leaf",
+    35
+   ],
+   [
+    "Sweet Kiss",
+    40
+   ],
+   [
+    "Mirror Move",
+    45
+   ],
+   [
+    "Double-Edge",
+    50
+   ],
+   [
+    "Magic Coat",
+    55
+   ],
+   [
+    "Future Sight",
+    60
+   ],
+   [
+    "Yawn",
+    65
+   ],
+   [
+    "Last Resort",
+    70
+   ],
+   [
+    "Pound",
+    75
+   ],
+   [
+    "Growl",
+    80
+   ],
+   [
+    "Air Slash",
+    85
+   ]
+  ],
+  "from": "Togetic",
+  "evolve": {
+   "level": 60,
+   "items": [
+    "SHINY_STONE"
+   ],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 469,
+  "name": "Yanmega",
+  "types": [
+   "bug",
+   "flying"
+  ],
+  "stats": {
+   "hp": 86,
+   "atk": 76,
+   "def": 86,
+   "spAtk": 116,
+   "spDef": 56,
+   "speed": 95
+  },
+  "chance": 1000,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Quick Attack",
+    5
+   ],
+   [
+    "Sonic Boom",
+    10
+   ],
+   [
+    "U-turn",
+    15
+   ],
+   [
+    "Bug Buzz",
+    20
+   ],
+   [
+    "Aerial Ace",
+    25
+   ],
+   [
+    "Air Slash",
+    30
+   ],
+   [
+    "Hypnosis",
+    35
+   ],
+   [
+    "Wing Attack",
+    40
+   ],
+   [
+    "Pursuit",
+    45
+   ],
+   [
+    "Double-Edge",
+    50
+   ],
+   [
+    "Ancient Power",
+    55
+   ],
+   [
+    "Screech",
+    60
+   ],
+   [
+    "Uproar",
+    65
+   ],
+   [
+    "Bug Bite",
+    70
+   ],
+   [
+    "Double Team",
+    75
+   ],
+   [
+    "Night Slash",
+    80
+   ]
+  ],
+  "from": "Yanma",
+  "evolve": {
+   "level": 40,
+   "items": [],
+   "time": null,
+   "note": "official: knows ancient-power",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 470,
+  "name": "Leafeon",
+  "types": [
+   "grass"
+  ],
+  "stats": {
+   "hp": 65,
+   "atk": 110,
+   "def": 130,
+   "spAtk": 60,
+   "spDef": 65,
+   "speed": 95
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Quick Attack",
+    5
+   ],
+   [
+    "Sand-Attack",
+    10
+   ],
+   [
+    "Bite",
+    15
+   ],
+   [
+    "Headbutt",
+    20
+   ],
+   [
+    "Agility",
+    25
+   ],
+   [
+    "Razor Leaf",
+    35
+   ],
+   [
+    "Charm",
+    40
+   ],
+   [
+    "Growl",
+    45
+   ],
+   [
+    "Swift",
+    50
+   ],
+   [
+    "Covet",
+    55
+   ],
+   [
+    "Magical Leaf",
+    60
+   ],
+   [
+    "Take Down",
+    65
+   ],
+   [
+    "Double-Edge",
+    70
+   ]
+  ],
+  "from": "Eevee",
+  "evolve": {
+   "level": 30,
+   "items": [
+    "LEAF_STONE"
+   ],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 471,
+  "name": "Glaceon",
+  "types": [
+   "ice"
+  ],
+  "stats": {
+   "hp": 65,
+   "atk": 60,
+   "def": 110,
+   "spAtk": 130,
+   "spDef": 95,
+   "speed": 65
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Quick Attack",
+    5
+   ],
+   [
+    "Sand-Attack",
+    10
+   ],
+   [
+    "Bite",
+    15
+   ],
+   [
+    "Headbutt",
+    20
+   ],
+   [
+    "Agility",
+    25
+   ],
+   [
+    "Ice Shard",
+    35
+   ],
+   [
+    "Charm",
+    40
+   ],
+   [
+    "Growl",
+    45
+   ],
+   [
+    "Icy Wind",
+    50
+   ],
+   [
+    "Swift",
+    55
+   ],
+   [
+    "Covet",
+    60
+   ],
+   [
+    "Take Down",
+    65
+   ],
+   [
+    "Double-Edge",
+    70
+   ]
+  ],
+  "from": "Eevee",
+  "evolve": {
+   "level": 30,
+   "items": [
+    "ICE_STONE"
+   ],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 472,
+  "name": "Gliscor",
+  "types": [
+   "ground",
+   "flying"
+  ],
+  "stats": {
+   "hp": 75,
+   "atk": 95,
+   "def": 125,
+   "spAtk": 45,
+   "spDef": 75,
+   "speed": 95
+  },
+  "chance": 1000,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Poison Sting",
+    5
+   ],
+   [
+    "Quick Attack",
+    10
+   ],
+   [
+    "Sand-Attack",
+    15
+   ],
+   [
+    "Wing Attack",
+    20
+   ],
+   [
+    "Metal Claw",
+    25
+   ],
+   [
+    "Acrobatics",
+    30
+   ],
+   [
+    "X-Scissor",
+    35
+   ],
+   [
+    "Bulldoze",
+    40
+   ],
+   [
+    "Earth Power",
+    45
+   ],
+   [
+    "Harden",
+    50
+   ],
+   [
+    "Guillotine",
+    55
+   ],
+   [
+    "Sky Uppercut",
+    60
+   ],
+   [
+    "Iron Tail",
+    65
+   ],
+   [
+    "Thunder Fang",
+    70
+   ],
+   [
+    "Ice Fang",
+    75
+   ],
+   [
+    "Poison Jab",
+    80
+   ]
+  ],
+  "from": "Gligar",
+  "evolve": {
+   "level": 40,
+   "items": [
+    "RAZOR_FANG"
+   ],
+   "time": "NIGHT",
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 473,
+  "name": "Mamoswine",
+  "types": [
+   "ice",
+   "ground"
+  ],
+  "stats": {
+   "hp": 110,
+   "atk": 130,
+   "def": 80,
+   "spAtk": 70,
+   "spDef": 60,
+   "speed": 80
+  },
+  "chance": 1400,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Mud-Slap",
+    5
+   ],
+   [
+    "Ice Shard",
+    10
+   ],
+   [
+    "Powder Snow",
+    15
+   ],
+   [
+    "Mud Bomb",
+    20
+   ],
+   [
+    "Icy Wind",
+    25
+   ],
+   [
+    "Freeze-Dry",
+    30
+   ],
+   [
+    "Earthquake",
+    35
+   ],
+   [
+    "Ancient Power",
+    45
+   ],
+   [
+    "Ice Fang",
+    50
+   ],
+   [
+    "Endeavor",
+    55
+   ],
+   [
+    "Thrash",
+    60
+   ],
+   [
+    "Blizzard",
+    65
+   ],
+   [
+    "Mud Sport",
+    70
+   ],
+   [
+    "Flail",
+    75
+   ],
+   [
+    "Mist",
+    80
+   ],
+   [
+    "Double Hit",
+    85
+   ]
+  ],
+  "from": "Piloswine",
+  "evolve": {
+   "level": 60,
+   "items": [],
+   "time": null,
+   "note": "official: knows ancient-power",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 474,
+  "name": "Porygon-Z",
+  "types": [
+   "normal"
+  ],
+  "stats": {
+   "hp": 85,
+   "atk": 80,
+   "def": 70,
+   "spAtk": 135,
+   "spDef": 75,
+   "speed": 90
+  },
+  "chance": 4000,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Psybeam",
+    5
+   ],
+   [
+    "Confusion",
+    10
+   ],
+   [
+    "Discharge",
+    15
+   ],
+   [
+    "Recover",
+    20
+   ],
+   [
+    "Signal Beam",
+    25
+   ],
+   [
+    "Agility",
+    30
+   ],
+   [
+    "Tri Attack",
+    35
+   ],
+   [
+    "Psychic",
+    40
+   ],
+   [
+    "Magic Coat",
+    45
+   ],
+   [
+    "Zap Cannon",
+    50
+   ],
+   [
+    "Defense Curl",
+    60
+   ],
+   [
+    "Electroweb",
+    65
+   ],
+   [
+    "Hyper Beam",
+    70
+   ],
+   [
+    "Conversion2",
+    75
+   ],
+   [
+    "Thunder Shock",
+    80
+   ],
+   [
+    "Magnet Rise",
+    85
+   ],
+   [
+    "Double-Edge",
+    90
+   ]
+  ],
+  "from": "Porygon2",
+  "evolve": {
+   "level": 60,
+   "items": [
+    "DUBIOUS_DISC"
+   ],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 475,
+  "name": "Gallade",
+  "types": [
+   "psychic",
+   "fighting"
+  ],
+  "stats": {
+   "hp": 68,
+   "atk": 125,
+   "def": 65,
+   "spAtk": 65,
+   "spDef": 115,
+   "speed": 80
+  },
+  "chance": 1000,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Confusion",
+    5
+   ],
+   [
+    "Magical Leaf",
+    10
+   ],
+   [
+    "Draining Kiss",
+    15
+   ],
+   [
+    "Disarming Voice",
+    20
+   ],
+   [
+    "Hypnosis",
+    25
+   ],
+   [
+    "Psychic",
+    35
+   ],
+   [
+    "Heal Pulse",
+    40
+   ],
+   [
+    "Stored Power",
+    45
+   ],
+   [
+    "Fury Cutter",
+    55
+   ],
+   [
+    "Growl",
+    60
+   ],
+   [
+    "Psybeam",
+    65
+   ],
+   [
+    "Slash",
+    70
+   ],
+   [
+    "Dream Eater",
+    75
+   ]
+  ],
+  "from": "Kirlia",
+  "evolve": {
+   "level": 50,
+   "items": [
+    "DAWN_STONE"
+   ],
+   "time": null,
+   "note": "official: male only",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 476,
+  "name": "Probopass",
+  "types": [
+   "rock",
+   "steel"
+  ],
+  "stats": {
+   "hp": 60,
+   "atk": 55,
+   "def": 145,
+   "spAtk": 75,
+   "spDef": 150,
+   "speed": 40
+  },
+  "chance": 800,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Rock Throw",
+    5
+   ],
+   [
+    "Rock Slide",
+    10
+   ],
+   [
+    "Rock Blast",
+    15
+   ],
+   [
+    "Harden",
+    20
+   ],
+   [
+    "Spark",
+    25
+   ],
+   [
+    "Discharge",
+    30
+   ],
+   [
+    "Rest",
+    35
+   ],
+   [
+    "Thunder Wave",
+    40
+   ],
+   [
+    "Earth Power",
+    45
+   ],
+   [
+    "Power Gem",
+    50
+   ],
+   [
+    "Sandstorm",
+    55
+   ],
+   [
+    "Zap Cannon",
+    60
+   ],
+   [
+    "Stone Edge",
+    65
+   ],
+   [
+    "Explosion",
+    70
+   ],
+   [
+    "Tri Attack",
+    75
+   ],
+   [
+    "Iron Defense",
+    80
+   ],
+   [
+    "Head Smash",
+    85
+   ]
+  ],
+  "from": "Nosepass",
+  "evolve": {
+   "level": 40,
+   "items": [
+    "THUNDERSTONE"
+   ],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 477,
+  "name": "Dusknoir",
+  "types": [
+   "ghost"
+  ],
+  "stats": {
+   "hp": 45,
+   "atk": 100,
+   "def": 135,
+   "spAtk": 65,
+   "spDef": 135,
+   "speed": 45
+  },
+  "chance": 1000,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Astonish",
+    5
+   ],
+   [
+    "Shadow Sneak",
+    10
+   ],
+   [
+    "Shadow Ball",
+    15
+   ],
+   [
+    "Confuse Ray",
+    20
+   ],
+   [
+    "Curse",
+    25
+   ],
+   [
+    "Shadow Punch",
+    35
+   ],
+   [
+    "Fire Punch",
+    40
+   ],
+   [
+    "Ice Punch",
+    45
+   ],
+   [
+    "Thunder Punch",
+    50
+   ],
+   [
+    "Future Sight",
+    55
+   ],
+   [
+    "Hex",
+    60
+   ],
+   [
+    "Payback",
+    65
+   ],
+   [
+    "Night Shade",
+    70
+   ],
+   [
+    "Disable",
+    75
+   ],
+   [
+    "Phantom Force",
+    80
+   ]
+  ],
+  "from": "Dusclops",
+  "evolve": {
+   "level": 60,
+   "items": [
+    "REAPER_CLOTH"
+   ],
+   "time": null,
+   "note": "",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 478,
+  "name": "Froslass",
+  "types": [
+   "ice",
+   "ghost"
+  ],
+  "stats": {
+   "hp": 70,
+   "atk": 80,
+   "def": 70,
+   "spAtk": 80,
+   "spDef": 70,
+   "speed": 110
+  },
+  "chance": 500,
+  "skills": [
+   [
+    "Tackle",
+    1
+   ],
+   [
+    "Powder Snow",
+    5
+   ],
+   [
+    "Ice Shard",
+    10
+   ],
+   [
+    "Icy Wind",
+    15
+   ],
+   [
+    "Ice Fang",
+    20
+   ],
+   [
+    "Protect",
+    25
+   ],
+   [
+    "Astonish",
+    35
+   ],
+   [
+    "Destiny Bond",
+    40
+   ],
+   [
+    "Double Team",
+    45
+   ],
+   [
+    "Draining Kiss",
+    50
+   ],
+   [
+    "Bite",
+    55
+   ],
+   [
+    "Hex",
+    60
+   ],
+   [
+    "Headbutt",
+    65
+   ],
+   [
+    "Crunch",
+    70
+   ]
+  ],
+  "from": "Snorunt",
+  "evolve": {
+   "level": 30,
+   "items": [
+    "DAWN_STONE"
+   ],
+   "time": null,
+   "note": "official: female only",
+   "random": false
+  },
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 479,
+  "name": "Rotom",
+  "types": [
+   "electric",
+   "ghost"
+  ],
+  "stats": {
+   "hp": 50,
+   "atk": 50,
+   "def": 77,
+   "spAtk": 95,
+   "spDef": 77,
+   "speed": 91
+  },
+  "chance": 400,
+  "skills": [
+   [
+    "Double Team",
+    1
+   ],
+   [
+    "Electro Ball",
+    5
+   ],
+   [
+    "Confuse Ray",
+    10
+   ],
+   [
+    "Charge",
+    15
+   ],
+   [
+    "Night Shade",
+    20
+   ],
+   [
+    "Astonish",
+    25
+   ],
+   [
+    "Thunder Shock",
+    30
+   ],
+   [
+    "Charge Beam",
+    35
+   ],
+   [
+    "Electroweb",
+    40
+   ],
+   [
+    "Shock Wave",
+    45
+   ],
+   [
+    "Ominous Wind",
+    50
+   ],
+   [
+    "Hex",
+    55
+   ],
+   [
+    "Discharge",
+    60
+   ],
+   [
+    "Uproar",
+    65
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": false,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 480,
+  "name": "Uxie",
+  "types": [
+   "psychic"
+  ],
+  "stats": {
+   "hp": 75,
+   "atk": 75,
+   "def": 130,
+   "spAtk": 75,
+   "spDef": 130,
+   "speed": 95
+  },
+  "chance": 10000,
+  "skills": [
+   [
+    "Confusion",
+    1
+   ],
+   [
+    "Rest",
+    5
+   ],
+   [
+    "Flail",
+    10
+   ],
+   [
+    "Endure",
+    15
+   ],
+   [
+    "Stored Power",
+    20
+   ],
+   [
+    "Swift",
+    25
+   ],
+   [
+    "Psybeam",
+    30
+   ],
+   [
+    "Mystical Power",
+    35
+   ],
+   [
+    "Amnesia",
+    40
+   ],
+   [
+    "Psycho Cut",
+    45
+   ],
+   [
+    "Extrasensory",
+    50
+   ],
+   [
+    "Zen Headbutt",
+    55
+   ],
+   [
+    "Psyshock",
+    60
+   ],
+   [
+    "Psychic",
+    65
+   ],
+   [
+    "Future Sight",
+    70
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": true,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 481,
+  "name": "Mesprit",
+  "types": [
+   "psychic"
+  ],
+  "stats": {
+   "hp": 80,
+   "atk": 105,
+   "def": 105,
+   "spAtk": 105,
+   "spDef": 105,
+   "speed": 80
+  },
+  "chance": 10000,
+  "skills": [
+   [
+    "Confusion",
+    1
+   ],
+   [
+    "Rest",
+    5
+   ],
+   [
+    "Stored Power",
+    10
+   ],
+   [
+    "Protect",
+    15
+   ],
+   [
+    "Swift",
+    20
+   ],
+   [
+    "Psybeam",
+    25
+   ],
+   [
+    "Mystical Power",
+    30
+   ],
+   [
+    "Psycho Cut",
+    35
+   ],
+   [
+    "Charm",
+    40
+   ],
+   [
+    "Extrasensory",
+    45
+   ],
+   [
+    "Zen Headbutt",
+    50
+   ],
+   [
+    "Psyshock",
+    55
+   ],
+   [
+    "Psychic",
+    60
+   ],
+   [
+    "Dream Eater",
+    65
+   ],
+   [
+    "Future Sight",
+    70
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": true,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 482,
+  "name": "Azelf",
+  "types": [
+   "psychic"
+  ],
+  "stats": {
+   "hp": 75,
+   "atk": 125,
+   "def": 70,
+   "spAtk": 125,
+   "spDef": 70,
+   "speed": 115
+  },
+  "chance": 10000,
+  "skills": [
+   [
+    "Confusion",
+    1
+   ],
+   [
+    "Rest",
+    5
+   ],
+   [
+    "Stored Power",
+    10
+   ],
+   [
+    "Detect",
+    15
+   ],
+   [
+    "Swift",
+    20
+   ],
+   [
+    "Psybeam",
+    25
+   ],
+   [
+    "Mystical Power",
+    30
+   ],
+   [
+    "Psycho Cut",
+    35
+   ],
+   [
+    "Nasty Plot",
+    40
+   ],
+   [
+    "Extrasensory",
+    45
+   ],
+   [
+    "Psychic",
+    50
+   ],
+   [
+    "Uproar",
+    55
+   ],
+   [
+    "Future Sight",
+    60
+   ],
+   [
+    "Last Resort",
+    65
+   ],
+   [
+    "Explosion",
+    70
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": true,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 483,
+  "name": "Dialga",
+  "types": [
+   "steel",
+   "dragon"
+  ],
+  "stats": {
+   "hp": 100,
+   "atk": 120,
+   "def": 120,
+   "spAtk": 150,
+   "spDef": 100,
+   "speed": 90
+  },
+  "chance": 10000,
+  "skills": [
+   [
+    "Scary Face",
+    1
+   ],
+   [
+    "Metal Burst",
+    5
+   ],
+   [
+    "Heavy Slam",
+    10
+   ],
+   [
+    "Twister",
+    15
+   ],
+   [
+    "Metal Claw",
+    20
+   ],
+   [
+    "Dragon Breath",
+    25
+   ],
+   [
+    "Ancient Power",
+    30
+   ],
+   [
+    "Slash",
+    35
+   ],
+   [
+    "Flash Cannon",
+    40
+   ],
+   [
+    "Dragon Claw",
+    45
+   ],
+   [
+    "Aura Sphere",
+    50
+   ],
+   [
+    "Power Gem",
+    55
+   ],
+   [
+    "Earth Power",
+    60
+   ],
+   [
+    "Iron Tail",
+    65
+   ],
+   [
+    "Roar of Time",
+    70
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": true,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 484,
+  "name": "Palkia",
+  "types": [
+   "water",
+   "dragon"
+  ],
+  "stats": {
+   "hp": 90,
+   "atk": 120,
+   "def": 100,
+   "spAtk": 150,
+   "spDef": 120,
+   "speed": 100
+  },
+  "chance": 10000,
+  "skills": [
+   [
+    "Scary Face",
+    1
+   ],
+   [
+    "Whirlpool",
+    5
+   ],
+   [
+    "Twister",
+    10
+   ],
+   [
+    "Water Pulse",
+    15
+   ],
+   [
+    "Dragon Breath",
+    20
+   ],
+   [
+    "Ancient Power",
+    25
+   ],
+   [
+    "Aqua Ring",
+    30
+   ],
+   [
+    "Dragon Tail",
+    35
+   ],
+   [
+    "Slash",
+    40
+   ],
+   [
+    "Aura Sphere",
+    45
+   ],
+   [
+    "Power Gem",
+    50
+   ],
+   [
+    "Aqua Tail",
+    55
+   ],
+   [
+    "Earth Power",
+    60
+   ],
+   [
+    "Spacial Rend",
+    65
+   ],
+   [
+    "Hydro Pump",
+    70
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": true,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 485,
+  "name": "Heatran",
+  "types": [
+   "fire",
+   "steel"
+  ],
+  "stats": {
+   "hp": 91,
+   "atk": 90,
+   "def": 106,
+   "spAtk": 130,
+   "spDef": 106,
+   "speed": 77
+  },
+  "chance": 10000,
+  "skills": [
+   [
+    "Fire Spin",
+    1
+   ],
+   [
+    "Heavy Slam",
+    5
+   ],
+   [
+    "Ember",
+    10
+   ],
+   [
+    "Metal Claw",
+    15
+   ],
+   [
+    "Scary Face",
+    20
+   ],
+   [
+    "Ancient Power",
+    25
+   ],
+   [
+    "Fire Fang",
+    30
+   ],
+   [
+    "Iron Head",
+    35
+   ],
+   [
+    "Crunch",
+    40
+   ],
+   [
+    "Lava Plume",
+    45
+   ],
+   [
+    "Metal Sound",
+    50
+   ],
+   [
+    "Earth Power",
+    55
+   ],
+   [
+    "Heat Wave",
+    60
+   ],
+   [
+    "Stone Edge",
+    65
+   ],
+   [
+    "Magma Storm",
+    70
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": true,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 486,
+  "name": "Regigigas",
+  "types": [
+   "normal"
+  ],
+  "stats": {
+   "hp": 110,
+   "atk": 160,
+   "def": 110,
+   "spAtk": 80,
+   "spDef": 110,
+   "speed": 100
+  },
+  "chance": 10000,
+  "skills": [
+   [
+    "Pound",
+    1
+   ],
+   [
+    "Confuse Ray",
+    5
+   ],
+   [
+    "Heavy Slam",
+    10
+   ],
+   [
+    "Crush Grip",
+    15
+   ],
+   [
+    "Tackle",
+    20
+   ],
+   [
+    "Protect",
+    25
+   ],
+   [
+    "Payback",
+    30
+   ],
+   [
+    "Stomp",
+    35
+   ],
+   [
+    "Knock Off",
+    40
+   ],
+   [
+    "Facade",
+    45
+   ],
+   [
+    "Mega Punch",
+    50
+   ],
+   [
+    "Body Press",
+    55
+   ],
+   [
+    "Zen Headbutt",
+    60
+   ],
+   [
+    "Hammer Arm",
+    65
+   ],
+   [
+    "Giga Impact",
+    70
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": true,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 487,
+  "name": "Giratina",
+  "types": [
+   "ghost",
+   "dragon"
+  ],
+  "stats": {
+   "hp": 150,
+   "atk": 100,
+   "def": 120,
+   "spAtk": 100,
+   "spDef": 120,
+   "speed": 90
+  },
+  "chance": 10000,
+  "skills": [
+   [
+    "Shadow Sneak",
+    1
+   ],
+   [
+    "Defog",
+    5
+   ],
+   [
+    "Twister",
+    10
+   ],
+   [
+    "Dragon Breath",
+    15
+   ],
+   [
+    "Ancient Power",
+    20
+   ],
+   [
+    "Ominous Wind",
+    25
+   ],
+   [
+    "Scary Face",
+    30
+   ],
+   [
+    "Hex",
+    35
+   ],
+   [
+    "Slash",
+    40
+   ],
+   [
+    "Shadow Claw",
+    45
+   ],
+   [
+    "Aura Sphere",
+    50
+   ],
+   [
+    "Dragon Claw",
+    55
+   ],
+   [
+    "Earth Power",
+    60
+   ],
+   [
+    "Shadow Force",
+    65
+   ],
+   [
+    "Destiny Bond",
+    70
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": true,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 488,
+  "name": "Cresselia",
+  "types": [
+   "psychic"
+  ],
+  "stats": {
+   "hp": 120,
+   "atk": 70,
+   "def": 110,
+   "spAtk": 75,
+   "spDef": 120,
+   "speed": 85
+  },
+  "chance": 10000,
+  "skills": [
+   [
+    "Confusion",
+    1
+   ],
+   [
+    "Mist",
+    5
+   ],
+   [
+    "Double Team",
+    10
+   ],
+   [
+    "Stored Power",
+    15
+   ],
+   [
+    "Aurora Beam",
+    20
+   ],
+   [
+    "Ally Switch",
+    25
+   ],
+   [
+    "Psybeam",
+    30
+   ],
+   [
+    "Slash",
+    35
+   ],
+   [
+    "Psycho Cut",
+    40
+   ],
+   [
+    "Zen Headbutt",
+    45
+   ],
+   [
+    "Psyshock",
+    50
+   ],
+   [
+    "Psychic",
+    55
+   ],
+   [
+    "Moonblast",
+    60
+   ],
+   [
+    "Dream Eater",
+    65
+   ],
+   [
+    "Future Sight",
+    70
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": true,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 489,
+  "name": "Phione",
+  "types": [
+   "water"
+  ],
+  "stats": {
+   "hp": 80,
+   "atk": 80,
+   "def": 80,
+   "spAtk": 80,
+   "spDef": 80,
+   "speed": 80
+  },
+  "chance": 100000,
+  "skills": [
+   [
+    "Water Gun",
+    1
+   ],
+   [
+    "Whirlpool",
+    5
+   ],
+   [
+    "Charm",
+    10
+   ],
+   [
+    "Supersonic",
+    15
+   ],
+   [
+    "Bubble",
+    20
+   ],
+   [
+    "Water Pulse",
+    25
+   ],
+   [
+    "Acid Armor",
+    30
+   ],
+   [
+    "Bubblebeam",
+    35
+   ],
+   [
+    "Brine",
+    40
+   ],
+   [
+    "Dive",
+    45
+   ],
+   [
+    "Waterfall",
+    50
+   ],
+   [
+    "Scald",
+    55
+   ],
+   [
+    "Liquidation",
+    60
+   ],
+   [
+    "Surf",
+    65
+   ],
+   [
+    "Hydro Pump",
+    70
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": true,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 490,
+  "name": "Manaphy",
+  "types": [
+   "water"
+  ],
+  "stats": {
+   "hp": 100,
+   "atk": 100,
+   "def": 100,
+   "spAtk": 100,
+   "spDef": 100,
+   "speed": 100
+  },
+  "chance": 100000,
+  "skills": [
+   [
+    "Water Gun",
+    1
+   ],
+   [
+    "Whirlpool",
+    5
+   ],
+   [
+    "Charm",
+    10
+   ],
+   [
+    "Supersonic",
+    15
+   ],
+   [
+    "Bubble",
+    20
+   ],
+   [
+    "Water Pulse",
+    25
+   ],
+   [
+    "Acid Armor",
+    30
+   ],
+   [
+    "Bubblebeam",
+    35
+   ],
+   [
+    "Brine",
+    40
+   ],
+   [
+    "Dive",
+    45
+   ],
+   [
+    "Waterfall",
+    50
+   ],
+   [
+    "Scald",
+    55
+   ],
+   [
+    "Liquidation",
+    60
+   ],
+   [
+    "Surf",
+    65
+   ],
+   [
+    "Hydro Pump",
+    70
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": true,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 491,
+  "name": "Darkrai",
+  "types": [
+   "dark"
+  ],
+  "stats": {
+   "hp": 70,
+   "atk": 90,
+   "def": 90,
+   "spAtk": 135,
+   "spDef": 90,
+   "speed": 125
+  },
+  "chance": 100000,
+  "skills": [
+   [
+    "Disable",
+    1
+   ],
+   [
+    "Night Shade",
+    5
+   ],
+   [
+    "Mud-Slap",
+    10
+   ],
+   [
+    "Quick Attack",
+    15
+   ],
+   [
+    "Hypnosis",
+    20
+   ],
+   [
+    "Pursuit",
+    25
+   ],
+   [
+    "Shadow Sneak",
+    30
+   ],
+   [
+    "Payback",
+    35
+   ],
+   [
+    "Thief",
+    40
+   ],
+   [
+    "Double Team",
+    45
+   ],
+   [
+    "Knock Off",
+    50
+   ],
+   [
+    "Sucker Punch",
+    55
+   ],
+   [
+    "Dark Pulse",
+    60
+   ],
+   [
+    "Foul Play",
+    65
+   ],
+   [
+    "Dream Eater",
+    70
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": true,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 492,
+  "name": "Shaymin",
+  "types": [
+   "grass"
+  ],
+  "stats": {
+   "hp": 100,
+   "atk": 100,
+   "def": 100,
+   "spAtk": 100,
+   "spDef": 100,
+   "speed": 100
+  },
+  "chance": 100000,
+  "skills": [
+   [
+    "Magical Leaf",
+    1
+   ],
+   [
+    "Grass Knot",
+    5
+   ],
+   [
+    "Endeavor",
+    10
+   ],
+   [
+    "Leech Seed",
+    15
+   ],
+   [
+    "Bullet Seed",
+    20
+   ],
+   [
+    "Synthesis",
+    25
+   ],
+   [
+    "Giga Drain",
+    30
+   ],
+   [
+    "Seed Bomb",
+    35
+   ],
+   [
+    "Play Rough",
+    40
+   ],
+   [
+    "Energy Ball",
+    45
+   ],
+   [
+    "Petal Blizzard",
+    50
+   ],
+   [
+    "Worry Seed",
+    55
+   ],
+   [
+    "Seed Flare",
+    60
+   ],
+   [
+    "Solar Beam",
+    65
+   ],
+   [
+    "Leaf Storm",
+    70
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": true,
+  "baby": false,
+  "evolvesTo": []
+ },
+ {
+  "number": 493,
+  "name": "Arceus",
+  "types": [
+   "normal"
+  ],
+  "stats": {
+   "hp": 120,
+   "atk": 120,
+   "def": 120,
+   "spAtk": 120,
+   "spDef": 120,
+   "speed": 120
+  },
+  "chance": 100000,
+  "skills": [
+   [
+    "Seismic Toss",
+    1
+   ],
+   [
+    "Cosmic Power",
+    5
+   ],
+   [
+    "Quick Attack",
+    10
+   ],
+   [
+    "Echoed Voice",
+    15
+   ],
+   [
+    "Snore",
+    20
+   ],
+   [
+    "Swift",
+    25
+   ],
+   [
+    "Hidden Power",
+    30
+   ],
+   [
+    "Extreme Speed",
+    35
+   ],
+   [
+    "Earth Power",
+    40
+   ],
+   [
+    "Healing Wish",
+    45
+   ],
+   [
+    "Hyper Voice",
+    50
+   ],
+   [
+    "Judgment",
+    55
+   ],
+   [
+    "Future Sight",
+    60
+   ],
+   [
+    "Hyper Beam",
+    65
+   ],
+   [
+    "Recover",
+    70
+   ]
+  ],
+  "from": null,
+  "evolve": null,
+  "legendary": true,
+  "baby": false,
+  "evolvesTo": []
+ }
+]

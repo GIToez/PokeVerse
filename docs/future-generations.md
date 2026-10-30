@@ -163,5 +163,5 @@ adds items; an `image:` or `image-frames:` line in `things.otml` draws a PNG for
   Until they have spawns, they can only come from eggs, events or admins.
 - **The legendaries:** in the [legendary revamp](upcoming-features.md#22-legendary-revamp-stages-1-to-3-built)
   with their own habitats and events, or held back.
-- **Which stats:** Bulbapedia shows today's base stats, which include the Gen 6 and 7 buffs.
-  Use those, or the stats from when each Pokémon came out.
+- **Which stats:** decided: today's base stats from Bulbapedia. Evolution levels, catch chances
+  and moves are ours, by the rules in [gen4-levels-and-moves.md](gen4-levels-and-moves.md).
