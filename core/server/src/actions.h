@@ -41,6 +41,8 @@ class Actions : public BaseEvents
 		virtual ~Actions();
 
 		bool useItem(Player* player, const Position& pos, uint8_t index, Item* item, bool force = false);
+		// opens or closes a container with no action script, leaving the walk and the next action alone
+		bool openContainer(Player* player, const Position& pos, uint8_t index, Item* item);
 		bool useItemEx(Player* player, const Position& fromPos, const Position& toPos,
 			uint8_t toStackPos, Item* item, bool isHotkey, uint32_t creatureId = 0);
 

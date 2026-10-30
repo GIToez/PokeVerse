@@ -74,11 +74,19 @@ local function isTab(id)
     return false
 end
 
+-- an open the server never answered (an older server drops it while the trainer is asleep or busy)
+-- is tried again, at the back of the queue
+local OPEN_TRIES = 3
+
 local function dropExpired()
     local now = g_clock.millis()
     for i = #pending, 1, -1 do
-        if pending[i].untilTime < now then
+        local entry = pending[i]
+        if entry.untilTime < now then
             table.remove(pending, i)
+            if entry.item and (entry.tries or 1) < OPEN_TRIES then
+                queued[#queued + 1] = { item = entry.item, tries = (entry.tries or 1) + 1 }
+            end
         end
     end
 end
@@ -103,16 +111,36 @@ local function isBelt(container)
     return isSlotContainer(container, slotItem(InventorySlotBody))
 end
 
--- select: the trainer opened it, so its tab is shown
-local function openBag(item, select)
+-- select: the trainer opened it, so its tab is shown; tries: opens of it sent so far, for one from the queue
+local function openBag(item, select, tries)
     local pos = item:getPosition()
     local slot
     if pos and pos.x == 65535 and tabs[1] and pos.y == 64 + tabs[1] then
         slot = pos.z
     end
     pending[#pending + 1] = { itemId = item:getId(), untilTime = g_clock.millis() + PENDING_TIMEOUT, select = select,
-        slot = slot }
+        slot = slot, item = tries and item, tries = tries }
     g_game.open(item)
+end
+
+-- the belt opens with the backpack (game_pokehud); bags wait for it, since two opens in flight take
+-- the same container id. One that never came is asked for again.
+local beltAsked, beltTries = 0, 0
+
+local function awaitingBelt()
+    local belt = slotItem(InventorySlotBody)
+    if beltId or not belt or not belt:isContainer() then
+        return false
+    end
+    if g_clock.millis() < beltAsked + PENDING_TIMEOUT then
+        return true
+    end
+    if beltTries >= OPEN_TRIES then
+        return false
+    end
+    beltAsked, beltTries = g_clock.millis(), beltTries + 1
+    g_game.open(belt)
+    return true
 end
 
 -- the bag's slot in the backpack, checked against what's there now; a tab picked up when switching
@@ -180,16 +208,20 @@ local function pump()
     if #pending > 0 or settleEvent then
         return
     end
+    if awaitingBelt() then
+        scheduleEvent(pump, PENDING_TIMEOUT + 100)
+        return
+    end
     if tabsFull() then
         queued = {}
         return
     end
-    local item = table.remove(queued, 1)
-    while item and isShown(item) do
-        item = table.remove(queued, 1)
+    local entry = table.remove(queued, 1)
+    while entry and isShown(entry.item) do
+        entry = table.remove(queued, 1)
     end
-    if item then
-        openBag(item, false)
+    if entry then
+        openBag(entry.item, false, entry.tries)
         scheduleEvent(pump, PENDING_TIMEOUT + 100)
     end
 end
@@ -202,7 +234,7 @@ local function cancelSettle()
 end
 
 local function queueBag(item)
-    queued[#queued + 1] = item
+    queued[#queued + 1] = { item = item, tries = 1 }
 end
 
 local function titleOf(container)
@@ -962,11 +994,7 @@ local function openInnerBags(container)
             queueBag(item)
         end
     end
-    if beltId or not slotItem(InventorySlotBody) then
-        pump()
-    else
-        scheduleEvent(pump, 1000)
-    end
+    pump()
 end
 
 -- asked by game_containers and by onContainerOpen, in either order, so the answer is kept
@@ -994,7 +1022,7 @@ local function onContainerOpen(container, previousContainer)
         return
     end
     if isBelt(container) then
-        beltId = id
+        beltId, beltTries = id, 0
         if window and window:isVisible() then
             fillBelt()
         end
@@ -1025,6 +1053,10 @@ local function onContainerOpen(container, previousContainer)
         table.insert(tabs, 1, id)
         tabSlot[id] = -1
         selected = selected or id
+        if not beltId then
+            -- game_pokehud asks for the belt as the backpack comes in
+            beltAsked, beltTries = g_clock.millis(), 1
+        end
         showWindow()
         openInnerBags(container)
         return
@@ -1179,6 +1211,8 @@ function Bag.open()
     local container = containerById(tabs[1])
     if container then
         showWindow()
+        beltTries = 0
+        pump()
     else
         g_game.open(back)
     end
