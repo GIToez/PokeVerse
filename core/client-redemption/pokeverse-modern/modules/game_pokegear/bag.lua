@@ -1022,7 +1022,7 @@ local function onContainerOpen(container, previousContainer)
         return
     end
     if isBelt(container) then
-        beltId, beltTries = id, 0
+        beltId = id
         if window and window:isVisible() then
             fillBelt()
         end
@@ -1084,6 +1084,9 @@ local function onContainerClose(container)
         beltId = nil
         if window and window:isVisible() then
             fillBelt()
+            -- still worn: it comes back, a few times per opening of the Bag
+            beltAsked = 0
+            scheduleEvent(pump, 200)
         end
         return
     end
