@@ -604,6 +604,16 @@ bool Actions::useItem(Player* player, const Position& pos, uint8_t index, Item* 
 	return false;
 }
 
+bool Actions::openContainer(Player* player, const Position& pos, uint8_t index, Item* item)
+{
+	ReturnValue ret = internalUseItem(player, pos, index, item, 0);
+	if(ret == RET_NOERROR)
+		return true;
+
+	player->sendCancelMessage(ret);
+	return false;
+}
+
 bool Actions::executeUseEx(Action* action, Player* player, Item* item, const PositionEx& fromPosEx,
 	const PositionEx& toPosEx, bool isHotkey, uint32_t creatureId)
 {

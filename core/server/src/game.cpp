@@ -2765,13 +2765,21 @@ bool Game::playerUseItem(uint32_t playerId, const Position& pos, int16_t stackpo
 	uint8_t index, uint16_t spriteId, bool isHotkey)
 {
 	Player* player = getPlayerByID(playerId);
-	if(!player || player->isRemoved() || player->hasCondition(CONDITION_SLEEP, 0))
+	if(!player || player->isRemoved())
 		return false;
 
 	if(isHotkey && !g_config.getBool(ConfigManager::AIMBOT_HOTKEY_ENABLED))
 		return false;
 
 	Thing* thing = internalGetThing(player, pos, stackpos, spriteId, STACKPOS_USEITEM);
+	// a bag the trainer carries (the backpack, the belt, a bag inside) opens while asleep and between
+	// actions: the client opens the backpack, the belt and every inner bag back to back, and a delayed
+	// open is dropped as soon as another action replaces it. A bag with a script still waits its turn.
+	bool carriedBag = pos.x == 0xFFFF && thing && thing->getItem() && thing->getItem()->getContainer()
+		&& !thing->getItem()->isUseable() && !g_actions->hasAction(thing->getItem());
+	if(!carriedBag && player->hasCondition(CONDITION_SLEEP, 0))
+		return false;
+
 	if(!thing)
 	{
 		player->sendCancelMessage(RET_NOTPOSSIBLE);
@@ -2783,6 +2791,15 @@ bool Game::playerUseItem(uint32_t playerId, const Position& pos, int16_t stackpo
 	{
 		player->sendCancelMessage(RET_CANNOTUSETHISOBJECT);
 		return false;
+	}
+
+	if(carriedBag)
+	{
+		if(isHotkey)
+			showHotkeyUseMessage(player, item);
+
+		player->setIdleTime(0);
+		return g_actions->openContainer(player, pos, index, item);
 	}
 
 	ReturnValue ret = g_actions->canUse(player, pos);
