@@ -23,6 +23,27 @@ local SPECIAL_POKEMON = {
     ["Sandshrew"] = "Christmas Sandshrew",
     ["Spearow"] = "Christmas Spearow",
     ["Weedle"] = "Christmas Weedle",
+    ["Aipom"] = "Christmas Aipom",
+    ["Chikorita"] = "Christmas Chikorita",
+    ["Clefairy"] = "Christmas Clefairy",
+    ["Cubone"] = "Christmas Cubone",
+    ["Ditto"] = "Christmas Ditto",
+    ["Eevee"] = "Christmas Eevee",
+    ["Elekid"] = "Christmas Elekid",
+    ["Golbat"] = "Christmas Golbat",
+    ["Hitmontop"] = "Christmas Hitmontop",
+    ["Jigglypuff"] = "Christmas Jigglypuff",
+    ["Jynx"] = "Christmas Jynx",
+    ["Ledyba"] = "Christmas Ledyba",
+    ["Mantine"] = "Christmas Mantine",
+    ["Psyduck"] = "Christmas Psyduck",
+    ["Seel"] = "Christmas Seel",
+    ["Teddiursa"] = "Christmas Teddiursa",
+    ["Togepi"] = "Christmas Togepi",
+    ["Totodile"] = "Christmas Totodile",
+    ["Wooper"] = "Christmas Wooper",
+    ["Blissey"] = "Santa Blissey",
+    ["Snorlax"] = { "Christmas Snorlax", "Santa Snorlax" },
 }
 local SPECIAL_POKEMON_CHANCE = 10
 
@@ -31,9 +52,12 @@ ChristmasEvent.DROP_CHANCE = 20000 -- 20%
 ChristmasEvent.PRESENT_ITEMIDS = {14639, 14640}
 
 ChristmasEvent.onSpawn = function(cid)
-    local name = getCreatureName(cid)
-    if (SPECIAL_POKEMON[name] and getRandom(1, SPECIAL_POKEMON_CHANCE) <= 1) then
-        local r = doCreateMonster(SPECIAL_POKEMON[name], getCreaturePosition(cid), false)
+    local special = SPECIAL_POKEMON[getCreatureName(cid)]
+    if (special and getRandom(1, SPECIAL_POKEMON_CHANCE) <= 1) then
+        if (type(special) == "table") then
+            special = special[getRandom(1, #special)]
+        end
+        local r = doCreateMonster(special, getCreaturePosition(cid), false)
         if (not isBoolean(r)) then
             addEvent(doRemoveCreature, 1000, cid)
             setMonsterSpecialAbility(r, getPokemonRandomSpecialAbility(getCreatureName(r)))

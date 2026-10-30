@@ -26,3 +26,8 @@ POKEMON["Totodile"] = {
 POKEMON["RC Totodile"] = table.deepcopy(POKEMON["Totodile"])
 POKEMON["RC Totodile"].pTypes = { ELEMENT_POISON, ELEMENT_NORMAL }
 POKEMON["RC Totodile"].blockTransform = true
+
+POKEMON["Christmas Totodile"] = table.deepcopy(POKEMON["Totodile"])
+POKEMON["Christmas Totodile"].blockTransform = true
+POKEMON["Christmas Totodile"].evolutions = {}
+POKEMON["Christmas Totodile"].ignoreBallCounter = true

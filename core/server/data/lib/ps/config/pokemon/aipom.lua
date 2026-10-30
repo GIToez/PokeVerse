@@ -26,3 +26,8 @@ POKEMON["Aipom"] = {
 POKEMON["RC Aipom"] = table.deepcopy(POKEMON["Aipom"])
 POKEMON["RC Aipom"].pTypes = { ELEMENT_POISON, ELEMENT_NORMAL }
 POKEMON["RC Aipom"].blockTransform = true
+
+POKEMON["Christmas Aipom"] = table.deepcopy(POKEMON["Aipom"])
+POKEMON["Christmas Aipom"].blockTransform = true
+POKEMON["Christmas Aipom"].evolutions = {}
+POKEMON["Christmas Aipom"].ignoreBallCounter = true
