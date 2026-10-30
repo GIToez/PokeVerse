@@ -7,7 +7,7 @@ A look of `new` adds the outfit after the last one and prints the id it got.
 
 The sheet is laid out like the "6500 sprite pokemon" pack (docs/sprite-pack-review): the four
 directions (north, east, south, west) across and the animation frames down, every frame a square
-of 32 to 192 pixels (a whole number of tiles). The outfit becomes one layer of that size with a
+of 32 to 224 pixels (a whole number of tiles). The outfit becomes one layer of that size with a
 frame per row, standing on its tile's bottom right like the other Pokemon. Its old sprites are left in data.spr; the new
 ones go on sprite ids no thing uses, so nothing else changes. Use it for looks that have no art,
 e.g. Latias (1559) and Latios (1560).
@@ -50,8 +50,8 @@ def tiles_of(sheet):
     """{(frame, direction, x, y): 32x32 RGBA array} with x and y counted from the bottom right, and the size."""
     a = np.array(Image.open(sheet).convert('RGBA'))
     size = a.shape[1] // 4
-    if size % 32 or not 32 <= size <= 192 or a.shape[0] % size:
-        sys.exit('%s: expected four directions across of 32 to 192 pixels, got %dx%d'
+    if size % 32 or not 32 <= size <= 224 or a.shape[0] % size:
+        sys.exit('%s: expected four directions across of 32 to 224 pixels, got %dx%d'
                  % (sheet, a.shape[1], a.shape[0]))
     n = size // 32
     out = {}
