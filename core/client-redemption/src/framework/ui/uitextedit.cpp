@@ -297,7 +297,16 @@ void UITextEdit::drawSelf(const DrawPoolType drawPane)
                 } else if (cursorVis > 0 && cursorVis - 1 < visLen && m_glyphsCoords[cursorVis - 1].first.isValid()) {
                     caretX = m_glyphsCoords[cursorVis - 1].first.right();
                 } else {
-                    caretX = L.left;
+                    // a TTF space has no pixels, so no glyph rect: the caret goes where the pen is after it
+                    int pv = std::min(cursorVis, visLen) - 1;
+                    while (pv >= L.visStart && static_cast<uint8_t>(m_displayedText[pv]) < 32) --pv;
+                    if (pv >= L.visStart && pv < static_cast<int>(m_glyphsPositionsCache.size())) {
+                        const uint8_t g = static_cast<uint8_t>(m_displayedText[pv]);
+                        caretX = m_drawArea.left() - m_textVirtualOffset.x + m_glyphsPositionsCache[pv].x
+                            + m_font->getGlyphsAdvance()[g];
+                    } else {
+                        caretX = L.left;
+                    }
                 }
             }
 
