@@ -346,6 +346,21 @@
 		<instant name="script_Nature Power" words="**st280" enabled="0" script="../../lib/ps/events/spells/scripts/Nature Power.lua"/>
 		<instant name="script_Venom Drench" words="*st281" enabled="0" script="../../lib/ps/events/spells/scripts/Venom Drench.lua"/>
 		<instant name="script_Spikes" words="*st283" enabled="0" script="../../lib/ps/events/spells/scripts/Spikes.lua"/>
+		<instant name="script_Shadow Force" words="*st284" enabled="0" casterTargetOrDirection="1" blockwalls="1" script="../../lib/ps/events/spells/scripts/Shadow Force.lua" />
+		<instant name="script_Crush Grip" words="*st285" enabled="0" casterTargetOrDirection="1" blockwalls="1" script="../../lib/ps/events/spells/scripts/Crush Grip.lua" />
+		<instant name="script_Mystical Power" words="*st286" enabled="0" casterTargetOrDirection="1" blockwalls="1" script="../../lib/ps/events/spells/scripts/Mystical Power.lua" />
+		<instant name="script_Dragon Ascent" words="*st287" enabled="0" casterTargetOrDirection="1" blockwalls="1" script="../../lib/ps/events/spells/scripts/Dragon Ascent.lua" />
+		<instant name="script_Attack Order" words="*st288" enabled="0" casterTargetOrDirection="1" blockwalls="1" script="../../lib/ps/events/spells/scripts/Attack Order.lua" />
+		<instant name="script_Rock Wrecker" words="*st289" enabled="0" casterTargetOrDirection="1" blockwalls="1" script="../../lib/ps/events/spells/scripts/Rock Wrecker.lua" />
+		<instant name="script_Headlong Rush" words="*st290" enabled="0" casterTargetOrDirection="1" blockwalls="1" script="../../lib/ps/events/spells/scripts/Headlong Rush.lua" />
+		<instant name="script_Raging Fury" words="*st291" enabled="0" casterTargetOrDirection="1" blockwalls="1" script="../../lib/ps/events/spells/scripts/Raging Fury.lua" />
+		<instant name="script_Sacred Sword" words="*st292" enabled="0" casterTargetOrDirection="1" blockwalls="1" script="../../lib/ps/events/spells/scripts/Sacred Sword.lua" />
+		<instant name="script_Aqua Cutter" words="*st293" enabled="0" casterTargetOrDirection="1" blockwalls="1" script="../../lib/ps/events/spells/scripts/Aqua Cutter.lua" />
+		<instant name="script_Wave Crash" words="*st294" enabled="0" casterTargetOrDirection="1" blockwalls="1" script="../../lib/ps/events/spells/scripts/Wave Crash.lua" />
+		<instant name="script_Mystical Fire" words="*st295" enabled="0" casterTargetOrDirection="1" blockwalls="1" script="../../lib/ps/events/spells/scripts/Mystical Fire.lua" />
+		<instant name="script_Vacuum Wave" words="*st296" enabled="0" casterTargetOrDirection="1" blockwalls="1" script="../../lib/ps/events/spells/scripts/Vacuum Wave.lua" />
+		<instant name="script_Liquidation" words="*st297" enabled="0" casterTargetOrDirection="1" blockwalls="1" script="../../lib/ps/events/spells/scripts/Liquidation.lua" />
+		<instant name="script_Body Press" words="*st298" enabled="0" casterTargetOrDirection="1" blockwalls="1" script="../../lib/ps/events/spells/scripts/Body Press.lua" />
 		<!-- Area/Friendly -->
 			<instant name="script_Healing Wish" words="*sa50" enabled="0" aggressive="0" script="../../lib/ps/events/spells/scripts/Healing Wish.lua" />
 			<instant name="script_Tailwind" words="*sa44" enabled="0" aggressive="0" script="../../lib/ps/events/spells/scripts/Tailwind.lua" />
@@ -359,6 +374,8 @@
 			<instant name="script_Grassy Terrain" words="*ss71" enabled="0" aggressive="0" script="../../lib/ps/events/spells/scripts/Grassy Terrain.lua" />
 			<instant name="script_Misty Terrain" words="*ss73" enabled="0" aggressive="0" script="../../lib/ps/events/spells/scripts/Misty Terrain.lua" />
 			<instant name="script_Wide Guard" words="*ss74" enabled="0" aggressive="0" script="../../lib/ps/events/spells/scripts/Wide Guard.lua" />
+		<instant name="script_Defend Order" words="*ss75" enabled="0" aggressive="0" selftarget="1" script="../../lib/ps/events/spells/scripts/Defend Order.lua" />
+		<instant name="script_Heal Order" words="*ss76" enabled="0" aggressive="0" selftarget="1" script="../../lib/ps/events/spells/scripts/Heal Order.lua" />
 	<!-- Direction -->
 		<instant name="script_Aurora Beam" words="*sa1" enabled="0" direction="1" script="../../lib/ps/events/spells/scripts/Aurora Beam.lua" />
 		<instant name="script_Bubblebeam" words="*sa3" enabled="0" direction="1" script="../../lib/ps/events/spells/scripts/Bubblebeam.lua" />
@@ -420,6 +437,13 @@
 		<instant name="script_Origin Pulse" words="*sa108" enabled="0" direction="1" script="../../lib/ps/events/spells/scripts/Origin Pulse.lua" />
 		<instant name="script_Luster Purge" words="*sa109" enabled="0" direction="1" script="../../lib/ps/events/spells/scripts/Luster Purge.lua" />
 		<instant name="script_Surf" words="*sa110" enabled="0" direction="1" script="../../lib/ps/events/spells/scripts/Surf.lua" />
+		<instant name="script_Roar of Time" words="*sa111" enabled="0" script="../../lib/ps/events/spells/scripts/Roar of Time.lua" />
+		<instant name="script_Spacial Rend" words="*sa112" enabled="0" direction="1" script="../../lib/ps/events/spells/scripts/Spacial Rend.lua" />
+		<instant name="script_Magma Storm" words="*sa113" enabled="0" script="../../lib/ps/events/spells/scripts/Magma Storm.lua" />
+		<instant name="script_Seed Flare" words="*sa114" enabled="0" direction="1" script="../../lib/ps/events/spells/scripts/Seed Flare.lua" />
+		<instant name="script_Judgment" words="*sa115" enabled="0" script="../../lib/ps/events/spells/scripts/Judgment.lua" />
+		<instant name="script_Dark Void" words="*sa116" enabled="0" script="../../lib/ps/events/spells/scripts/Dark Void.lua" />
+		<instant name="script_Chatter" words="*sa117" enabled="0" script="../../lib/ps/events/spells/scripts/Chatter.lua" />
 		<instant name="script_Sheer Cold" words="*st264" enabled="0" direction="1" script="../../lib/ps/events/spells/scripts/Sheer Cold.lua"/>
 		<instant name="script_Defog" words="*st282" enabled="0" direction="1" script="../../lib/ps/events/spells/scripts/Defog.lua"/>
 	<!-- Stats(Self) -->

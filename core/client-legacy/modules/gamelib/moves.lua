@@ -769,6 +769,31 @@ MOVES[#MOVES + 1] = {name = "Shadow Sneak", iconItemId = 16323}
 MOVES[#MOVES + 1] = {name = "Ice Shard", iconItemId = 13110}
 MOVES[#MOVES + 1] = {name = "Razor Wind", iconItemId = 15740}
 MOVES[#MOVES + 1] = {name = "Mirror Coat", iconItemId = 12122}
+MOVES[#MOVES + 1] = {name = "Roar of Time", iconItemId = 28981}
+MOVES[#MOVES + 1] = {name = "Spacial Rend", iconItemId = 28982}
+MOVES[#MOVES + 1] = {name = "Shadow Force", iconItemId = 28983}
+MOVES[#MOVES + 1] = {name = "Magma Storm", iconItemId = 28984}
+MOVES[#MOVES + 1] = {name = "Crush Grip", iconItemId = 28985}
+MOVES[#MOVES + 1] = {name = "Seed Flare", iconItemId = 28986}
+MOVES[#MOVES + 1] = {name = "Judgment", iconItemId = 28987}
+MOVES[#MOVES + 1] = {name = "Dark Void", iconItemId = 28988}
+MOVES[#MOVES + 1] = {name = "Mystical Power", iconItemId = 28989}
+MOVES[#MOVES + 1] = {name = "Dragon Ascent", iconItemId = 28990}
+MOVES[#MOVES + 1] = {name = "Attack Order", iconItemId = 28991}
+MOVES[#MOVES + 1] = {name = "Defend Order", iconItemId = 28992}
+MOVES[#MOVES + 1] = {name = "Heal Order", iconItemId = 28993}
+MOVES[#MOVES + 1] = {name = "Chatter", iconItemId = 28994}
+MOVES[#MOVES + 1] = {name = "Rock Wrecker", iconItemId = 28995}
+MOVES[#MOVES + 1] = {name = "Headlong Rush", iconItemId = 28996}
+MOVES[#MOVES + 1] = {name = "Raging Fury", iconItemId = 28997}
+MOVES[#MOVES + 1] = {name = "Sacred Sword", iconItemId = 28998}
+MOVES[#MOVES + 1] = {name = "Aqua Cutter", iconItemId = 28999}
+MOVES[#MOVES + 1] = {name = "Wave Crash", iconItemId = 29000}
+MOVES[#MOVES + 1] = {name = "Mystical Fire", iconItemId = 29001}
+MOVES[#MOVES + 1] = {name = "Vacuum Wave", iconItemId = 29002}
+MOVES[#MOVES + 1] = {name = "Liquidation", iconItemId = 29003}
+MOVES[#MOVES + 1] = {name = "Body Press", iconItemId = 29004}
+MOVES[#MOVES + 1] = {name = "Feint", iconItemId = 29005}
 
 local MOVE_BY_ICON_ITEM_ID = {}
 for k, v in pairs(MOVES) do
@@ -1554,6 +1579,31 @@ MOVES_DESCRIPTIONS["Shadow Sneak"] = "Shadow Sneak deals damage and has no secon
 MOVES_DESCRIPTIONS["Ice Shard"] = "Ice Shard deals damage and has no secondary effect."
 MOVES_DESCRIPTIONS["Razor Wind"] = "The user of Razor Wind will 'whip up a whirlwind' on the first turn. On the second turn, Razor Wind deals damage and has an increased critical hit ratio."
 MOVES_DESCRIPTIONS["Mirror Coat"] = "Any move is reflected back to the attacker."
+MOVES_DESCRIPTIONS["Roar of Time"] = "Roar of Time distorts time itself to strike everything around the user. The user can't attack on the next turn."
+MOVES_DESCRIPTIONS["Spacial Rend"] = "Spacial Rend tears the space in front of the user. It has an increased critical hit ratio."
+MOVES_DESCRIPTIONS["Shadow Force"] = "The user vanishes and strikes a moment later. It hits through Protect and lifts it."
+MOVES_DESCRIPTIONS["Magma Storm"] = "Magma Storm traps everything around the user in a swirl of fire for four rounds. Each round has a 10%% chance of burning the target."
+MOVES_DESCRIPTIONS["Crush Grip"] = "Crush Grip deals more damage the more HP the target has left, up to 120 power."
+MOVES_DESCRIPTIONS["Seed Flare"] = "Seed Flare blasts everything in front of the user. It has a 40%% chance of lowering the target's Special Defense by two stages."
+MOVES_DESCRIPTIONS["Judgment"] = "Judgment calls down beams of light on everything around the user."
+MOVES_DESCRIPTIONS["Dark Void"] = "Dark Void drags everything around the user into a world of total darkness, putting them to sleep."
+MOVES_DESCRIPTIONS["Mystical Power"] = "Mystical Power attacks with a mysterious power and raises the user's Special Attack by one stage."
+MOVES_DESCRIPTIONS["Dragon Ascent"] = "The user soars upward and drops at high speed. It lowers the user's Defense and Special Defense by one stage each after attacking."
+MOVES_DESCRIPTIONS["Attack Order"] = "The user calls out its underlings to pummel the target. It has an increased critical hit ratio."
+MOVES_DESCRIPTIONS["Defend Order"] = "The user calls out its underlings to shield its body, raising its Defense and Special Defense by one stage each."
+MOVES_DESCRIPTIONS["Heal Order"] = "The user calls out its underlings to heal it. The user recovers 50%% of its max HP."
+MOVES_DESCRIPTIONS["Chatter"] = "The user attacks with a deafening noise made of sound waves. This confuses the target."
+MOVES_DESCRIPTIONS["Rock Wrecker"] = "The user launches a huge boulder at the target. The user can't attack on the next turn."
+MOVES_DESCRIPTIONS["Headlong Rush"] = "The user smashes into the target in a full-body tackle. It lowers the user's Defense and Special Defense by one stage each after attacking."
+MOVES_DESCRIPTIONS["Raging Fury"] = "The user rampages around spewing flames for 2-3 turns and then becomes confused."
+MOVES_DESCRIPTIONS["Sacred Sword"] = "The user attacks by slicing with a long horn. It ignores the target's evasion."
+MOVES_DESCRIPTIONS["Aqua Cutter"] = "The user expels pressurized water to cut at the target like a blade. It has an increased critical hit ratio."
+MOVES_DESCRIPTIONS["Wave Crash"] = "The user shrouds itself in water and slams into the target. This also damages the user quite a lot."
+MOVES_DESCRIPTIONS["Mystical Fire"] = "The user attacks by breathing a special, hot fire. This also lowers the target's Special Attack by one stage."
+MOVES_DESCRIPTIONS["Vacuum Wave"] = "The user whirls its fists to send a wave of pure vacuum at the target. It has a short cooldown."
+MOVES_DESCRIPTIONS["Liquidation"] = "The user slams into the target using a full-force blast of water. It has a 20%% chance of lowering the target's Defense and Special Defense by one stage each."
+MOVES_DESCRIPTIONS["Body Press"] = "The user attacks by slamming its body into the target."
+MOVES_DESCRIPTIONS["Feint"] = "Feint hits through moves such as Protect or Detect and lifts their effect. It has a short cooldown."
 
 function getMoveDescriptionByName(name)
     return MOVES_DESCRIPTIONS[name] and tr(MOVES_DESCRIPTIONS[name]) or ""
