@@ -1543,6 +1543,7 @@ local POKEMON = {
             { name = "TM Double-Edge", countmax = 1, chance = 10 },
             { name = "TM Egg Bomb", countmax = 1, chance = 10 },
             { name = "TM Defense Curl", countmax = 1, chance = 10 },
+            { name = "Oval Stone", countmax = 1, chance = 20 },
         }
     },
     ["Tangela"] = {
@@ -5987,7 +5988,6 @@ local POKEMON = {
             { name = "torterra doll", countmax = 1, chance = 100 },
             { name = "held miracle seed", countmax = 1, chance = 10 },
             { name = "held black glasses", countmax = 1, chance = 10 },
-            { name = "Leaf Stone", countmax = 1, chance = 20 },
         }
     },
     ["Chimchar"] = {
@@ -6091,7 +6091,6 @@ local POKEMON = {
             { name = "empoleon doll", countmax = 1, chance = 100 },
             { name = "held mystic water", countmax = 1, chance = 10 },
             { name = "held miracle seed", countmax = 1, chance = 10 },
-            { name = "Water Stone", countmax = 1, chance = 20 },
         }
     },
     ["Starly"] = {
@@ -6281,7 +6280,7 @@ local POKEMON = {
             { name = "roserade doll", countmax = 1, chance = 100 },
             { name = "held miracle seed", countmax = 1, chance = 10 },
             { name = "held black glasses", countmax = 1, chance = 10 },
-            { name = "Leaf Stone", countmax = 1, chance = 20 },
+            { name = "Shiny Stone", countmax = 1, chance = 20 },
         }
     },
     ["Cranidos"] = {
@@ -6474,7 +6473,6 @@ local POKEMON = {
             { name = "onigiri", countmax = 5, chance = 5000 },
             { name = "floatzel doll", countmax = 1, chance = 100 },
             { name = "held mystic water", countmax = 1, chance = 20 },
-            { name = "Prism Scale", countmax = 1, chance = 20 },
         }
     },
     ["Cherubi"] = {
@@ -6540,7 +6538,6 @@ local POKEMON = {
             { name = "onigiri", countmax = 5, chance = 5000 },
             { name = "gastrodon doll", countmax = 1, chance = 100 },
             { name = "held mystic water", countmax = 1, chance = 20 },
-            { name = "Prism Scale", countmax = 1, chance = 20 },
         }
     },
     ["Ambipom"] = {
@@ -6630,6 +6627,7 @@ local POKEMON = {
             { name = "mismagius doll", countmax = 1, chance = 100 },
             { name = "held poison barb", countmax = 1, chance = 10 },
             { name = "held spell tag", countmax = 1, chance = 10 },
+            { name = "Dusk Stone", countmax = 1, chance = 20 },
         }
     },
     ["Honchkrow"] = {
@@ -6651,6 +6649,7 @@ local POKEMON = {
             { name = "onigiri", countmax = 5, chance = 5000 },
             { name = "honchkrow doll", countmax = 1, chance = 100 },
             { name = "held black glasses", countmax = 1, chance = 20 },
+            { name = "Dusk Stone", countmax = 1, chance = 20 },
         }
     },
     ["Glameow"] = {
@@ -6712,7 +6711,6 @@ local POKEMON = {
             { name = "toxic plate", countmax = 1, chance = 50 },
             { name = "earth plate", countmax = 1, chance = 50 },
             { name = "skuntank doll", countmax = 1, chance = 100 },
-            { name = "Moon Stone", countmax = 1, chance = 20 },
             { name = "held poison barb", countmax = 1, chance = 10 },
             { name = "held soft sand", countmax = 1, chance = 10 },
         }
@@ -6948,7 +6946,6 @@ local POKEMON = {
             { name = "toxic plate", countmax = 1, chance = 50 },
             { name = "earth plate", countmax = 1, chance = 50 },
             { name = "drapion doll", countmax = 1, chance = 100 },
-            { name = "Moon Stone", countmax = 1, chance = 20 },
             { name = "held poison barb", countmax = 1, chance = 10 },
             { name = "held soft sand", countmax = 1, chance = 10 },
         }
@@ -6975,7 +6972,6 @@ local POKEMON = {
             { name = "toxic plate", countmax = 1, chance = 50 },
             { name = "earth plate", countmax = 1, chance = 50 },
             { name = "toxicroak doll", countmax = 1, chance = 100 },
-            { name = "Moon Stone", countmax = 1, chance = 20 },
             { name = "held poison barb", countmax = 1, chance = 10 },
             { name = "held soft sand", countmax = 1, chance = 10 },
         }
@@ -7027,7 +7023,6 @@ local POKEMON = {
             { name = "onigiri", countmax = 5, chance = 5000 },
             { name = "lumineon doll", countmax = 1, chance = 100 },
             { name = "held mystic water", countmax = 1, chance = 20 },
-            { name = "Prism Scale", countmax = 1, chance = 20 },
         }
     },
     ["Mantyke"] = {
@@ -7105,6 +7100,7 @@ local POKEMON = {
             { name = "weavile doll", countmax = 1, chance = 100 },
             { name = "held black glasses", countmax = 1, chance = 10 },
             { name = "held charcoal", countmax = 1, chance = 10 },
+            { name = "Razor Claw", countmax = 1, chance = 20 },
         }
     },
     ["Magnezone"] = {
@@ -7120,6 +7116,7 @@ local POKEMON = {
             { name = "blueberry", countmax = 5, chance = 5000 },
             { name = "magnezone doll", countmax = 1, chance = 100 },
             { name = "held magnet", countmax = 1, chance = 20 },
+            { name = "Thunderstone", countmax = 1, chance = 20 },
         }
     },
     ["Lickilicky"] = {
@@ -7157,6 +7154,7 @@ local POKEMON = {
             { name = "rhyperior doll", countmax = 1, chance = 100 },
             { name = "held soft sand", countmax = 1, chance = 10 },
             { name = "held dragon fang", countmax = 1, chance = 10 },
+            { name = "Protector", countmax = 1, chance = 20 },
         }
     },
     ["Tangrowth"] = {
@@ -7185,7 +7183,6 @@ local POKEMON = {
             { name = "tangrowth doll", countmax = 1, chance = 100 },
             { name = "held miracle seed", countmax = 1, chance = 10 },
             { name = "held black glasses", countmax = 1, chance = 10 },
-            { name = "Leaf Stone", countmax = 1, chance = 20 },
         }
     },
     ["Electivire"] = {
@@ -7201,6 +7198,7 @@ local POKEMON = {
             { name = "blueberry", countmax = 5, chance = 5000 },
             { name = "electivire doll", countmax = 1, chance = 100 },
             { name = "held magnet", countmax = 1, chance = 20 },
+            { name = "Electirizer", countmax = 1, chance = 20 },
         }
     },
     ["Magmortar"] = {
@@ -7221,6 +7219,7 @@ local POKEMON = {
             { name = "lava cookie", countmax = 5, chance = 5000 },
             { name = "magmortar doll", countmax = 1, chance = 100 },
             { name = "held charcoal", countmax = 1, chance = 10 },
+            { name = "Magmarizer", countmax = 1, chance = 20 },
         }
     },
     ["Togekiss"] = {
@@ -7234,6 +7233,7 @@ local POKEMON = {
             { name = "pixie plate", countmax = 1, chance = 50 },
             { name = "togekiss doll", countmax = 1, chance = 100 },
             { name = "held pink bow", countmax = 1, chance = 20 },
+            { name = "Shiny Stone", countmax = 1, chance = 20 },
         }
     },
     ["Yanmega"] = {
@@ -7278,6 +7278,7 @@ local POKEMON = {
             { name = "leafeon doll", countmax = 1, chance = 100 },
             { name = "held miracle seed", countmax = 1, chance = 20 },
             { name = "held black glasses", countmax = 1, chance = 20 },
+            { name = "Leaf Stone", countmax = 1, chance = 20 },
         }
     },
     ["Glaceon"] = {
@@ -7292,6 +7293,7 @@ local POKEMON = {
             { name = "icicle plate", countmax = 1, chance = 50 },
             { name = "glaceon doll", countmax = 1, chance = 100 },
             { name = "held never melt ice", countmax = 1, chance = 20 },
+            { name = "Ice Stone", countmax = 1, chance = 20 },
         }
     },
     ["Gliscor"] = {
@@ -7311,6 +7313,7 @@ local POKEMON = {
             { name = "gliscor doll", countmax = 1, chance = 100 },
             { name = "held soft sand", countmax = 1, chance = 10 },
             { name = "held dragon fang", countmax = 1, chance = 10 },
+            { name = "Razor Fang", countmax = 1, chance = 20 },
         }
     },
     ["Mamoswine"] = {
@@ -7337,8 +7340,8 @@ local POKEMON = {
             { name = "white orb" },
             { name = "love plate", countmax = 1, chance = 100 },
             { name = "porygon-z doll", countmax = 1, chance = 100 },
-            { name = "Soothe Bell", countmax = 1, chance = 20 },
             { name = "held silk scarf", countmax = 1, chance = 10 },
+            { name = "Dubious Disc", countmax = 1, chance = 20 },
         }
     },
     ["Gallade"] = {
@@ -7359,6 +7362,7 @@ local POKEMON = {
             { name = "gallade doll", countmax = 1, chance = 100 },
             { name = "held twisted spoon", countmax = 1, chance = 10 },
             { name = "held pink bow", countmax = 1, chance = 10 },
+            { name = "Dawn Stone", countmax = 1, chance = 20 },
         }
     },
     ["Probopass"] = {
@@ -7369,6 +7373,7 @@ local POKEMON = {
             { name = "probopass doll", countmax = 1, chance = 100 },
             { name = "held hard stone", countmax = 1, chance = 10 },
             { name = "held sharp beak", countmax = 1, chance = 10 },
+            { name = "Thunderstone", countmax = 1, chance = 20 },
         }
     },
     ["Dusknoir"] = {
@@ -7385,6 +7390,7 @@ local POKEMON = {
             { name = "dusknoir doll", countmax = 1, chance = 100 },
             { name = "held poison barb", countmax = 1, chance = 10 },
             { name = "held spell tag", countmax = 1, chance = 10 },
+            { name = "Reaper Cloth", countmax = 1, chance = 20 },
         }
     },
     ["Froslass"] = {
@@ -7399,6 +7405,7 @@ local POKEMON = {
             { name = "icicle plate", countmax = 1, chance = 50 },
             { name = "froslass doll", countmax = 1, chance = 100 },
             { name = "held never melt ice", countmax = 1, chance = 20 },
+            { name = "Dawn Stone", countmax = 1, chance = 20 },
         }
     },
     ["Rotom"] = {
@@ -9238,6 +9245,18 @@ local LOOTS = {
     ["Deepseascale"] = { id = 28892, price = 30000 },
     ["Deepseatooth"] = { id = 28893, price = 30000 },
     ["Prism Scale"] = { id = 28914, price = 30000 },
+    ["Shiny Stone"] = { id = 31083, price = 25000 },
+    ["Dusk Stone"] = { id = 31084, price = 25000 },
+    ["Dawn Stone"] = { id = 31085, price = 25000 },
+    ["Ice Stone"] = { id = 31086, price = 22500 },
+    ["Oval Stone"] = { id = 31087, price = 22500 },
+    ["Razor Claw"] = { id = 31088, price = 30000 },
+    ["Razor Fang"] = { id = 31089, price = 30000 },
+    ["Electirizer"] = { id = 31090, price = 30000 },
+    ["Magmarizer"] = { id = 31091, price = 30000 },
+    ["Protector"] = { id = 31092, price = 30000 },
+    ["Reaper Cloth"] = { id = 31093, price = 30000 },
+    ["Dubious Disc"] = { id = 31094, price = 30000 },
 
     --TMs Chances 1 - 5 - 10
     ["TM Bubblebeam"] = { id = 17347, price = 1000 },

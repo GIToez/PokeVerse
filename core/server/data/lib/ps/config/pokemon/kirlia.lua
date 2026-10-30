@@ -11,7 +11,7 @@ POKEMON["Kirlia"] = {
     dexPortrait = -1,
     fastcallPortrait = 27274,
     catchStorage = -1,
-    evolutions = { { name = "Gardevoir", requiredLevel = 50 } },
+    evolutions = { { name = "Gardevoir", requiredLevel = 50 }, { name = "Gallade", requiredLevel = 50, requiredItems = { ITEMS.DAWN_STONE } } },
     description = "The cheerful spirit of its Trainer gives it energy for its psychokinetic power. It spins and dances when happy.",
     skills = { "Tackle", 1, "Confusion", 5, "Magical Leaf", 10, "Draining Kiss", 15, "Disarming Voice", 20, "Hypnosis", 25, "Psychic", 35, "Heal Pulse", 40, "Stored Power", 45 },
     abilities = {POKEMON_ABILITIES.BLINK, POKEMON_ABILITIES.TELEPORT, POKEMON_ABILITIES.FIND},

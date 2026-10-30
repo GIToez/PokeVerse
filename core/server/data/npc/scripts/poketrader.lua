@@ -47,6 +47,18 @@ local OFFERT_ITEMS = {
             {itemId = 18094, count = 1, minBid = 30000}, -- Punch Machine
             {itemId = 18095, count = 1, minBid = 30000}, -- Kick Machine
             {itemId = 18096, count = 1, minBid = 30000}, -- Spin Machine
+            {itemId = 31083, count = 1, minBid = 25000}, -- Shiny Stone
+            {itemId = 31084, count = 1, minBid = 25000}, -- Dusk Stone
+            {itemId = 31085, count = 1, minBid = 25000}, -- Dawn Stone
+            {itemId = 31086, count = 1, minBid = 22500}, -- Ice Stone
+            {itemId = 31087, count = 1, minBid = 22500}, -- Oval Stone
+            {itemId = 31088, count = 1, minBid = 30000}, -- Razor Claw
+            {itemId = 31089, count = 1, minBid = 30000}, -- Razor Fang
+            {itemId = 31090, count = 1, minBid = 30000}, -- Electirizer
+            {itemId = 31091, count = 1, minBid = 30000}, -- Magmarizer
+            {itemId = 31092, count = 1, minBid = 30000}, -- Protector
+            {itemId = 31093, count = 1, minBid = 30000}, -- Reaper Cloth
+            {itemId = 31094, count = 1, minBid = 30000}, -- Dubious Disc
         }
     },
     { -- Semi-Rare

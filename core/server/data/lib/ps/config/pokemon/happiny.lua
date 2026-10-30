@@ -11,7 +11,7 @@ POKEMON["Happiny"] = {
     dexPortrait = 0,
     fastcallPortrait = 29059,
     catchStorage = -1,
-    evolutions = { { name = "Chansey", requiredLevel = 25 } },
+    evolutions = { { name = "Chansey", requiredLevel = 25, requiredItems = { ITEMS.OVAL_STONE }, requiredTime = WORLD_LIGHT_STATE_DAY } },
     description = "It likes to carry around a small rock. It may wander around others’ feet and cause them to stumble.",
     skills = { "Pound", 1, "Copycat", 5, "Present", 10, "Disarming Voice", 15, "Covet", 20 },
     abilities = { "Headbutt", "Flash" },

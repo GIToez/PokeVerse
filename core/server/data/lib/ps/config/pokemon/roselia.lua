@@ -11,7 +11,7 @@ POKEMON["Roselia"] = {
     dexPortrait = -1,
     fastcallPortrait = 27309,
     catchStorage = -1,
-    evolutions = {  },
+    evolutions = { { name = "Roserade", requiredLevel = 60, requiredItems = { ITEMS.SHINY_STONE } } },
     description = "It uses the different poisons in each hand separately when it attacks. The stronger its aroma, the healthier it is.",
     skills = { "Tackle", 1, "Absorb", 5, "Poison Sting", 10, "Magical Leaf", 15, "Stun Spore", 20, "Sludge Bomb", 25, "Synthesis", 30, "Razor Leaf", 35, "Dazzling Gleam", 40, "Energy Ball", 45, "Grass Whistle", 50, "Giga Drain", 55, "Petal Blizzard", 60, "Petal Dance", 65, "Aromatherapy", 70 },
     abilities = { "Cut", "Flash" },

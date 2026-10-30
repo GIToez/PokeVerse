@@ -32,4 +32,4 @@
 		<voice sentence="PROBOPASS!"/>
 	</voices>
 	
-<loot><item id="12234" countmax="1" chance="100"/><item id="18081" countmax="1" chance="100"/><item id="31065" countmax="1" chance="100"/><item id="23517" countmax="1" chance="10"/><item id="23526" countmax="1" chance="10"/></loot></monster>
+<loot><item id="12234" countmax="1" chance="100"/><item id="18081" countmax="1" chance="100"/><item id="31065" countmax="1" chance="100"/><item id="23517" countmax="1" chance="10"/><item id="23526" countmax="1" chance="10"/><item id="18087" countmax="1" chance="20"/></loot></monster>

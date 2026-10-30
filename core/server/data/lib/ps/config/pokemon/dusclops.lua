@@ -11,7 +11,7 @@ POKEMON["Dusclops"] = {
     dexPortrait = -1,
     fastcallPortrait = 27349,
     catchStorage = -1,
-    evolutions = {  },
+    evolutions = { { name = "Dusknoir", requiredLevel = 60, requiredItems = { ITEMS.REAPER_CLOTH } } },
     description = "Anyone who dares peer into its body to see its spectral ball of fire will have their spirit stolen away.",
     skills = { "Tackle", 1, "Astonish", 5, "Shadow Sneak", 10, "Shadow Ball", 15, "Confuse Ray", 20, "Curse", 25, "Shadow Punch", 35, "Fire Punch", 40, "Ice Punch", 45, "Thunder Punch", 50, "Future Sight", 55, "Hex", 60, "Payback", 65 },
     abilities = { "Flash", "Strength", "Rock Smash" },

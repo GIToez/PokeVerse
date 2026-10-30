@@ -31,4 +31,4 @@
 		<voice sentence="PORYGON-Z!"/>
 	</voices>
 	
-<loot><item id="12154" countmax="1" chance="80000"/><item id="17805" countmax="1" chance="40000"/><item id="14516" countmax="1" chance="40000"/><item id="12232" countmax="1" chance="100"/><item id="31063" countmax="1" chance="100"/><item id="18093" countmax="1" chance="20"/><item id="23527" countmax="1" chance="10"/><item id="30152" countmax="1" chance="500"/></loot></monster>
+<loot><item id="12154" countmax="1" chance="80000"/><item id="17805" countmax="1" chance="40000"/><item id="14516" countmax="1" chance="40000"/><item id="12232" countmax="1" chance="100"/><item id="31063" countmax="1" chance="100"/><item id="23527" countmax="1" chance="10"/><item id="30152" countmax="1" chance="500"/><item id="31094" countmax="1" chance="20"/></loot></monster>

@@ -11,7 +11,7 @@ POKEMON["Misdreavus"] = {
     dexPortrait = 15847,
     fastcallPortrait = 16047,
     catchStorage = 16200,
-    evolutions = {},
+    evolutions = { { name = "Mismagius", requiredLevel = 40, requiredItems = { ITEMS.DUSK_STONE } } },
     description = "It loves to bite and yank people's hair from behind without warning, just to see their shocked reactions.",
     skills = { "Tackle", 1, "Psywave", 5, "Astonish", 10, "Psybeam", 15, "Hex", 20, "Heal Bell", 25, "Shadow Ball", 30, "Curse", 35, "Payback", 40, "Dark Pulse", 45, "Hyper Voice", 50, "Spite", 55, "Uproar", 60, "Power Gem", 65 },
     abilities = { "Flash", "Headbutt" },

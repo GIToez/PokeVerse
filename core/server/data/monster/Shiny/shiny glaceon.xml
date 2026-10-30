@@ -32,4 +32,4 @@
 		<voice sentence="GLACEON!"/>
 	</voices>
 	
-<loot><item id="12143" countmax="1" chance="19444"/><item id="14485" countmax="1" chance="29166"/><item id="14496" countmax="1" chance="23333"/><item id="14495" countmax="1" chance="9722"/><item id="14489" countmax="1" chance="11666"/><item id="28884" countmax="1" chance="14583"/><item id="12236" countmax="1" chance="50"/><item id="31060" countmax="1" chance="100"/><item id="23522" countmax="1" chance="20"/></loot></monster>
+<loot><item id="12143" countmax="1" chance="19444"/><item id="14485" countmax="1" chance="29166"/><item id="14496" countmax="1" chance="23333"/><item id="14495" countmax="1" chance="9722"/><item id="14489" countmax="1" chance="11666"/><item id="28884" countmax="1" chance="14583"/><item id="12236" countmax="1" chance="50"/><item id="31060" countmax="1" chance="100"/><item id="23522" countmax="1" chance="20"/><item id="31086" countmax="1" chance="20"/></loot></monster>

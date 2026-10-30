@@ -32,4 +32,4 @@
 		<voice sentence="DUSKNOIR!"/>
 	</voices>
 	
-<loot><item id="12146" countmax="1" chance="26666"/><item id="14481" countmax="1" chance="24000"/><item id="14476" countmax="1" chance="30000"/><item id="14499" countmax="1" chance="17142"/><item id="14512" countmax="1" chance="40000"/><item id="14631" countmax="1" chance="4166"/><item id="18082" countmax="1" chance="50"/><item id="12235" countmax="1" chance="50"/><item id="31066" countmax="1" chance="100"/><item id="23524" countmax="1" chance="10"/><item id="23530" countmax="1" chance="10"/></loot></monster>
+<loot><item id="12146" countmax="1" chance="26666"/><item id="14481" countmax="1" chance="24000"/><item id="14476" countmax="1" chance="30000"/><item id="14499" countmax="1" chance="17142"/><item id="14512" countmax="1" chance="40000"/><item id="14631" countmax="1" chance="4166"/><item id="18082" countmax="1" chance="50"/><item id="12235" countmax="1" chance="50"/><item id="31066" countmax="1" chance="100"/><item id="23524" countmax="1" chance="10"/><item id="23530" countmax="1" chance="10"/><item id="31093" countmax="1" chance="20"/></loot></monster>

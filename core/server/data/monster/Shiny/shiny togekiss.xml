@@ -32,4 +32,4 @@
 		<voice sentence="TOGEKISS!"/>
 	</voices>
 	
-<loot><item id="12096" countmax="1" chance="100000"/><item id="12130" countmax="1" chance="28000"/><item id="12150" countmax="1" chance="31818"/><item id="12121" countmax="1" chance="31818"/><item id="14474" countmax="1" chance="8750"/><item id="23946" countmax="1" chance="50"/><item id="31057" countmax="1" chance="100"/><item id="23523" countmax="1" chance="20"/></loot></monster>
+<loot><item id="12096" countmax="1" chance="100000"/><item id="12130" countmax="1" chance="28000"/><item id="12150" countmax="1" chance="31818"/><item id="12121" countmax="1" chance="31818"/><item id="14474" countmax="1" chance="8750"/><item id="23946" countmax="1" chance="50"/><item id="31057" countmax="1" chance="100"/><item id="23523" countmax="1" chance="20"/><item id="31083" countmax="1" chance="20"/></loot></monster>

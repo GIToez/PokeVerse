@@ -38844,4 +38844,52 @@
 	<item id="31080" article="a" name="darkrai doll" sellprice="200"/>
 	<item id="31081" article="a" name="shaymin doll" sellprice="200"/>
 	<item id="31082" article="a" name="arceus doll" sellprice="200"/>
+	<item id="31083" article="a" name="Shiny Stone" sellprice="35000">
+		<attribute key="description" value="A stone used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31084" article="a" name="Dusk Stone" sellprice="35000">
+		<attribute key="description" value="A stone used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31085" article="a" name="Dawn Stone" sellprice="35000">
+		<attribute key="description" value="A stone used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31086" article="an" name="Ice Stone" sellprice="35000">
+		<attribute key="description" value="A stone used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31087" article="an" name="Oval Stone" sellprice="35000">
+		<attribute key="description" value="A stone used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31088" article="a" name="Razor Claw" sellprice="150000">
+		<attribute key="description" value="A peculiar object used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31089" article="a" name="Razor Fang" sellprice="150000">
+		<attribute key="description" value="A peculiar object used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31090" article="an" name="Electirizer" sellprice="150000">
+		<attribute key="description" value="A peculiar object used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31091" article="a" name="Magmarizer" sellprice="150000">
+		<attribute key="description" value="A peculiar object used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31092" article="a" name="Protector" sellprice="150000">
+		<attribute key="description" value="A peculiar object used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31093" article="a" name="Reaper Cloth" sellprice="150000">
+		<attribute key="description" value="A peculiar object used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31094" article="a" name="Dubious Disc" sellprice="150000">
+		<attribute key="description" value="A peculiar object used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
 </items>

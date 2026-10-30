@@ -11,7 +11,7 @@ POKEMON["Togetic"] = {
     dexPortrait = 15823,
     fastcallPortrait = 16023,
     catchStorage = 16176,
-    evolutions = {},
+    evolutions = { { name = "Togekiss", requiredLevel = 60, requiredItems = { ITEMS.SHINY_STONE } } },
     description = "It grows dispirited if it is not with kind people. It can float in midair without moving its wings.",
     skills = { "Tackle", 1, "Fairy Wind", 5, "Ancient Power", 10, "Metronome", 15, "Covet", 20, "Wish", 25, "Magical Leaf", 35, "Sweet Kiss", 40, "Mirror Move", 45, "Double-Edge", 50, "Magic Coat", 55, "Future Sight", 60, "Yawn", 65, "Last Resort", 70 },
     abilities = { "Flash", "Headbutt" },

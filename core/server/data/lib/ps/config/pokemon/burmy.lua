@@ -11,7 +11,7 @@ POKEMON["Burmy"] = {
     dexPortrait = 0,
     fastcallPortrait = 29031,
     catchStorage = -1,
-    evolutions = { { name = "Wormadam", requiredLevel = 30 }, { name = "Mothim", requiredLevel = 30 } },
+    evolutions = { { name = "Wormadam", requiredLevel = 30, random = true }, { name = "Mothim", requiredLevel = 30, random = true } },
     description = "Even if it is born where there are no cocooning materials, it somehow always ends up with a cloak.",
     skills = { "Protect", 1, "Tackle", 5, "Struggle Bug", 10, "Snore", 15, "Bug Bite", 20, "Hidden Power", 25 },
     abilities = {},
