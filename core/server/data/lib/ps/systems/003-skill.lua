@@ -224,6 +224,9 @@ function doPokemonUseSkill(pokemon, skillName)
                     cooldown = cooldown * 1.1
                 end
             end
+            if (doPokemonSpecialAbilityCheck(pokemon, POKEMON_SPECIAL_ABILITY_IDS.PRANKSTER, nil, skillName)) then
+                cooldown = cooldown * 0.7
+            end
             setBallSkillCooldown(pokemonMaster, pokemonMasterBall.uid, skillName, PokemonStats.getCooldownTime(pokemon, cooldown))
         end
 

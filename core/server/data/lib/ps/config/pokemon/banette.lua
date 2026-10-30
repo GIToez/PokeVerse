@@ -22,3 +22,16 @@ POKEMON["Banette"] = {
     learnableTms = { TM_IDS.TOXIC, TM_IDS.HYPER_BEAM, TM_IDS.PROTECT, TM_IDS.RAIN_DANCE, TM_IDS.THUNDERBOLT, TM_IDS.THUNDER, TM_IDS.PSYCHIC, TM_IDS.SHADOW_BALL, TM_IDS.DOUBLE_TEAM, TM_IDS.REST, TM_IDS.THUNDER_WAVE, TM_IDS.DREAM_EATER, TM_IDS.SUBSTITUTE, TM_IDS.TAUNT, TM_IDS.SHOCK_WAVE, TM_IDS.CALM_MIND },
     eggMoves = { "Astonish", "Confuse Ray", "Disable", "Gunk Shot", "Ominous Wind", "Pursuit" }
 }
+
+-- Mega form (097-megaEvolution.lua): only while Mega Evolved, never wild or caught
+POKEMON["Mega Banette"] = table.deepcopy(POKEMON["Banette"])
+POKEMON["Mega Banette"].megaOf = "Banette"
+POKEMON["Mega Banette"].pTypes = { ELEMENT_GHOST }
+POKEMON["Mega Banette"].atk = 165
+POKEMON["Mega Banette"].def = 75
+POKEMON["Mega Banette"].spAtk = 93
+POKEMON["Mega Banette"].spDef = 83
+POKEMON["Mega Banette"].specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.PRANKSTER }
+POKEMON["Mega Banette"].portrait = 30332
+POKEMON["Mega Banette"].fastcallPortrait = 28975
+POKEMON["Mega Banette"].blockTransform = true

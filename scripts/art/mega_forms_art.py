@@ -81,8 +81,9 @@ PRIMAL_PAINT = {
     'groudon-primal': (PRIMAL_GROUDON, ((152, 0, 0), (0xff, 0xf4, 0x93))),
 }
 
-# name: (dex, file suffix, pack sheet or "look:N" to repaint our own outfit N with PRIMAL_PAINT,
-# Showdown name, pokesprite name, shiny rule). The shiny rule is None to learn the colours from
+# name: (dex, file suffix, pack sheet, "pzN" for PokeZHero's outfit N exported into the pack folder
+# as outfit_pzN_.png (/tmp/pz/export.py), or "look:N" to copy our own outfit N, repainted with
+# PRIMAL_PAINT for the Primals, Showdown name, pokesprite name, shiny rule). The shiny rule is None to learn the colours from
 # Showdown's normal and shiny gen5 sprites (which share one pose), a function, a pack sheet number
 # for a drawn shiny, or False when the game has no shiny of the Pokemon.
 FORMS = {
@@ -92,7 +93,7 @@ FORMS = {
     'blastoise-mega': (9, 'mega', 1657, 'blastoise-mega', 'blastoise-mega', None),
     'beedrill-mega': (15, 'mega', 79, 'beedrill-mega', 'beedrill-mega', None),
     'pidgeot-mega': (18, 'mega', 2081, 'pidgeot-mega', 'pidgeot-mega', None),
-    'alakazam-mega': (65, 'mega', 1853, 'alakazam-mega', 'alakazam-mega', None),
+    'alakazam-mega': (65, 'mega', 'pz1921', 'alakazam-mega', 'alakazam-mega', None),
     'slowbro-mega': (80, 'mega', 6140, 'slowbro-mega', 'slowbro-mega', None),
     'gengar-mega': (94, 'mega', 1851, 'gengar-mega', 'gengar-mega', None),
     'kangaskhan-mega': (115, 'mega', 2060, 'kangaskhan-mega', 'kangaskhan-mega', None),
@@ -105,14 +106,20 @@ FORMS = {
     'sceptile-mega': (254, 'mega', 2071, 'sceptile-mega', 'sceptile-mega', None),
     'blaziken-mega': (257, 'mega', 1857, 'blaziken-mega', 'blaziken-mega', None),
     'swampert-mega': (260, 'mega', 7156, 'swampert-mega', 'swampert-mega', None),
-    'sableye-mega': (302, 'mega', 2070, 'sableye-mega', 'sableye-mega', None),
+    'sableye-mega': (302, 'mega', 'pz1945', 'sableye-mega', 'sableye-mega', None),
     'mawile-mega': (303, 'mega', 1859, 'mawile-mega', 'mawile-mega', None),
     'sharpedo-mega': (319, 'mega', 8120, 'sharpedo-mega', 'sharpedo-mega', None),
     'camerupt-mega': (323, 'mega', 5853, 'camerupt-mega', 'camerupt-mega', None),
     'altaria-mega': (334, 'mega', 2062, 'altaria-mega', 'altaria-mega', None),
-    'absol-mega': (359, 'mega', 6414, 'absol-mega', 'absol-mega', None),
+    'absol-mega': (359, 'mega', 'pz1918', 'absol-mega', 'absol-mega', None),
     'glalie-mega': (362, 'mega', 2066, 'glalie-mega', 'glalie-mega', None),
-    'latias-mega': (380, 'mega', 4089, 'latias-mega', 'latias-mega', False),
+    'latias-mega': (380, 'mega', 'pz1935', 'latias-mega', 'latias-mega', False),
+    'latios-mega': (381, 'mega', 'look:2626', 'latios-mega', 'latios-mega', False),
+    'mewtwo-megay': (150, 'mega-y', 'pz1944', 'mewtwo-megay', 'mewtwo-mega-y', None),
+    'gardevoir-mega': (282, 'mega', 'pz1928', 'gardevoir-mega', 'gardevoir-mega', None),
+    'banette-mega': (354, 'mega', 'pz1923', 'banette-mega', 'banette-mega', None),
+    'salamence-mega': (373, 'mega', 'pz1946', 'salamence-mega', 'salamence-mega', None),
+    'metagross-mega': (376, 'mega', 'pz1943', 'metagross-mega', 'metagross-mega', None),
     'kyogre-primal': (382, 'primal', 'look:1561', 'kyogre-primal', 'kyogre-primal', False),
     'groudon-primal': (383, 'primal', 'look:1562', 'groudon-primal', 'groudon-primal', False),
 }
@@ -283,15 +290,19 @@ def main():
         if only and name not in only:
             continue
         normal = Image.open(fetch('%s/gen5/%s.png' % (SHOWDOWN, showdown), 'gen5-%s.png' % showdown)).convert('RGBA')
-        if isinstance(sheet, str):
-            colours, glow = PRIMAL_PAINT[name]
+        own = isinstance(sheet, str) and sheet.startswith('look:')
+        if own:
+            colours, glow = PRIMAL_PAINT.get(name, ({}, None))
             repaint(outfit_sheet(int(sheet[5:])), colours, glow).save(os.path.join(out, 'normal', name + '.png'))
-        elif isinstance(rule, int) and rule is not False:
+        else:
+            pack_sheet = Image.open(os.path.join(pack, 'outfit_%s_.png' % sheet))
+            if isinstance(sheet, str):
+                pack_sheet.save(os.path.join(out, 'normal', name + '.png'))
+        if isinstance(rule, int) and rule is not False:
             Image.open(os.path.join(pack, 'outfit_%d_.png' % rule)).save(os.path.join(out, 'shiny', name + '.png'))
         elif rule is not False:
             shiny = Image.open(fetch('%s/gen5-shiny/%s.png' % (SHOWDOWN, showdown),
                                      'gen5-shiny-%s.png' % showdown)).convert('RGBA')
-            pack_sheet = Image.open(os.path.join(pack, 'outfit_%d_.png' % sheet))
             shiny_sheet = recolour(pack_sheet, rule or learned_rule(normal, shiny))
             if name in KEEP_FLAME:
                 shiny_sheet = keep_flame(pack_sheet, shiny_sheet)
