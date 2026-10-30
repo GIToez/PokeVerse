@@ -20,5 +20,5 @@ POKEMON["Ariados"] = {
     eggChance = 20,
     specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.SWARM, POKEMON_SPECIAL_ABILITY_IDS.INSOMNIA },
     learnableTms = { TM_IDS.POISON_JAB, TM_IDS.SLUDGE_BOMB, TM_IDS.GIGA_DRAIN, TM_IDS.SWIFT, TM_IDS.TOXIC, TM_IDS.DOUBLE_EDGE, TM_IDS.HYPER_BEAM, TM_IDS.RAGE, TM_IDS.SOLAR_BEAM, TM_IDS.PSYCHIC, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.REST, TM_IDS.BIDE, TM_IDS.SUBSTITUTE, },
-    eggMoves = { "Baton Pass", "Disable", "Electroweb", "Megahorn", "Night Slash", "Psybeam ", "Pursuit", "Rage Powder", "Singal Beam", "Sonic Boom", "Toxic Spikes", "Twineedle" }
+    eggMoves = { "Baton Pass", "Disable", "Electroweb", "Megahorn", "Night Slash", "Psybeam ", "Pursuit", "Rage Powder", "Signal Beam", "Sonic Boom", "Toxic Spikes", "Twineedle" }
 }

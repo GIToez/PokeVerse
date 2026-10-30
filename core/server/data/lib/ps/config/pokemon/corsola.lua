@@ -20,5 +20,5 @@ POKEMON["Corsola"] = {
     eggChance = 20,
     specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.HUSTLE, POKEMON_SPECIAL_ABILITY_IDS.NATURAL_CURE },
     learnableTms = { TM_IDS.ROCK_TOMB, TM_IDS.WATER_PULSE, TM_IDS.DEFENSE_CURL, TM_IDS.MUD_SLAP, TM_IDS.SHADOW_BALL, TM_IDS.RAIN_DANCE, TM_IDS.HEADBUTT, TM_IDS.BLIZZARD, TM_IDS.ROCK_SLIDE, TM_IDS.EXPLOSION, TM_IDS.REFLECT, TM_IDS.TOXIC, TM_IDS.DOUBLE_EDGE, TM_IDS.ICE_BEAM, TM_IDS.RAGE, TM_IDS.EARTHQUAKE, TM_IDS.PSYCHIC, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.REST, TM_IDS.BIDE, TM_IDS.SUBSTITUTE, TM_IDS.CALM_MIND, TM_IDS.HAIL, TM_IDS.LIGHT_SCREEN, TM_IDS.SAFEGUARD, TM_IDS.SANDSTORM },
-    eggMoves = { "Amnesia", "Aqua Ring", "Barrier", "Bide", "Camouflage", "Confuse Ray", "Curse", "Head Smash", "Icicle Spear", "Ingrain", "Mist", "Nature Power", "Screeh", "Water Pulse" }
+    eggMoves = { "Amnesia", "Aqua Ring", "Barrier", "Bide", "Camouflage", "Confuse Ray", "Curse", "Head Smash", "Icicle Spear", "Ingrain", "Mist", "Nature Power", "Screech", "Water Pulse" }
 }

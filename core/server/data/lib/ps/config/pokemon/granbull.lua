@@ -20,5 +20,5 @@ POKEMON["Granbull"] = {
     eggChance = 20,
     specialAbilities = { POKEMON_SPECIAL_ABILITY_IDS.INTIMIDATE, POKEMON_SPECIAL_ABILITY_IDS.QUICK_FEET },
     learnableTms = { TM_IDS.FLAMETHROWER, TM_IDS.ROCK_TOMB, TM_IDS.WATER_PULSE, TM_IDS.FIRE_PUNCH, TM_IDS.THUNDER_PUNCH, TM_IDS.DEFENSE_CURL, TM_IDS.SLUDGE_BOMB, TM_IDS.ICE_PUNCH, TM_IDS.MUD_SLAP, TM_IDS.SHADOW_BALL, TM_IDS.IRON_TAIL, TM_IDS.RAIN_DANCE, TM_IDS.ZAP_CANNON, TM_IDS.HEADBUTT, TM_IDS.DYNAMIC_PUNCH, TM_IDS.ROCK_SLIDE, TM_IDS.THUNDER_WAVE, TM_IDS.FIRE_BLAST, TM_IDS.REFLECT, TM_IDS.TOXIC, TM_IDS.DOUBLE_EDGE, TM_IDS.HYPER_BEAM, TM_IDS.RAGE, TM_IDS.SOLAR_BEAM, TM_IDS.THUNDERBOLT, TM_IDS.THUNDER, TM_IDS.EARTHQUAKE, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.REST, TM_IDS.BIDE, TM_IDS.SUBSTITUTE, TM_IDS.FOCUS_PUNCH, TM_IDS.ROAR, TM_IDS.BULK_UP, TM_IDS.TAUNT, TM_IDS.BRICK_BREAK, TM_IDS.SHOCK_WAVE, TM_IDS.OVERHEAT },
-    eggMoves = { "Close Combat", "Crunch", "Double-Edge", "Fake Tears", "Faint Attack", "Fire Fang", "Focus Punch", "Heall Bell", "Ice Fang", "Metronome", "Mimic", "Present", "Smelling Salts", "Snore", "Thunder Fang" }
+    eggMoves = { "Close Combat", "Crunch", "Double-Edge", "Fake Tears", "Faint Attack", "Fire Fang", "Focus Punch", "Heal Bell", "Ice Fang", "Metronome", "Mimic", "Present", "Smelling Salts", "Snore", "Thunder Fang" }
 }
