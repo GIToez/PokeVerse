@@ -274,6 +274,11 @@ local function refreshPills()
     window.header.keyChip:setVisible(key ~= '')
 end
 
+-- the whole list, rows past the last shown one included
+function Nearby.creatures()
+    return (collect())
+end
+
 function Nearby.refresh()
     if not window or not window:isVisible() then
         return
