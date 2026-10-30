@@ -26,3 +26,8 @@ POKEMON["Chikorita"] = {
 POKEMON["RC Chikorita"] = table.deepcopy(POKEMON["Chikorita"])
 POKEMON["RC Chikorita"].pTypes = { ELEMENT_POISON, ELEMENT_NORMAL }
 POKEMON["RC Chikorita"].blockTransform = true
+
+POKEMON["Christmas Chikorita"] = table.deepcopy(POKEMON["Chikorita"])
+POKEMON["Christmas Chikorita"].blockTransform = true
+POKEMON["Christmas Chikorita"].evolutions = {}
+POKEMON["Christmas Chikorita"].ignoreBallCounter = true

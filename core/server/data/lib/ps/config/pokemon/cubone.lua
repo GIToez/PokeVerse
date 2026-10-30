@@ -28,3 +28,8 @@ POKEMON["RC Cubone"].pTypes = { ELEMENT_POISON, ELEMENT_NORMAL }
 POKEMON["RC Cubone"].blockTransform = true
 
 POKEMON["Angry Cubone"] = table.deepcopy(POKEMON["Cubone"])
+
+POKEMON["Christmas Cubone"] = table.deepcopy(POKEMON["Cubone"])
+POKEMON["Christmas Cubone"].blockTransform = true
+POKEMON["Christmas Cubone"].evolutions = {}
+POKEMON["Christmas Cubone"].ignoreBallCounter = true

@@ -22,3 +22,8 @@ POKEMON["Ledyba"] = {
     learnableTms = { TM_IDS.DRAIN_PUNCH, TM_IDS.AERIAL_ACE, TM_IDS.THUNDER_PUNCH, TM_IDS.ICE_PUNCH, TM_IDS.GIGA_DRAIN, TM_IDS.HEADBUTT, TM_IDS.DYNAMIC_PUNCH, TM_IDS.SWIFT, TM_IDS.REFLECT, TM_IDS.SWORDS_DANCE, TM_IDS.TOXIC, TM_IDS.DOUBLE_EDGE, TM_IDS.RAGE, TM_IDS.SOLAR_BEAM, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.REST, TM_IDS.BIDE, TM_IDS.SUBSTITUTE, TM_IDS.FOCUS_PUNCH, TM_IDS.LIGHT_SCREEN, TM_IDS.SAFEGUARD, TM_IDS.BRICK_BREAK },
     eggMoves = { "Bide", "Bug Bite", "Bug Buzz", "Dizzy Punch", "Drain Punch", "Encore", "Focus Punch", "Knock Off", "Psybeam", "Screech", "Silver Wind", "Tailwind" }
 }
+
+POKEMON["Christmas Ledyba"] = table.deepcopy(POKEMON["Ledyba"])
+POKEMON["Christmas Ledyba"].blockTransform = true
+POKEMON["Christmas Ledyba"].evolutions = {}
+POKEMON["Christmas Ledyba"].ignoreBallCounter = true

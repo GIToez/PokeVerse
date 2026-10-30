@@ -22,3 +22,8 @@ POKEMON["Wooper"] = {
     learnableTms = { TM_IDS.WATER_PULSE, TM_IDS.DEFENSE_CURL, TM_IDS.SLUDGE_BOMB, TM_IDS.ICE_PUNCH, TM_IDS.MUD_SLAP, TM_IDS.IRON_TAIL, TM_IDS.HEADBUTT, TM_IDS.DYNAMIC_PUNCH, TM_IDS.BLIZZARD, TM_IDS.TOXIC, TM_IDS.DOUBLE_EDGE, TM_IDS.ICE_BEAM, TM_IDS.RAGE, TM_IDS.EARTHQUAKE, TM_IDS.MIMIC, TM_IDS.DOUBLE_TEAM, TM_IDS.REST, TM_IDS.BIDE, TM_IDS.SUBSTITUTE, TM_IDS.HAIL, TM_IDS.SAFEGUARD, TM_IDS.SANDSTORM },
     eggMoves = { "Acid Spray", "After You", "Ancient Power", "Body Slam", "Counter", "Curse", "Double Kick", "Eerie Impulse", "Encore", "Guard Swap", "Mud Sport", "Recover", "Sleep Talk" --[[, "Spit Up", "Stockpile", "Swallow"]] }
 }
+
+POKEMON["Christmas Wooper"] = table.deepcopy(POKEMON["Wooper"])
+POKEMON["Christmas Wooper"].blockTransform = true
+POKEMON["Christmas Wooper"].evolutions = {}
+POKEMON["Christmas Wooper"].ignoreBallCounter = true
