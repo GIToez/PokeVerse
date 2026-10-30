@@ -410,6 +410,216 @@ POKEMON[#POKEMON + 1] = {name = "Shiny Slowking", iconItemId = 17421}
 POKEMON[#POKEMON + 1] = {name = "Shiny Steelix", iconItemId = 17422}
 POKEMON[#POKEMON + 1] = {name = "Shiny Scizor", iconItemId = 17423}
 POKEMON[#POKEMON + 1] = {name = "Shiny Kingdra", iconItemId = 17424 }
+POKEMON[#POKEMON + 1] = {name = "Shiny Chikorita", iconItemId = 17604}
+POKEMON[#POKEMON + 1] = {name = "Shiny Bayleef", iconItemId = 17605}
+POKEMON[#POKEMON + 1] = {name = "Shiny Meganium", iconItemId = 17606}
+POKEMON[#POKEMON + 1] = {name = "Shiny Cyndaquil", iconItemId = 17607}
+POKEMON[#POKEMON + 1] = {name = "Shiny Quilava", iconItemId = 17608}
+POKEMON[#POKEMON + 1] = {name = "Shiny Typhlosion", iconItemId = 17609}
+POKEMON[#POKEMON + 1] = {name = "Shiny Totodile", iconItemId = 17610}
+POKEMON[#POKEMON + 1] = {name = "Shiny Croconaw", iconItemId = 17611}
+POKEMON[#POKEMON + 1] = {name = "Shiny Feraligatr", iconItemId = 17612}
+POKEMON[#POKEMON + 1] = {name = "Shiny Sentret", iconItemId = 26071}
+POKEMON[#POKEMON + 1] = {name = "Shiny Furret", iconItemId = 26072}
+POKEMON[#POKEMON + 1] = {name = "Shiny Hoothoot", iconItemId = 26073}
+POKEMON[#POKEMON + 1] = {name = "Shiny Noctowl", iconItemId = 26074}
+POKEMON[#POKEMON + 1] = {name = "Shiny Ledyba", iconItemId = 26075}
+POKEMON[#POKEMON + 1] = {name = "Shiny Ledian", iconItemId = 26076}
+POKEMON[#POKEMON + 1] = {name = "Shiny Spinarak", iconItemId = 26077}
+POKEMON[#POKEMON + 1] = {name = "Shiny Ariados", iconItemId = 26078}
+POKEMON[#POKEMON + 1] = {name = "Shiny Chinchou", iconItemId = 26079}
+POKEMON[#POKEMON + 1] = {name = "Shiny Lanturn", iconItemId = 26080}
+POKEMON[#POKEMON + 1] = {name = "Shiny Pichu", iconItemId = 26081}
+POKEMON[#POKEMON + 1] = {name = "Shiny Cleffa", iconItemId = 26082}
+POKEMON[#POKEMON + 1] = {name = "Shiny Igglybuff", iconItemId = 26083}
+POKEMON[#POKEMON + 1] = {name = "Shiny Togepi", iconItemId = 26084}
+POKEMON[#POKEMON + 1] = {name = "Shiny Togetic", iconItemId = 26085}
+POKEMON[#POKEMON + 1] = {name = "Shiny Natu", iconItemId = 26086}
+POKEMON[#POKEMON + 1] = {name = "Shiny Xatu", iconItemId = 26087}
+POKEMON[#POKEMON + 1] = {name = "Shiny Mareep", iconItemId = 17613}
+POKEMON[#POKEMON + 1] = {name = "Shiny Flaaffy", iconItemId = 17614}
+POKEMON[#POKEMON + 1] = {name = "Shiny Ampharos", iconItemId = 17615}
+POKEMON[#POKEMON + 1] = {name = "Shiny Marill", iconItemId = 17616}
+POKEMON[#POKEMON + 1] = {name = "Shiny Azumarill", iconItemId = 17617}
+POKEMON[#POKEMON + 1] = {name = "Shiny Sudowoodo", iconItemId = 26088}
+POKEMON[#POKEMON + 1] = {name = "Shiny Hoppip", iconItemId = 17618}
+POKEMON[#POKEMON + 1] = {name = "Shiny Skiploom", iconItemId = 17619}
+POKEMON[#POKEMON + 1] = {name = "Shiny Jumpluff", iconItemId = 17620}
+POKEMON[#POKEMON + 1] = {name = "Shiny Aipom", iconItemId = 26089}
+POKEMON[#POKEMON + 1] = {name = "Shiny Sunkern", iconItemId = 17621}
+POKEMON[#POKEMON + 1] = {name = "Shiny Sunflora", iconItemId = 17622}
+POKEMON[#POKEMON + 1] = {name = "Shiny Yanma", iconItemId = 26090}
+POKEMON[#POKEMON + 1] = {name = "Shiny Wooper", iconItemId = 26091}
+POKEMON[#POKEMON + 1] = {name = "Shiny Quagsire", iconItemId = 26092}
+POKEMON[#POKEMON + 1] = {name = "Shiny Murkrow", iconItemId = 26093}
+POKEMON[#POKEMON + 1] = {name = "Shiny Misdreavus", iconItemId = 26094}
+POKEMON[#POKEMON + 1] = {name = "Shiny Wobbuffet", iconItemId = 26095}
+POKEMON[#POKEMON + 1] = {name = "Shiny Girafarig", iconItemId = 26096}
+POKEMON[#POKEMON + 1] = {name = "Shiny Pineco", iconItemId = 26097}
+POKEMON[#POKEMON + 1] = {name = "Shiny Forretress", iconItemId = 26098}
+POKEMON[#POKEMON + 1] = {name = "Shiny Dunsparce", iconItemId = 26100}
+POKEMON[#POKEMON + 1] = {name = "Shiny Gligar", iconItemId = 26101}
+POKEMON[#POKEMON + 1] = {name = "Shiny Snubbull", iconItemId = 26102}
+POKEMON[#POKEMON + 1] = {name = "Shiny Granbull", iconItemId = 26103}
+POKEMON[#POKEMON + 1] = {name = "Shiny Qwilfish", iconItemId = 26104}
+POKEMON[#POKEMON + 1] = {name = "Shiny Shuckle", iconItemId = 26105}
+POKEMON[#POKEMON + 1] = {name = "Shiny Heracross", iconItemId = 26106}
+POKEMON[#POKEMON + 1] = {name = "Shiny Sneasel", iconItemId = 26107}
+POKEMON[#POKEMON + 1] = {name = "Shiny Teddiursa", iconItemId = 26108}
+POKEMON[#POKEMON + 1] = {name = "Shiny Ursaring", iconItemId = 26109}
+POKEMON[#POKEMON + 1] = {name = "Shiny Slugma", iconItemId = 26110}
+POKEMON[#POKEMON + 1] = {name = "Shiny Magcargo", iconItemId = 26111}
+POKEMON[#POKEMON + 1] = {name = "Shiny Swinub", iconItemId = 26112}
+POKEMON[#POKEMON + 1] = {name = "Shiny Piloswine", iconItemId = 26113}
+POKEMON[#POKEMON + 1] = {name = "Shiny Corsola", iconItemId = 26114}
+POKEMON[#POKEMON + 1] = {name = "Shiny Remoraid", iconItemId = 26115}
+POKEMON[#POKEMON + 1] = {name = "Shiny Octillery", iconItemId = 26116}
+POKEMON[#POKEMON + 1] = {name = "Shiny Delibird", iconItemId = 26117}
+POKEMON[#POKEMON + 1] = {name = "Shiny Mantine", iconItemId = 26118}
+POKEMON[#POKEMON + 1] = {name = "Shiny Skarmory", iconItemId = 26119}
+POKEMON[#POKEMON + 1] = {name = "Shiny Houndour", iconItemId = 17623}
+POKEMON[#POKEMON + 1] = {name = "Shiny Houndoom", iconItemId = 17624}
+POKEMON[#POKEMON + 1] = {name = "Shiny Phanpy", iconItemId = 26393}
+POKEMON[#POKEMON + 1] = {name = "Shiny Donphan", iconItemId = 26120}
+POKEMON[#POKEMON + 1] = {name = "Shiny Porygon2", iconItemId = 26121}
+POKEMON[#POKEMON + 1] = {name = "Shiny Stantler", iconItemId = 26122}
+POKEMON[#POKEMON + 1] = {name = "Shiny Smeargle", iconItemId = 26123}
+POKEMON[#POKEMON + 1] = {name = "Shiny Tyrogue", iconItemId = 26124}
+POKEMON[#POKEMON + 1] = {name = "Shiny Hitmontop", iconItemId = 26125}
+POKEMON[#POKEMON + 1] = {name = "Shiny Smoochum", iconItemId = 26126}
+POKEMON[#POKEMON + 1] = {name = "Shiny Elekid", iconItemId = 26127}
+POKEMON[#POKEMON + 1] = {name = "Shiny Magby", iconItemId = 26128}
+POKEMON[#POKEMON + 1] = {name = "Shiny Miltank", iconItemId = 26129}
+POKEMON[#POKEMON + 1] = {name = "Shiny Blissey", iconItemId = 26130}
+POKEMON[#POKEMON + 1] = {name = "Shiny Larvitar", iconItemId = 26131}
+POKEMON[#POKEMON + 1] = {name = "Shiny Pupitar", iconItemId = 26132}
+POKEMON[#POKEMON + 1] = {name = "Shiny Tyranitar", iconItemId = 26133}
+POKEMON[#POKEMON + 1] = {name = "Shiny Treecko", iconItemId = 28054}
+POKEMON[#POKEMON + 1] = {name = "Shiny Grovyle", iconItemId = 28055}
+POKEMON[#POKEMON + 1] = {name = "Shiny Sceptile", iconItemId = 28056}
+POKEMON[#POKEMON + 1] = {name = "Shiny Torchic", iconItemId = 28057}
+POKEMON[#POKEMON + 1] = {name = "Shiny Combusken", iconItemId = 28058}
+POKEMON[#POKEMON + 1] = {name = "Shiny Blaziken", iconItemId = 28059}
+POKEMON[#POKEMON + 1] = {name = "Shiny Mudkip", iconItemId = 28060}
+POKEMON[#POKEMON + 1] = {name = "Shiny Marshtomp", iconItemId = 28061}
+POKEMON[#POKEMON + 1] = {name = "Shiny Swampert", iconItemId = 28062}
+POKEMON[#POKEMON + 1] = {name = "Shiny Poochyena", iconItemId = 28063}
+POKEMON[#POKEMON + 1] = {name = "Shiny Mightyena", iconItemId = 28064}
+POKEMON[#POKEMON + 1] = {name = "Shiny Zigzagoon", iconItemId = 28065}
+POKEMON[#POKEMON + 1] = {name = "Shiny Linoone", iconItemId = 28066}
+POKEMON[#POKEMON + 1] = {name = "Shiny Wurmple", iconItemId = 28067}
+POKEMON[#POKEMON + 1] = {name = "Shiny Silcoon", iconItemId = 28068}
+POKEMON[#POKEMON + 1] = {name = "Shiny Beautifly", iconItemId = 28069}
+POKEMON[#POKEMON + 1] = {name = "Shiny Cascoon", iconItemId = 28070}
+POKEMON[#POKEMON + 1] = {name = "Shiny Dustox", iconItemId = 28071}
+POKEMON[#POKEMON + 1] = {name = "Shiny Lotad", iconItemId = 28072}
+POKEMON[#POKEMON + 1] = {name = "Shiny Lombre", iconItemId = 28073}
+POKEMON[#POKEMON + 1] = {name = "Shiny Ludicolo", iconItemId = 28074}
+POKEMON[#POKEMON + 1] = {name = "Shiny Seedot", iconItemId = 28076}
+POKEMON[#POKEMON + 1] = {name = "Shiny Nuzleaf", iconItemId = 28077}
+POKEMON[#POKEMON + 1] = {name = "Shiny Shiftry", iconItemId = 28078}
+POKEMON[#POKEMON + 1] = {name = "Shiny Taillow", iconItemId = 28079}
+POKEMON[#POKEMON + 1] = {name = "Shiny Swellow", iconItemId = 28080}
+POKEMON[#POKEMON + 1] = {name = "Shiny Wingull", iconItemId = 28081}
+POKEMON[#POKEMON + 1] = {name = "Shiny Pelipper", iconItemId = 28082}
+POKEMON[#POKEMON + 1] = {name = "Shiny Ralts", iconItemId = 28083}
+POKEMON[#POKEMON + 1] = {name = "Shiny Kirlia", iconItemId = 28084}
+POKEMON[#POKEMON + 1] = {name = "Shiny Gardevoir", iconItemId = 28085}
+POKEMON[#POKEMON + 1] = {name = "Shiny Surskit", iconItemId = 28086}
+POKEMON[#POKEMON + 1] = {name = "Shiny Masquerain", iconItemId = 28087}
+POKEMON[#POKEMON + 1] = {name = "Shiny Shroomish", iconItemId = 28088}
+POKEMON[#POKEMON + 1] = {name = "Shiny Breloom", iconItemId = 28089}
+POKEMON[#POKEMON + 1] = {name = "Shiny Slakoth", iconItemId = 28090}
+POKEMON[#POKEMON + 1] = {name = "Shiny Vigoroth", iconItemId = 28091}
+POKEMON[#POKEMON + 1] = {name = "Shiny Slaking", iconItemId = 28092}
+POKEMON[#POKEMON + 1] = {name = "Shiny Nincada", iconItemId = 28093}
+POKEMON[#POKEMON + 1] = {name = "Shiny Ninjask", iconItemId = 28094}
+POKEMON[#POKEMON + 1] = {name = "Shiny Shedinja", iconItemId = 28095}
+POKEMON[#POKEMON + 1] = {name = "Shiny Whismur", iconItemId = 28096}
+POKEMON[#POKEMON + 1] = {name = "Shiny Loudred", iconItemId = 28097}
+POKEMON[#POKEMON + 1] = {name = "Shiny Exploud", iconItemId = 28098}
+POKEMON[#POKEMON + 1] = {name = "Shiny Makuhita", iconItemId = 28099}
+POKEMON[#POKEMON + 1] = {name = "Shiny Hariyama", iconItemId = 28100}
+POKEMON[#POKEMON + 1] = {name = "Shiny Azurill", iconItemId = 28101}
+POKEMON[#POKEMON + 1] = {name = "Shiny Nosepass", iconItemId = 28102}
+POKEMON[#POKEMON + 1] = {name = "Shiny Skitty", iconItemId = 28103}
+POKEMON[#POKEMON + 1] = {name = "Shiny Delcatty", iconItemId = 28104}
+POKEMON[#POKEMON + 1] = {name = "Shiny Sableye", iconItemId = 28105}
+POKEMON[#POKEMON + 1] = {name = "Shiny Mawile", iconItemId = 28106}
+POKEMON[#POKEMON + 1] = {name = "Shiny Aron", iconItemId = 28107}
+POKEMON[#POKEMON + 1] = {name = "Shiny Lairon", iconItemId = 28108}
+POKEMON[#POKEMON + 1] = {name = "Shiny Aggron", iconItemId = 28110}
+POKEMON[#POKEMON + 1] = {name = "Shiny Meditite", iconItemId = 28111}
+POKEMON[#POKEMON + 1] = {name = "Shiny Medicham", iconItemId = 28112}
+POKEMON[#POKEMON + 1] = {name = "Shiny Electrike", iconItemId = 28113}
+POKEMON[#POKEMON + 1] = {name = "Shiny Manectric", iconItemId = 28114}
+POKEMON[#POKEMON + 1] = {name = "Shiny Plusle", iconItemId = 28115}
+POKEMON[#POKEMON + 1] = {name = "Shiny Minun", iconItemId = 28116}
+POKEMON[#POKEMON + 1] = {name = "Shiny Volbeat", iconItemId = 28117}
+POKEMON[#POKEMON + 1] = {name = "Shiny Illumise", iconItemId = 28118}
+POKEMON[#POKEMON + 1] = {name = "Shiny Roselia", iconItemId = 28119}
+POKEMON[#POKEMON + 1] = {name = "Shiny Gulpin", iconItemId = 28120}
+POKEMON[#POKEMON + 1] = {name = "Shiny Swalot", iconItemId = 28121}
+POKEMON[#POKEMON + 1] = {name = "Shiny Carvanha", iconItemId = 28122}
+POKEMON[#POKEMON + 1] = {name = "Shiny Sharpedo", iconItemId = 28123}
+POKEMON[#POKEMON + 1] = {name = "Shiny Wailmer", iconItemId = 28124}
+POKEMON[#POKEMON + 1] = {name = "Shiny Wailord", iconItemId = 28125}
+POKEMON[#POKEMON + 1] = {name = "Shiny Numel", iconItemId = 28126}
+POKEMON[#POKEMON + 1] = {name = "Shiny Camerupt", iconItemId = 28127}
+POKEMON[#POKEMON + 1] = {name = "Shiny Torkoal", iconItemId = 28128}
+POKEMON[#POKEMON + 1] = {name = "Shiny Spoink", iconItemId = 28129}
+POKEMON[#POKEMON + 1] = {name = "Shiny Grumpig", iconItemId = 28109}
+POKEMON[#POKEMON + 1] = {name = "Shiny Spinda", iconItemId = 28130}
+POKEMON[#POKEMON + 1] = {name = "Shiny Trapinch", iconItemId = 28131}
+POKEMON[#POKEMON + 1] = {name = "Shiny Vibrava", iconItemId = 28132}
+POKEMON[#POKEMON + 1] = {name = "Shiny Flygon", iconItemId = 28133}
+POKEMON[#POKEMON + 1] = {name = "Shiny Cacnea", iconItemId = 28134}
+POKEMON[#POKEMON + 1] = {name = "Shiny Cacturne", iconItemId = 28135}
+POKEMON[#POKEMON + 1] = {name = "Shiny Swablu", iconItemId = 28136}
+POKEMON[#POKEMON + 1] = {name = "Shiny Altaria", iconItemId = 28137}
+POKEMON[#POKEMON + 1] = {name = "Shiny Zangoose", iconItemId = 28138}
+POKEMON[#POKEMON + 1] = {name = "Shiny Seviper", iconItemId = 28139}
+POKEMON[#POKEMON + 1] = {name = "Shiny Lunatone", iconItemId = 28140}
+POKEMON[#POKEMON + 1] = {name = "Shiny Solrock", iconItemId = 28141}
+POKEMON[#POKEMON + 1] = {name = "Shiny Barboach", iconItemId = 28142}
+POKEMON[#POKEMON + 1] = {name = "Shiny Whiscash", iconItemId = 28143}
+POKEMON[#POKEMON + 1] = {name = "Shiny Corphish", iconItemId = 28144}
+POKEMON[#POKEMON + 1] = {name = "Shiny Crawdaunt", iconItemId = 28145}
+POKEMON[#POKEMON + 1] = {name = "Shiny Baltoy", iconItemId = 28146}
+POKEMON[#POKEMON + 1] = {name = "Shiny Claydol", iconItemId = 28147}
+POKEMON[#POKEMON + 1] = {name = "Shiny Lileep", iconItemId = 28148}
+POKEMON[#POKEMON + 1] = {name = "Shiny Cradily", iconItemId = 28149}
+POKEMON[#POKEMON + 1] = {name = "Shiny Anorith", iconItemId = 28150}
+POKEMON[#POKEMON + 1] = {name = "Shiny Armaldo", iconItemId = 28151}
+POKEMON[#POKEMON + 1] = {name = "Shiny Feebas", iconItemId = 28152}
+POKEMON[#POKEMON + 1] = {name = "Shiny Milotic", iconItemId = 28153}
+POKEMON[#POKEMON + 1] = {name = "Shiny Castform", iconItemId = 28154}
+POKEMON[#POKEMON + 1] = {name = "Shiny Kecleon", iconItemId = 28155}
+POKEMON[#POKEMON + 1] = {name = "Shiny Shuppet", iconItemId = 28156}
+POKEMON[#POKEMON + 1] = {name = "Shiny Banette", iconItemId = 28157}
+POKEMON[#POKEMON + 1] = {name = "Shiny Duskull", iconItemId = 28158}
+POKEMON[#POKEMON + 1] = {name = "Shiny Dusclops", iconItemId = 28159}
+POKEMON[#POKEMON + 1] = {name = "Shiny Tropius", iconItemId = 28160}
+POKEMON[#POKEMON + 1] = {name = "Shiny Chimecho", iconItemId = 28161}
+POKEMON[#POKEMON + 1] = {name = "Shiny Absol", iconItemId = 28162}
+POKEMON[#POKEMON + 1] = {name = "Shiny Wynaut", iconItemId = 28163}
+POKEMON[#POKEMON + 1] = {name = "Shiny Snorunt", iconItemId = 28164}
+POKEMON[#POKEMON + 1] = {name = "Shiny Glalie", iconItemId = 28165}
+POKEMON[#POKEMON + 1] = {name = "Shiny Spheal", iconItemId = 28166}
+POKEMON[#POKEMON + 1] = {name = "Shiny Sealeo", iconItemId = 28167}
+POKEMON[#POKEMON + 1] = {name = "Shiny Walrein", iconItemId = 28168}
+POKEMON[#POKEMON + 1] = {name = "Shiny Clamperl", iconItemId = 28169}
+POKEMON[#POKEMON + 1] = {name = "Shiny Huntail", iconItemId = 28170}
+POKEMON[#POKEMON + 1] = {name = "Shiny Gorebyss", iconItemId = 28171}
+POKEMON[#POKEMON + 1] = {name = "Shiny Relicanth", iconItemId = 28172}
+POKEMON[#POKEMON + 1] = {name = "Shiny Luvdisc", iconItemId = 28173}
+POKEMON[#POKEMON + 1] = {name = "Shiny Bagon", iconItemId = 28174}
+POKEMON[#POKEMON + 1] = {name = "Shiny Shelgon", iconItemId = 28175}
+POKEMON[#POKEMON + 1] = {name = "Shiny Salamence", iconItemId = 28176}
+POKEMON[#POKEMON + 1] = {name = "Shiny Beldum", iconItemId = 28177}
+POKEMON[#POKEMON + 1] = {name = "Shiny Metang", iconItemId = 28178}
+POKEMON[#POKEMON + 1] = {name = "Shiny Metagross", iconItemId = 28179}
+POKEMON[#POKEMON + 1] = {name = "Shiny Latias", iconItemId = 28183}
 POKEMON[#POKEMON + 1] = {name = "Shiny Turtwig", iconItemId = 29113}
 POKEMON[#POKEMON + 1] = {name = "Shiny Grotle", iconItemId = 29114}
 POKEMON[#POKEMON + 1] = {name = "Shiny Torterra", iconItemId = 29115}
@@ -1589,6 +1799,132 @@ local pokemonsNumbers = {
     ["Shiny Larvitar"] = 246,
     ["Shiny Pupitar"] = 247,
     ["Shiny Tyranitar"] = 248,
+    ["Shiny Treecko"] = 252,
+    ["Shiny Grovyle"] = 253,
+    ["Shiny Sceptile"] = 254,
+    ["Shiny Torchic"] = 255,
+    ["Shiny Combusken"] = 256,
+    ["Shiny Blaziken"] = 257,
+    ["Shiny Mudkip"] = 258,
+    ["Shiny Marshtomp"] = 259,
+    ["Shiny Swampert"] = 260,
+    ["Shiny Poochyena"] = 261,
+    ["Shiny Mightyena"] = 262,
+    ["Shiny Zigzagoon"] = 263,
+    ["Shiny Linoone"] = 264,
+    ["Shiny Wurmple"] = 265,
+    ["Shiny Silcoon"] = 266,
+    ["Shiny Beautifly"] = 267,
+    ["Shiny Cascoon"] = 268,
+    ["Shiny Dustox"] = 269,
+    ["Shiny Lotad"] = 270,
+    ["Shiny Lombre"] = 271,
+    ["Shiny Ludicolo"] = 272,
+    ["Shiny Seedot"] = 273,
+    ["Shiny Nuzleaf"] = 274,
+    ["Shiny Shiftry"] = 275,
+    ["Shiny Taillow"] = 276,
+    ["Shiny Swellow"] = 277,
+    ["Shiny Wingull"] = 278,
+    ["Shiny Pelipper"] = 279,
+    ["Shiny Ralts"] = 280,
+    ["Shiny Kirlia"] = 281,
+    ["Shiny Gardevoir"] = 282,
+    ["Shiny Surskit"] = 283,
+    ["Shiny Masquerain"] = 284,
+    ["Shiny Shroomish"] = 285,
+    ["Shiny Breloom"] = 286,
+    ["Shiny Slakoth"] = 287,
+    ["Shiny Vigoroth"] = 288,
+    ["Shiny Slaking"] = 289,
+    ["Shiny Nincada"] = 290,
+    ["Shiny Ninjask"] = 291,
+    ["Shiny Shedinja"] = 292,
+    ["Shiny Whismur"] = 293,
+    ["Shiny Loudred"] = 294,
+    ["Shiny Exploud"] = 295,
+    ["Shiny Makuhita"] = 296,
+    ["Shiny Hariyama"] = 297,
+    ["Shiny Azurill"] = 298,
+    ["Shiny Nosepass"] = 299,
+    ["Shiny Skitty"] = 300,
+    ["Shiny Delcatty"] = 301,
+    ["Shiny Sableye"] = 302,
+    ["Shiny Mawile"] = 303,
+    ["Shiny Aron"] = 304,
+    ["Shiny Lairon"] = 305,
+    ["Shiny Aggron"] = 306,
+    ["Shiny Meditite"] = 307,
+    ["Shiny Medicham"] = 308,
+    ["Shiny Electrike"] = 309,
+    ["Shiny Manectric"] = 310,
+    ["Shiny Plusle"] = 311,
+    ["Shiny Minun"] = 312,
+    ["Shiny Volbeat"] = 313,
+    ["Shiny Illumise"] = 314,
+    ["Shiny Roselia"] = 315,
+    ["Shiny Gulpin"] = 316,
+    ["Shiny Swalot"] = 317,
+    ["Shiny Carvanha"] = 318,
+    ["Shiny Sharpedo"] = 319,
+    ["Shiny Wailmer"] = 320,
+    ["Shiny Wailord"] = 321,
+    ["Shiny Numel"] = 322,
+    ["Shiny Camerupt"] = 323,
+    ["Shiny Torkoal"] = 324,
+    ["Shiny Spoink"] = 325,
+    ["Shiny Grumpig"] = 326,
+    ["Shiny Spinda"] = 327,
+    ["Shiny Trapinch"] = 328,
+    ["Shiny Vibrava"] = 329,
+    ["Shiny Flygon"] = 330,
+    ["Shiny Cacnea"] = 331,
+    ["Shiny Cacturne"] = 332,
+    ["Shiny Swablu"] = 333,
+    ["Shiny Altaria"] = 334,
+    ["Shiny Zangoose"] = 335,
+    ["Shiny Seviper"] = 336,
+    ["Shiny Lunatone"] = 337,
+    ["Shiny Solrock"] = 338,
+    ["Shiny Barboach"] = 339,
+    ["Shiny Whiscash"] = 340,
+    ["Shiny Corphish"] = 341,
+    ["Shiny Crawdaunt"] = 342,
+    ["Shiny Baltoy"] = 343,
+    ["Shiny Claydol"] = 344,
+    ["Shiny Lileep"] = 345,
+    ["Shiny Cradily"] = 346,
+    ["Shiny Anorith"] = 347,
+    ["Shiny Armaldo"] = 348,
+    ["Shiny Feebas"] = 349,
+    ["Shiny Milotic"] = 350,
+    ["Shiny Castform"] = 351,
+    ["Shiny Kecleon"] = 352,
+    ["Shiny Shuppet"] = 353,
+    ["Shiny Banette"] = 354,
+    ["Shiny Duskull"] = 355,
+    ["Shiny Dusclops"] = 356,
+    ["Shiny Tropius"] = 357,
+    ["Shiny Chimecho"] = 358,
+    ["Shiny Absol"] = 359,
+    ["Shiny Wynaut"] = 360,
+    ["Shiny Snorunt"] = 361,
+    ["Shiny Glalie"] = 362,
+    ["Shiny Spheal"] = 363,
+    ["Shiny Sealeo"] = 364,
+    ["Shiny Walrein"] = 365,
+    ["Shiny Clamperl"] = 366,
+    ["Shiny Huntail"] = 367,
+    ["Shiny Gorebyss"] = 368,
+    ["Shiny Relicanth"] = 369,
+    ["Shiny Luvdisc"] = 370,
+    ["Shiny Bagon"] = 371,
+    ["Shiny Shelgon"] = 372,
+    ["Shiny Salamence"] = 373,
+    ["Shiny Beldum"] = 374,
+    ["Shiny Metang"] = 375,
+    ["Shiny Metagross"] = 376,
+    ["Shiny Latias"] = 380,
     ["Shiny Turtwig"] = 387,
     ["Shiny Grotle"] = 388,
     ["Shiny Torterra"] = 389,
