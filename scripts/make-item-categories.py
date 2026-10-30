@@ -80,7 +80,7 @@ RULES = {
                        'stone fragment', 'orb', 'core', 'jewel', 'gold', 'silver', 'trophy', 'medal', 'golden bug',
                        'great golden bug', 'poke coin', 'cash bag'),
     'Materials': words('wood', 'boards', 'metal bar', 'esmeril', 'motor', 'transformer', 'gear', 'charcoal', 'shell',
-                       'pollen', 'weed', 'spikes', 'jaw', 'claw', 'cloth', 'tail', 'stick', 'leaves', 'oil', 'flask',
+                       'pollen', 'weed', 'spikes', 'jaw', '(?<!razor )claw', '(?<!reaper )cloth', 'tail', 'stick', 'leaves', 'oil', 'flask',
                        'bottle', 'essence', 'venom', 'ice cube', 'nail', 'element', 'weaver', 'sack', 'mushroom',
                        'deepsoul stone', 'yolk stone'),
     'Dolls & Decor': re.compile(r'\w kit$|' + words(
