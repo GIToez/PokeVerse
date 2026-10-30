@@ -788,8 +788,9 @@ function onCreatureUsePokedex(cid, item, fromPosition, itemEx, toPosition)
     end
   end
 
+  local picked = itemEx and isCreature(itemEx.uid) and itemEx.uid ~= cid and itemEx.uid or nil
   local playerPosition = getCreaturePosition(cid)
-  if (getSamePosition(playerPosition, toPosition)) then
+  if (not picked and getSamePosition(playerPosition, toPosition)) then
     doPlayerSendTextMessage(cid, MESSAGE_EVENT_ORANGE, string.format(__L(cid, "Pokedex status: [%s/%s]."), getPlayerTotalDexedPokemons(cid), POKEMON_NUMBER))
     doPlayerSendTextMessage(cid, MESSAGE_EVENT_ORANGE, string.format(__L(cid, "You've already caught %s Pokemon species, totaling %s caughts."), getPlayerIndividualCaughts(cid), getPlayerCaughts(cid)))
     doPlayerSendPokedexOpen(cid)
@@ -800,7 +801,7 @@ function onCreatureUsePokedex(cid, item, fromPosition, itemEx, toPosition)
     end
 
   else
-    local topCreature = getTopCreature(toPosition).uid
+    local topCreature = picked or getTopCreature(toPosition).uid
     if (not isCreature(topCreature)) then
       local corpse = getTileItemByType(toPosition, ITEM_TYPE_CONTAINER)
       if (isItem(corpse) and isCorpse(corpse.uid)) then

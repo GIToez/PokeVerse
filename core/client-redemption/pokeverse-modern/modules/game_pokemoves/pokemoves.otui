@@ -250,6 +250,20 @@ MoveCard < UIWidget
     id: estimate
     color: #ffd75a
 
+// shown on phones while the crosshair waits for a tap (showUseHint)
+UseHint < UILabel
+  image-source: /images/pokeverse-ui/panel
+  image-border: 8
+  padding: 8 14 8 14
+  font: verdana-11px-rounded
+  color: #ffffff
+  text-auto-resize: true
+  phantom: true
+  focusable: false
+  anchors.bottom: gameMapPanel.bottom
+  anchors.horizontalCenter: gameMapPanel.horizontalCenter
+  margin-bottom: 96
+
 UIWindow
   id: movesWindow
   padding: 6

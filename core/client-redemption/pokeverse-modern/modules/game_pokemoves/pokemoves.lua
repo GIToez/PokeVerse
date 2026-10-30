@@ -552,6 +552,68 @@ function useDexOnTarget()
     end
 end
 
+local function isDex(item)
+    local player = g_game.getLocalPlayer()
+    local dex = player and player:getInventoryItem(InventorySlotLeft)
+    return dex and item and item:getId() == dex:getId()
+end
+
+-- game_interface asks before it uses something on a map tile. The server reads a Pokedex used on your
+-- own tile as "show my status", so a Pokedex tap that lands on you goes to a Pokemon instead: one on your
+-- tile, or on a phone (a fingertip is bigger than a tile) the one next to you nearest the finger, a wild
+-- one or another trainer's before your own
+function useWithTarget(item, target, map, mousePos)
+    local player = g_game.getLocalPlayer()
+    if not player or target ~= player or not isDex(item) then
+        return nil
+    end
+    local reach = g_platform.isMobile() and 1 or 0
+    local best, bestScore
+    for _, creature in ipairs(g_map.getSpectatorsInRange(player:getPosition(), false, reach, reach)) do
+        if creature ~= player and not creature:isPlayer() and not creature:isNpc() then
+            local rect = map:getTileRect(creature:getPosition())
+            local dx = rect.x + rect.width / 2 - mousePos.x
+            local dy = rect.y + rect.height / 2 - mousePos.y
+            local score = dx * dx + dy * dy + (creature:isLocalPlayerSummon() and 1e9 or 0)
+            if not bestScore or score < bestScore then
+                best, bestScore = creature, score
+            end
+        end
+    end
+    return best
+end
+
+-- phones have no mouse cursor: while something waits for a tap to be used on, a line says so
+local useHint, useHintEvent
+
+local function hideUseHint()
+    removeEvent(useHintEvent)
+    useHintEvent = nil
+    if useHint then
+        useHint:destroy()
+        useHint = nil
+    end
+end
+
+function showUseHint(item)
+    if not g_platform.isMobile() then
+        return
+    end
+    hideUseHint()
+    local player = g_game.getLocalPlayer()
+    local order = player and player:getInventoryItem(InventorySlotHead)
+    local text = isDex(item) and tr('Tap a Pokemon to read it with your Pokedex')
+        or (order and item and item:getId() == order:getId()) and tr('Tap where your Pokemon should go')
+        or tr('Tap what to use it on')
+    useHint = g_ui.createWidget('UseHint', modules.game_interface.getRootPanel())
+    useHint:setText(text)
+    useHintEvent = cycleEvent(function()
+        if not g_ui.isMouseGrabbed() then
+            hideUseHint()
+        end
+    end, 100)
+end
+
 local function bindKeys()
     for index = 1, MOVE_COUNT do
         local primary, secondary = moveKeys(index)
@@ -665,6 +727,7 @@ function onOnline()
 end
 
 function onOffline()
+    hideUseHint()
     hide()
     reset()
     moveEnergy = {}
@@ -722,6 +785,7 @@ function onInit()
 end
 
 function onTerminate()
+    hideUseHint()
     stopGlow()
     disconnect(g_game, {
         onGameStart = onOnline,
