@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <creatures>
 	<creature name="Aaren Mattie" type="npc" looktype="1184" lookhead="60" lookbody="20" looklegs="80" lookfeet="80"/>
+	<creature name="Abe Whitlock" type="npc" looktype="630" lookhead="78" lookbody="94" looklegs="116" lookfeet="76"/>
 	<creature name="Abi" type="npc" looktype="635" lookhead="55" lookbody="35" looklegs="25" lookfeet="55"/>
+	<creature name="Abomasnow" type="monster" looktype="2769"/>
 	<creature name="Abra" type="monster" looktype="414"/>
 	<creature name="Absol" type="monster" looktype="1538"/>
 	<creature name="Adelyn Star" type="npc" looktype="920" lookhead="50" lookbody="60" looklegs="70" lookfeet="80"/>
@@ -38,6 +40,7 @@
 	<creature name="Altaria" type="monster" looktype="1513"/>
 	<creature name="Althea Roker" type="npc" looktype="627" lookhead="40" lookbody="20" looklegs="95" lookfeet="40"/>
 	<creature name="Alton Dane" type="npc" looktype="503" lookhead="25" lookbody="60" looklegs="60"/>
+	<creature name="Ambipom" type="monster" looktype="2733"/>
 	<creature name="Ambrose Lincoln" type="npc" looktype="1209" lookhead="31" lookbody="82" looklegs="105" lookfeet="191"/>
 	<creature name="Amie Zentz" type="npc" looktype="631" lookhead="66" lookbody="44" looklegs="20" lookfeet="30"/>
 	<creature name="Ampharos" type="monster" looktype="982"/>
@@ -56,6 +59,7 @@
 	<creature name="Anorith" type="monster" looktype="1526"/>
 	<creature name="Arbok" type="monster" looktype="375"/>
 	<creature name="Arcanine" type="monster" looktype="410"/>
+	<creature name="Arceus" type="monster" looktype="2802"/>
 	<creature name="Ariados" type="monster" looktype="969"/>
 	<creature name="Arlie" type="npc" looktype="503" lookhead="50" lookbody="50" looklegs="30" lookfeet="200"/>
 	<creature name="Arlo Fulke" type="npc" looktype="620" lookhead="14" lookbody="26" looklegs="84" lookfeet="55"/>
@@ -80,6 +84,7 @@
 	<creature name="Aura Roslyn" type="npc" looktype="1198" lookhead="35" lookbody="74" looklegs="69" lookfeet="20"/>
 	<creature name="Autumn Towler" type="npc" looktype="1210" lookhead="105" lookbody="149" looklegs="238" lookfeet="184"/>
 	<creature name="Aylmer Len" type="npc" looktype="907" lookhead="50" lookbody="60" looklegs="70" lookfeet="80"/>
+	<creature name="Azelf" type="monster" looktype="2791"/>
 	<creature name="Azumarill" type="monster" looktype="985"/>
 	<creature name="Azurill" type="monster" looktype="1477"/>
 	<creature name="Bagon" type="monster" looktype="1550"/>
@@ -90,6 +95,7 @@
 	<creature name="Barboach" type="monster" looktype="1518"/>
 	<creature name="Barrie Sheard" type="npc" looktype="618" lookhead="10" lookbody="60" looklegs="80" lookfeet="100"/>
 	<creature name="Basam" type="npc" looktype="638" lookhead="10" lookbody="35" looklegs="10" lookfeet="10"/>
+	<creature name="Bastiodon" type="monster" looktype="2720"/>
 	<creature name="Bayleef" type="monster" looktype="951"/>
 	<creature name="Beatriz" type="npc" looktype="629" lookhead="10" lookbody="45" looklegs="65" lookfeet="100"/>
 	<creature name="Beau" type="npc" looktype="915" lookhead="55" lookbody="35" looklegs="25" lookfeet="55"/>
@@ -101,6 +107,8 @@
 	<creature name="Ben" type="npc" looktype="622" lookbody="100" looklegs="100"/>
 	<creature name="Benita Achenbach" type="npc" looktype="621" lookhead="10" lookbody="35" looklegs="10" lookfeet="10"/>
 	<creature name="Bertina Stacy" type="npc" looktype="631" lookhead="114" lookbody="129" looklegs="114" lookfeet="128"/>
+	<creature name="Bibarel" type="monster" looktype="2709"/>
+	<creature name="Bidoof" type="monster" looktype="2708"/>
 	<creature name="Biff" type="npc" looktype="1314" lookhead="114" lookbody="94" lookfeet="95"/>
 	<creature name="Bill" type="npc" looktype="1199" lookhead="58" looklegs="63" lookfeet="119"/>
 	<creature name="Bill's Assistant" type="npc" looktype="1181" lookhead="50" lookbody="100" looklegs="150" lookfeet="200"/>
@@ -114,6 +122,7 @@
 	<creature name="Bob" type="npc" looktype="503" lookhead="100" lookbody="50" looklegs="40" lookfeet="15"/>
 	<creature name="Bob Lop" type="npc" looktype="628" lookhead="50" lookbody="100" looklegs="120" lookfeet="40"/>
 	<creature name="Bobby Lennox" type="npc" looktype="1205" lookhead="55" lookbody="55" looklegs="44" lookfeet="44"/>
+	<creature name="Bonsly" type="monster" looktype="2747"/>
 	<creature name="Boss Articuno" type="monster" looktype="495"/>
 	<creature name="Boss Moltres" type="monster" looktype="497"/>
 	<creature name="Boss Zapdos" type="monster" looktype="496"/>
@@ -142,10 +151,16 @@
 	<creature name="Brockling Tommy" type="npc" looktype="1350"/>
 	<creature name="Brockling Yolanda" type="npc" looktype="1357"/>
 	<creature name="Bronson" type="npc" looktype="194" lookhead="86" lookbody="114" lookfeet="86"/>
+	<creature name="Bronzong" type="monster" looktype="2746"/>
+	<creature name="Bronzor" type="monster" looktype="2745"/>
 	<creature name="Bruno" type="npc" looktype="548"/>
 	<creature name="Bud Jude" type="npc" looktype="1189" lookhead="60" lookbody="70" looklegs="10" lookfeet="10"/>
+	<creature name="Budew" type="monster" looktype="2715"/>
+	<creature name="Buizel" type="monster" looktype="2727"/>
 	<creature name="Bulbasaur" type="monster" looktype="352"/>
 	<creature name="Bulmander" type="monster" looktype="1731"/>
+	<creature name="Buneary" type="monster" looktype="2736"/>
+	<creature name="Burmy" type="monster" looktype="2721"/>
 	<creature name="Butterfree" type="monster" looktype="363"/>
 	<creature name="Cacnea" type="monster" looktype="1510"/>
 	<creature name="Cacturne" type="monster" looktype="1511"/>
@@ -162,6 +177,7 @@
 	<creature name="Captain Elliot Kaden" type="npc" looktype="563"/>
 	<creature name="Captain Elton Frank" type="npc" looktype="563"/>
 	<creature name="Captain Evelyn Scottie" type="npc" looktype="563"/>
+	<creature name="Captain Gideon Hale" type="npc" looktype="563"/>
 	<creature name="Captain Hamilton Justice" type="npc" looktype="563"/>
 	<creature name="Captain Herman Gerry" type="npc" looktype="563"/>
 	<creature name="Captain Jefferson Wilson" type="npc" looktype="563"/>
@@ -177,6 +193,7 @@
 	<creature name="Carlene Nulph" type="npc" looktype="631" lookhead="25" lookbody="50" looklegs="50" lookfeet="25"/>
 	<creature name="Carlisle" type="npc" looktype="622" lookbody="100" looklegs="100"/>
 	<creature name="Carlton" type="npc" looktype="1314" lookhead="25" lookbody="30" looklegs="10" lookfeet="80"/>
+	<creature name="Carnivine" type="monster" looktype="2764"/>
 	<creature name="Carter Dermody" type="npc" looktype="1197" lookhead="39" lookbody="3" looklegs="1" lookfeet="31"/>
 	<creature name="Carvanha" type="monster" looktype="1497"/>
 	<creature name="Cascoon" type="monster" looktype="1447"/>
@@ -200,15 +217,20 @@
 	<creature name="Charmander" type="monster" looktype="355"/>
 	<creature name="Charmeleon" type="monster" looktype="356"/>
 	<creature name="Chartle" type="monster" looktype="1732"/>
+	<creature name="Chatot" type="monster" looktype="2750"/>
 	<creature name="Cherette Kendal" type="npc" looktype="1302" lookhead="150" lookfeet="100"/>
+	<creature name="Cherrim" type="monster" looktype="2730"/>
+	<creature name="Cherubi" type="monster" looktype="2729"/>
 	<creature name="Chester Shayne" type="npc" looktype="503" lookhead="33" lookbody="55" looklegs="22" lookfeet="44"/>
 	<creature name="Chewba" type="npc" looktype="1201" lookhead="88" lookbody="55" looklegs="22" lookfeet="22"/>
 	<creature name="Chief Piloswine" type="npc" looktype="1047"/>
 	<creature name="Chief Skarmory" type="npc" looktype="1053"/>
 	<creature name="Chief Vaporeon" type="npc" looktype="485"/>
 	<creature name="Chikorita" type="monster" looktype="950"/>
+	<creature name="Chimchar" type="monster" looktype="2699"/>
 	<creature name="Chimecho" type="monster" looktype="1537"/>
 	<creature name="Chinchou" type="monster" looktype="971"/>
+	<creature name="Chingling" type="monster" looktype="2742"/>
 	<creature name="Chong Holtzman" type="npc" looktype="622" lookhead="24" lookbody="194" looklegs="6" lookfeet="130"/>
 	<creature name="Chong Kubovy" type="npc" looktype="1183" lookhead="143" lookbody="55" looklegs="168" lookfeet="230"/>
 	<creature name="Chris" type="npc" looktype="622" lookhead="180" lookbody="180" lookfeet="20"/>
@@ -218,23 +240,43 @@
 	<creature name="Christian Searfoss" type="npc" looktype="622" lookhead="99" lookbody="25" looklegs="38" lookfeet="45"/>
 	<creature name="Christian Tone" type="npc" looktype="620" lookhead="45" lookbody="75" looklegs="75" lookfeet="10"/>
 	<creature name="Christmas Abra" type="monster" looktype="1408"/>
+	<creature name="Christmas Aipom" type="monster" looktype="2662"/>
 	<creature name="Christmas Bulbasaur" type="monster" looktype="1412"/>
 	<creature name="Christmas Caterpie" type="monster" looktype="1406"/>
 	<creature name="Christmas Charmander" type="monster" looktype="1415"/>
+	<creature name="Christmas Chikorita" type="monster" looktype="2663"/>
+	<creature name="Christmas Clefairy" type="monster" looktype="2664"/>
+	<creature name="Christmas Cubone" type="monster" looktype="2665"/>
 	<creature name="Christmas Diglett" type="monster" looktype="1420"/>
+	<creature name="Christmas Ditto" type="monster" looktype="2666"/>
+	<creature name="Christmas Eevee" type="monster" looktype="2667"/>
 	<creature name="Christmas Ekans" type="monster" looktype="1418"/>
+	<creature name="Christmas Elekid" type="monster" looktype="2668"/>
 	<creature name="Christmas Gastly" type="monster" looktype="1424"/>
 	<creature name="Christmas Geodude" type="monster" looktype="1423"/>
+	<creature name="Christmas Golbat" type="monster" looktype="2669"/>
 	<creature name="Christmas Grimer" type="monster" looktype="1410"/>
+	<creature name="Christmas Hitmontop" type="monster" looktype="2670"/>
+	<creature name="Christmas Jigglypuff" type="monster" looktype="2671"/>
+	<creature name="Christmas Jynx" type="monster" looktype="2672"/>
+	<creature name="Christmas Ledyba" type="monster" looktype="2673"/>
 	<creature name="Christmas Machop" type="monster" looktype="1422"/>
+	<creature name="Christmas Mantine" type="monster" looktype="2674"/>
 	<creature name="Christmas Meowth" type="monster" looktype="1421"/>
 	<creature name="Christmas Pidgey" type="monster" looktype="1427"/>
 	<creature name="Christmas Pikachu" type="monster" looktype="1411"/>
+	<creature name="Christmas Psyduck" type="monster" looktype="2675"/>
 	<creature name="Christmas Rattata" type="monster" looktype="1407"/>
 	<creature name="Christmas Sandshrew" type="monster" looktype="1419"/>
+	<creature name="Christmas Seel" type="monster" looktype="2676"/>
+	<creature name="Christmas Snorlax" type="monster" looktype="2682"/>
 	<creature name="Christmas Spearow" type="monster" looktype="1417"/>
 	<creature name="Christmas Squirtle" type="monster" looktype="1416"/>
+	<creature name="Christmas Teddiursa" type="monster" looktype="2677"/>
+	<creature name="Christmas Togepi" type="monster" looktype="2678"/>
+	<creature name="Christmas Totodile" type="monster" looktype="2679"/>
 	<creature name="Christmas Weedle" type="monster" looktype="1426"/>
+	<creature name="Christmas Wooper" type="monster" looktype="2680"/>
 	<creature name="Christopher" type="npc" looktype="503" lookbody="150" looklegs="190"/>
 	<creature name="Clamperl" type="monster" looktype="1545"/>
 	<creature name="Clarity Kiley" type="npc" looktype="1210" lookhead="66" lookbody="80" looklegs="20" lookfeet="66"/>
@@ -295,9 +337,12 @@
 	<creature name="Cody Strackbein" type="npc" looktype="626" lookhead="22" lookbody="35" looklegs="22" lookfeet="10"/>
 	<creature name="Cody Tschida" type="npc" looktype="624" lookhead="4" lookbody="29" looklegs="37" lookfeet="64"/>
 	<creature name="Cohen Dacre" type="npc" looktype="503" lookhead="19" lookbody="10" looklegs="10"/>
+	<creature name="Cold Waters Mate" type="npc" looktype="1711"/>
+	<creature name="Cold Waters Sailor" type="npc" looktype="1711"/>
 	<creature name="Cole" type="npc" looktype="622" lookhead="15" looklegs="15"/>
 	<creature name="Coleen Hope" type="npc" looktype="1302" lookhead="20" lookbody="20" looklegs="20" lookfeet="10"/>
 	<creature name="Colene Serageldin" type="npc" looktype="1196" lookhead="217" lookbody="77" looklegs="133" lookfeet="181"/>
+	<creature name="Combee" type="monster" looktype="2724"/>
 	<creature name="Combusken" type="monster" looktype="1435"/>
 	<creature name="Conner Wilfrid" type="npc" looktype="503" lookhead="67" lookbody="25" looklegs="12" lookfeet="34"/>
 	<creature name="Coreen Chrystal" type="npc" looktype="1302" lookhead="20" lookbody="50" looklegs="20" lookfeet="50"/>
@@ -314,8 +359,11 @@
 	<creature name="Coy" type="npc" looktype="612" lookhead="190" lookbody="20" lookfeet="20"/>
 	<creature name="Cradily" type="monster" looktype="1525"/>
 	<creature name="Craig" type="npc" looktype="622" lookhead="50" lookbody="50" looklegs="190" lookfeet="190"/>
+	<creature name="Cranidos" type="monster" looktype="2717"/>
 	<creature name="Crawdaunt" type="monster" looktype="1521"/>
 	<creature name="Cree" type="npc" looktype="622" lookbody="100" looklegs="100"/>
+	<creature name="Cresselia" type="monster" looktype="2797"/>
+	<creature name="Croagunk" type="monster" looktype="2762"/>
 	<creature name="Crobat" type="monster" looktype="970"/>
 	<creature name="Croconaw" type="monster" looktype="960"/>
 	<creature name="Crystal Onix" type="npc" looktype="1179"/>
@@ -341,6 +389,7 @@
 	<creature name="Darkchu" type="monster" looktype="1734"/>
 	<creature name="Darkeon" type="monster" looktype="1728"/>
 	<creature name="Darkness Alakazam" type="monster" looktype="743"/>
+	<creature name="Darkrai" type="monster" looktype="2800"/>
 	<creature name="Darrian" type="npc" looktype="630" lookhead="150" lookbody="50" looklegs="50"/>
 	<creature name="Darryl Boso" type="npc" looktype="632" lookhead="90" lookbody="55" looklegs="66" lookfeet="33"/>
 	<creature name="Darryl Line" type="npc" looktype="634" lookhead="95" lookbody="60" looklegs="64" lookfeet="34"/>
@@ -360,9 +409,11 @@
 	<creature name="Denis" type="npc" looktype="630" lookhead="12" lookbody="45" looklegs="90" lookfeet="77"/>
 	<creature name="Deon Porter" type="npc" looktype="503" lookhead="150" lookbody="170" lookfeet="200"/>
 	<creature name="Deoxys" type="monster" looktype="1565"/>
+	<creature name="Desmond Reyes" type="npc" looktype="626" lookhead="51" lookbody="84" looklegs="131" lookfeet="72"/>
 	<creature name="Deven Rusty" type="npc" looktype="503" lookhead="10" lookbody="50" looklegs="40" lookfeet="15"/>
 	<creature name="Devona Chua" type="npc" looktype="611" lookhead="236" lookbody="224" looklegs="221" lookfeet="97"/>
 	<creature name="Dewgong" type="monster" looktype="438"/>
+	<creature name="Dialga" type="monster" looktype="2792"/>
 	<creature name="Diglett" type="monster" looktype="401"/>
 	<creature name="Ditto" type="monster" looktype="483"/>
 	<creature name="Dodrio" type="monster" looktype="436"/>
@@ -373,6 +424,7 @@
 	<creature name="Dona Cantrelle" type="npc" looktype="635" lookhead="15" lookbody="25" looklegs="25" lookfeet="40"/>
 	<creature name="Dona Krebsbach" type="npc" looktype="623" lookhead="85" lookbody="40" looklegs="40" lookfeet="10"/>
 	<creature name="Donald" type="npc" looktype="128" lookhead="20" lookbody="100" looklegs="50" lookfeet="99"/>
+	<creature name="Donatello Blastoise" type="monster" looktype="2131"/>
 	<creature name="Donphan" type="monster" looktype="1058"/>
 	<creature name="DoomBoy" type="monster" looktype="1163"/>
 	<creature name="Doroty" type="npc" looktype="1313" lookhead="1" lookbody="129" lookfeet="114"/>
@@ -381,6 +433,7 @@
 	<creature name="Dragonair" type="monster" looktype="499"/>
 	<creature name="Dragonite" type="monster" looktype="500"/>
 	<creature name="Drake" type="npc" looktype="503" lookhead="50" lookbody="50" looklegs="30" lookfeet="200"/>
+	<creature name="Drapion" type="monster" looktype="2761"/>
 	<creature name="Dratini" type="monster" looktype="498"/>
 	<creature name="Dre Lucian" type="npc" looktype="1206" lookhead="22" lookbody="55" looklegs="77"/>
 	<creature name="Dream World Unown A" type="npc" looktype="1027"/>
@@ -391,6 +444,8 @@
 	<creature name="Dreda Roni" type="npc" looktype="1302" lookhead="66" lookbody="20" looklegs="48" lookfeet="66"/>
 	<creature name="Drew" type="npc" looktype="638" lookhead="75" lookbody="50" looklegs="50" lookfeet="75"/>
 	<creature name="Drew Wisdom" type="npc" looktype="1255" lookhead="50" lookbody="76" looklegs="34" lookfeet="34"/>
+	<creature name="Drifblim" type="monster" looktype="2735"/>
+	<creature name="Drifloon" type="monster" looktype="2734"/>
 	<creature name="Drogo Toby" type="npc" looktype="622" lookhead="65" lookbody="18" looklegs="22" lookfeet="66"/>
 	<creature name="Drowzee" type="monster" looktype="447"/>
 	<creature name="Dugtrio" type="monster" looktype="402"/>
@@ -475,6 +530,7 @@
 	<creature name="Dungeon Wigglytuff" type="monster" looktype="391"/>
 	<creature name="Dunsparce" type="monster" looktype="1032"/>
 	<creature name="Dusclops" type="monster" looktype="1535"/>
+	<creature name="Dusknoir" type="monster" looktype="2786"/>
 	<creature name="Duskull" type="monster" looktype="1534"/>
 	<creature name="Dustox" type="monster" looktype="1448"/>
 	<creature name="Dusty" type="npc" looktype="503" lookhead="50" lookbody="50" looklegs="30" lookfeet="200"/>
@@ -498,6 +554,7 @@
 	<creature name="Eevee" type="monster" looktype="484"/>
 	<creature name="Ekans" type="monster" looktype="374"/>
 	<creature name="Electabuzz" type="monster" looktype="476"/>
+	<creature name="Electivire" type="monster" looktype="2775"/>
 	<creature name="Electrike" type="monster" looktype="1488"/>
 	<creature name="Electrode" type="monster" looktype="452"/>
 	<creature name="Elekid" type="monster" looktype="1065"/>
@@ -509,6 +566,7 @@
 	<creature name="Elnora Bonam" type="npc" looktype="615" lookhead="90" lookbody="45" looklegs="90" lookfeet="45"/>
 	<creature name="Elwood Marvin" type="npc" looktype="503" lookhead="20" lookbody="20" looklegs="20" lookfeet="10"/>
 	<creature name="Emmet Cash" type="npc" looktype="622" lookhead="95" lookbody="12" looklegs="35" lookfeet="45"/>
+	<creature name="Empoleon" type="monster" looktype="2704"/>
 	<creature name="Entei" type="monster" looktype="1070"/>
 	<creature name="Enzo" type="npc" looktype="194" lookhead="63" lookbody="114" lookfeet="63"/>
 	<creature name="Eric Garinson" type="npc" looktype="622" lookhead="40" lookbody="200" looklegs="180" lookfeet="50"/>
@@ -532,6 +590,7 @@
 	<creature name="Exploud" type="monster" looktype="1474"/>
 	<creature name="Ezra Franklin" type="npc" looktype="503" lookhead="50" lookbody="30" looklegs="30"/>
 	<creature name="Faith" type="npc" looktype="1192" lookhead="25" lookbody="70" looklegs="15" lookfeet="15"/>
+	<creature name="Falkner" type="npc" looktype="630" lookhead="88" looklegs="88" lookfeet="114"/>
 	<creature name="Farfetchd" type="monster" looktype="434"/>
 	<creature name="Farmer Steve" type="npc" looktype="1209" lookhead="15" lookbody="60" looklegs="60" lookfeet="30"/>
 	<creature name="Farrel" type="npc" looktype="909" lookhead="27" lookbody="25" looklegs="35" lookfeet="27"/>
@@ -605,6 +664,7 @@
 	<creature name="FI Yanma" type="monster" looktype="994"/>
 	<creature name="Final Mewtwo" type="monster" looktype="501"/>
 	<creature name="Finley Fredric" type="npc" looktype="638" lookhead="50" lookbody="90" looklegs="20" lookfeet="30"/>
+	<creature name="Finneon" type="monster" looktype="2765"/>
 	<creature name="First Mate" type="npc" looktype="512"/>
 	<creature name="Flaaffy" type="monster" looktype="981"/>
 	<creature name="Flanagan" type="npc" looktype="1321" lookhead="79" lookbody="115" looklegs="114"/>
@@ -613,6 +673,7 @@
 	<creature name="Flesh'n Fire" type="monster" looktype="1164"/>
 	<creature name="Fletcher" type="npc" looktype="153" lookhead="50" lookbody="50" looklegs="30" lookfeet="200"/>
 	<creature name="Flint's Golem" type="npc" looktype="427"/>
+	<creature name="Floatzel" type="monster" looktype="2728"/>
 	<creature name="Florence Blanch" type="npc" looktype="916" lookhead="50" lookbody="60" looklegs="70" lookfeet="80"/>
 	<creature name="Flossie Cherise" type="npc" looktype="631" lookhead="25" lookbody="50" looklegs="75" lookfeet="100"/>
 	<creature name="Flygon" type="monster" looktype="1509"/>
@@ -620,6 +681,7 @@
 	<creature name="Forretress" type="monster" looktype="1031"/>
 	<creature name="Freddie Shepherd" type="npc" looktype="622" lookhead="240" lookbody="194" looklegs="198" lookfeet="208"/>
 	<creature name="Frederick Zeitlin" type="npc" looktype="624" lookhead="143" lookbody="182" looklegs="123" lookfeet="48"/>
+	<creature name="Froslass" type="monster" looktype="2787"/>
 	<creature name="Frozen Boss Articuno" type="monster" looktype="1220"/>
 	<creature name="Fuji's Cubone" type="npc" looktype="455"/>
 	<creature name="Fuji's Eevee" type="npc" looktype="484"/>
@@ -628,27 +690,36 @@
 	<creature name="Fuji's Totodile" type="npc" looktype="959"/>
 	<creature name="Furious Venomoth" type="monster" looktype="400"/>
 	<creature name="Furret" type="monster" looktype="963"/>
+	<creature name="Gabite" type="monster" looktype="2753"/>
 	<creature name="Gabriel Earnest" type="npc" looktype="1206" lookhead="10" lookbody="20" looklegs="10" lookfeet="20"/>
 	<creature name="Gabriel Wright" type="npc" looktype="503" lookhead="100" lookbody="50" looklegs="40" lookfeet="15"/>
+	<creature name="Gallade" type="monster" looktype="2784"/>
+	<creature name="Garchomp" type="monster" looktype="2754"/>
 	<creature name="Gardevoir" type="monster" looktype="1460"/>
 	<creature name="Garfield Enyeart" type="npc" looktype="616" lookhead="189" lookbody="56" looklegs="212" lookfeet="10"/>
 	<creature name="Garret Redd" type="npc" looktype="622" lookhead="65" lookbody="80" looklegs="100" lookfeet="130"/>
 	<creature name="Gary Oak" type="npc" looktype="541"/>
 	<creature name="Gary's Assistant" type="npc" looktype="1321" lookhead="79" lookbody="114" lookfeet="79"/>
 	<creature name="Gastly" type="monster" looktype="443"/>
+	<creature name="Gastrodon" type="monster" looktype="2732"/>
 	<creature name="Gay Forshee" type="npc" looktype="629" lookhead="25" lookbody="48" looklegs="34" lookfeet="100"/>
 	<creature name="Gengar" type="monster" looktype="445"/>
 	<creature name="Geodude" type="monster" looktype="425"/>
 	<creature name="George Carter" type="npc" looktype="630" lookhead="152" lookbody="73" looklegs="75"/>
 	<creature name="Gerard Aaron" type="npc" looktype="626" lookhead="66" lookbody="98" looklegs="55" lookfeet="71"/>
 	<creature name="Gerry" type="npc" looktype="917" lookhead="55" lookbody="35" looklegs="25" lookfeet="55"/>
+	<creature name="Gible" type="monster" looktype="2752"/>
 	<creature name="Giles Shaw" type="npc" looktype="634" lookhead="50" lookbody="10" looklegs="10" lookfeet="150"/>
 	<creature name="Giovanni" type="npc" looktype="552"/>
 	<creature name="Girafarig" type="monster" looktype="1029"/>
+	<creature name="Giratina" type="monster" looktype="2796"/>
+	<creature name="Glaceon" type="monster" looktype="2780"/>
 	<creature name="Gladys Alexander" type="npc" looktype="1206" lookhead="87" lookbody="25" looklegs="36"/>
 	<creature name="Glalie" type="monster" looktype="1541"/>
+	<creature name="Glameow" type="monster" looktype="2740"/>
 	<creature name="Glen" type="npc" looktype="503" lookhead="50" lookbody="50" looklegs="30" lookfeet="200"/>
 	<creature name="Gligar" type="monster" looktype="1033"/>
+	<creature name="Gliscor" type="monster" looktype="2781"/>
 	<creature name="Gloom" type="monster" looktype="395"/>
 	<creature name="Gluttonous Raticate" type="monster" looktype="371"/>
 	<creature name="Godfrey Stephen" type="npc" looktype="503" lookhead="150" lookbody="10" looklegs="140" lookfeet="75"/>
@@ -669,10 +740,12 @@
 	<creature name="Grimer" type="monster" looktype="439"/>
 	<creature name="Grinch" type="npc" looktype="1403"/>
 	<creature name="Grisly Mind" type="monster" looktype="1153"/>
+	<creature name="Grotle" type="monster" looktype="2697"/>
 	<creature name="Groudon" type="monster" looktype="1562"/>
 	<creature name="Grovyle" type="monster" looktype="1432"/>
 	<creature name="Growlithe" type="monster" looktype="409"/>
 	<creature name="Grumpig" type="monster" looktype="1505"/>
+	<creature name="Guardian Alakazam" type="monster" looktype="416"/>
 	<creature name="Guardian Kabutops" type="monster" looktype="1229"/>
 	<creature name="Guardian Mantine" type="npc" looktype="1052" lookhead="55" lookbody="35" looklegs="25" lookfeet="55"/>
 	<creature name="Guide Andie" type="npc" looktype="512" lookhead="35" lookbody="70" looklegs="40" lookfeet="40"/>
@@ -715,6 +788,7 @@
 	<creature name="Hanzo Hasashi" type="npc" looktype="1195" lookhead="77" lookbody="88" looklegs="77" lookfeet="44"/>
 	<creature name="Hanzo Hasashi's Angry Charizard" type="npc" looktype="357"/>
 	<creature name="Hanzo Hasashi's Sleeping Charizard" type="npc" looktype="357"/>
+	<creature name="Happiny" type="monster" looktype="2749"/>
 	<creature name="Hariyama" type="monster" looktype="1476"/>
 	<creature name="Harley" type="npc" looktype="917" lookhead="55" lookbody="35" looklegs="25" lookfeet="55"/>
 	<creature name="Harmonie Rainbow" type="npc" looktype="621" lookhead="99" lookbody="150" looklegs="150" lookfeet="20"/>
@@ -725,6 +799,7 @@
 	<creature name="Haydn Lovel" type="npc" looktype="1206" lookhead="15" lookbody="60" looklegs="49" lookfeet="66"/>
 	<creature name="Haywood Grady" type="npc" looktype="1706" lookhead="90" lookbody="50" looklegs="20" lookfeet="20"/>
 	<creature name="Headley Anderson" type="npc" looktype="503" lookhead="19" lookbody="10" looklegs="10"/>
+	<creature name="Heatran" type="monster" looktype="2794"/>
 	<creature name="Hector Angel" type="npc" looktype="1706" lookhead="114" looklegs="115" lookfeet="115"/>
 	<creature name="Hedley Mort" type="npc" looktype="622" lookhead="35" lookbody="90" looklegs="150" lookfeet="150"/>
 	<creature name="Helena" type="npc" looktype="637" lookbody="13" looklegs="13" lookfeet="30"/>
@@ -735,10 +810,13 @@
 	<creature name="Hilari" type="npc" looktype="1207" lookhead="20" lookbody="60" looklegs="10" lookfeet="100"/>
 	<creature name="Hilary Aston" type="npc" looktype="622" lookhead="27" lookbody="66" looklegs="50" lookfeet="100"/>
 	<creature name="Hillary Holdaway" type="npc" looktype="613" lookhead="90" lookbody="145" looklegs="164" lookfeet="120"/>
+	<creature name="Hippopotas" type="monster" looktype="2758"/>
+	<creature name="Hippowdon" type="monster" looktype="2759"/>
 	<creature name="Hitmonchan" type="monster" looktype="458"/>
 	<creature name="Hitmonlee" type="monster" looktype="457"/>
 	<creature name="Hitmontop" type="monster" looktype="1063"/>
 	<creature name="Ho-Oh" type="monster" looktype="1076"/>
+	<creature name="Honchkrow" type="monster" looktype="2739"/>
 	<creature name="Hoothoot" type="monster" looktype="964"/>
 	<creature name="Hope" type="npc" looktype="1188" lookhead="90" lookbody="10" looklegs="10" lookfeet="20"/>
 	<creature name="Hoppip" type="monster" looktype="988"/>
@@ -754,12 +832,12 @@
 	<creature name="Ilan" type="npc" looktype="194" lookhead="95" lookbody="114" lookfeet="95"/>
 	<creature name="Illumise" type="monster" looktype="1493"/>
 	<creature name="Indiana Graeme" type="npc" looktype="503" lookhead="90" lookbody="10" looklegs="40"/>
+	<creature name="Infernape" type="monster" looktype="2701"/>
 	<creature name="Irene Jaylyn" type="npc" looktype="627" lookhead="44" lookbody="60" looklegs="60" lookfeet="100"/>
 	<creature name="Isaias Shepherd" type="npc" looktype="618" lookhead="249" lookbody="66" looklegs="146" lookfeet="21"/>
 	<creature name="Isak" type="npc" looktype="900"/>
 	<creature name="Ivan Mick" type="npc" looktype="1206" lookhead="30" lookbody="22" looklegs="28" lookfeet="99"/>
 	<creature name="Ivysaur" type="monster" looktype="353"/>
-	<creature name="Jack Eden" type="npc" looktype="503" lookhead="50" lookbody="50" looklegs="30" lookfeet="200"/>
 	<creature name="Jack Simps" type="npc" looktype="636" lookhead="152" lookbody="73" looklegs="75"/>
 	<creature name="Jack Spearow" type="npc" looktype="1720"/>
 	<creature name="Jackson" type="npc" looktype="622" lookbody="100" looklegs="100"/>
@@ -774,7 +852,6 @@
 	<creature name="Jane Hills" type="npc" looktype="1188" lookhead="60" lookbody="90" looklegs="120" lookfeet="10"/>
 	<creature name="Janel Briony" type="npc" looktype="611" lookhead="10" lookbody="35" looklegs="10"/>
 	<creature name="Jarom" type="npc" looktype="898"/>
-	<creature name="Jaron Jewell" type="npc" looktype="1201" lookhead="80" lookbody="10" looklegs="33" lookfeet="33"/>
 	<creature name="Jarred Purdia" type="npc" looktype="503" lookhead="20" lookbody="30" looklegs="40"/>
 	<creature name="Jarrod" type="npc" looktype="1181" lookhead="100" lookbody="75" looklegs="20" lookfeet="60"/>
 	<creature name="Javier Gatchell" type="npc" looktype="636" lookhead="22" lookbody="40" looklegs="40" lookfeet="60"/>
@@ -869,6 +946,8 @@
 	<creature name="Koga" type="npc" looktype="555"/>
 	<creature name="Kojiro Lee" type="npc" looktype="636" lookhead="75" lookbody="50" looklegs="50" lookfeet="75"/>
 	<creature name="Krabby" type="monster" looktype="449"/>
+	<creature name="Kricketot" type="monster" looktype="2710"/>
+	<creature name="Kricketune" type="monster" looktype="2711"/>
 	<creature name="Kris Sandy" type="npc" looktype="503" lookhead="66" lookbody="20" looklegs="48" lookfeet="66"/>
 	<creature name="Kristin" type="npc" looktype="622" lookbody="100" looklegs="100"/>
 	<creature name="Kurt Bardin" type="npc" looktype="626" lookhead="200" lookbody="150" looklegs="10" lookfeet="150"/>
@@ -895,6 +974,7 @@
 	<creature name="Latios" type="monster" looktype="1560"/>
 	<creature name="Layne Izzy" type="npc" looktype="503" lookhead="190" lookbody="50" looklegs="39" lookfeet="50"/>
 	<creature name="Laz Grey" type="npc" looktype="1205" lookhead="78" lookbody="20" looklegs="30" lookfeet="44"/>
+	<creature name="Leafeon" type="monster" looktype="2779"/>
 	<creature name="Ledian" type="monster" looktype="967"/>
 	<creature name="Ledyba" type="monster" looktype="966"/>
 	<creature name="Lemoine Vince" type="npc" looktype="1205" lookhead="28" lookbody="14" looklegs="87" lookfeet="70"/>
@@ -902,10 +982,12 @@
 	<creature name="Lenn" type="npc" looktype="622" lookbody="100" looklegs="100"/>
 	<creature name="Lenore Cada" type="npc" looktype="631" lookhead="27" lookbody="48" looklegs="57" lookfeet="60"/>
 	<creature name="Leon" type="npc" looktype="503" lookhead="150" lookbody="10" looklegs="140" lookfeet="75"/>
+	<creature name="Leonardo Blastoise" type="monster" looktype="2130"/>
 	<creature name="Leroi Bradley" type="npc" looktype="1306" lookhead="46" lookbody="27" looklegs="94" lookfeet="94"/>
 	<creature name="Lester Darien" type="npc" looktype="638" lookhead="90" lookbody="60" looklegs="30" lookfeet="90"/>
 	<creature name="Leyton" type="npc" looktype="503" lookhead="50" lookbody="50" looklegs="30" lookfeet="200"/>
 	<creature name="Lia" type="npc" looktype="1198" lookhead="41" lookbody="41" looklegs="63" lookfeet="36"/>
+	<creature name="Lickilicky" type="monster" looktype="2772"/>
 	<creature name="Lickitung" type="monster" looktype="459"/>
 	<creature name="Lileep" type="monster" looktype="1524"/>
 	<creature name="Lilia Captain" type="npc" looktype="623" lookhead="75" lookbody="44" looklegs="150" lookfeet="150"/>
@@ -923,6 +1005,7 @@
 	<creature name="Lonnie Pretti" type="npc" looktype="618" lookhead="75" lookbody="85" looklegs="95" lookfeet="100"/>
 	<creature name="Lonnie Sproles" type="npc" looktype="626" lookhead="85" lookbody="40" looklegs="30" lookfeet="40"/>
 	<creature name="Lonnie Wooton" type="npc" looktype="628" lookhead="10" lookbody="50" looklegs="50" lookfeet="20"/>
+	<creature name="Lopunny" type="monster" looktype="2737"/>
 	<creature name="Lorelei" type="npc" looktype="549"/>
 	<creature name="Lorrie Vogus" type="npc" looktype="633" lookhead="78" lookbody="90" looklegs="135" lookfeet="30"/>
 	<creature name="Lotad" type="monster" looktype="1449"/>
@@ -931,6 +1014,7 @@
 	<creature name="Loudred" type="monster" looktype="1473"/>
 	<creature name="Loyse" type="npc" looktype="638" lookhead="76" lookbody="94" looklegs="10"/>
 	<creature name="Lt. Surge" type="npc" looktype="558"/>
+	<creature name="Lucario" type="monster" looktype="2757"/>
 	<creature name="Lucas Ross" type="npc" looktype="1201" lookhead="45" lookbody="99" looklegs="150" lookfeet="17"/>
 	<creature name="Lucinda Kuijken" type="npc" looktype="613" lookhead="240" lookbody="191" looklegs="44" lookfeet="170"/>
 	<creature name="Ludicolo" type="monster" looktype="1451"/>
@@ -940,6 +1024,7 @@
 	<creature name="Luka" type="npc" looktype="194" lookhead="17" lookbody="114" lookfeet="17"/>
 	<creature name="Luke" type="npc" looktype="503" lookhead="50" lookbody="30" looklegs="30"/>
 	<creature name="Luken" type="npc" looktype="1199" lookhead="25" lookbody="52" looklegs="58" lookfeet="85"/>
+	<creature name="Lumineon" type="monster" looktype="2766"/>
 	<creature name="Lunatone" type="monster" looktype="1516"/>
 	<creature name="Lunatticous Kired" type="npc" looktype="1721"/>
 	<creature name="Lunatticous Ubilam" type="npc" looktype="1721"/>
@@ -947,6 +1032,8 @@
 	<creature name="Lupe Holtzman" type="npc" looktype="1193" lookhead="65" lookbody="243" looklegs="170" lookfeet="104"/>
 	<creature name="Luther Lacey" type="npc" looktype="1311" lookhead="77" lookbody="88" looklegs="77" lookfeet="44"/>
 	<creature name="Luvdisc" type="monster" looktype="1549"/>
+	<creature name="Luxio" type="monster" looktype="2713"/>
+	<creature name="Luxray" type="monster" looktype="2714"/>
 	<creature name="Lyle" type="npc" looktype="503" lookhead="40" lookbody="140" looklegs="60" lookfeet="10"/>
 	<creature name="Machamp" type="monster" looktype="419"/>
 	<creature name="Machoke" type="monster" looktype="418"/>
@@ -960,16 +1047,21 @@
 	<creature name="Magcargo" type="monster" looktype="1045"/>
 	<creature name="Magikarp" type="monster" looktype="480"/>
 	<creature name="Magmar" type="monster" looktype="477"/>
+	<creature name="Magmortar" type="monster" looktype="2776"/>
 	<creature name="Magnemite" type="monster" looktype="432"/>
 	<creature name="Magneton" type="monster" looktype="433"/>
+	<creature name="Magnezone" type="monster" looktype="2771"/>
 	<creature name="Maiky" type="npc" looktype="638" lookhead="10" lookbody="35" looklegs="10"/>
 	<creature name="Maile Cornet" type="npc" looktype="1202" lookhead="247" lookbody="242" looklegs="84" lookfeet="116"/>
 	<creature name="Makuhita" type="monster" looktype="1475"/>
 	<creature name="Malinda Schrantz" type="npc" looktype="627" lookhead="40" lookbody="80" looklegs="40" lookfeet="20"/>
+	<creature name="Mamoswine" type="monster" looktype="2782"/>
+	<creature name="Manaphy" type="monster" looktype="2799"/>
 	<creature name="Manectric" type="monster" looktype="1489"/>
 	<creature name="Mankey" type="monster" looktype="407"/>
 	<creature name="Manley Bernard" type="npc" looktype="1206" lookhead="74" lookbody="22" looklegs="24"/>
 	<creature name="Mantine" type="monster" looktype="1052"/>
+	<creature name="Mantyke" type="monster" looktype="2767"/>
 	<creature name="Mareep" type="monster" looktype="980"/>
 	<creature name="Margery Meidinger" type="npc" looktype="613" lookhead="60" lookbody="10" looklegs="20" lookfeet="60"/>
 	<creature name="Mari Dietz" type="npc" looktype="1182" lookhead="41" lookbody="143" looklegs="143" lookfeet="150"/>
@@ -977,6 +1069,7 @@
 	<creature name="Maricela Giannone" type="npc" looktype="627" lookhead="75" lookbody="30" looklegs="84" lookfeet="22"/>
 	<creature name="Marill" type="monster" looktype="984"/>
 	<creature name="Mark" type="npc" looktype="503" lookhead="50" lookbody="50" looklegs="30" lookfeet="200"/>
+	<creature name="Marlon Kessler" type="npc" looktype="626" lookhead="4" lookbody="53" looklegs="42" lookfeet="17"/>
 	<creature name="Marowak" type="monster" looktype="456"/>
 	<creature name="Marshtomp" type="monster" looktype="1438"/>
 	<creature name="Mart" type="npc" looktype="503" lookhead="50" lookbody="50" looklegs="30" lookfeet="200"/>
@@ -1005,6 +1098,39 @@
 	<creature name="Max Tippins" type="npc" looktype="630" lookhead="45" lookbody="65" looklegs="45" lookfeet="65"/>
 	<creature name="Medicham" type="monster" looktype="1487"/>
 	<creature name="Meditite" type="monster" looktype="1486"/>
+	<creature name="Mega Absol" type="monster" looktype="2621"/>
+	<creature name="Mega Aerodactyl" type="monster" looktype="2612"/>
+	<creature name="Mega Alakazam" type="monster" looktype="2599"/>
+	<creature name="Mega Altaria" type="monster" looktype="2620"/>
+	<creature name="Mega Ampharos" type="monster" looktype="2602"/>
+	<creature name="Mega Banette" type="monster" looktype="2689"/>
+	<creature name="Mega Beedrill" type="monster" looktype="2607"/>
+	<creature name="Mega Blastoise" type="monster" looktype="2598"/>
+	<creature name="Mega Blaziken" type="monster" looktype="2605"/>
+	<creature name="Mega Camerupt" type="monster" looktype="2619"/>
+	<creature name="Mega Charizard X" type="monster" looktype="2596"/>
+	<creature name="Mega Charizard Y" type="monster" looktype="2597"/>
+	<creature name="Mega Gardevoir" type="monster" looktype="2687"/>
+	<creature name="Mega Gengar" type="monster" looktype="2600"/>
+	<creature name="Mega Glalie" type="monster" looktype="2622"/>
+	<creature name="Mega Gyarados" type="monster" looktype="2610"/>
+	<creature name="Mega Kangaskhan" type="monster" looktype="2601"/>
+	<creature name="Mega Latias" type="monster" looktype="2626"/>
+	<creature name="Mega Latios" type="monster" looktype="2684"/>
+	<creature name="Mega Mawile" type="monster" looktype="2625"/>
+	<creature name="Mega Metagross" type="monster" looktype="2693"/>
+	<creature name="Mega Mewtwo Y" type="monster" looktype="2685"/>
+	<creature name="Mega Pidgeot" type="monster" looktype="2608"/>
+	<creature name="Mega Sableye" type="monster" looktype="2617"/>
+	<creature name="Mega Salamence" type="monster" looktype="2691"/>
+	<creature name="Mega Sceptile" type="monster" looktype="2615"/>
+	<creature name="Mega Scizor" type="monster" looktype="2614"/>
+	<creature name="Mega Sharpedo" type="monster" looktype="2618"/>
+	<creature name="Mega Slowbro" type="monster" looktype="2609"/>
+	<creature name="Mega Steelix" type="monster" looktype="2613"/>
+	<creature name="Mega Swampert" type="monster" looktype="2616"/>
+	<creature name="Mega Tyranitar" type="monster" looktype="2604"/>
+	<creature name="Mega Venusaur" type="monster" looktype="2595"/>
 	<creature name="Meganium" type="monster" looktype="952"/>
 	<creature name="Mel" type="npc" looktype="503" lookhead="50" lookbody="50" looklegs="30" lookfeet="200"/>
 	<creature name="Melisa Atkin" type="npc" looktype="619" lookhead="15" lookbody="15" looklegs="20" lookfeet="36"/>
@@ -1012,18 +1138,21 @@
 	<creature name="Merlin Clay" type="npc" looktype="1206" lookhead="50" lookbody="50"/>
 	<creature name="Merv Kelley" type="npc" looktype="1181" lookhead="60" lookbody="45" looklegs="90" lookfeet="90"/>
 	<creature name="Mervin Benj" type="npc" looktype="1206" lookhead="35" lookbody="50" looklegs="35" lookfeet="50"/>
+	<creature name="Mesprit" type="monster" looktype="2790"/>
 	<creature name="Metagross" type="monster" looktype="1555"/>
 	<creature name="Metang" type="monster" looktype="1554"/>
 	<creature name="Metapod" type="monster" looktype="362"/>
 	<creature name="Mew" type="monster" looktype="502"/>
 	<creature name="Mewtwo" type="monster" looktype="501"/>
 	<creature name="Michael Kodey" type="npc" looktype="626" lookhead="66" lookbody="12" looklegs="87" lookfeet="54"/>
+	<creature name="Michelangelo Blastoise" type="monster" looktype="2140"/>
 	<creature name="Micheline Terres" type="npc" looktype="613" lookhead="207" lookbody="115" looklegs="19" lookfeet="90"/>
 	<creature name="Mightyena" type="monster" looktype="1441"/>
 	<creature name="Mikko" type="npc" looktype="923" lookhead="55" lookbody="35" looklegs="25" lookfeet="55"/>
 	<creature name="Millicent Jacqueline" type="npc" looktype="1302" lookhead="25" lookbody="75" looklegs="150" lookfeet="100"/>
 	<creature name="Milotic" type="monster" looktype="1529"/>
 	<creature name="Miltank" type="monster" looktype="1067"/>
+	<creature name="Mime Jr." type="monster" looktype="2748"/>
 	<creature name="Minion Cake" type="monster" looktype="1372"/>
 	<creature name="Minion Chocolate Cake" type="monster" looktype="1373"/>
 	<creature name="Minion Cream Cake" type="monster" looktype="1374"/>
@@ -1031,6 +1160,7 @@
 	<creature name="Minion Party Cake" type="monster" looktype="1376"/>
 	<creature name="Minun" type="monster" looktype="1491"/>
 	<creature name="Misdreavus" type="monster" looktype="1001"/>
+	<creature name="Mismagius" type="monster" looktype="2738"/>
 	<creature name="Mistery Guy" type="npc" looktype="1358" lookhead="114" lookbody="79" looklegs="95" lookfeet="94"/>
 	<creature name="Misty" type="npc" looktype="542"/>
 	<creature name="Misty's Goldeen" type="npc" looktype="469"/>
@@ -1041,16 +1171,19 @@
 	<creature name="Misty's Togepi" type="npc" looktype="976"/>
 	<creature name="Mitchell Meade" type="npc" looktype="1201" lookhead="35" lookbody="22" looklegs="67" lookfeet="35"/>
 	<creature name="Moltres" type="monster" looktype="497"/>
+	<creature name="Monferno" type="monster" looktype="2700"/>
 	<creature name="Monroe Lynwood" type="npc" looktype="153" lookhead="90" lookbody="150" looklegs="10" lookfeet="10"/>
 	<creature name="Montana Farrell" type="npc" looktype="1206" lookhead="33" lookbody="20" looklegs="97" lookfeet="25"/>
 	<creature name="Monthy" type="npc" looktype="638" lookhead="66" lookbody="33" lookfeet="33"/>
 	<creature name="Morton Denton" type="npc" looktype="638" lookhead="22" lookbody="77" looklegs="60" lookfeet="40"/>
 	<creature name="Moses Wynne" type="npc" looktype="1206" lookhead="40" lookbody="10" looklegs="10"/>
+	<creature name="Mothim" type="monster" looktype="2723"/>
 	<creature name="Mr. Fuji" type="npc" looktype="1329"/>
 	<creature name="Mr. Gormandize" type="monster" looktype="1171"/>
 	<creature name="Mr. Mime" type="monster" looktype="473"/>
 	<creature name="Mudkip" type="monster" looktype="1437"/>
 	<creature name="Muk" type="monster" looktype="440"/>
+	<creature name="Munchlax" type="monster" looktype="2755"/>
 	<creature name="Murkrow" type="monster" looktype="999"/>
 	<creature name="Murray Aaron" type="npc" looktype="622" lookhead="37" lookbody="50" looklegs="50"/>
 	<creature name="Nagumo Harbor" type="npc" looktype="1717"/>
@@ -1104,7 +1237,7 @@
 	<creature name="Oak's Assistant Brenny" type="npc" looktype="1181" lookhead="65" lookbody="11" looklegs="25" lookfeet="70"/>
 	<creature name="Octillery" type="monster" looktype="1050"/>
 	<creature name="Oddish" type="monster" looktype="394"/>
-	<creature name="Officer Jeny" type="npc" looktype="559"/>
+	<creature name="Officer Jenny" type="npc" looktype="559"/>
 	<creature name="Oily Seaking" type="monster" looktype="818"/>
 	<creature name="Old Lady" type="npc" looktype="157" lookhead="190" lookbody="50" looklegs="39" lookfeet="50"/>
 	<creature name="Old Man" type="npc" looktype="153" lookbody="37" looklegs="69" lookfeet="50"/>
@@ -1119,6 +1252,8 @@
 	<creature name="Ozias" type="npc" looktype="911" lookhead="55" lookbody="35" looklegs="25" lookfeet="55"/>
 	<creature name="Ozy" type="npc" looktype="923" lookhead="55" lookbody="35" looklegs="25" lookfeet="55"/>
 	<creature name="Paarthurnax" type="npc" looktype="1396"/>
+	<creature name="Pachirisu" type="monster" looktype="2726"/>
+	<creature name="Palkia" type="monster" looktype="2793"/>
 	<creature name="Paras" type="monster" looktype="397"/>
 	<creature name="Parasect" type="monster" looktype="398"/>
 	<creature name="Patience Brooklynn" type="npc" looktype="1302" lookhead="45" lookbody="32" looklegs="32" lookfeet="32"/>
@@ -1134,6 +1269,7 @@
 	<creature name="Persian" type="monster" looktype="404"/>
 	<creature name="Peter Paul" type="npc" looktype="1723"/>
 	<creature name="Phanpy" type="monster" looktype="1057"/>
+	<creature name="Phione" type="monster" looktype="2798"/>
 	<creature name="Phyllo Terribil" type="monster" looktype="1167"/>
 	<creature name="Pichu" type="monster" looktype="973"/>
 	<creature name="Pidgeot" type="monster" looktype="369"/>
@@ -1144,6 +1280,7 @@
 	<creature name="Pineco" type="monster" looktype="1030"/>
 	<creature name="Pink Fury" type="monster" looktype="1155"/>
 	<creature name="Pinsir" type="monster" looktype="478"/>
+	<creature name="Piplup" type="monster" looktype="2702"/>
 	<creature name="Pistachio" type="npc" looktype="626" lookhead="37" lookbody="59" looklegs="70" lookfeet="70"/>
 	<creature name="Plusle" type="monster" looktype="1490"/>
 	<creature name="Poisonous Weezing" type="npc" looktype="1348"/>
@@ -1158,10 +1295,15 @@
 	<creature name="Poochyena" type="monster" looktype="1440"/>
 	<creature name="Poppy Laila" type="npc" looktype="1302" lookhead="80" lookbody="80" looklegs="20" lookfeet="20"/>
 	<creature name="Porygon" type="monster" looktype="488"/>
+	<creature name="Porygon-Z" type="monster" looktype="2783"/>
 	<creature name="Porygon2" type="monster" looktype="1059"/>
 	<creature name="Possessed Joy" type="npc" looktype="1399"/>
+	<creature name="Primal Groudon" type="monster" looktype="2627"/>
+	<creature name="Primal Kyogre" type="monster" looktype="2628"/>
 	<creature name="Primeape" type="monster" looktype="408"/>
+	<creature name="Prinplup" type="monster" looktype="2703"/>
 	<creature name="Pristine Kabutops" type="monster" looktype="492"/>
+	<creature name="Probopass" type="monster" looktype="2785"/>
 	<creature name="Professor Ivy" type="npc" looktype="1174"/>
 	<creature name="Professor Josh Rock" type="npc" looktype="562"/>
 	<creature name="Professor Mark" type="npc" looktype="562"/>
@@ -1170,6 +1312,7 @@
 	<creature name="Prophet Slowking" type="npc" looktype="1000"/>
 	<creature name="Psyduck" type="monster" looktype="405"/>
 	<creature name="Pupitar" type="monster" looktype="1073"/>
+	<creature name="Purugly" type="monster" looktype="2741"/>
 	<creature name="PvP Alakazam" type="monster" looktype="416"/>
 	<creature name="PvP Arbok" type="monster" looktype="375"/>
 	<creature name="PvP Arcanine" type="monster" looktype="410"/>
@@ -1210,12 +1353,14 @@
 	<creature name="Ralp" type="npc" looktype="622" lookhead="37" lookbody="50" looklegs="50"/>
 	<creature name="Ralph Patton" type="npc" looktype="503" lookhead="50" lookbody="50" looklegs="30" lookfeet="200"/>
 	<creature name="Ralts" type="monster" looktype="1459"/>
+	<creature name="Rampardos" type="monster" looktype="2718"/>
 	<creature name="Ramsey" type="npc" looktype="503" lookhead="50" lookbody="50" looklegs="30" lookfeet="200"/>
 	<creature name="Randee Oeun" type="npc" looktype="623" lookhead="7" lookbody="175" looklegs="238" lookfeet="202"/>
 	<creature name="Randy Hayden" type="npc" looktype="1302" lookhead="5" lookbody="76" looklegs="156" lookfeet="12"/>
 	<creature name="Randy Sussman" type="npc" looktype="634" lookhead="252" lookbody="44" looklegs="166" lookfeet="72"/>
 	<creature name="Ranger Club" type="npc" looktype="1206" lookhead="45" lookbody="60" looklegs="60"/>
 	<creature name="Raphael" type="npc" looktype="503" lookbody="80" looklegs="140" lookfeet="115"/>
+	<creature name="Raphael Blastoise" type="monster" looktype="2139"/>
 	<creature name="Raphael's Geodude" type="npc" looktype="425"/>
 	<creature name="Rapidash" type="monster" looktype="429"/>
 	<creature name="Raticate" type="monster" looktype="371"/>
@@ -1318,6 +1463,7 @@
 	<creature name="Reg" type="npc" looktype="503" lookhead="50" lookbody="50" looklegs="30" lookfeet="200"/>
 	<creature name="Regena Loraine" type="npc" looktype="1210" lookhead="66" lookbody="30" looklegs="15" lookfeet="88"/>
 	<creature name="Regice" type="monster" looktype="1557"/>
+	<creature name="Regigigas" type="monster" looktype="2795"/>
 	<creature name="Regirock" type="monster" looktype="1556"/>
 	<creature name="Registeel" type="monster" looktype="1558"/>
 	<creature name="Relicanth" type="monster" looktype="1548"/>
@@ -1326,9 +1472,11 @@
 	<creature name="Rhetta Verna" type="npc" looktype="914" lookhead="50" lookbody="60" looklegs="70" lookfeet="80"/>
 	<creature name="Rhydon" type="monster" looktype="463"/>
 	<creature name="Rhyhorn" type="monster" looktype="462"/>
+	<creature name="Rhyperior" type="monster" looktype="2773"/>
 	<creature name="Rian" type="npc" looktype="503" lookhead="19" lookbody="10" looklegs="10"/>
 	<creature name="Richard" type="npc" looktype="622" lookbody="100" looklegs="100"/>
 	<creature name="Rick" type="npc" looktype="1203" lookhead="18" lookbody="83" looklegs="75" lookfeet="11"/>
+	<creature name="Riolu" type="monster" looktype="2756"/>
 	<creature name="Robbie Cocchi" type="npc" looktype="1201" lookhead="155" lookbody="5" looklegs="43" lookfeet="210"/>
 	<creature name="Robby Drummond" type="npc" looktype="1187" lookhead="100" lookbody="20" looklegs="90" lookfeet="90"/>
 	<creature name="Robert" type="npc" looktype="503" lookhead="50" lookbody="150" looklegs="150" lookfeet="100"/>
@@ -1355,6 +1503,7 @@
 	<creature name="Rocket's Koffing" type="monster" looktype="460"/>
 	<creature name="Rocket's Voltorb" type="monster" looktype="451"/>
 	<creature name="Rocket's Weezing" type="monster" looktype="461"/>
+	<creature name="Rod Haskell" type="npc" looktype="630" lookhead="82" lookbody="101" looklegs="115" lookfeet="76"/>
 	<creature name="Rodrigo Brecht" type="npc" looktype="1201" lookhead="133" lookbody="177" looklegs="132" lookfeet="159"/>
 	<creature name="Rofie" type="npc" looktype="622" lookhead="70" lookbody="24" looklegs="60" lookfeet="15"/>
 	<creature name="Roland" type="npc" looktype="503" lookhead="150" lookbody="170" lookfeet="200"/>
@@ -1364,7 +1513,10 @@
 	<creature name="Rosalinda Fails" type="npc" looktype="633" lookhead="150" lookbody="200" looklegs="50" lookfeet="60"/>
 	<creature name="Roscoe" type="npc" looktype="622" lookbody="100" looklegs="100"/>
 	<creature name="Roselia" type="monster" looktype="1494"/>
+	<creature name="Roserade" type="monster" looktype="2716"/>
 	<creature name="Ross Bobby" type="npc" looktype="503" lookhead="150" lookbody="10" looklegs="140" lookfeet="75"/>
+	<creature name="Rotom" type="monster" looktype="2788"/>
+	<creature name="Rowan Ashby" type="npc" looktype="626" lookhead="83" lookbody="29" looklegs="42" lookfeet="55"/>
 	<creature name="Roxy" type="npc" looktype="194" lookhead="71" lookbody="114" lookfeet="71"/>
 	<creature name="Royce Derick" type="npc" looktype="1206" lookbody="1" looklegs="5" lookfeet="9"/>
 	<creature name="Roydon Haywood" type="npc" looktype="503" lookhead="10" lookbody="50" looklegs="40" lookfeet="15"/>
@@ -1394,7 +1546,9 @@
 	<creature name="Sandslash" type="monster" looktype="379"/>
 	<creature name="Sanford Fulk" type="npc" looktype="1209" lookhead="86" lookbody="12" looklegs="14" lookfeet="16"/>
 	<creature name="Sanjuanita Grenon" type="npc" looktype="1202" lookhead="235" lookbody="133" looklegs="102" lookfeet="254"/>
+	<creature name="Santa Blissey" type="monster" looktype="2681"/>
 	<creature name="Santa Claus" type="npc" looktype="890"/>
+	<creature name="Santa Snorlax" type="monster" looktype="2683"/>
 	<creature name="Saruman" type="npc" looktype="1206" lookhead="100" lookbody="37" looklegs="42" lookfeet="64"/>
 	<creature name="Sasha" type="npc" looktype="635" lookhead="10" lookbody="150" looklegs="37" lookfeet="10"/>
 	<creature name="Satya" type="npc" looktype="914" lookhead="55" lookbody="35" looklegs="25" lookfeet="55"/>
@@ -1425,13 +1579,18 @@
 	<creature name="Shannen Rita" type="npc" looktype="617" lookhead="95" lookbody="40" looklegs="70" lookfeet="70"/>
 	<creature name="Sharpedo" type="monster" looktype="1498"/>
 	<creature name="Shaw Norm" type="npc" looktype="503" lookhead="50" lookfeet="35"/>
+	<creature name="Shaymin" type="monster" looktype="2801"/>
 	<creature name="Shayne Pete" type="npc" looktype="622" lookhead="22" lookbody="34" looklegs="66" lookfeet="100"/>
 	<creature name="Shedinja" type="monster" looktype="1471"/>
 	<creature name="Shelgon" type="monster" looktype="1551"/>
 	<creature name="Shellder" type="monster" looktype="441"/>
 	<creature name="Shelley" type="npc" looktype="1201" lookhead="77" lookbody="114" looklegs="77" lookfeet="114"/>
+	<creature name="Shellos" type="monster" looktype="2731"/>
 	<creature name="Sherrill Kaplow" type="npc" looktype="1202" lookhead="27" lookbody="132" looklegs="207" lookfeet="45"/>
+	<creature name="Shieldon" type="monster" looktype="2719"/>
 	<creature name="Shiftry" type="monster" looktype="1454"/>
+	<creature name="Shinx" type="monster" looktype="2712"/>
+	<creature name="Shiny Abomasnow" type="monster" looktype="2876"/>
 	<creature name="Shiny Abra" type="monster" looktype="741"/>
 	<creature name="Shiny Absol" type="monster" looktype="1918"/>
 	<creature name="Shiny Aerodactyl" type="monster" looktype="841"/>
@@ -1439,6 +1598,7 @@
 	<creature name="Shiny Aipom" type="monster" looktype="1634"/>
 	<creature name="Shiny Alakazam" type="monster" looktype="743"/>
 	<creature name="Shiny Altaria" type="monster" looktype="1893"/>
+	<creature name="Shiny Ambipom" type="monster" looktype="2840"/>
 	<creature name="Shiny Ampharos" type="monster" looktype="1270"/>
 	<creature name="Shiny Anorith" type="monster" looktype="1906"/>
 	<creature name="Shiny Arbok" type="monster" looktype="689"/>
@@ -1453,21 +1613,32 @@
 	<creature name="Shiny Baltoy" type="monster" looktype="1902"/>
 	<creature name="Shiny Banette" type="monster" looktype="1913"/>
 	<creature name="Shiny Barboach" type="monster" looktype="1898"/>
+	<creature name="Shiny Bastiodon" type="monster" looktype="2827"/>
 	<creature name="Shiny Bayleef" type="monster" looktype="1257"/>
 	<creature name="Shiny Beautifly" type="monster" looktype="1826"/>
 	<creature name="Shiny Beedrill" type="monster" looktype="680"/>
 	<creature name="Shiny Beldum" type="monster" looktype="1933"/>
 	<creature name="Shiny Bellossom" type="monster" looktype="1236"/>
 	<creature name="Shiny Bellsprout" type="monster" looktype="747"/>
+	<creature name="Shiny Bibarel" type="monster" looktype="2816"/>
+	<creature name="Shiny Bidoof" type="monster" looktype="2815"/>
 	<creature name="Shiny Blastoise" type="monster" looktype="674"/>
 	<creature name="Shiny Blaziken" type="monster" looktype="1816"/>
 	<creature name="Shiny Blissey" type="monster" looktype="1675"/>
+	<creature name="Shiny Bonsly" type="monster" looktype="2854"/>
 	<creature name="Shiny Breloom" type="monster" looktype="1845"/>
+	<creature name="Shiny Bronzong" type="monster" looktype="2853"/>
+	<creature name="Shiny Bronzor" type="monster" looktype="2852"/>
+	<creature name="Shiny Budew" type="monster" looktype="2822"/>
+	<creature name="Shiny Buizel" type="monster" looktype="2834"/>
 	<creature name="Shiny Bulbasaur" type="monster" looktype="666"/>
+	<creature name="Shiny Buneary" type="monster" looktype="2843"/>
+	<creature name="Shiny Burmy" type="monster" looktype="2828"/>
 	<creature name="Shiny Butterfree" type="monster" looktype="677"/>
 	<creature name="Shiny Cacnea" type="monster" looktype="1890"/>
 	<creature name="Shiny Cacturne" type="monster" looktype="1891"/>
 	<creature name="Shiny Camerupt" type="monster" looktype="1882"/>
+	<creature name="Shiny Carnivine" type="monster" looktype="2871"/>
 	<creature name="Shiny Carvanha" type="monster" looktype="1877"/>
 	<creature name="Shiny Cascoon" type="monster" looktype="1827"/>
 	<creature name="Shiny Castform" type="monster" looktype="1910"/>
@@ -1476,20 +1647,28 @@
 	<creature name="Shiny Charizard" type="monster" looktype="671"/>
 	<creature name="Shiny Charmander" type="monster" looktype="669"/>
 	<creature name="Shiny Charmeleon" type="monster" looktype="670"/>
+	<creature name="Shiny Chatot" type="monster" looktype="2857"/>
+	<creature name="Shiny Cherrim" type="monster" looktype="2837"/>
+	<creature name="Shiny Cherubi" type="monster" looktype="2836"/>
 	<creature name="Shiny Chikorita" type="monster" looktype="1256"/>
+	<creature name="Shiny Chimchar" type="monster" looktype="2806"/>
 	<creature name="Shiny Chimecho" type="monster" looktype="1917"/>
 	<creature name="Shiny Chinchou" type="monster" looktype="1624"/>
+	<creature name="Shiny Chingling" type="monster" looktype="2849"/>
 	<creature name="Shiny Clamperl" type="monster" looktype="1925"/>
 	<creature name="Shiny Claydol" type="monster" looktype="1903"/>
 	<creature name="Shiny Clefable" type="monster" looktype="701"/>
 	<creature name="Shiny Clefairy" type="monster" looktype="700"/>
 	<creature name="Shiny Cleffa" type="monster" looktype="1627"/>
 	<creature name="Shiny Cloyster" type="monster" looktype="769"/>
+	<creature name="Shiny Combee" type="monster" looktype="2831"/>
 	<creature name="Shiny Combusken" type="monster" looktype="1815"/>
 	<creature name="Shiny Corphish" type="monster" looktype="1900"/>
 	<creature name="Shiny Corsola" type="monster" looktype="1658"/>
 	<creature name="Shiny Cradily" type="monster" looktype="1905"/>
+	<creature name="Shiny Cranidos" type="monster" looktype="2824"/>
 	<creature name="Shiny Crawdaunt" type="monster" looktype="1901"/>
+	<creature name="Shiny Croagunk" type="monster" looktype="2869"/>
 	<creature name="Shiny Crobat" type="monster" looktype="1235"/>
 	<creature name="Shiny Croconaw" type="monster" looktype="1266"/>
 	<creature name="Shiny Cubone" type="monster" looktype="803"/>
@@ -1501,22 +1680,29 @@
 	<creature name="Shiny Ditto" type="monster" looktype="831"/>
 	<creature name="Shiny Dodrio" type="monster" looktype="763"/>
 	<creature name="Shiny Doduo" type="monster" looktype="762"/>
+	<creature name="Shiny Donatello Blastoise" type="monster" looktype="2657"/>
 	<creature name="Shiny Donphan" type="monster" looktype="1665"/>
 	<creature name="Shiny Dragonair" type="monster" looktype="847"/>
 	<creature name="Shiny Dragonite" type="monster" looktype="848"/>
+	<creature name="Shiny Drapion" type="monster" looktype="2868"/>
 	<creature name="Shiny Dratini" type="monster" looktype="846"/>
+	<creature name="Shiny Drifblim" type="monster" looktype="2842"/>
+	<creature name="Shiny Drifloon" type="monster" looktype="2841"/>
 	<creature name="Shiny Drowzee" type="monster" looktype="774"/>
 	<creature name="Shiny Dugtrio" type="monster" looktype="729"/>
 	<creature name="Shiny Dunsparce" type="monster" looktype="1644"/>
 	<creature name="Shiny Dusclops" type="monster" looktype="1915"/>
+	<creature name="Shiny Dusknoir" type="monster" looktype="2893"/>
 	<creature name="Shiny Duskull" type="monster" looktype="1914"/>
 	<creature name="Shiny Dustox" type="monster" looktype="1828"/>
 	<creature name="Shiny Eevee" type="monster" looktype="832"/>
 	<creature name="Shiny Ekans" type="monster" looktype="688"/>
 	<creature name="Shiny Electabuzz" type="monster" looktype="824"/>
+	<creature name="Shiny Electivire" type="monster" looktype="2882"/>
 	<creature name="Shiny Electrike" type="monster" looktype="1868"/>
 	<creature name="Shiny Electrode" type="monster" looktype="800"/>
 	<creature name="Shiny Elekid" type="monster" looktype="1672"/>
+	<creature name="Shiny Empoleon" type="monster" looktype="2811"/>
 	<creature name="Shiny Espeon" type="monster" looktype="1238"/>
 	<creature name="Shiny Exeggcute" type="monster" looktype="801"/>
 	<creature name="Shiny Exeggutor" type="monster" looktype="802"/>
@@ -1525,18 +1711,29 @@
 	<creature name="Shiny Fearow" type="monster" looktype="687"/>
 	<creature name="Shiny Feebas" type="monster" looktype="1908"/>
 	<creature name="Shiny Feraligatr" type="monster" looktype="1267"/>
+	<creature name="Shiny Finneon" type="monster" looktype="2872"/>
 	<creature name="Shiny Flaaffy" type="monster" looktype="1269"/>
 	<creature name="Shiny Flareon" type="monster" looktype="835"/>
+	<creature name="Shiny Floatzel" type="monster" looktype="2835"/>
 	<creature name="Shiny Flygon" type="monster" looktype="1889"/>
 	<creature name="Shiny Forretress" type="monster" looktype="1643"/>
+	<creature name="Shiny Froslass" type="monster" looktype="2894"/>
 	<creature name="Shiny Furret" type="monster" looktype="1617"/>
+	<creature name="Shiny Gabite" type="monster" looktype="2860"/>
+	<creature name="Shiny Gallade" type="monster" looktype="2891"/>
+	<creature name="Shiny Garchomp" type="monster" looktype="2861"/>
 	<creature name="Shiny Gardevoir" type="monster" looktype="1841"/>
 	<creature name="Shiny Gastly" type="monster" looktype="770"/>
+	<creature name="Shiny Gastrodon" type="monster" looktype="2839"/>
 	<creature name="Shiny Gengar" type="monster" looktype="772"/>
 	<creature name="Shiny Geodude" type="monster" looktype="752"/>
+	<creature name="Shiny Gible" type="monster" looktype="2859"/>
 	<creature name="Shiny Girafarig" type="monster" looktype="1641"/>
+	<creature name="Shiny Glaceon" type="monster" looktype="2887"/>
 	<creature name="Shiny Glalie" type="monster" looktype="1921"/>
+	<creature name="Shiny Glameow" type="monster" looktype="2847"/>
 	<creature name="Shiny Gligar" type="monster" looktype="1645"/>
+	<creature name="Shiny Gliscor" type="monster" looktype="2888"/>
 	<creature name="Shiny Gloom" type="monster" looktype="709"/>
 	<creature name="Shiny Golbat" type="monster" looktype="707"/>
 	<creature name="Shiny Goldeen" type="monster" looktype="817"/>
@@ -1546,17 +1743,22 @@
 	<creature name="Shiny Granbull" type="monster" looktype="1647"/>
 	<creature name="Shiny Graveler" type="monster" looktype="753"/>
 	<creature name="Shiny Grimer" type="monster" looktype="766"/>
+	<creature name="Shiny Grotle" type="monster" looktype="2804"/>
 	<creature name="Shiny Grovyle" type="monster" looktype="1812"/>
 	<creature name="Shiny Growlithe" type="monster" looktype="736"/>
 	<creature name="Shiny Grumpig" type="monster" looktype="1885"/>
 	<creature name="Shiny Gulpin" type="monster" looktype="1875"/>
 	<creature name="Shiny Gyarados" type="monster" looktype="829"/>
+	<creature name="Shiny Happiny" type="monster" looktype="2856"/>
 	<creature name="Shiny Hariyama" type="monster" looktype="1856"/>
 	<creature name="Shiny Haunter" type="monster" looktype="771"/>
 	<creature name="Shiny Heracross" type="monster" looktype="1650"/>
+	<creature name="Shiny Hippopotas" type="monster" looktype="2865"/>
+	<creature name="Shiny Hippowdon" type="monster" looktype="2866"/>
 	<creature name="Shiny Hitmonchan" type="monster" looktype="806"/>
 	<creature name="Shiny Hitmonlee" type="monster" looktype="805"/>
 	<creature name="Shiny Hitmontop" type="monster" looktype="1670"/>
+	<creature name="Shiny Honchkrow" type="monster" looktype="2846"/>
 	<creature name="Shiny Hoothoot" type="monster" looktype="1618"/>
 	<creature name="Shiny Hoppip" type="monster" looktype="1273"/>
 	<creature name="Shiny Horsea" type="monster" looktype="815"/>
@@ -1566,6 +1768,7 @@
 	<creature name="Shiny Hypno" type="monster" looktype="775"/>
 	<creature name="Shiny Igglybuff" type="monster" looktype="1628"/>
 	<creature name="Shiny Illumise" type="monster" looktype="1873"/>
+	<creature name="Shiny Infernape" type="monster" looktype="2808"/>
 	<creature name="Shiny Ivysaur" type="monster" looktype="667"/>
 	<creature name="Shiny Jigglypuff" type="monster" looktype="704"/>
 	<creature name="Shiny Jolteon" type="monster" looktype="834"/>
@@ -1582,21 +1785,31 @@
 	<creature name="Shiny Kirlia" type="monster" looktype="1840"/>
 	<creature name="Shiny Koffing" type="monster" looktype="808"/>
 	<creature name="Shiny Krabby" type="monster" looktype="776"/>
+	<creature name="Shiny Kricketot" type="monster" looktype="2817"/>
+	<creature name="Shiny Kricketune" type="monster" looktype="2818"/>
 	<creature name="Shiny Lairon" type="monster" looktype="1864"/>
 	<creature name="Shiny Lanturn" type="monster" looktype="1625"/>
 	<creature name="Shiny Lapras" type="monster" looktype="830"/>
 	<creature name="Shiny Larvitar" type="monster" looktype="1676"/>
+	<creature name="Shiny Leafeon" type="monster" looktype="2886"/>
 	<creature name="Shiny Ledian" type="monster" looktype="1621"/>
 	<creature name="Shiny Ledyba" type="monster" looktype="1620"/>
+	<creature name="Shiny Leonardo Blastoise" type="monster" looktype="2656"/>
+	<creature name="Shiny Lickilicky" type="monster" looktype="2879"/>
 	<creature name="Shiny Lickitung" type="monster" looktype="807"/>
 	<creature name="Shiny Lileep" type="monster" looktype="1904"/>
 	<creature name="Shiny Linoone" type="monster" looktype="1823"/>
 	<creature name="Shiny Lombre" type="monster" looktype="1830"/>
+	<creature name="Shiny Lopunny" type="monster" looktype="2844"/>
 	<creature name="Shiny Lotad" type="monster" looktype="1829"/>
 	<creature name="Shiny Loudred" type="monster" looktype="1853"/>
+	<creature name="Shiny Lucario" type="monster" looktype="2864"/>
 	<creature name="Shiny Ludicolo" type="monster" looktype="1831"/>
+	<creature name="Shiny Lumineon" type="monster" looktype="2873"/>
 	<creature name="Shiny Lunatone" type="monster" looktype="1896"/>
 	<creature name="Shiny Luvdisc" type="monster" looktype="1929"/>
+	<creature name="Shiny Luxio" type="monster" looktype="2820"/>
+	<creature name="Shiny Luxray" type="monster" looktype="2821"/>
 	<creature name="Shiny Machamp" type="monster" looktype="746"/>
 	<creature name="Shiny Machoke" type="monster" looktype="745"/>
 	<creature name="Shiny Machop" type="monster" looktype="744"/>
@@ -1604,12 +1817,16 @@
 	<creature name="Shiny Magcargo" type="monster" looktype="1655"/>
 	<creature name="Shiny Magikarp" type="monster" looktype="828"/>
 	<creature name="Shiny Magmar" type="monster" looktype="825"/>
+	<creature name="Shiny Magmortar" type="monster" looktype="2883"/>
 	<creature name="Shiny Magnemite" type="monster" looktype="759"/>
 	<creature name="Shiny Magneton" type="monster" looktype="760"/>
+	<creature name="Shiny Magnezone" type="monster" looktype="2878"/>
 	<creature name="Shiny Makuhita" type="monster" looktype="1855"/>
+	<creature name="Shiny Mamoswine" type="monster" looktype="2889"/>
 	<creature name="Shiny Manectric" type="monster" looktype="1869"/>
 	<creature name="Shiny Mankey" type="monster" looktype="734"/>
 	<creature name="Shiny Mantine" type="monster" looktype="1662"/>
+	<creature name="Shiny Mantyke" type="monster" looktype="2874"/>
 	<creature name="Shiny Mareep" type="monster" looktype="1268"/>
 	<creature name="Shiny Marill" type="monster" looktype="1271"/>
 	<creature name="Shiny Marowak" type="monster" looktype="804"/>
@@ -1618,6 +1835,37 @@
 	<creature name="Shiny Mawile" type="monster" looktype="1862"/>
 	<creature name="Shiny Medicham" type="monster" looktype="1867"/>
 	<creature name="Shiny Meditite" type="monster" looktype="1866"/>
+	<creature name="Shiny Mega Absol" type="monster" looktype="2652"/>
+	<creature name="Shiny Mega Aerodactyl" type="monster" looktype="2640"/>
+	<creature name="Shiny Mega Alakazam" type="monster" looktype="2636"/>
+	<creature name="Shiny Mega Altaria" type="monster" looktype="2651"/>
+	<creature name="Shiny Mega Ampharos" type="monster" looktype="2603"/>
+	<creature name="Shiny Mega Banette" type="monster" looktype="2690"/>
+	<creature name="Shiny Mega Beedrill" type="monster" looktype="2634"/>
+	<creature name="Shiny Mega Blastoise" type="monster" looktype="2633"/>
+	<creature name="Shiny Mega Blaziken" type="monster" looktype="2645"/>
+	<creature name="Shiny Mega Camerupt" type="monster" looktype="2650"/>
+	<creature name="Shiny Mega Charizard X" type="monster" looktype="2631"/>
+	<creature name="Shiny Mega Charizard Y" type="monster" looktype="2632"/>
+	<creature name="Shiny Mega Gardevoir" type="monster" looktype="2688"/>
+	<creature name="Shiny Mega Gengar" type="monster" looktype="2638"/>
+	<creature name="Shiny Mega Glalie" type="monster" looktype="2653"/>
+	<creature name="Shiny Mega Gyarados" type="monster" looktype="2611"/>
+	<creature name="Shiny Mega Kangaskhan" type="monster" looktype="2639"/>
+	<creature name="Shiny Mega Mawile" type="monster" looktype="2648"/>
+	<creature name="Shiny Mega Metagross" type="monster" looktype="2694"/>
+	<creature name="Shiny Mega Mewtwo Y" type="monster" looktype="2686"/>
+	<creature name="Shiny Mega Pidgeot" type="monster" looktype="2635"/>
+	<creature name="Shiny Mega Sableye" type="monster" looktype="2647"/>
+	<creature name="Shiny Mega Salamence" type="monster" looktype="2692"/>
+	<creature name="Shiny Mega Sceptile" type="monster" looktype="2644"/>
+	<creature name="Shiny Mega Scizor" type="monster" looktype="2642"/>
+	<creature name="Shiny Mega Sharpedo" type="monster" looktype="2649"/>
+	<creature name="Shiny Mega Slowbro" type="monster" looktype="2637"/>
+	<creature name="Shiny Mega Steelix" type="monster" looktype="2641"/>
+	<creature name="Shiny Mega Swampert" type="monster" looktype="2646"/>
+	<creature name="Shiny Mega Tyranitar" type="monster" looktype="2643"/>
+	<creature name="Shiny Mega Venusaur" type="monster" looktype="2630"/>
 	<creature name="Shiny Meganium" type="monster" looktype="1258"/>
 	<creature name="Shiny Meowth" type="monster" looktype="730"/>
 	<creature name="Shiny Metagross" type="monster" looktype="1935"/>
@@ -1625,15 +1873,21 @@
 	<creature name="Shiny Metapod" type="monster" looktype="676"/>
 	<creature name="Shiny Mew" type="monster" looktype="850"/>
 	<creature name="Shiny Mewtwo" type="monster" looktype="849"/>
+	<creature name="Shiny Michelangelo Blastoise" type="monster" looktype="2655"/>
 	<creature name="Shiny Mightyena" type="monster" looktype="1821"/>
 	<creature name="Shiny Milotic" type="monster" looktype="1909"/>
 	<creature name="Shiny Miltank" type="monster" looktype="1674"/>
+	<creature name="Shiny Mime Jr." type="monster" looktype="2855"/>
 	<creature name="Shiny Minun" type="monster" looktype="1871"/>
 	<creature name="Shiny Misdreavus" type="monster" looktype="1639"/>
+	<creature name="Shiny Mismagius" type="monster" looktype="2845"/>
 	<creature name="Shiny Moltres" type="monster" looktype="845"/>
+	<creature name="Shiny Monferno" type="monster" looktype="2807"/>
+	<creature name="Shiny Mothim" type="monster" looktype="2830"/>
 	<creature name="Shiny Mr. Mime" type="monster" looktype="821"/>
 	<creature name="Shiny Mudkip" type="monster" looktype="1817"/>
 	<creature name="Shiny Muk" type="monster" looktype="767"/>
+	<creature name="Shiny Munchlax" type="monster" looktype="2862"/>
 	<creature name="Shiny Murkrow" type="monster" looktype="1638"/>
 	<creature name="Shiny Natu" type="monster" looktype="1631"/>
 	<creature name="Shiny Nidoking" type="monster" looktype="699"/>
@@ -1654,6 +1908,7 @@
 	<creature name="Shiny Omanyte" type="monster" looktype="837"/>
 	<creature name="Shiny Omastar" type="monster" looktype="838"/>
 	<creature name="Shiny Onix" type="monster" looktype="773"/>
+	<creature name="Shiny Pachirisu" type="monster" looktype="2833"/>
 	<creature name="Shiny Paras" type="monster" looktype="711"/>
 	<creature name="Shiny Parasect" type="monster" looktype="712"/>
 	<creature name="Shiny Pelipper" type="monster" looktype="1838"/>
@@ -1667,6 +1922,7 @@
 	<creature name="Shiny Piloswine" type="monster" looktype="1657"/>
 	<creature name="Shiny Pineco" type="monster" looktype="1642"/>
 	<creature name="Shiny Pinsir" type="monster" looktype="826"/>
+	<creature name="Shiny Piplup" type="monster" looktype="2809"/>
 	<creature name="Shiny Plusle" type="monster" looktype="1870"/>
 	<creature name="Shiny Politoed" type="monster" looktype="1237"/>
 	<creature name="Shiny Poliwag" type="monster" looktype="738"/>
@@ -1675,15 +1931,21 @@
 	<creature name="Shiny Ponyta" type="monster" looktype="755"/>
 	<creature name="Shiny Poochyena" type="monster" looktype="1820"/>
 	<creature name="Shiny Porygon" type="monster" looktype="836"/>
+	<creature name="Shiny Porygon-Z" type="monster" looktype="2890"/>
 	<creature name="Shiny Porygon2" type="monster" looktype="1666"/>
 	<creature name="Shiny Primeape" type="monster" looktype="735"/>
+	<creature name="Shiny Prinplup" type="monster" looktype="2810"/>
+	<creature name="Shiny Probopass" type="monster" looktype="2892"/>
 	<creature name="Shiny Psyduck" type="monster" looktype="732"/>
 	<creature name="Shiny Pupitar" type="monster" looktype="1677"/>
+	<creature name="Shiny Purugly" type="monster" looktype="2848"/>
 	<creature name="Shiny Quagsire" type="monster" looktype="1637"/>
 	<creature name="Shiny Quilava" type="monster" looktype="1261"/>
 	<creature name="Shiny Qwilfish" type="monster" looktype="1648"/>
 	<creature name="Shiny Raichu" type="monster" looktype="691"/>
 	<creature name="Shiny Ralts" type="monster" looktype="1839"/>
+	<creature name="Shiny Rampardos" type="monster" looktype="2825"/>
+	<creature name="Shiny Raphael Blastoise" type="monster" looktype="2654"/>
 	<creature name="Shiny Rapidash" type="monster" looktype="756"/>
 	<creature name="Shiny Raticate" type="monster" looktype="685"/>
 	<creature name="Shiny Rattata" type="monster" looktype="684"/>
@@ -1691,7 +1953,11 @@
 	<creature name="Shiny Remoraid" type="monster" looktype="1659"/>
 	<creature name="Shiny Rhydon" type="monster" looktype="811"/>
 	<creature name="Shiny Rhyhorn" type="monster" looktype="810"/>
+	<creature name="Shiny Rhyperior" type="monster" looktype="2880"/>
+	<creature name="Shiny Riolu" type="monster" looktype="2863"/>
 	<creature name="Shiny Roselia" type="monster" looktype="1874"/>
+	<creature name="Shiny Roserade" type="monster" looktype="2823"/>
+	<creature name="Shiny Rotom" type="monster" looktype="2895"/>
 	<creature name="Shiny Sableye" type="monster" looktype="1861"/>
 	<creature name="Shiny Salamence" type="monster" looktype="1932"/>
 	<creature name="Shiny Sandshrew" type="monster" looktype="692"/>
@@ -1710,7 +1976,10 @@
 	<creature name="Shiny Shedinja" type="monster" looktype="1851"/>
 	<creature name="Shiny Shelgon" type="monster" looktype="1931"/>
 	<creature name="Shiny Shellder" type="monster" looktype="768"/>
+	<creature name="Shiny Shellos" type="monster" looktype="2838"/>
+	<creature name="Shiny Shieldon" type="monster" looktype="2826"/>
 	<creature name="Shiny Shiftry" type="monster" looktype="1834"/>
+	<creature name="Shiny Shinx" type="monster" looktype="2819"/>
 	<creature name="Shiny Shroomish" type="monster" looktype="1844"/>
 	<creature name="Shiny Shuckle" type="monster" looktype="1649"/>
 	<creature name="Shiny Shuppet" type="monster" looktype="1912"/>
@@ -1718,6 +1987,8 @@
 	<creature name="Shiny Skarmory" type="monster" looktype="1663"/>
 	<creature name="Shiny Skiploom" type="monster" looktype="1274"/>
 	<creature name="Shiny Skitty" type="monster" looktype="1859"/>
+	<creature name="Shiny Skorupi" type="monster" looktype="2867"/>
+	<creature name="Shiny Skuntank" type="monster" looktype="2851"/>
 	<creature name="Shiny Slaking" type="monster" looktype="1848"/>
 	<creature name="Shiny Slakoth" type="monster" looktype="1846"/>
 	<creature name="Shiny Slowbro" type="monster" looktype="758"/>
@@ -1729,21 +2000,29 @@
 	<creature name="Shiny Sneasel" type="monster" looktype="1651"/>
 	<creature name="Shiny Snorlax" type="monster" looktype="842"/>
 	<creature name="Shiny Snorunt" type="monster" looktype="1920"/>
+	<creature name="Shiny Snover" type="monster" looktype="2875"/>
 	<creature name="Shiny Snubbull" type="monster" looktype="1646"/>
 	<creature name="Shiny Solrock" type="monster" looktype="1897"/>
 	<creature name="Shiny Spearow" type="monster" looktype="686"/>
 	<creature name="Shiny Spheal" type="monster" looktype="1922"/>
 	<creature name="Shiny Spinarak" type="monster" looktype="1622"/>
 	<creature name="Shiny Spinda" type="monster" looktype="1886"/>
+	<creature name="Shiny Spiritomb" type="monster" looktype="2858"/>
 	<creature name="Shiny Spoink" type="monster" looktype="1884"/>
 	<creature name="Shiny Squirtle" type="monster" looktype="672"/>
 	<creature name="Shiny Stantler" type="monster" looktype="1667"/>
+	<creature name="Shiny Staraptor" type="monster" looktype="2814"/>
+	<creature name="Shiny Staravia" type="monster" looktype="2813"/>
+	<creature name="Shiny Starly" type="monster" looktype="2812"/>
 	<creature name="Shiny Starmie" type="monster" looktype="820"/>
 	<creature name="Shiny Staryu" type="monster" looktype="819"/>
 	<creature name="Shiny Steelix" type="monster" looktype="1241"/>
+	<creature name="Shiny Stunky" type="monster" looktype="2850"/>
 	<creature name="Shiny Sudowoodo" type="monster" looktype="1633"/>
 	<creature name="Shiny Sunflora" type="monster" looktype="1277"/>
 	<creature name="Shiny Sunkern" type="monster" looktype="1276"/>
+	<creature name="Shiny Surfing Pikachu" type="monster" looktype="2900"/>
+	<creature name="Shiny Surfing Raichu" type="monster" looktype="2904"/>
 	<creature name="Shiny Surskit" type="monster" looktype="1842"/>
 	<creature name="Shiny Swablu" type="monster" looktype="1892"/>
 	<creature name="Shiny Swalot" type="monster" looktype="1876"/>
@@ -1752,18 +2031,23 @@
 	<creature name="Shiny Swinub" type="monster" looktype="1656"/>
 	<creature name="Shiny Taillow" type="monster" looktype="1835"/>
 	<creature name="Shiny Tangela" type="monster" looktype="813"/>
+	<creature name="Shiny Tangrowth" type="monster" looktype="2881"/>
 	<creature name="Shiny Tauros" type="monster" looktype="827"/>
 	<creature name="Shiny Teddiursa" type="monster" looktype="1652"/>
 	<creature name="Shiny Tentacool" type="monster" looktype="750"/>
 	<creature name="Shiny Tentacruel" type="monster" looktype="751"/>
+	<creature name="Shiny Togekiss" type="monster" looktype="2884"/>
 	<creature name="Shiny Togepi" type="monster" looktype="1629"/>
 	<creature name="Shiny Togetic" type="monster" looktype="1630"/>
 	<creature name="Shiny Torchic" type="monster" looktype="1814"/>
 	<creature name="Shiny Torkoal" type="monster" looktype="1883"/>
+	<creature name="Shiny Torterra" type="monster" looktype="2805"/>
 	<creature name="Shiny Totodile" type="monster" looktype="1265"/>
+	<creature name="Shiny Toxicroak" type="monster" looktype="2870"/>
 	<creature name="Shiny Trapinch" type="monster" looktype="1887"/>
 	<creature name="Shiny Treecko" type="monster" looktype="1811"/>
 	<creature name="Shiny Tropius" type="monster" looktype="1916"/>
+	<creature name="Shiny Turtwig" type="monster" looktype="2803"/>
 	<creature name="Shiny Typhlosion" type="monster" looktype="1263"/>
 	<creature name="Shiny Tyranitar" type="monster" looktype="1678"/>
 	<creature name="Shiny Tyrogue" type="monster" looktype="1669"/>
@@ -1773,6 +2057,7 @@
 	<creature name="Shiny Venomoth" type="monster" looktype="714"/>
 	<creature name="Shiny Venonat" type="monster" looktype="713"/>
 	<creature name="Shiny Venusaur" type="monster" looktype="668"/>
+	<creature name="Shiny Vespiquen" type="monster" looktype="2832"/>
 	<creature name="Shiny Vibrava" type="monster" looktype="1888"/>
 	<creature name="Shiny Victreebel" type="monster" looktype="749"/>
 	<creature name="Shiny Vigoroth" type="monster" looktype="1847"/>
@@ -1784,6 +2069,7 @@
 	<creature name="Shiny Wailord" type="monster" looktype="1880"/>
 	<creature name="Shiny Walrein" type="monster" looktype="1924"/>
 	<creature name="Shiny Wartortle" type="monster" looktype="673"/>
+	<creature name="Shiny Weavile" type="monster" looktype="2877"/>
 	<creature name="Shiny Weedle" type="monster" looktype="678"/>
 	<creature name="Shiny Weepinbell" type="monster" looktype="748"/>
 	<creature name="Shiny Weezing" type="monster" looktype="809"/>
@@ -1793,10 +2079,12 @@
 	<creature name="Shiny Wingull" type="monster" looktype="1837"/>
 	<creature name="Shiny Wobbuffet" type="monster" looktype="1640"/>
 	<creature name="Shiny Wooper" type="monster" looktype="1636"/>
+	<creature name="Shiny Wormadam" type="monster" looktype="2829"/>
 	<creature name="Shiny Wurmple" type="monster" looktype="1824"/>
 	<creature name="Shiny Wynaut" type="monster" looktype="1919"/>
 	<creature name="Shiny Xatu" type="monster" looktype="1632"/>
 	<creature name="Shiny Yanma" type="monster" looktype="1635"/>
+	<creature name="Shiny Yanmega" type="monster" looktype="2885"/>
 	<creature name="Shiny Zangoose" type="monster" looktype="1894"/>
 	<creature name="Shiny Zapdos" type="monster" looktype="844"/>
 	<creature name="Shiny Zigzagoon" type="monster" looktype="1822"/>
@@ -1813,6 +2101,8 @@
 	<creature name="Skarmory" type="monster" looktype="1053"/>
 	<creature name="Skiploom" type="monster" looktype="989"/>
 	<creature name="Skitty" type="monster" looktype="1479"/>
+	<creature name="Skorupi" type="monster" looktype="2760"/>
+	<creature name="Skuntank" type="monster" looktype="2744"/>
 	<creature name="Slaking" type="monster" looktype="1468"/>
 	<creature name="Slakoth" type="monster" looktype="1466"/>
 	<creature name="Slash" type="npc" looktype="622" lookhead="90" lookbody="160" looklegs="50" lookfeet="30"/>
@@ -1829,6 +2119,7 @@
 	<creature name="Sneasel" type="monster" looktype="1041"/>
 	<creature name="Snorlax" type="monster" looktype="494"/>
 	<creature name="Snorunt" type="monster" looktype="1540"/>
+	<creature name="Snover" type="monster" looktype="2768"/>
 	<creature name="Snubbull" type="monster" looktype="1035"/>
 	<creature name="Solrock" type="monster" looktype="1517"/>
 	<creature name="Sotashi" type="npc" looktype="1718"/>
@@ -1837,11 +2128,15 @@
 	<creature name="Spheal" type="monster" looktype="1542"/>
 	<creature name="Spinarak" type="monster" looktype="968"/>
 	<creature name="Spinda" type="monster" looktype="1506"/>
+	<creature name="Spiritomb" type="monster" looktype="2751"/>
 	<creature name="Spoink" type="monster" looktype="1504"/>
 	<creature name="Squirsaur" type="monster" looktype="1733"/>
 	<creature name="Squirtle" type="monster" looktype="358"/>
 	<creature name="Stacy David" type="npc" looktype="503" lookhead="100" lookbody="50" looklegs="40" lookfeet="15"/>
 	<creature name="Stantler" type="monster" looktype="1060"/>
+	<creature name="Staraptor" type="monster" looktype="2707"/>
+	<creature name="Staravia" type="monster" looktype="2706"/>
+	<creature name="Starly" type="monster" looktype="2705"/>
 	<creature name="Starmie" type="monster" looktype="472"/>
 	<creature name="Staryu" type="monster" looktype="471"/>
 	<creature name="Steelix" type="monster" looktype="1034"/>
@@ -1849,6 +2144,7 @@
 	<creature name="Stressed Onix" type="npc" looktype="446"/>
 	<creature name="Stressed Sandslash" type="npc" looktype="379"/>
 	<creature name="Stressed Venusaur" type="npc" looktype="354"/>
+	<creature name="Stunky" type="monster" looktype="2743"/>
 	<creature name="Substitute" type="npc" looktype="636"/>
 	<creature name="Substitute Five" type="npc" looktype="636"/>
 	<creature name="Substitute Four" type="npc" looktype="636"/>
@@ -1866,6 +2162,8 @@
 	<creature name="Suramoon Golem" type="monster" looktype="754"/>
 	<creature name="Suramoon Gyarados" type="monster" looktype="829"/>
 	<creature name="Suramoon Venusaur" type="monster" looktype="668"/>
+	<creature name="Surfing Pikachu" type="monster" looktype="2898"/>
+	<creature name="Surfing Raichu" type="monster" looktype="2902"/>
 	<creature name="Surskit" type="monster" looktype="1462"/>
 	<creature name="Susie" type="npc" looktype="920" lookhead="55" lookbody="35" looklegs="25" lookfeet="55"/>
 	<creature name="Swablu" type="monster" looktype="1512"/>
@@ -1879,6 +2177,7 @@
 	<creature name="Tabatha Elizalde" type="npc" looktype="619" lookhead="5" lookbody="60" looklegs="60" lookfeet="35"/>
 	<creature name="Taillow" type="monster" looktype="1455"/>
 	<creature name="Tangela" type="monster" looktype="465"/>
+	<creature name="Tangrowth" type="monster" looktype="2774"/>
 	<creature name="Tanisha Ditmore" type="npc" looktype="625" lookhead="100" lookbody="50" looklegs="50" lookfeet="75"/>
 	<creature name="Tanisha Saterfiel" type="npc" looktype="635" lookhead="66" lookbody="25" looklegs="5" lookfeet="79"/>
 	<creature name="Target" type="npc" looktype="539"/>
@@ -1940,15 +2239,19 @@
 	<creature name="Timral" type="npc" looktype="129" lookhead="114" lookbody="119" looklegs="114" lookfeet="114"/>
 	<creature name="Tobias" type="npc" looktype="622" lookbody="100" looklegs="100"/>
 	<creature name="Tobias Erik" type="npc" looktype="1206" lookhead="35" lookbody="53" looklegs="27" lookfeet="72"/>
+	<creature name="Tobias Lindqvist" type="npc" looktype="626" lookhead="117" lookbody="100" looklegs="49" lookfeet="12"/>
 	<creature name="Toby" type="monster" looktype="1158"/>
 	<creature name="Todd Clancy" type="npc" looktype="622" lookhead="80" lookbody="90" looklegs="50" lookfeet="10"/>
+	<creature name="Togekiss" type="monster" looktype="2777"/>
 	<creature name="Togepi" type="monster" looktype="976"/>
 	<creature name="Togetic" type="monster" looktype="977"/>
 	<creature name="Tomy" type="npc" looktype="503" lookhead="190" lookbody="100" looklegs="100"/>
 	<creature name="Torchic" type="monster" looktype="1434"/>
 	<creature name="Torkoal" type="monster" looktype="1503"/>
+	<creature name="Torterra" type="monster" looktype="2698"/>
 	<creature name="Toshikazu Lee" type="npc" looktype="636" lookhead="75" lookbody="50" looklegs="50" lookfeet="75"/>
 	<creature name="Totodile" type="monster" looktype="959"/>
+	<creature name="Toxicroak" type="monster" looktype="2763"/>
 	<creature name="Trace Kaden" type="npc" looktype="1206" lookhead="70" lookbody="45" looklegs="55" lookfeet="88"/>
 	<creature name="Trace Nathaniel" type="npc" looktype="503" lookhead="150" looklegs="160"/>
 	<creature name="Tracy" type="npc" looktype="1200" lookhead="90" lookbody="85" looklegs="86" lookfeet="10"/>
@@ -1960,6 +2263,7 @@
 	<creature name="Tropius" type="monster" looktype="1536"/>
 	<creature name="Trueman Reilly" type="npc" looktype="1209" lookhead="20" lookbody="90" looklegs="90" lookfeet="15"/>
 	<creature name="Tucker" type="npc" looktype="919" lookhead="55" lookbody="35" looklegs="25" lookfeet="55"/>
+	<creature name="Turtwig" type="monster" looktype="2696"/>
 	<creature name="Tutorial Rattata" type="monster" looktype="370"/>
 	<creature name="Twisted Blades" type="monster" looktype="1170"/>
 	<creature name="Twyla Ma" type="npc" looktype="611" lookhead="239" lookbody="85" looklegs="221" lookfeet="78"/>
@@ -1974,6 +2278,7 @@
 	<creature name="Upton Gavin" type="npc" looktype="503" lookhead="90" lookbody="50" looklegs="90"/>
 	<creature name="Upton Hale" type="npc" looktype="1206" lookhead="17" lookbody="76" looklegs="53"/>
 	<creature name="Ursaring" type="monster" looktype="1043"/>
+	<creature name="Uxie" type="monster" looktype="2789"/>
 	<creature name="Valentine Kruskal" type="npc" looktype="634" lookhead="82" lookbody="52" looklegs="234" lookfeet="192"/>
 	<creature name="Vaporeon" type="monster" looktype="485"/>
 	<creature name="Venomoth" type="monster" looktype="400"/>
@@ -1982,6 +2287,7 @@
 	<creature name="Vern Throop" type="npc" looktype="1201" lookhead="118" lookbody="179" looklegs="233" lookfeet="165"/>
 	<creature name="Vern Whittaker" type="npc" looktype="1199" lookhead="114" lookbody="111" looklegs="18" lookfeet="124"/>
 	<creature name="Veronika" type="npc" looktype="637" lookhead="35" lookbody="100" looklegs="27"/>
+	<creature name="Vespiquen" type="monster" looktype="2725"/>
 	<creature name="Vibrava" type="monster" looktype="1508"/>
 	<creature name="Victor Dwight" type="npc" looktype="503" lookhead="30" lookbody="10" looklegs="10" lookfeet="5"/>
 	<creature name="Victreebel" type="monster" looktype="422"/>
@@ -1990,6 +2296,7 @@
 	<creature name="Volbeat" type="monster" looktype="1492"/>
 	<creature name="Voltorb" type="monster" looktype="451"/>
 	<creature name="Vulpix" type="monster" looktype="388"/>
+	<creature name="Wade Carrington" type="npc" looktype="563"/>
 	<creature name="Wailmer" type="monster" looktype="1499"/>
 	<creature name="Wailord" type="monster" looktype="1500"/>
 	<creature name="Walrein" type="monster" looktype="1544"/>
@@ -1998,9 +2305,11 @@
 	<creature name="Wartortle" type="monster" looktype="359"/>
 	<creature name="Warwick Howard" type="npc" looktype="1370"/>
 	<creature name="Waylon Terrance" type="npc" looktype="616" lookhead="60" lookbody="20" looklegs="20"/>
+	<creature name="Weavile" type="monster" looktype="2770"/>
 	<creature name="Weedle" type="monster" looktype="364"/>
 	<creature name="Weepinbell" type="monster" looktype="421"/>
 	<creature name="Weezing" type="monster" looktype="461"/>
+	<creature name="Wendell Price" type="npc" looktype="626" lookhead="62" lookbody="124" looklegs="126" lookfeet="24"/>
 	<creature name="West" type="npc" looktype="194" lookhead="78" lookbody="114" lookfeet="78"/>
 	<creature name="Whiscash" type="monster" looktype="1519"/>
 	<creature name="Whismur" type="monster" looktype="1472"/>
@@ -2019,12 +2328,14 @@
 	<creature name="Woodrow Vivian" type="npc" looktype="503" lookhead="21" lookbody="33" looklegs="65" lookfeet="44"/>
 	<creature name="Woodworker Courts Ted" type="npc" looktype="630" lookhead="100" lookbody="70" looklegs="60" lookfeet="60"/>
 	<creature name="Wooper" type="monster" looktype="995"/>
+	<creature name="Wormadam" type="monster" looktype="2722"/>
 	<creature name="Wurmple" type="monster" looktype="1444"/>
 	<creature name="Wynaut" type="monster" looktype="1539"/>
 	<creature name="Xatu" type="monster" looktype="979"/>
 	<creature name="Xyler" type="npc" looktype="919" lookhead="55" lookbody="35" looklegs="25" lookfeet="55"/>
 	<creature name="Yancy Melville" type="npc" looktype="503" lookhead="66" lookbody="70" looklegs="30" lookfeet="20"/>
 	<creature name="Yanma" type="monster" looktype="994"/>
+	<creature name="Yanmega" type="monster" looktype="2778"/>
 	<creature name="Yorick Grover" type="npc" looktype="503" lookhead="190" lookbody="50" looklegs="39" lookfeet="50"/>
 	<creature name="Yorick Wat" type="npc" looktype="1181" lookhead="12" lookbody="24" looklegs="36" lookfeet="36"/>
 	<creature name="Young Bellossom" type="npc" looktype="983"/>

@@ -1,0 +1,16 @@
+	<tileset name="PokeVerse carpets">
+		<raw>
+			<item fromid="31096" toid="31110"/>
+			<item fromid="31265" toid="31271"/>
+		</raw>
+	</tileset>
+	<tileset name="PokeVerse floors">
+		<raw>
+			<item fromid="31111" toid="31189"/>
+		</raw>
+	</tileset>
+	<tileset name="PokeVerse buildings">
+		<raw>
+			<item fromid="31190" toid="31264"/>
+		</raw>
+	</tileset>
