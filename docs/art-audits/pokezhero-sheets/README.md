@@ -20,6 +20,17 @@ A `*` marks floors with a logo or brand on them (Poke Ball pieces, the green gym
 
 ![building pieces](building_pieces.png)
 
+Checked against our sprites: everything on this sheet is new except these, which we already have:
+
+- 29320 and 29324, the plain beige tiles (29320 matches one of ours pixel for pixel)
+- 31695-31706, the light blue glass tiles and the two dark grid tiles in the orange range
+
+### Orange floor set (31683-31709)
+
+Cut corners 31683 and 31694, the border line 31684 / 31693 / 31707, and plain fill 31686-31691. 31708 and 31685 + 31709 turn the line down at the ends.
+
+![orange floor pieced together](orange_pieced.png)
+
 ## Mock-ups
 
 Pokemon Center lobby: beige floor 29320/29324, light blue 30568 in front of the counter, white wall blocks 27051 with framed windows 33515, healing machines 36722/36727, PCs 36723/36724 and 36728/36729, vending machine 36599, robots 23862-23866, capsule 36802, Daily Board 36601, Snorlax bed 33547.
