@@ -22,8 +22,9 @@ encrypted: 10.98 layout, alpha-channel sprites, 36,863 items, 3,489 outfits, 933
 | Trainer and Pokemon looks (every new one in `pokezhero-outfits.csv`) | | outfits 2906-4248 | |
 
 The orange set had only a top edge; `orange-floor/` adds the left, right and bottom lanes, the
-bottom corners and two bottom turns, made from the top pieces so the shading matches
-(`area.png` shows a whole area). The map editor lists the floors and buildings under the
+bottom corners and two bottom turns (`area.png` shows a whole area). Every orange piece is
+repainted on one seamless floor with a brown rim outside the line, so an area has no
+per-tile frames or shading. The map editor lists the floors and buildings under the
 PokeVerse floors / PokeVerse buildings tilesets. Not imported: the branded PokeDash floors
 (23962-23978, 29319-29333), the Magikarp statues, the white walls (we have 2222-2233) and the
 Tibia monster looks.
