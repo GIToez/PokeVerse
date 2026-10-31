@@ -11,6 +11,9 @@
 			<raid name="Halloween" enabled="no" file="events/halloween.xml" interval2="30" margin="30" reftype="single" ref="yes" />
 			<raid name="Halloween Caldron" enabled="no" file="events/halloweenPot.xml" interval2="25" margin="25" reftype="single" ref="yes" />
 
+		<!-- SUMMER (BeachPikachu starts these on its own in summer sun; staff with /raid or /beachswarm) -->
+			<raid name="Beach Swarm" enabled="no" file="events/beachSwarm.xml" interval2="60" margin="60" reftype="single" ref="no" />
+
 		<!-- CHRISTMAS (EventCalendar starts these while Christmas runs) -->
 			<raid name="christmasGrinchInvasion" enabled="no" file="events/christmasGrinchInvasion.xml" interval2="35" margin="35" reftype="single" ref="yes" />
 			<raid name="christmasStolenPresent" enabled="no" file="events/christmasStolenPresent.xml" interval2="2" margin="30" reftype="single" ref="yes" />

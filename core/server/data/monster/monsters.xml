@@ -33,6 +33,8 @@
 	<monster name="Arbok" file="Pokemons/arbok.xml"/>
 	<monster name="Pikachu" file="Pokemons/pikachu.xml"/>
 	<monster name="Raichu" file="Pokemons/raichu.xml"/>
+	<monster name="Surfing Pikachu" file="Pokemons/surfing pikachu.xml"/>
+	<monster name="Surfing Raichu" file="Pokemons/surfing raichu.xml"/>
 	<monster name="Sandshrew" file="Pokemons/sandshrew.xml"/>
 	<monster name="Sandslash" file="Pokemons/sandslash.xml"/>
 	<monster name="Nidorana" file="Pokemons/nidorana.xml"/>
@@ -597,6 +599,8 @@
 	<monster name="Shiny Arbok" file="Shiny/shiny arbok.xml"/>
 	<monster name="Shiny Pikachu" file="Shiny/shiny pikachu.xml"/>
 	<monster name="Shiny Raichu" file="Shiny/shiny raichu.xml"/>
+	<monster name="Shiny Surfing Pikachu" file="Shiny/shiny surfing pikachu.xml"/>
+	<monster name="Shiny Surfing Raichu" file="Shiny/shiny surfing raichu.xml"/>
 	<monster name="Shiny Sandshrew" file="Shiny/shiny sandshrew.xml"/>
 	<monster name="Shiny Sandslash" file="Shiny/shiny sandslash.xml"/>
 	<monster name="Shiny Nidorana" file="Shiny/shiny nidorana.xml"/>

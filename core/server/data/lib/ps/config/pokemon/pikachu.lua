@@ -44,6 +44,15 @@ POKEMON["Christmas Pikachu"].blockTransform = true
 POKEMON["Christmas Pikachu"].evolutions = {}
 POKEMON["Christmas Pikachu"].ignoreBallCounter = true
 
+-- Pikachu on its surfboard (looks 2898-2901): it surfs and learns Surf, the rest is Pikachu's
+POKEMON["Surfing Pikachu"] = table.deepcopy(POKEMON["Pikachu"])
+POKEMON["Surfing Pikachu"].blockTransform = true
+POKEMON["Surfing Pikachu"].evolutions = {}
+POKEMON["Surfing Pikachu"].ignoreBallCounter = true
+table.insert(POKEMON["Surfing Pikachu"].skills, "Surf")
+table.insert(POKEMON["Surfing Pikachu"].skills, 35)
+table.insert(POKEMON["Surfing Pikachu"].abilities, "Surf")
+
 POKEMON["Darkchu"] = table.deepcopy(POKEMON["Pikachu"])
 POKEMON["Darkchu"].chance = 250
 POKEMON["Darkchu"].pTypes = {ELEMENT_GROUND, ELEMENT_PSYCHIC}

@@ -23,6 +23,15 @@ POKEMON["Raichu"] = {
     eggMoves = { "Bestow", "Bide", "Charge", "Disarming Voice", "Double Slap", "Encore", "Endure", "Fake Out", "Flail", "Lucky Chant", "Present", "Reversal", "Thunder Punch", "Tickle", "Wish" }
 }
 
+-- Raichu on its surfboard (looks 2902-2905): it surfs and learns Surf, the rest is Raichu's
+POKEMON["Surfing Raichu"] = table.deepcopy(POKEMON["Raichu"])
+POKEMON["Surfing Raichu"].blockTransform = true
+POKEMON["Surfing Raichu"].evolutions = {}
+POKEMON["Surfing Raichu"].ignoreBallCounter = true
+table.insert(POKEMON["Surfing Raichu"].skills, 15, "Surf")
+table.insert(POKEMON["Surfing Raichu"].skills, 16, 35)
+table.insert(POKEMON["Surfing Raichu"].abilities, "Surf")
+
 POKEMON["RC Raichu"] = table.deepcopy(POKEMON["Raichu"])
 POKEMON["RC Raichu"].pTypes = { ELEMENT_POISON, ELEMENT_NORMAL }
 POKEMON["RC Raichu"].blockTransform = true

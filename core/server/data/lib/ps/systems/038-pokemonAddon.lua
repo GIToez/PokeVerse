@@ -271,7 +271,6 @@ PokemonAddon.IDS = {
     NINJA_MASK_CHARMANDER = 263,
     GREEN_SCARF_PIDGEOT = 264,
     NURSE_COSTUME_CHANSEY = 265,
-    SURFBOARD = 266,
 }
 
 local ADDONS = {}
@@ -2095,18 +2094,6 @@ ADDONS[PokemonAddon.IDS.IRON_JAW] = {
     itemId = 29862,
 }
 
-ADDONS[PokemonAddon.IDS.SURFBOARD] = {
-    outfits = {
-        ["Pikachu"] = { lookType = 2898, surf = 2899 },
-        ["Shiny Pikachu"] = { lookType = 2900, surf = 2901 },
-        ["Raichu"] = { lookType = 2902, surf = 2903 },
-        ["Shiny Raichu"] = { lookType = 2904, surf = 2905 },
-    },
-    -- worn, it lets a Pokemon without them use these abilities
-    abilities = { POKEMON_ABILITIES.SURF },
-    itemId = 31095,
-}
-
 --local ADDONS_ABILITY_CONDITION_FLY = {}
 --local ADDONS_ABILITY_CONDITION_LEVITATE = {}
 --local ADDONS_ABILITY_CONDITION_RIDE = {}
@@ -2115,7 +2102,6 @@ ADDONS[PokemonAddon.IDS.SURFBOARD] = {
 
 local ADDON_BY_ITEMID = {}
 local OUTFITS_BY_LOOKTYPE = {}
-local ADDON_BY_LOOKTYPE = {}
 
 for addonId, addon in pairs(ADDONS) do
     if (addon.itemId > 0) then
@@ -2125,7 +2111,6 @@ for addonId, addon in pairs(ADDONS) do
 
         for pokemonName, outfits in pairs(addon.outfits) do
             OUTFITS_BY_LOOKTYPE[outfits.lookType] = outfits
-            ADDON_BY_LOOKTYPE[outfits.lookType] = addon
 
             --            if (outfits.fly) then
             --                ADDONS_ABILITY_CONDITION_FLY[outfits.lookType] = createConditionObject(CONDITION_OUTFIT, -1, nil, CONDITION_SUBID.OUTFITS.ABILITIES)
@@ -2240,13 +2225,6 @@ PokemonAddon.doPlayerSendWindow = function(cid)
     end
 
     return doPlayerSendCustomOutfitWindow(cid, (currentAddon and currentAddon or defaultOutfit), lookTypes)
-end
-
--- Whether the addon the ball's Pokemon wears gives it the ability (the Surfboard gives Surf)
-PokemonAddon.givesAbility = function(ballUid, ability)
-    local outfit = ballUid and ballUid > 0 and getBallCurrentAddon(ballUid)
-    local addon = outfit and ADDON_BY_LOOKTYPE[outfit.lookType]
-    return addon ~= nil and addon.abilities ~= nil and table.find(addon.abilities, ability) ~= nil
 end
 
 PokemonAddon.onPlayerUseAddon = function(cid, item, fromPosition, itemEx, toPosition)
