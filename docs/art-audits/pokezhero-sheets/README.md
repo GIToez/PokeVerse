@@ -1,0 +1,31 @@
+# PokeZHero contact sheets
+
+Rendered from the PokeZHero OTC 1.2 client. Ids match `../pokezhero-items.csv` and `../pokezhero-outfits.csv`. Nothing here is in the game yet; pick what you want and it gets imported by hand.
+
+## Trainer outfits
+
+All 590 looks in the trainer group (2024-2844), facing south on the first walk frame, coloured head yellow, body red, legs blue, feet brown. A `*` after the id means the look also exists in PAdventures or the 6500 pack.
+
+![page 1](trainers_1.png)
+![page 2](trainers_2.png)
+![page 3](trainers_3.png)
+![page 4](trainers_4.png)
+![page 5](trainers_5.png)
+![page 6](trainers_6.png)
+![page 7](trainers_7.png)
+
+## Building pieces that are not Tibia
+
+A `*` marks floors with a logo or brand on them (Poke Ball pieces, the green gym emblem, the "PokeDash" beige set). 29320 and 29324 are the plain beige tiles from that set.
+
+![building pieces](building_pieces.png)
+
+## Mock-ups
+
+Pokemon Center lobby: beige floor 29320/29324, light blue 30568 in front of the counter, white wall blocks 27051 with framed windows 33515, healing machines 36722/36727, PCs 36723/36724 and 36728/36729, vending machine 36599, robots 23862-23866, capsule 36802, Daily Board 36601, Snorlax bed 33547.
+
+![Pokemon Center mock-up](mock_center.png)
+
+Town square on Tibia grass 4526: beige path, orange track 31686, blue pool 32107 with the Magikarp statue 36610, trees 36712/36713/36796/36797.
+
+![town square mock-up](mock_square2.png)
