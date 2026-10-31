@@ -343,8 +343,13 @@ local function doFishing(cid, fromPosition, toPosition, rod, tries, ticksToStart
                 maxAmount = math.ceil((isCreature(pokemon) and getMonsterLevel(pokemon) or 1) / MAX_AMOUNT_LEVEL_DIVIDER)
             end
 
-            for i = 1, getRandom(1, maxAmount) do
-                if (getRandom(0, ShinyEvent.chance(SHINY_CHANCE)) == 0) then
+            local mastery = getPlayerSkillMastery(cid, PLAYER_SKILL_FISHING)
+            local partner = getPlayerPokemon(cid)
+            local amount = getSkillMasteryAmount(getRandom(1, maxAmount), mastery,
+                isCreature(partner) and getMonsterLevel(partner) or 1, MAX_AMOUNT_LEVEL_DIVIDER)
+            local shinyChance = SHINY_CHANCE / getSkillMasteryShinyMultiplier(mastery)
+            for i = 1, amount do
+                if (getRandom(0, ShinyEvent.chance(shinyChance)) == 0) then
                     local tmp = getMonsterInfo(fishName).shiny
                     if (tmp and isString(tmp) and tmp ~= "") then
                         log(LOG_TYPES.WARNING, "Hooked Shiny", getCreatureName(cid), tmp, SHINY_CHANCE)

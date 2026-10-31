@@ -193,9 +193,12 @@ local function checkHeadbutt(cid, itemEx, toPosition, ticks)
                 maxAmount = math.ceil(getMonsterLevel(cid) / MAX_AMOUNT_LEVEL_DIVIDER)
             end
 
-            for i = 1, getRandom(1, maxAmount) do
+            local mastery = getPlayerSkillMastery(master, PLAYER_SKILL_HEADBUTTING)
+            local amount = getSkillMasteryAmount(getRandom(1, maxAmount), mastery, getMonsterLevel(cid), MAX_AMOUNT_LEVEL_DIVIDER)
+            local shinyChance = SHINY_CHANCE / getSkillMasteryShinyMultiplier(mastery)
+            for i = 1, amount do
                 local pokemonName = fishName
-                if (getRandom(0, ShinyEvent.chance(SHINY_CHANCE)) == 0) then
+                if (getRandom(0, ShinyEvent.chance(shinyChance)) == 0) then
                     pokemonName = getMonsterInfo(pokemonName).shiny
                     log(LOG_TYPES.WARNING, "Headbutted Shiny", getCreatureName(cid), pokemonName, SHINY_CHANCE)
                 end
