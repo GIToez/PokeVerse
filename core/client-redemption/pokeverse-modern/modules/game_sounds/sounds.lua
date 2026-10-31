@@ -2,7 +2,8 @@
 -- ExtendedIds.Sound (Sounds in the server lib); other modules call play() for what the client
 -- already knows about (evolution, level up, the PC).
 -- Sounds play as their own sources so they can overlap; a channel plays one sound at a time.
--- Battle and game sounds follow the Item channel (Options: Battle Sounds Volume), menus the UI channel.
+-- Battle and game sounds follow the Item channel (Options: Battle Sounds Volume), menus the UI channel,
+-- Pokemon cries the Creature channel (Pokemon Cries Volume) and moves the Spells channel (move_sounds.lua).
 local DIR = '/sounds/effects/'
 local MAX_DELAY_MS = 10000
 
@@ -96,7 +97,7 @@ function playVoiceCry(number, gain)
     if not number or not g_sounds then
         return nil
     end
-    local channel = g_sounds.getChannel(SoundChannels.Item)
+    local channel = g_sounds.getChannel(SoundChannels.Creature)
     if not channel or not channel:isEnabled() or channel:getGain() <= 0 then
         return nil
     end
@@ -141,10 +142,12 @@ end
 function init()
     ProtocolGame.registerExtendedOpcode(ExtendedIds.Sound, onSound)
     connect(g_game, { onGameEnd = cancelPending, onTalk = onTalk })
+    initMoveSounds()
 end
 
 function terminate()
     ProtocolGame.unregisterExtendedOpcode(ExtendedIds.Sound)
     disconnect(g_game, { onGameEnd = cancelPending, onTalk = onTalk })
     cancelPending()
+    terminateMoveSounds()
 end

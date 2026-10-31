@@ -224,6 +224,10 @@ function getPokemonSkillSketchable(skillName)
     return true
 end
 
+function getPokemonSkillSoundDelay(skillName)
+    return SKILLS_CONFIG[skillName].soundDelay or 0
+end
+
 function getPokemonSkillMimicable(skillName)
     if (SKILLS_CONFIG[skillName].mimicable ~= nil) then
         return SKILLS_CONFIG[skillName].mimicable

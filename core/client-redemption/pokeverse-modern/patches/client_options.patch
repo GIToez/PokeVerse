@@ -168,7 +168,16 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
      autoSwitchPreset                  = false,
      listKeybindsPanel                 = {
          action = function(value, options, controller, panels, extraWidgets)
-@@ -915,7 +927,7 @@
+@@ -873,6 +885,8 @@
+                 Music = options.soundMusic.value,
+                 Ambient = options.soundAmbience.value,
+                 Item = options.soundItems.value,
++                Spells = options.soundMoves.value,
++                Creature = options.soundCries.value,
+                 Event = options.soundEventVolume.value,
+                 SoundUI = options.soundUI.value,
+             }
+@@ -915,7 +929,7 @@
          end
          },
      soundMusic = {
@@ -177,7 +186,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          aux = true,
          event = nil,
          action = function(value, options, controller, panels, extraWidgets)
-@@ -951,7 +963,7 @@
+@@ -951,7 +965,7 @@
          end
      },
      soundAmbience = {
@@ -186,7 +195,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value, options, controller, panels, extraWidgets)
              panels.soundPanel:recursiveGetChildById('soundAmbience'):setText(tr('Ambience Volume: %d %%', value))
              if g_sounds then
-@@ -966,7 +978,7 @@
+@@ -966,7 +980,7 @@
      soundItems = {
          value = 100,
          action = function(value, options, controller, panels, extraWidgets)
@@ -195,7 +204,36 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
              if g_sounds then
                  local channel = g_sounds.getChannel(SoundChannels.Item)
                  if channel then
-@@ -979,7 +991,6 @@
+@@ -976,10 +990,35 @@
+             end
+         end
+     },
++    soundMoves = {
++        value = 100,
++        action = function(value, options, controller, panels, extraWidgets)
++            panels.soundPanel:recursiveGetChildById('soundMoves'):setText(tr('Move Sounds Volume: %d %%', value))
++            if g_sounds then
++                local channel = g_sounds.getChannel(SoundChannels.Spells)
++                if channel then
++                    local masterVolume = (options.soundMaster.value or 100) / 100
++                    channel:setGain(value / 100 * masterVolume)
++                end
++            end
++        end
++    },
++    soundCries = {
++        value = 100,
++        action = function(value, options, controller, panels, extraWidgets)
++            panels.soundPanel:recursiveGetChildById('soundCries'):setText(tr('Pokemon Cries Volume: %d %%', value))
++            if g_sounds then
++                local channel = g_sounds.getChannel(SoundChannels.Creature)
++                if channel then
++                    local masterVolume = (options.soundMaster.value or 100) / 100
++                    channel:setGain(value / 100 * masterVolume)
++                end
++            end
++        end
++    },
      soundEventVolume = {
          value = 100,
          action = function(value, options, controller, panels, extraWidgets)
@@ -203,7 +241,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
              if g_sounds then
                  local channel = g_sounds.getChannel(SoundChannels.Event)
                  if channel then
-@@ -1002,7 +1013,8 @@
+@@ -1002,7 +1041,8 @@
          end,
      },
      actionBarShowBottom1 = {
@@ -213,7 +251,7 @@ diff -ruN pristine/modules/client_options/data_options.lua modules/client_option
          action = function(value)
              local allBox = modules.client_options.getOption("allActionBar13") or false
              modules.game_actionbar.configureActionBar('actionBarShowBottom1', allBox and value)
-@@ -1169,5 +1181,112 @@
+@@ -1169,5 +1209,112 @@
             g_client.setBossAreaCreatureEffectAlpha(value / 100)
          end
      },
@@ -1641,7 +1679,7 @@ diff -ruN pristine/modules/client_options/styles/sound/sound.otui modules/client
        anchors.top: parent.top
        anchors.left: parent.left
        anchors.right: parent.right
-@@ -103,35 +102,4 @@
+@@ -103,28 +102,37 @@
        margin-left: -15
        @onSetup: |
          local value = modules.client_options.getOption('soundItems')
@@ -1656,26 +1694,49 @@ diff -ruN pristine/modules/client_options/styles/sound/sound.otui modules/client
 -      id: soundMoveItem
 -      !text: tr('Move Item')
 -      anchors.top: prev.bottom
--
--  SmallReversedQtPanel
--    anchors.left: parent.left
--    anchors.right: parent.right
--    anchors.top: prev.bottom
--    margin-top: 7
++        self:setText(tr('Battle Sounds Volume: %d %%', value))
+ 
+   SmallReversedQtPanel
+     anchors.left: parent.left
+     anchors.right: parent.right
+     anchors.top: prev.bottom
+     margin-top: 7
 -    height: 33
--
--    OptionScaleScroll
++    height: 25
++    OptionScaleScroll
++      id: soundMoves
++      margin-top: 2
++      anchors.top: parent.top
++      anchors.left: parent.left
++      anchors.right: parent.right
++      &minimumScrollValue: 1
++      &maximumScrollValue: 100
++      &scrollSize: 21
++      margin-left: -15
++      @onSetup: |
++        local value = modules.client_options.getOption('soundMoves')
++        self:setText(tr('Move Sounds Volume: %d %%', value))
+ 
++  SmallReversedQtPanel
++    anchors.left: parent.left
++    anchors.right: parent.right
++    anchors.top: prev.bottom
++    margin-top: 7
++    height: 25
+     OptionScaleScroll
 -      id: soundEventVolume
 -      margin-top: 5
--      anchors.top: parent.top
--      anchors.left: parent.left
--      anchors.right: parent.right
--      &minimumScrollValue: 1
--      &maximumScrollValue: 100
--      &scrollSize: 21
--      margin-left: -15
--      @onSetup: |
++      id: soundCries
++      margin-top: 2
+       anchors.top: parent.top
+       anchors.left: parent.left
+       anchors.right: parent.right
+@@ -133,5 +141,5 @@
+       &scrollSize: 21
+       margin-left: -15
+       @onSetup: |
 -        local value = modules.client_options.getOption('soundEventVolume')
 -        self:setText(tr('Event Volume: %d %%', value))
 \ No newline at end of file
-+        self:setText(tr('Battle Sounds Volume: %d %%', value))
++        local value = modules.client_options.getOption('soundCries')
++        self:setText(tr('Pokemon Cries Volume: %d %%', value))

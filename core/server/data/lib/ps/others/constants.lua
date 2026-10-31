@@ -89,7 +89,8 @@ EXTENDED_IDS = {
     SOCIAL = 54, -- JSON Pokegear Social window: friends, guild roster and party (Social)
     ACTIVITY = 55, -- JSON a milestone for the Pokegear Activity list, just before its text message (doPlayerSendActivity)
     POKEMON_OUTFIT = 56, -- JSON Pokegear Pokemon Outfit window: the outfits the Pokemon out owns and could get (PokemonAddon)
-    WARP_STYLES = 57 -- JSON Warp Styles: the animations trainers play when they warp, duel and faint, and the trainer's slots (WarpStyles)
+    WARP_STYLES = 57, -- JSON Warp Styles: the animations trainers play when they warp, duel and faint, and the trainer's slots (WarpStyles)
+    MOVE_SOUND = 58 -- "start;cast;move;x;y;z" when a move goes off and "stop;cast" when it is over (Sounds.onMove)
 }
 
 TOURNAMENT_TYPES = {}
