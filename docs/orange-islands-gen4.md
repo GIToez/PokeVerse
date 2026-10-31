@@ -85,6 +85,6 @@ The Sinnoh families and the Gen 4 legendaries: the Sinnoh region.
 - Porygon-Z: 1 spawn at the Power Plant of Hamlin, or Porygon2 at level 60 with a Dubious Disc.
 - All of them respawn every 45 minutes.
 - Up-Grade and Dubious Disc, like every evolution item: the weekly PokeTrader auction (a 30%
-  chance each week of one rare item, out of 28), and rare drops from Pokémon that already
+  chance each week of one rare item, out of 26), and rare drops from Pokémon that already
   evolved (Up-Grade from Porygon2, the Dubious Disc from Porygon-Z). The Up-Grade is also a
   quest reward. The item NPCs (Alton Dane and the others) only buy them.
