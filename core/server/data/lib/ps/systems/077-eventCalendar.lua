@@ -1020,6 +1020,7 @@ function EventCalendar.onThink()
     AnniversaryEvent.syncNpcs()
     HalloweenEvent.syncNpcs()
     BeachPikachu.onThink()
+    RareSpawns.onThink()
 
     for id, raid in pairs(EventCalendar.RAIDS) do
         if (not EventCalendar.isActive(id)) then
