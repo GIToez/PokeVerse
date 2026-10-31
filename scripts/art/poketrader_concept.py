@@ -5,8 +5,8 @@
 
 Drawn from the client's own images (the game_dailytasks frame, game_fishing rows, tabs and panels,
 client_entergame fields and buttons), its fonts and the item sprites, so it looks like the Event
-Shop and Bank windows. Needs the real data.spr (git lfs pull). Writes auction.jpg, mybids.jpg and
-phone.jpg; the lots, bids and money are made up.
+Shop and Bank windows. Needs the real data.spr (git lfs pull). Writes auction.jpg, mybids.jpg,
+history.jpg and phone.jpg; the lots, bids and money are made up.
 """
 import math
 import os
@@ -207,10 +207,10 @@ def stat(p, x, y, w, label, value, color=TEXT):
 
 def footer(p, x, y, w):
     p.picture('game_dailytasks/images/icon_clock', x, y + 3, 12)
-    p.text(x + 18, y, 'New lots in 3d 14h 22m', 12, WHITE, 'bold')
-    p.picture('game_dailytasks/images/icon_info', x + 200, y + 2, 14)
-    p.text(x + 220, y + 1, 'Set the most you would pay: you bid 1% over anyone else, up to that. Your maximum', 10, MUTED)
-    p.text(x + 220, y + 15, 'is held from the bank; what you don\'t pay comes back. What you win goes to your depot.', 10, MUTED)
+    p.text(x + 18, y, 'Bidding closes in 3d 13h 52m', 12, WHITE, 'bold')
+    p.picture('game_dailytasks/images/icon_info', x + 230, y + 2, 14)
+    p.text(x + 250, y + 1, 'Set the most you would pay: you bid 1% over anyone else, up to that. Your maximum', 10, MUTED)
+    p.text(x + 250, y + 15, 'is held from the bank; what you don\'t pay comes back. What you win goes to your depot.', 10, MUTED)
 
 
 def auction(r):
@@ -218,7 +218,7 @@ def auction(r):
     p = Painter(W, H, S, r)
     p.nine('game_dailytasks/images/window', 0, 0, W, H, 24)
     x0, y0, x1 = 26, 24, W - 26
-    header(p, x0, y0, x1 - x0, 'Tiger Kelsey is in Cerulean City today  -  bid here or talk to him')
+    header(p, x0, y0, x1 - x0, 'Tiger Kelsey  -  Cerulean City today')
     cx = x0
     for label, count, on in (('This week', 5, True), ('My bids', 2, False), ('Won', 1, False), ('History', None, False)):
         cx += p.chip(cx, y0 + 50, label, count, on) + 6
@@ -313,6 +313,49 @@ def my_bids(r):
     p.save(os.path.join(OUT, 'mybids.jpg'), BACKDROP)
 
 
+# the last two weeks: server item id, count, winner (None: no bids, 'you'), price
+WEEKS = [
+    ('Last week', [(18087, 1, 'you', 26800), (17359, 1, 'Rowan', 7450), (12237, 1, 'Mira', 5000),
+                   (13305, 100, 'Dex', 6120), (23546, 1, 'Kael', 1000)]),
+    ('Two weeks ago', [(18089, 1, 'Sora', 41300), (17363, 1, 'Rowan', 5600), (12243, 1, None, 10000),
+                       (13305, 100, 'Lena', 5850), (23546, 1, 'Tomas', 1150)]),
+]
+NAMES = {18087: 'Thunderstone', 17359: 'TM Thunderbolt', 12237: 'Zap Plate', 13305: '100 Lava Cookies',
+         23546: 'Blue Flute', 18089: 'Up-Grade', 17363: 'TM Psychic', 12243: 'Fist Plate'}
+
+
+def history(r):
+    W, H, S = 900, 600, 2
+    p = Painter(W, H, S, r)
+    p.nine('game_dailytasks/images/window', 0, 0, W, H, 24)
+    x0, y0, x1 = 26, 24, W - 26
+    header(p, x0, y0, x1 - x0, 'Who won the last two weeks, and for how much')
+    cx = x0
+    for label, count, on in (('This week', 5, False), ('My bids', 2, False), ('Won', 1, False), ('History', None, True)):
+        cx += p.chip(cx, y0 + 50, label, count, on) + 6
+    cw = (x1 - x0 - 14) / 2
+    for c, (title, lots) in enumerate(WEEKS):
+        lx, ly = x0 + c * (cw + 14), y0 + 86
+        p.text(lx, ly, title, 13, WHITE, 'bold')
+        for i, (sid, count, winner, price) in enumerate(lots):
+            y = ly + 22 + i * 64
+            p.nine('game_fishing/images/row_locked' if not winner else 'game_fishing/images/row', lx, y, cw, 58, 8,
+                   0.6 if not winner else 1)
+            p.picture('game_fishing/images/portrait', lx + 6, y + 7)
+            p.item(r['otb'].client_id(sid), lx + 12, y + 13, count=count, dim=not winner)
+            p.text(lx + 58, y + 14, NAMES[sid], 13, GOLD if winner else '#9aa6bf', 'bold')
+            if winner == 'you':
+                p.tag(lx + 58, y + 32, 'Won by you', '#1a1406', GOLD)
+            elif winner:
+                p.text(lx + 58, y + 33, 'Won by ' + winner, 10, TEXT)
+            else:
+                p.text(lx + 58, y + 33, 'No bids  -  minimum was ' + dollars(price), 10, MUTED)
+            if winner:
+                p.text(lx + cw - 12, y + 20, dollars(price), 14, GREEN, 'bold', 'ra')
+    footer(p, x0, H - 52, x1 - x0)
+    p.save(os.path.join(OUT, 'history.jpg'), BACKDROP)
+
+
 def phone(r):
     # a landscape phone (844 x 390 points); the lot list and the bid sheet side by side, bigger rows
     W, H, S = 844, 390, 2
@@ -321,7 +364,7 @@ def phone(r):
     x0, y0, x1 = 20, 16, W - 20
     p.item(3043, x0, y0)
     p.text(x0 + 40, y0 + 4, 'PokeTrader', 18, WHITE, 'bold')
-    p.text(x0 + 40, y0 + 24, 'New lots in 3d 14h', 10, MUTED)
+    p.text(x0 + 40, y0 + 24, 'Bidding closes in 3d 13h', 10, MUTED)
     cx = x0 + 180
     for label, count, on in (('This week', 5, True), ('My bids', 2, False), ('Won', 1, False)):
         cx += p.chip(cx, y0 + 6, label, count, on) + 6
@@ -355,6 +398,7 @@ def main():
     r = {'otb': pvmap.Otb(OTB), 'dat': pvmap.Dat(DAT), 'spr': pvmap.Spr(SPR)}
     auction(r)
     my_bids(r)
+    history(r)
     phone(r)
 
 

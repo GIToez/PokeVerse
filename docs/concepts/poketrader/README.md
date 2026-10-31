@@ -13,13 +13,15 @@ pictures, run `scripts/art/poketrader_concept.py`.
 
 ![My bids](mybids.jpg)
 
+![History](history.jpg)
+
 ![Phone](phone.jpg)
 
 ## Opening it
 
 - Talk to Tiger Kelsey and say "hi". The window opens, and the chat words still work.
-- Optional: a PokeGear button that opens the window from anywhere, either only to look or also to bid.
-  This needs a decision (see the open questions).
+- You can only bid at Tiger Kelsey. There is no PokeGear button, and the window closes when you
+  walk away from him, like a shop.
 
 ## Maximum bids
 
@@ -45,6 +47,13 @@ you: always just 1% over the next trainer, never more than your maximum. This is
 - In the chat, "Dusk Stone 40000" sets your maximum, so Tiger Kelsey keeps working without the
   window.
 
+## When the week ends
+
+- Bidding ends on time, with no extra time for late bids. The new lots come out at the same
+  moment.
+- Today the next week starts from the moment the last one ends, so the start time drifts. The new
+  lots should come out at a fixed time instead, for example every Sunday at 20:00.
+
 ## This week
 
 - The window shows one row per lot: the item, what kind of lot it is (rare evolution item,
@@ -58,7 +67,7 @@ you: always just 1% over the next trainer, never more than your maximum. This is
   price plus 1%), and buttons to set it to that lowest amount, +5% or +10%.
 - **Place bid** or **Raise maximum** shows how much more money will be held from your bank.
   **Take my bid back** only works while your bid is not the highest, which is the same rule as today.
-- The top right shows your bank balance. The bottom shows when the new lots arrive, plus a one-line
+- The top right shows your bank balance. The bottom shows when bidding ends, plus a one-line
   reminder of the rules.
 
 ## My bids
@@ -69,12 +78,15 @@ you: always just 1% over the next trainer, never more than your maximum. This is
 - The header shows how much money is held for your maximums.
 - **Won** lists the items you've won and says they were sent to your depot.
 - On the right is the bid history of the selected lot: amounts and times, with your own bids
-  highlighted and the automatic ones marked. Other bidders stay anonymous ("A trainer"), just as Tiger Kelsey never names them.
+  highlighted and the automatic ones marked. Other bidders stay anonymous
+  ("A trainer") until the week ends.
 
 ## History
 
-- This tab lists past weeks' lots and what each one sold for. Players can use it to judge a fair
-  bid.
+- This tab lists the last two weeks' lots: who won each one and what they paid. Players can use it
+  to judge a fair bid. Lots that got no bids show "No bids".
+- Winners are named here. While a week is still running, the other bidders stay anonymous, so
+  nobody can tell whose maximum to beat.
 
 ## Phone
 
@@ -109,11 +121,9 @@ you: always just 1% over the next trainer, never more than your maximum. This is
 - Outbid messages are new. They are sent when a maximum beats yours.
 - The NPC's chat words move to the same code, so the window and the chat follow the same rules.
 
-## Open questions
+## Decided
 
-1. Should players be able to open and bid from anywhere (PokeGear), or only at Tiger Kelsey? A
-   middle option: look at the auction from anywhere, but bid only at Tiger Kelsey.
-2. Should a bid in the last 5 minutes add 5 minutes to that lot? Maximum bids make last-second
-   bids matter less, but they can still beat a maximum.
-3. Should the bid history show amounts only (as in the picture), or also the bidders' names?
-4. Should the History tab go back a few weeks, or all the way?
+- Bidding only at Tiger Kelsey.
+- No extra time for late bids.
+- The History tab names the winners and covers the last two weeks.
+- Current bids stay anonymous.
