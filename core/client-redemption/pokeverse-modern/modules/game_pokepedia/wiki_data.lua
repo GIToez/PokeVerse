@@ -357,6 +357,7 @@ WikiData = {
             } },
             { 'h', "Eggs" },
             { 'p', "An egg can come when both Pokemon have trained together for at least 24 hours and are compatible: a male and a female of matching groups, or Ditto with any Pokemon that can breed (not two Dittos). The wait counts from your last egg, or from your first visit: from day 7 each day has a 10% chance of an egg, and on day 14 it is certain. The egg waits in the window's egg slot; take it there or greet a keeper. A plate deposited in the window steers the egg move." },
+            { 'p', "The egg hatches the first form of the mother's line (Charizard lays Charmander eggs). Some lines start with a baby: Pikachu and Raichu lay Pichu eggs, Hitmonlee, Hitmonchan and Hitmontop Tyrogue, Snorlax Munchlax, Mantine Mantyke, Chansey and Blissey Happiny, Mr. Mime Mime Jr., Sudowoodo Bonsly, Roselia and Roserade Budew, and Chimecho Chingling." },
             { 'p', "Put the egg in an incubator ($100 at the Old Lady) and use it again after 60 minutes. The baby hatches at level 1 in a Poke Ball with no EVs. It inherits 3 IVs from its parents (5 with a Destiny Knot, and a parent holding a Power item passes on that stat). It keeps a parent's Nature only with an Everstone. If it has an egg move, you choose which move it replaces." },
             { 'items', { { 12374, "Incubator" } } },
             { 'tip', "Breeders hatch eggs faster, and with Premium they have a better daily egg chance (11 to 15%) and a chance of a second egg. Breeding and Day Care events raise the chances too." },
