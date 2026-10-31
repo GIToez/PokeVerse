@@ -209,8 +209,8 @@ def footer(p, x, y, w):
     p.picture('game_dailytasks/images/icon_clock', x, y + 3, 12)
     p.text(x + 18, y, 'New lots in 3d 14h 22m', 12, WHITE, 'bold')
     p.picture('game_dailytasks/images/icon_info', x + 200, y + 2, 14)
-    p.text(x + 220, y + 1, 'A bid must beat the highest by 1%. Your money leaves the bank when you bid,', 10, MUTED)
-    p.text(x + 220, y + 15, 'comes back if someone beats you, and the item you win goes to your depot.', 10, MUTED)
+    p.text(x + 220, y + 1, 'Set the most you would pay: you bid 1% over anyone else, up to that. Your maximum', 10, MUTED)
+    p.text(x + 220, y + 15, 'is held from the bank; what you don\'t pay comes back. What you win goes to your depot.', 10, MUTED)
 
 
 def auction(r):
@@ -237,17 +237,17 @@ def auction(r):
     sx, sw = dx + 14, dw - 28
     stat(p, sx, dy + 140, sw, 'Minimum bid', dollars(minimum))
     stat(p, sx, dy + 160, sw, 'Highest bid', dollars(highest), GREEN)
-    stat(p, sx, dy + 180, sw, 'Your bid', dollars(31500), RED)
+    stat(p, sx, dy + 180, sw, 'Your maximum', dollars(31500), RED)
     stat(p, sx, dy + 200, sw, 'Bids', str(bids))
     p.d.line([(sx * S, (dy + 224) * S), ((sx + sw) * S, (dy + 224) * S)], fill='#34507a', width=S)
-    p.text(sx, dy + 234, 'Raise your bid to', 11, MUTED)
+    p.text(sx, dy + 234, 'Your maximum  -  we bid for you, up to this', 11, MUTED)
     p.nine('client_entergame/images/field_focus', sx, dy + 252, sw, 30, 8)
     p.text(sx + 10, dy + 267, dollars(next_bid(highest, minimum)), 13, WHITE, 'bold', 'lm')
-    p.text(sx + sw - 10, dy + 267, 'lowest you can bid', 10, MUTED, anchor='rm')
+    p.text(sx + sw - 10, dy + 267, 'at least', 10, MUTED, anchor='rm')
     qx = sx
     for label in ('Lowest', '+5%', '+10%'):
         qx += p.chip(qx, dy + 290, label) + 6
-    p.button('green', sx, dy + 324, sw, 32, 'Raise bid  (+' + dollars(next_bid(highest, minimum) - 31500) + ')', WHITE)
+    p.button('green', sx, dy + 324, sw, 32, 'Raise maximum  (+' + dollars(next_bid(highest, minimum) - 31500) + ' held)', WHITE)
     p.button('red', sx, dy + 362, sw, 30, 'Take my bid back', '#ffb4b4')
     footer(p, x0, H - 52, x1 - x0)
     p.save(os.path.join(OUT, 'auction.jpg'), BACKDROP)
@@ -258,13 +258,13 @@ def my_bids(r):
     p = Painter(W, H, S, r)
     p.nine('game_dailytasks/images/window', 0, 0, W, H, 24)
     x0, y0, x1 = 26, 24, W - 26
-    header(p, x0, y0, x1 - x0, 'Money in your bids: ' + dollars(31500 + 12120) + '  -  it comes back if you are beaten')
+    header(p, x0, y0, x1 - x0, 'Held for your maximums: ' + dollars(31500 + 20000) + '  -  what you don\'t pay comes back')
     cx = x0
     for label, count, on in (('This week', 5, False), ('My bids', 2, True), ('Won', 1, False), ('History', None, False)):
         cx += p.chip(cx, y0 + 50, label, count, on) + 6
     lx, lw, ly = x0, 540, y0 + 86
     p.text(lx, ly, 'This week', 13, WHITE, 'bold')
-    rows = [(LOTS[0], 'Your bid $31,500  -  beaten by $315', True), (LOTS[1], 'Your bid $12,120  -  4 bids', False)]
+    rows = [(LOTS[0], 'Your max $31,500  -  someone\'s max is higher', True), (LOTS[1], 'Your maximum $20,000  -  paying $12,120 now', False)]
     for i, (lot, note, selected) in enumerate(rows):
         sid, name, kind, minimum, highest, bids, state = lot
         y = ly + 22 + i * 64
@@ -275,7 +275,7 @@ def my_bids(r):
         p.text(lx + 58, y + 33, note, 10, MUTED)
         status_tag(p, lx + 66 + p.width(name, 13, 'bold'), y + 13, state, highest)
         if state == 'outbid':
-            p.button('gold', lx + lw - 190, y + 13, 84, 32, 'Raise', GOLD)
+            p.button('gold', lx + lw - 190, y + 13, 84, 32, 'Raise max', GOLD)
             p.button('red', lx + lw - 98, y + 13, 86, 32, 'Take back', '#ffb4b4')
         else:
             p.button('red', lx + lw - 98, y + 13, 86, 32, 'Take back', '#ffb4b4', off=True)
@@ -297,7 +297,7 @@ def my_bids(r):
     p.item(r['otb'].client_id(sid), dx + 14, dy + 12)
     p.text(dx + 54, dy + 13, name, 15, WHITE, 'bold')
     p.text(dx + 54, dy + 32, 'Bid history', 10, MUTED)
-    history = [(31815, '12 min ago', False), (31500, '2 h ago', True), (31185, '2 h ago', False),
+    history = [(31815, '2 h ago', False), (31500, '2 h ago', True), (31185, 'Yesterday', False),
                (30000, 'Yesterday', False), (27250, '2 days ago', False), (25000, '3 days ago', False)]
     for i, (amount, when, you) in enumerate(history):
         y = dy + 60 + i * 34
@@ -305,7 +305,7 @@ def my_bids(r):
             p.nine('game_fishing/images/row_on', dx + 8, y - 4, dw - 16, 30, 8)
         top = i == 0
         p.text(dx + 18, y + 2, dollars(amount), 13, GREEN if top else (GOLD if you else TEXT), 'bold')
-        p.text(dx + 18, y + 4 + 13, 'You' if you else 'A trainer', 9, GOLD if you else MUTED)
+        p.text(dx + 18, y + 4 + 13, 'You' if you else ('A trainer  (automatic, over yours)' if i == 0 else 'A trainer'), 9, GOLD if you else MUTED)
         p.text(dx + dw - 18, y + 6, ('Highest  -  ' if top else '') + when, 10, MUTED, anchor='ra')
     p.text(dx + 14, dy + dh - 44, 'Other bidders stay anonymous, like', 10, MUTED)
     p.text(dx + 14, dy + dh - 30, 'when you ask Tiger Kelsey.', 10, MUTED)
@@ -336,14 +336,14 @@ def phone(r):
     p.nine('game_fishing/images/panel', dx, dy, dw, dh, 10)
     p.item(r['otb'].client_id(sid), dx + 14, dy + 12, 40)
     p.text(dx + 64, dy + 14, name, 15, WHITE, 'bold')
-    p.text(dx + 64, dy + 34, 'Highest ' + dollars(highest) + '  -  yours ' + dollars(31500), 10, MUTED)
+    p.text(dx + 64, dy + 34, 'Highest ' + dollars(highest) + '  -  your max ' + dollars(31500), 10, MUTED)
     sx, sw = dx + 14, dw - 28
     p.nine('client_entergame/images/field_focus', sx, dy + 70, sw, 40, 8)
     p.text(sx + 12, dy + 90, dollars(next_bid(highest, minimum)), 15, WHITE, 'bold', 'lm')
     qx = sx
     for label in ('Lowest', '+5%', '+10%'):
         qx += p.chip(qx, dy + 120, label) + 8
-    p.button('green', sx, dy + 156, sw, 44, 'Raise bid', WHITE)
+    p.button('green', sx, dy + 156, sw, 44, 'Raise maximum', WHITE)
     p.button('red', sx, dy + 210, sw, 40, 'Take my bid back', '#ffb4b4')
     p.save(os.path.join(OUT, 'phone.jpg'), BACKDROP)
 
