@@ -68,7 +68,7 @@ function getCatchRollMaxFor(catchChance, ignoreBallCounter, tries, skill)
         return nil
     end
 
-    local skillBonus = math.min(skill * PLAYER_SKILL_CATCHING_BONUS_PER_LEVEL, PLAYER_SKILL_CATCHING_BONUS_MAX)
+    local skillBonus = math.min(skill, PLAYER_SKILL_CATCHING_MAX) * PLAYER_SKILL_CATCHING_BONUS_PER_LEVEL
 	local chanceMax = math.ceil((catchChance * (1 - skillBonus)) -
             (triesFactor > 1.0 and ((triesFactor - 1.0) * catchChance) or 0)) -- After 100% tries, each new % will be discounted to favor the catch, Ex: 100 tries to caught Bulbasaur, on 150 tries the player will receive 50% of favor
 	if (chanceMax < 5) then
@@ -117,10 +117,12 @@ end
 
 -- Catching skill tries for a throw: base / (skill + 1) below the slowdown level, then 1 try with a
 -- chance that shrinks PLAYER_SKILL_CATCHING_SLOWDOWN times every level, so there is no cap but
--- every level takes longer (about 150 throws at 110, 700 at 150, 5000 at 200)
+-- every level takes longer (about 170 throws at 110, 1700 at 150, 32000 at 200); it stops at PLAYER_SKILL_CATCHING_MAX
 function doPlayerAddCatchingSkillTry(cid, base)
     local skill = getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING)
-    if (skill < PLAYER_SKILL_CATCHING_SLOWDOWN_LEVEL) then
+    if (skill >= PLAYER_SKILL_CATCHING_MAX) then
+        return
+    elseif (skill < PLAYER_SKILL_CATCHING_SLOWDOWN_LEVEL) then
         doPlayerAddSkillTry(cid, PLAYER_SKILL_CATCHING, math.ceil(base / (skill + 1)))
     elseif (math.random() < PLAYER_SKILL_CATCHING_SLOWDOWN ^ -(skill - PLAYER_SKILL_CATCHING_SLOWDOWN_LEVEL)) then
         doPlayerAddSkillTry(cid, PLAYER_SKILL_CATCHING, 1)
