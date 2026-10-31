@@ -822,6 +822,15 @@ OUTFIT_DIVE_DONATELLOBLASTOISE = createConditionObject(CONDITION_OUTFIT, -1, nil
 addOutfitCondition(OUTFIT_DIVE_DONATELLOBLASTOISE, { lookType = 643 })
 OUTFIT_DIVE_SHINYDONATELLOBLASTOISE = createConditionObject(CONDITION_OUTFIT, -1, nil, CONDITION_SUBID.OUTFITS.ABILITIES)
 addOutfitCondition(OUTFIT_DIVE_SHINYDONATELLOBLASTOISE, { lookType = 726 })
+-- the Surfing Pikachu and Raichu (config/pokemon/pikachu.lua, raichu.lua) on their boards
+OUTFIT_SURF_SURFINGPIKACHU = createConditionObject(CONDITION_OUTFIT, -1, nil, CONDITION_SUBID.OUTFITS.ABILITIES)
+addOutfitCondition(OUTFIT_SURF_SURFINGPIKACHU, { lookType = 2899 })
+OUTFIT_SURF_SHINYSURFINGPIKACHU = createConditionObject(CONDITION_OUTFIT, -1, nil, CONDITION_SUBID.OUTFITS.ABILITIES)
+addOutfitCondition(OUTFIT_SURF_SHINYSURFINGPIKACHU, { lookType = 2901 })
+OUTFIT_SURF_SURFINGRAICHU = createConditionObject(CONDITION_OUTFIT, -1, nil, CONDITION_SUBID.OUTFITS.ABILITIES)
+addOutfitCondition(OUTFIT_SURF_SURFINGRAICHU, { lookType = 2903 })
+OUTFIT_SURF_SHINYSURFINGRAICHU = createConditionObject(CONDITION_OUTFIT, -1, nil, CONDITION_SUBID.OUTFITS.ABILITIES)
+addOutfitCondition(OUTFIT_SURF_SHINYSURFINGRAICHU, { lookType = 2905 })
 
 function doUpdateAbilityOutfitCondition(cid)
     if (PokemonAddon.doUpdateAbilityOutfitCondition(cid)) then

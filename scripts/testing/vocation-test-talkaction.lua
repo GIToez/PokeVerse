@@ -3137,6 +3137,41 @@ local function testPokemonOutfit(cid)
     end
 end
 
+local function testSurfingPikachu(cid)
+    local SURFERS = { Pikachu = { 2898, 2900, 2899, 2901 }, Raichu = { 2902, 2904, 2903, 2905 } }
+    for base, looks in pairs(SURFERS) do
+        local name = "Surfing " .. base
+        local normal, shiny = getMonsterInfo(name), getMonsterInfo("Shiny " .. name)
+        check("Surfing Pikachu: " .. name .. " and its shiny are Pokemon with " .. base .. "'s number",
+            isPokemonName(name, true) and isPokemonName("Shiny " .. name, true)
+            and getPokemonNumberByName(name) == getPokemonNumberByName(base)
+            and getPokemonNumberByName("Shiny " .. name) == getPokemonNumberByName(base))
+        check("Surfing Pikachu: " .. name .. " is on its board, its shiny on the shiny one",
+            normal and shiny and normal.outfit.lookType == looks[1] and shiny.outfit.lookType == looks[2],
+            string.format("%s/%s", normal and normal.outfit.lookType or "-", shiny and shiny.outfit.lookType or "-"))
+        local definition, original = getPokemonDefinition(name), getPokemonDefinition(base)
+        check("Surfing Pikachu: " .. name .. " has " .. base .. "'s stats and moves plus Surf at 35",
+            definition and definition.atk == original.atk and definition.def == original.def
+            and definition.spAtk == original.spAtk and definition.spDef == original.spDef
+            and #getPokemonDefaultSkills(name) == #getPokemonDefaultSkills(base) + 1
+            and getPokemonSkillRequiredLevel(name, "Surf") == 35 and not getPokemonSkillRequiredLevel(base, "Surf")
+            and getPokemonBlockTransform(name) and #getPokemonEvolutions(name) == 0)
+        check("Surfing Pikachu: " .. name .. " and its shiny can surf, " .. base .. " can't",
+            getPokemonAbilityAvailable(nil, POKEMON_ABILITIES.SURF, name)
+            and getPokemonAbilityAvailable(nil, POKEMON_ABILITIES.SURF, "Shiny " .. name)
+            and not getPokemonAbilityAvailable(nil, POKEMON_ABILITIES.SURF, base))
+        local key = string.upper(string.gsub(name, "%s", ""))
+        check("Surfing Pikachu: " .. name .. " has its surf looks",
+            _G["OUTFIT_SURF_" .. key] ~= nil and _G["OUTFIT_SURF_SHINY" .. key] ~= nil
+            and SURF_SPEED_CONDITIONS[name] ~= nil and SURF_SPEED_CONDITIONS["Shiny " .. name] ~= nil)
+    end
+    local offered = false
+    for _, offer in ipairs(Store.OFFERS) do
+        offered = offered or offer.id == "addon_surfboard"
+    end
+    check("Surfing Pikachu: the Surfboard addon is gone from the store", not offered)
+end
+
 local function testTurtleBlastoise(cid)
     local TURTLES = { Leonardo = { 2130, 2656 }, Raphael = { 2139, 2654 }, Michelangelo = { 2140, 2655 }, Donatello = { 2131, 2657 } }
     for turtle, looks in pairs(TURTLES) do

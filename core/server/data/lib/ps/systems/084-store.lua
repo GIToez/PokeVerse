@@ -172,8 +172,6 @@ Store.OFFERS = {
       name = "Superhero Cape", pokemon = "Sudowoodo", description = "A superhero cape for Sudowoodo." },
     { id = "addon_metallicpack", category = "addons", kind = "item", itemId = 29856, price = 15, use = 12, look = 2384,
       name = "Metallic Pack", pokemon = "Girafarig", description = "A metallic pack for Girafarig, also while you ride it." },
-    { id = "addon_surfboard", category = "addons", kind = "item", itemId = 31095, price = 15, use = 12, look = 2898,
-      name = "Surfboard", pokemon = "Pikachu and Raichu", description = "A surfboard for Pikachu and Raichu (and their shinies). Wearing it, they can surf, on the board too." },
     { id = "addon_ironjaw", category = "addons", kind = "item", itemId = 29862, price = 15, use = 12, look = 2405,
       name = "Iron Jaw", pokemon = "Steelix", description = "An iron jaw for Steelix, also while you ride it." },
     { id = "addon_evilillidancostume", category = "addons", kind = "item", itemId = 29834, price = 15, use = 12, look = 2505,
