@@ -42,6 +42,8 @@ Every species has a **difficulty**. Some examples:
 - Growlithe: 60 · Abra: 100 · Pikachu, Bulbasaur: 150 · Eevee: 200
 - Dratini, Larvitar: 500 · Dragonite, Gyarados, Lapras, Snorlax: 800
 - Ditto: 1,500 · Tyranitar: 2,000 · Legendaries: 10,000
+- Mewtwo, Lugia, Ho-Oh, Kyogre, Groudon, Rayquaza, Dialga, Palkia, Giratina: 25,000
+- Mythicals (Mew, Celebi, Jirachi, Deoxys, Manaphy, Darkrai, Arceus...): 100,000, the hardest of all
 
 Every ball you throw at a species adds to **your counter** for it, hit or miss:
 - Poke Ball +1 · Great Ball +2 · Ultra Ball +3 · type balls +4
@@ -116,7 +118,7 @@ Press its **?** for a short version of this guide.
 🌟 **Special cases**
 - **Event Pokémon** (Christmas, Easter, Surfing Pikachu and others) ignore the counter. Every throw has the same odds, ball value ÷ difficulty, and some need their own ball.
 - **Safari Zone:** only Safari Balls (+4), thrown at a Pokémon that's still standing. First calm it with small stones or cookies until you see "You're able to try caught it now". The same counter rules apply.
-- **Legendaries:** difficulty 10,000. The body goes to the trainer who did the most damage, so team up and agree who throws.
+- **Legendaries:** difficulty 10,000 (25,000 for the major ones like Mewtwo and Lugia, 100,000 for Mythicals). The body goes to the trainer who did the most damage, so team up and agree who throws.
 - **Wild babies:** attack one and its whole family nearby comes for you.
 
 💡 **Tips**
