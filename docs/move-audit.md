@@ -113,3 +113,27 @@ Notes, not changed:
 - **Pressure** doubled the cooldown of moves aimed at its Pokemon, though its description says
   50%. It is 1.5x now (Stall: 1.1x). The legendary birds, beasts, Mewtwo, Lugia, Ho-Oh and Deoxys
   have it.
+
+## Added October 31
+
+Lunar Dance (Cresselia 75), Ice Hammer (Abomasnow 75), Sparkling Aria (Lapras 70), Psyshield Bash
+(Stantler 70), Barb Barrage (Qwilfish 70), Raging Bull (Tauros 70), Rage Fist (Primeape 75), Hyper
+Drill (Dunsparce 70) and Dragon Hammer (Tropius 70), plus the egg moves Belly Drum, Morning Sun,
+Whirlwind and Spikes, which Pokemon already listed but could not learn. Precipice Blades was already
+in as "Precipice Blade" (Groudon 55).
+
+- Rage Fist hits up to twice as hard the more HP the user has lost.
+- Raging Bull and Hyper Drill lift Protect before they hit, like Feint.
+- Whirlwind blows the wild Pokemon in front of the user back up to 2 tiles.
+- Spikes hurts everything around the target that touches the ground (not Flying, Levitate or
+  Magic Guard). Its old icon (27659) was already its own.
+- Belly Drum fails (no cooldown, no energy) at half HP or less.
+
+The icons (client items 29871-29882) are copies of the icon of a similar move, to be replaced: Lunar
+Dance (Moonlight), Ice Hammer (Ice Punch), Sparkling Aria (Bubblebeam), Psyshield Bash (Zen
+Headbutt), Barb Barrage (Poison Jab), Raging Bull (Take Down), Rage Fist (Shadow Punch), Hyper Drill
+(Drill Run), Dragon Hammer (Dragon Rush), Belly Drum (Swords Dance), Morning Sun (Synthesis),
+Whirlwind (Roar).
+
+Still out: Heart Swap, Perish Song (a timed faint is too strong against wild and legendary Pokemon in
+real time), Final Gambit, Grudge, Me First and Wide Guard.
