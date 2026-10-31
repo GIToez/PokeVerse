@@ -1,10 +1,14 @@
 -- A wild baby Pokemon hit by a trainer's Pokemon cries out (its own cry), and the wild Pokemon of its
--- evolution line within RANGE on its floor turn on the attacker: Pichu calls Pikachu and Raichu.
+-- evolution line within RANGE_X x RANGE_Y on its floor turn on the attacker: Pichu calls Pikachu and Raichu.
+-- The range reaches past the client's screen (11 x 7 tiles from the middle); a monster drops a target outside
+-- its view (Map::maxViewportX/Y, 13 x 11), so only those that have the attacker in view answer.
 -- Once every COOLDOWN seconds per baby.
 
 BabyCall = {}
 
-BabyCall.RANGE = 8
+BabyCall.RANGE_X = 12
+BabyCall.RANGE_Y = 9
+local VIEW_X, VIEW_Y = 13, 11
 BabyCall.COOLDOWN = 30
 BabyCall.BABIES = {
     "Pichu", "Cleffa", "Igglybuff", "Togepi", "Tyrogue", "Smoochum", "Elekid", "Magby", "Azurill", "Wynaut",
@@ -68,16 +72,18 @@ local function voiceOf(species)
     return voices[species]
 end
 
--- The wild Pokemon that answer: the baby's line, wild, near it on its floor
-BabyCall.helpers = function(baby)
+-- The wild Pokemon that answer: the baby's line, wild, near it on its floor, with the attacker in view
+BabyCall.helpers = function(baby, attacker)
     local line = BabyCall.lineOf(speciesOf(baby))
     local helpers = {}
     if (not line) then
         return helpers
     end
-    local pos = getCreaturePosition(baby)
-    for _, cid in ipairs(getSpectators(pos, BabyCall.RANGE, BabyCall.RANGE, false) or {}) do
-        if (cid ~= baby and isPokemonWild(cid) and line[speciesOf(cid)]) then
+    local pos, target = getCreaturePosition(baby), getCreaturePosition(attacker)
+    for _, cid in ipairs(getSpectators(pos, BabyCall.RANGE_X, BabyCall.RANGE_Y, false) or {}) do
+        local at = getCreaturePosition(cid)
+        if (cid ~= baby and isPokemonWild(cid) and line[speciesOf(cid)] and at.z == target.z
+                and math.abs(at.x - target.x) <= VIEW_X and math.abs(at.y - target.y) <= VIEW_Y) then
             helpers[#helpers + 1] = cid
         end
     end
@@ -117,14 +123,16 @@ BabyCall.onHit = function(baby, attacker)
     doCreatureSay(baby, voiceOf(species) or (species:upper() .. "!"), TALKTYPE_MONSTER_YELL)
     doSendMagicEffect(getCreaturePosition(baby), EFFECT_EMOTION_EXCLAMATION)
 
-    local helpers = BabyCall.helpers(baby)
-    for _, cid in ipairs(helpers) do
-        doMonsterSetTarget(cid, attacker)
-        doSendMagicEffect(getCreaturePosition(cid), EFFECT_EMOTION_EXCLAMATION)
+    local came = 0
+    for _, cid in ipairs(BabyCall.helpers(baby, attacker)) do
+        if (doMonsterSetTarget(cid, attacker)) then
+            came = came + 1
+            doSendMagicEffect(getCreaturePosition(cid), EFFECT_EMOTION_EXCLAMATION)
+        end
     end
-    if (#helpers > 0) then
+    if (came > 0) then
         doPlayerSendTextMessage(trainer, MESSAGE_STATUS_CONSOLE_ORANGE, string.format(__L(trainer,
-            "The wild %s cried out for help, and %d of its family came to its side!"), species, #helpers))
+            "The wild %s cried out for help, and %d of its family came to its side!"), species, came))
     end
-    return #helpers
+    return came
 end
