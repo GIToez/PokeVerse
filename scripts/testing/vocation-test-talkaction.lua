@@ -1832,8 +1832,10 @@ local function testDuelWilds(cid, arena)
             return before - getCreatureHealth(toCid)
         end
 
+        doPlayerSetPzLocked(cid, false)
         local lost = hit(pet, wild)
         check("Duel wilds: a pet can hit a wild", canDoCombat(pet, wild) == allowed and lost > 0, lost)
+        check("Protection zones: fighting a wild doesn't lock its trainer out", not isPlayerPzLocked(cid))
 
         setPlayerDueling(cid, true)
         local health = getCreatureHealth(wild)

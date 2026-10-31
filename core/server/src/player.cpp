@@ -3843,7 +3843,10 @@ void Player::onAttackedCreature(Creature* target)
 	if(hasFlag(PlayerFlag_NotGainInFight))
 		return;
 
-	addInFightTicks(true);
+	// PS: only fights with other trainers or their Pokemon (duels, PvP) keep you out of protection zones;
+	// wild Pokemon and NPC trainers only put you in fight
+	const Player* rival = target->getTopMaster()->getPlayer();
+	addInFightTicks(rival != NULL && rival != this);
 	/*Player* targetPlayer = target->getPlayer(); // PS
 	if(!targetPlayer)
 		return;
