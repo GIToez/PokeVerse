@@ -72,5 +72,9 @@ Orange Islands spot below that fits the habitat.
 - Porygon2: 3 spawns at the Power Plant of Hamlin, or Porygon at level 55 with an Up-Grade.
 - Porygon-Z: Porygon2 at level 60 with a Dubious Disc. No spawn yet; one at the Power Plant is
   proposed above.
-- Up-Grade and Dubious Disc: the item NPCs (Alton Dane and the others) sell them, and Porygon2
-  and Porygon-Z drop them rarely.
+- Up-Grade and Dubious Disc, like every evolution item: the weekly PokeTrader auction (a 30%
+  chance each week of one rare item, out of 28), and rare drops from Pokémon that already
+  evolved (Up-Grade from Porygon2, the Dubious Disc only from Porygon-Z). The Up-Grade is also a
+  quest reward. The item NPCs (Alton Dane and the others) only buy them.
+- So Porygon-Z is close to unobtainable today: its Dubious Disc only drops from Porygon-Z or turns
+  up in the auction. A Porygon-Z spawn (above) or a second source for the disc would fix that.
