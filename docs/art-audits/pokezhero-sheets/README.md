@@ -40,3 +40,13 @@ Pokemon Center lobby: beige floor 29320/29324, light blue 30568 in front of the 
 Town square on Tibia grass 4526: beige path, orange track 31686, blue pool 32107 with the Magikarp statue 36610, trees 36712/36713/36796/36797.
 
 ![town square mock-up](mock_square2.png)
+
+## White exterior walls (2222-2233)
+
+A full plain white wall set, unlike any of ours: 2222 runs left-right, 2224 up-down, 2228 is the corner and 2226 the end post. 2230 / 2231 / 2233 are the same walls with grey window frames. 2223 / 2225 / 2229 are a cream version with a carved trim, and 5009 / 5010 a plain cream one.
+
+![white wall set](white_wall_set.png)
+
+The mock-up uses our beige floor and grass with the PokeZHero healing machines, PC, vending machine and trees. The corner overlap at the top left is a limit of the mock-up drawing, not the art.
+
+![white house mock-up](mock_white_house.png)
