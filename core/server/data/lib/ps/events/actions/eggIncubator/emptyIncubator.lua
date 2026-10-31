@@ -17,7 +17,8 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
 			doTransformItem(item.uid, 14049) -- Transforming to a full pokemon incubator
 			PokemonStats.moveEggStats(itemEx.uid, item.uid)
             doRemoveItem(itemEx.uid) -- Remove egg
-			local hatchSeconds = math.floor(HATCH_SECONDS * (1 - (Vocations.perk(cid, "breeder", "hatchTime") or 0)))
+			local hatchSeconds = math.floor(HATCH_SECONDS * (1 - (Vocations.perk(cid, "breeder", "hatchTime") or 0)) /
+				EventCalendar.multiplier("hatching"))
 			doItemSetAttribute(item.uid, INCUBATOR_STORAGE_BORN_DATE, getCurrentTimeInSeconds() + hatchSeconds)
 			doItemSetAttribute(item.uid, INCUBATOR_STORAGE_POKEMON_NAME, pokemonName)
             if (eggMove) then

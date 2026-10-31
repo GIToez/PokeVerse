@@ -1620,7 +1620,8 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
     - `/calendar add once 2026-11-06 18:00 2d exp=2 Double Friday`,
       `/calendar add weekend exp=1.5 Double Weekend`, `/calendar add weekend last loot=2 Loot Weekend`,
       `/calendar add yearly 12-24 18:00 1d shiny=2 Christmas Eve`.
-    - Bonuses: `exp`, `shiny`, `loot`, `breeding` (Day Care egg chance) and `fishing` (bites),
+    - Bonuses: `exp`, `shiny`, `loot`, `breeding` (Day Care egg chance), `hatching` (incubator
+      speed) and `fishing` (bites),
       above 1x and up to 10x each.
     - `/calendar holiday <id> on|off|auto` forces a holiday on or off, or back to its dates.
     - Changes take effect within a minute; starts and ends are broadcast.

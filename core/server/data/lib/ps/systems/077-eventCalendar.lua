@@ -28,9 +28,9 @@ local CACHE_SECONDS = 60
 local MAX_RANGE = 62 * DAY
 
 EventCalendar.LAUNCH_YEAR = 2026 -- the first anniversary is the one a year later
-EventCalendar.BONUS_KINDS = { "exp", "shiny", "loot", "breeding", "fishing" }
+EventCalendar.BONUS_KINDS = { "exp", "shiny", "loot", "breeding", "hatching", "fishing" }
 EventCalendar.BONUS_LABELS = { exp = "kill EXP", shiny = "shiny chance", loot = "loot", breeding = "Day Care egg chance",
-                               fishing = "fishing bites" }
+                               hatching = "egg hatching speed", fishing = "fishing bites" }
 EventCalendar.MAX_BONUS = 10
 
 local GIFT_STORAGE_BASE = 61000000 -- + the holiday's index: the start time of the last occurrence given
@@ -458,8 +458,9 @@ EventCalendar.SERVER_EVENTS = {
       bonuses = { exp = 2 }, dates = rotation(0) },
     { id = "doubleshiny", name = "Double Shiny", color = "#f0d850", description = "2x shiny chance.",
       bonuses = { shiny = 2 }, dates = rotation(1) },
-    { id = "doubleeggs", name = "Double Eggs", color = "#f0a0c0", description = "2x Day Care egg chance.",
-      bonuses = { breeding = 2 }, dates = rotation(2) },
+    { id = "doubleeggs", name = "Breeding Weekend", color = "#f0a0c0",
+      description = "Eggs hatch twice as fast in incubators.",
+      bonuses = { hatching = 2 }, dates = rotation(2) },
     { id = "doubleloot", name = "Double Loot", color = "#a0e080", description = "2x loot.",
       bonuses = { loot = 2 }, dates = rotation(3) },
 }
