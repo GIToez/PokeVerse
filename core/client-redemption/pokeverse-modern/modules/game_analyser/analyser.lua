@@ -28,7 +28,7 @@ local HELP = {
     catch = {
         title = 'How catching works',
         lines = {
-            'Ball counter: every ball you throw at this species adds to it, and better balls add more. It is kept per species and never resets.',
+            'Ball counter: every ball you throw at this species adds to it, and better balls add more. It is kept per species, shared with its shiny, until you catch one.',
             'Species chance: how hard the species is. Until your counter reaches it, each throw has the same odds.',
             'After that, every throw makes the next one better: at double the species chance the odds are at their best.',
             'Catchable after: below a quarter of the species chance a ball can not catch it at all.',
