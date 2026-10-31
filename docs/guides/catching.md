@@ -51,7 +51,7 @@ Every ball you throw at a species adds to **your counter** for it, hit or miss:
 The counter is yours, for that species only, and it's kept until you catch one. Then it starts again at 0. A species and its shiny **share** one counter, so all those broken balls on Charizards count toward a shiny Charizard too.
 
 **Three stages**
-1️⃣ **Counter at a quarter of the difficulty or less:** no ball can catch it yet. The throws still count!
+1️⃣ **Counter up to a quarter of the difficulty:** lower odds. They start near zero and climb on a curve to the normal odds at the quarter (halfway there, a quarter of the normal odds).
 2️⃣ **Up to the difficulty:** flat odds, the ball's value ÷ the difficulty. An Ultra Ball on a Pikachu: 3 ÷ 150 = **2%**.
 3️⃣ **Past the difficulty:** every extra point makes your odds better, and at **double** the difficulty they're at their best:
 - Poke Ball **20%** · Great **40%** · Ultra **60%** · type ball **80%**
@@ -66,19 +66,20 @@ Very easy species (difficulty under 5) are easier still: a Great Ball always cat
 ⚾ **Which ball should I use?**
 Average balls (and defeats) for one catch:
 `Species       Poke   Great  Ultra  Type`
-`Pikachu        152     76     50    38`
-`Dratini        507    253    169   127`
-`Dragonite      811    406    270   203`
-`Tyranitar     2028   1014    675   507`
-`Legendary    10138   5069   3379  2535`
+`Pikachu        142     71     47    35`
+`Dratini        474    237    158   118`
+`Dragonite      758    379    252   189`
+`Tyranitar     1895    947    632   474`
+`Legendary     9476   4738   3159  2369`
+`Mythical     94758  47379  31586 23689`
 
-The first throw that *can* catch a Pikachu is the 38th Poke Ball, the 19th Great or the 13th Ultra.
+Every throw has a chance, but a tiny one at first: your 10th Ultra Ball on a Pikachu has about 1 in 80.
 
 **Money vs time**
 Poke Balls ($8) give the most counter per dollar. Ultra Balls ($130) need the fewest defeats. A Pikachu costs on average:
-- Poke: ~$1,200 and 152 Pikachu defeated
-- Great: ~$2,700 and 76 defeated
-- Ultra: ~$6,500 and 50 defeated
+- Poke: ~$1,100 and 142 Pikachu defeated
+- Great: ~$2,500 and 71 defeated
+- Ultra: ~$6,100 and 47 defeated
 So: poke balls when money is tight, the best ball you can afford when the species is rare or slow to find.
 
 You can mix balls. Each one adds its own value, so switching never loses progress.
@@ -122,7 +123,7 @@ Press its **?** for a short version of this guide.
 - **Wild babies:** attack one and its whole family nearby comes for you.
 
 💡 **Tips**
-- Throws that can't catch yet still fill your counter. They're never wasted.
+- Early throws have low odds, but every one fills your counter. They're never wasted.
 - The counter waits for you: log out, come back next month, it's still there.
 - Hunting a shiny? Every normal one you fail on helps. Catching a normal one resets the shared counter, though.
 - At double the difficulty your odds stop improving. That's the moment for your best balls.

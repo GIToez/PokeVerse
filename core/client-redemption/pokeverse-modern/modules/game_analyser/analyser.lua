@@ -31,7 +31,7 @@ local HELP = {
             'Ball counter: every ball you throw at this species adds to it, and better balls add more. It is kept per species, shared with its shiny, until you catch one.',
             'Species chance: how hard the species is. Until your counter reaches it, each throw has the same odds.',
             'After that, every throw makes the next one better: at double the species chance the odds are at their best.',
-            'Catchable after: below a quarter of the species chance a ball can not catch it at all.',
+            'Lower odds until: below a quarter of the species chance the odds are lower, starting near zero and climbing to the normal odds at the quarter.',
             'Roll: a throw catches when a random number up to the second value is at most the first. Each Catching skill level makes the second value 0.1% smaller, up to 25.5% at skill 255.',
             'The percent on each ball is the chance for your next throw. Hover a ball for more.',
         },
@@ -248,8 +248,11 @@ local function ballRow(parent, ball, data)
     if ball.expected then
         tip[#tip + 1] = tr('About %s throws on average', thousands(math.ceil(ball.expected)))
     end
-    if data.unlockAt then
-        if (data.tries or 0) < (data.chance or 0) then
+    if data.unlockAt or data.rampUntil then
+        if data.rampUntil and (data.tries or 0) < data.rampUntil then
+            tip[#tip + 1] = tr('Lower odds until your counter passes %s, then the same odds until %s.',
+                thousands(data.rampUntil), thousands(data.chance))
+        elseif (data.tries or 0) < (data.chance or 0) then
             tip[#tip + 1] = tr('Same odds until your counter reaches %s, then every throw makes the next one better.',
                 thousands(data.chance))
         else
@@ -289,10 +292,12 @@ local function refreshCatch()
     board.empty:setMarginTop(40)
 
     local tries, chance = data.tries or 0, data.chance or 0
-    if data.unlockAt then
+    if data.unlockAt or data.rampUntil then
         local value, color
-        if tries <= data.unlockAt then
+        if data.unlockAt and tries <= data.unlockAt then
             value, color = tr('%s  -  catchable after %s', thousands(tries), thousands(data.unlockAt)), '#ff7a6b'
+        elseif data.rampUntil and tries < data.rampUntil then
+            value, color = tr('%s  -  lower odds until %s', thousands(tries), thousands(data.rampUntil)), '#ffc857'
         elseif tries < chance then
             value = tr('%s  -  odds start rising at %s', thousands(tries), thousands(chance))
         else
@@ -316,11 +321,15 @@ local function refreshCatch()
 
     board.details:destroyChildren()
     local details = 1
-    if data.unlockAt then
+    if data.unlockAt or data.rampUntil then
         addDetail(board.details, tr('Species chance'), tr('%s  -  odds rise once your counter passes it',
             thousands(chance)))
         details = details + 1
-        addDetail(board.details, tr('Catchable after'), tr('your counter passes %s', thousands(data.unlockAt)))
+        if data.rampUntil then
+            addDetail(board.details, tr('Lower odds until'), tr('your counter passes %s', thousands(data.rampUntil)))
+        else
+            addDetail(board.details, tr('Catchable after'), tr('your counter passes %s', thousands(data.unlockAt)))
+        end
     else
         addDetail(board.details, tr('Species chance'), thousands(chance))
     end
