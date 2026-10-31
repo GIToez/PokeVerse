@@ -1728,6 +1728,91 @@ local function testBabyCall(cid, arena)
     end
 end
 
+local function testPokeTrader(cid, friend)
+    check("PokeTrader: 1% over 30,000 is 30,300", PokeTrader.stepUp(30000) == 30300, PokeTrader.stepUp(30000))
+    local a, b, c = { guid = 1, max = 40000 }, { guid = 2, max = 30000 }, { guid = 3, max = 45000 }
+    local leader, price = PokeTrader.standing({ a }, 25000)
+    check("PokeTrader: a lone maximum pays the minimum", leader == a and price == 25000, price)
+    leader, price = PokeTrader.standing({ a, b }, 25000)
+    check("PokeTrader: 40,000 over 30,000 pays 30,300", leader == a and price == 30300, price)
+    leader, price = PokeTrader.standing({ a, b, c }, 25000)
+    check("PokeTrader: 45,000 over 40,000 pays 40,400", leader == c and price == 40400, price)
+    leader, price = PokeTrader.standing({ a, { guid = 4, max = 40200 } }, 25000)
+    check("PokeTrader: within 1% the earlier maximum leads", leader == a and price == 40000, price)
+    local now = os.time()
+    local ends = PokeTrader.nextEnd(now)
+    local t = os.date("*t", ends)
+    check("PokeTrader: weeks end on Sunday at 20:00", t.wday == PokeTrader.END_WDAY and t.hour == PokeTrader.END_HOUR
+        and t.min == 0, os.date("%c", ends))
+    check("PokeTrader: the next end is one to eight days away", ends >= now + PokeTrader.MIN_WEEK and ends <= now + 8 * 86400,
+        ends - now)
+
+    if (not isPlayer(friend)) then
+        check("PokeTrader: second trainer online", false)
+        return
+    end
+    local DUSK = 31084
+    db.executeQuery(string.format("INSERT INTO `poketrader_offerts` (`item_id`, `count`, `min_bid`, `created`, `deadline`," ..
+        " `world_id`) VALUES (%d, 1, 25000, %d, %d, %d);", DUSK, now, now + 3600, tonumber(getConfigValue("worldId")) or 0))
+    local lot
+    for _, l in ipairs(PokeTrader.lots()) do
+        if (l.itemId == DUSK and (not lot or l.id > lot.id)) then
+            lot = l
+        end
+    end
+    check("PokeTrader: the test lot is up", lot)
+    if (not lot) then
+        return
+    end
+    local balances = { getPlayerBalance(cid), getPlayerBalance(friend) }
+    doPlayerSetBalance(cid, 100000)
+    doPlayerSetBalance(friend, 100000)
+
+    local ok, text = PokeTrader.setMax(cid, lot.id, 20000)
+    check("PokeTrader: a maximum under the minimum is refused", not ok and getPlayerBalance(cid) == 100000, text)
+    ok, text = PokeTrader.setMax(cid, lot.id, 40000)
+    check("PokeTrader: a first maximum leads at the minimum", ok and text:find("$25,000", 1, true), text)
+    check("PokeTrader: the whole maximum is held", getPlayerBalance(cid) == 60000, getPlayerBalance(cid))
+    ok, text = PokeTrader.setMax(friend, lot.id, 30000)
+    check("PokeTrader: a lower maximum raises the price to 30,300", ok and text:find("$30,300", 1, true), text)
+    ok, text = PokeTrader.setMax(cid, lot.id, 39000)
+    check("PokeTrader: the leader can't lower the maximum", not ok, text)
+    local messages = captureMessages(function() ok, text = PokeTrader.setMax(friend, lot.id, 45000) end)
+    check("PokeTrader: raising to 45,000 takes the lead at 40,400", ok and text:find("$40,400", 1, true), text)
+    check("PokeTrader: raising holds only the difference", getPlayerBalance(friend) == 55000, getPlayerBalance(friend))
+    check("PokeTrader: the old leader is told they were outbid", messages:find("outbid", 1, true), messages)
+    ok, text = PokeTrader.takeBack(friend, lot.id)
+    check("PokeTrader: the leader can't take the bid back", not ok, text)
+    ok, text = PokeTrader.setMax(cid, lot.id, 41000)
+    check("PokeTrader: a maximum under the price plus 1% is refused", not ok and text:find("$40,804", 1, true), text)
+    ok, text = PokeTrader.takeBack(cid, lot.id)
+    check("PokeTrader: an outbid trainer takes the bid back", ok and getPlayerBalance(cid) == 100000, getPlayerBalance(cid))
+    ok, text = PokeTrader.setMax(cid, lot.id, 30000)
+    check("PokeTrader: bidding again under the leader", ok and text:find("$30,300", 1, true), text)
+
+    messages = captureMessages(function() PokeTrader.finish({ lot }, getCreaturePosition(cid)) end)
+    check("PokeTrader: the winner pays the price", getPlayerBalance(friend) == 100000 - 30300, getPlayerBalance(friend))
+    check("PokeTrader: the others get all of it back", getPlayerBalance(cid) == 100000, getPlayerBalance(cid))
+    check("PokeTrader: the winner is told", messages:find("You won the", 1, true), messages)
+    local logged = 0
+    local r = db.getResult(string.format("SELECT `bid` FROM `datalog_poketrader_boughts` WHERE `player_id` = %d AND" ..
+        " `item_id` = %d AND `date` >= %d;", getPlayerGUID(friend), DUSK, now))
+    if (r:getID() ~= -1) then
+        logged = r:getDataLong("bid")
+        r:free()
+    end
+    check("PokeTrader: the win is in the history", logged == 30300, logged)
+    local left = false
+    for _, l in ipairs(PokeTrader.lots()) do
+        left = left or l.id == lot.id
+    end
+    check("PokeTrader: the lot and its bids are gone", not left and #PokeTrader.bidsOf(lot.id) == 0)
+
+    db.executeQuery(string.format("DELETE FROM `datalog_poketrader_boughts` WHERE `item_id` = %d AND `date` >= %d;", DUSK, now))
+    doPlayerSetBalance(cid, balances[1])
+    doPlayerSetBalance(friend, balances[2])
+end
+
 local function testDuelWilds(cid, arena)
     local allowed = 1 -- RET_NOERROR
     local pet = doCreateMonster("Snorlax", { x = arena.x + 1, y = arena.y, z = arena.z }, false)
@@ -5660,7 +5745,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", withoutCalendarBonuses(testBreederIncubator) }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "pokemon outfit", testPokemonOutfit }, { "tmnt blastoise", testTurtleBlastoise }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "bag", testBag }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "baby call", function() testBabyCall(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", withoutCalendarBonuses(testBreederIncubator) }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "pokemon outfit", testPokemonOutfit }, { "tmnt blastoise", testTurtleBlastoise }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "bag", testBag }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "baby call", function() testBabyCall(cid, arena) end }, { "poketrader", function() testPokeTrader(cid, friend) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
