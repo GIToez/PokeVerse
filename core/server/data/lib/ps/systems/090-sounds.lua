@@ -51,8 +51,84 @@ function Sounds.around(pos, sequence)
     end
 end
 
+-- Move sounds play whole on the client's Moves channel; the server says when a move is over, so a
+-- faster or slower move needs no sound edit. A move is over once its Pokemon has hit nothing for
+-- MOVE_QUIET_MS (after MOVE_MIN_MS at least, MOVE_MAX_MS at most), or when it uses its next move.
+-- A move with a warm-up can start its sound later with soundDelay (ms) in its config.
+Sounds.MOVE_POLL_MS = 100
+Sounds.MOVE_QUIET_MS = 400
+Sounds.MOVE_MIN_MS = 700
+Sounds.MOVE_MAX_MS = 6000
+
+local moves = {} -- [pokemon] = {id, listeners, elapsed, quiet}
+local lastCast = 0
+
+local function sendMove(listeners, buffer)
+    for _, player in ipairs(listeners) do
+        if (isPlayer(player)) then
+            doSendPlayerExtendedOpcode(player, EXTENDED_IDS.MOVE_SOUND, buffer)
+        end
+    end
+end
+
+local function stopMove(cid)
+    local move = moves[cid]
+    if (move) then
+        moves[cid] = nil
+        sendMove(move.listeners, "stop;" .. move.id)
+    end
+end
+
+local function watchMove(cid, id)
+    local move = moves[cid]
+    if (not move or move.id ~= id) then
+        return
+    end
+    move.elapsed = move.elapsed + Sounds.MOVE_POLL_MS
+    move.quiet = move.quiet + Sounds.MOVE_POLL_MS
+    if (not isCreature(cid) or move.elapsed >= Sounds.MOVE_MAX_MS or
+            (move.elapsed >= Sounds.MOVE_MIN_MS and move.quiet >= Sounds.MOVE_QUIET_MS)) then
+        stopMove(cid)
+        return
+    end
+    addEvent(watchMove, Sounds.MOVE_POLL_MS, cid, id)
+end
+
+local function startMove(cid, skillName)
+    if (not isCreature(cid)) then
+        return
+    end
+    stopMove(cid)
+    local pos = getCreaturePosition(cid)
+    local listeners = {}
+    for _, spectator in ipairs(getSpectators(pos, Sounds.HEAR_RANGE_X, Sounds.HEAR_RANGE_Y, false) or {}) do
+        if (isPlayer(spectator) and getPlayerUsingOtClient(spectator)) then
+            listeners[#listeners + 1] = spectator
+        end
+    end
+    if (#listeners == 0) then
+        return
+    end
+    lastCast = lastCast % 1000000 + 1
+    moves[cid] = { id = lastCast, listeners = listeners, elapsed = 0, quiet = 0 }
+    sendMove(listeners, table.concat({ "start", lastCast, skillName, pos.x, pos.y, pos.z }, ";"))
+    addEvent(watchMove, Sounds.MOVE_POLL_MS, cid, lastCast)
+end
+
+function Sounds.onMove(cid, skillName)
+    local delay = getPokemonSkillSoundDelay(skillName)
+    if (delay > 0) then
+        addEvent(startMove, delay, cid, skillName)
+    else
+        startMove(cid, skillName)
+    end
+end
+
 -- Only the trainers in the fight hear hits, at most one every HIT_INTERVAL_MS per Pokemon hit.
 function Sounds.onHit(fromCid, toCid, multiplier)
+    if (moves[fromCid]) then
+        moves[fromCid].quiet = 0
+    end
     if (lastHit[toCid]) then
         return
     end

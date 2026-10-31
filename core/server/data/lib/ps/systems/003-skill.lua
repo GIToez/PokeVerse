@@ -204,6 +204,9 @@ function doPokemonUseSkill(pokemon, skillName)
     end
 
     if (setCooldown) then
+        if (not failed) then
+            Sounds.onMove(pokemon, skillName)
+        end
         if (_isPokemonWild) then
             BattleText.wildMove(pokemon)
             doCreatureSay(pokemon, string.upper(skillName), TALKTYPE_MONSTER_YELL)

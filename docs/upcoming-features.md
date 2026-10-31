@@ -2217,7 +2217,19 @@ are overdone.
 
 ## 20. Move sounds and volume sliders
 
-Planned for after October 2026 (not started).
+**Done October 31, 2026 (move sounds, Moves and Pokemon Cries sliders).** Every move but the two
+Team Rocket NPC moves has its own sound in `core/client-legacy/data/sounds/moves/<move>.ogg` (491,
+17 MB), made by `scripts/make-move-sounds.py` from the pack's newest recording of the move's name,
+whole (no trim, no fade). Moves newer than the pack (Gen 8 and 9) borrow an older move's sound
+(`SOUND_LIKE` in the script). The server (`Sounds.onMove`, `090-sounds.lua`) sends extended opcode
+58 `start;cast;move;x;y;z` when a move goes off and `stop;cast` when it is over: once its Pokemon
+has hit nothing for 400 ms (0.7 s at least, 6 s at most) or uses its next move. A move with a
+warm-up can start its sound later with `soundDelay` (ms) in its config. The client
+(`game_sounds/move_sounds.lua`) plays it near the Pokemon, quieter with distance, and fades it out
+on stop. Options > Sound now has Move Sounds Volume (the Spells channel) and Pokemon Cries Volume
+(the Creature channel: overworld cries, the Pokedex and the Mega cry), so Battle Sounds Volume is
+only the hits, statuses, balls and jingles. Still to do from the plan below: the music, ambience
+and interface sliders' channels.
 
 **Volume sliders for PokeVerse's sounds.** Options (Sound) still has Redemption's Tibia
 sliders (Master, Music, Ambience, Item, Event, UI), and they don't match what plays: the town
