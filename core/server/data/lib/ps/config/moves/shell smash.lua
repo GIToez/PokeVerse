@@ -12,5 +12,5 @@ MOVES["Shell Smash"] = {
     projectile = nil,
     maxDistance = nil,
     cooldownTime = 30,
-    cooldownStorage = 15355
+    cooldownStorage = 15483
 }

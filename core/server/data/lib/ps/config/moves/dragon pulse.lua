@@ -14,6 +14,6 @@ MOVES["Dragon Pulse"] = {
     effect = EFFECT_BIG_ENERGY_BALL,
     projectile = PROJECTILE_GREEN_SHOT,
     maxDistance = 6,
-    ooldownTime = 21,
+    cooldownTime = 21,
     cooldownStorage = 15267
 }

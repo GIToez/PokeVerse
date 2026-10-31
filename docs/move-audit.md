@@ -91,3 +91,25 @@ Beat Up (19), Belly Drum (16), Block (16), Whirlwind (14), Feint (14), Helping H
 Perish Song (13), Skill Swap (13), Wide Guard (10), Final Gambit (10), Grudge (10), Me First (10),
 Morning Sun (10), After You (10), Guard Swap (10). Most are status moves that do little in real-time
 fights; Belly Drum, Morning Sun, Perish Song, Whirlwind and Spikes are worth building.
+
+## Mechanics check (October 31)
+
+A script loaded every move config and checked it against the spells, the Pokemon movesets and the
+client move list. Movesets, spells and the client list all match (every move a Pokemon learns
+exists, has its `script_<name>` spell and its client icon and description). Fixed:
+
+- **Dragon Pulse** had `ooldownTime`, so it fell back to the 10 s default instead of 21 s.
+- **Shared cooldowns:** a cooldown is kept on the ball under the move's `cooldownStorage`, so two
+  moves with the same number shared one cooldown. Metal Burst (with Echoed Voice), Shell Smash (Aqua
+  Jet), Spider Web (Stone Edge) and Stealth Rock (Constrict) now have their own (15482-15485).
+- **Bug Bite** had a 5 s cooldown; the other 60-power single-target hits (Bite, Pluck) have 9 s.
+
+Notes, not changed:
+
+- `functionName` in the move configs is not read anywhere: the spell is always `script_<move name>`.
+- Final Gambit, Grudge, Me First, Spikes and Wide Guard have spells, but they are copies of Tackle
+  (and Me First of Mimic), which is why their configs sit in `others/moves_disabled/`. They need
+  their own code before they go on.
+- Pressure doubles the cooldown of moves aimed at its Pokemon (Stall: 1.1x). The legendary birds,
+  beasts, Mewtwo, Lugia, Ho-Oh and Deoxys have it, so fights against them run at half speed. A
+  gentler 1.5x would still mark it.

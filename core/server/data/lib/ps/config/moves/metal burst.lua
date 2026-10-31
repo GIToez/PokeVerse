@@ -12,6 +12,6 @@ MOVES["Metal Burst"] = {
     projectile = PROJECTILE_GRAVEL,
     maxDistance = 6,
     cooldownTime = 40,
-    cooldownStorage = 15426,
+    cooldownStorage = 15482,
     makeContact = false,
 }

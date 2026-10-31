@@ -16,5 +16,5 @@ MOVES["Stealth Rock"] = {
     area = bigArea,
     areaName = "bigArea",
     cooldownTime = 25,
-    cooldownStorage = 15201
+    cooldownStorage = 15485
 }
