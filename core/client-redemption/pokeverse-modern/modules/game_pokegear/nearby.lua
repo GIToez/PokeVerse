@@ -123,7 +123,7 @@ local function sortKey(creature, by, from)
     return distanceTo(creature, from)
 end
 
--- ties go nearest first whichever way the list runs
+-- the trainer's own Pokemon stays on top whatever the sort; ties go nearest first whichever way the list runs
 local function sortCreatures(list, from)
     local by = sortType()
     local descending = isDescending()
@@ -133,6 +133,10 @@ local function sortCreatures(list, from)
         distances[creature] = distanceTo(creature, from)
     end
     table.sort(list, function(a, b)
+        local ownA, ownB = a:isLocalPlayerSummon(), b:isLocalPlayerSummon()
+        if ownA ~= ownB then
+            return ownA
+        end
         local keyA, keyB = keys[a], keys[b]
         if keyA ~= keyB then
             if descending then
@@ -157,7 +161,7 @@ local function collect()
     end
     local total, list = 0, {}
     for _, creature in ipairs(getCreaturesAroundPlayer(false)) do
-        if not creature:isLocalPlayer() and not creature:isDead() and not creature:isLocalPlayerSummon()
+        if not creature:isLocalPlayer() and not creature:isDead()
             and creature:getPosition() and creature:getPosition().z == from.z and module.canBeSeen(creature) then
             total = total + 1
             if module.doCreatureFitFilters(creature) then
@@ -195,7 +199,8 @@ local function fillRow(row, creature)
     row:setOn(row.isTarget)
     row.name:setText(name)
     row.level:setText(level and (tr('Lv') .. ' ' .. level) or '')
-    local tag = creature:isNpc() and tr('NPC') or (creature:isPlayer() and tr('TRAINER') or '')
+    local tag = creature:isNpc() and tr('NPC') or (creature:isPlayer() and tr('TRAINER')
+        or (creature:isLocalPlayerSummon() and tr('YOURS') or ''))
     row.tag:setText(tag)
     row.tag:setVisible(tag ~= '')
     fillTypes(row, creature:isMonster() and name)

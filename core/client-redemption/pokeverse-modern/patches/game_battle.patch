@@ -98,7 +98,19 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
  function BattleListInstance:doCreatureFitFilters(creature)
      if creature:isLocalPlayer() then
          return false
-@@ -1064,16 +1116,7 @@
+@@ -1058,22 +1110,19 @@
+         return false
+     end
+     
++    -- the trainer's own Pokemon, party members and their Pokemon answer only to the Party filter
++    if creature:isLocalPlayerSummon() or isPartyCreature(creature, localPlayer) then
++        local party = self.hideButtons and self.hideButtons.hideParty
++        return not (party and party:isChecked())
++    end
++    
+     for i, v in pairs(self.hideButtons or {}) do
+         if v:isChecked() then
+             if (i == 'hidePlayers' and creature:isPlayer()) or 
                 (i == 'hideNPCs' and creature:isNpc()) or
                 (i == 'hideMonsters' and creature:isMonster()) or
                 (i == 'hideSkulls' and (creature:isPlayer() and creature:getSkull() == SkullNone)) or
@@ -116,7 +128,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
                 (i == 'hideKnights' and creature:isPlayer() and creature:isKnight()) or
                 (i == 'hidePaladins' and creature:isPlayer() and creature:isPaladin()) or
                 (i == 'hideDruids' and creature:isPlayer() and creature:isDruid()) or
-@@ -1110,6 +1153,7 @@
+@@ -1110,6 +1159,7 @@
          newCreature.id = creatureId
          newCreature.name = creature:getName():lower()
          newCreature.healthpercent = creature:getHealthPercent()
@@ -124,7 +136,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
          newCreature.distance = getDistanceBetween(g_game.getLocalPlayer():getPosition(), creature:getPosition())
          newCreature.age = self.lastAge + 1
          self.lastAge = self.lastAge + 1
-@@ -1145,6 +1189,9 @@
+@@ -1145,6 +1195,9 @@
          else
              self.panel:insertChild((#self.binaryTree - newIndex + 1), battleButton)
          end
@@ -134,7 +146,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
      end
      
      battleButton:setVisible(canBeSeen(creature))
-@@ -1214,6 +1261,10 @@
+@@ -1214,6 +1267,10 @@
              return {
                  age = battleButton.age
              }
@@ -145,7 +157,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
          else
              return {
                  name = battleButton.name
-@@ -1243,6 +1294,9 @@
+@@ -1243,6 +1300,9 @@
              end
          end
      end
@@ -155,7 +167,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
      return true
  end
  
-@@ -1359,9 +1413,11 @@
+@@ -1359,9 +1419,11 @@
      connect(LocalPlayer, { onPositionChange = onCreaturePositionChange })
      connect(Creature, {
          onSkullChange = updateCreatureSkull,
@@ -167,7 +179,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
          onPositionChange = onCreaturePositionChange,
          onAppear = onCreatureAppear,
          onDisappear = onCreatureDisappear
-@@ -1384,9 +1440,11 @@
+@@ -1384,9 +1446,11 @@
      disconnect(LocalPlayer, { onPositionChange = onCreaturePositionChange })
      disconnect(Creature, {
          onSkullChange = updateCreatureSkull,
@@ -179,7 +191,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
          onPositionChange = onCreaturePositionChange,
          onAppear = onCreatureAppear,
          onDisappear = onCreatureDisappear
-@@ -1478,6 +1536,8 @@
+@@ -1478,6 +1542,8 @@
      -- Setup keybind
      Keybind.new("Windows", "Show/hide battle list", "Ctrl+B", "")
      Keybind.bind("Windows", "Show/hide battle list", {{ type = KEY_DOWN, callback = toggle }})
@@ -188,7 +200,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
  
      -- Setup scrollbar - use default MiniWindow behavior
      local scrollbar = battleWindow:getChildById('miniwindowScrollBar')
-@@ -1497,13 +1557,13 @@
+@@ -1497,13 +1563,13 @@
          -- Set initial scrollbar position when filters are visible
          local scrollbar = battleWindow:getChildById('miniwindowScrollBar')
          if scrollbar then
@@ -205,7 +217,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
      for i, v in ipairs(options) do
          hideButtons[v] = battleWindow:recursiveGetChildById(v)
      end
-@@ -1633,6 +1693,8 @@
+@@ -1633,6 +1699,8 @@
          comparatorA, comparatorB = a.age, type(b) == 'table' and b.age or b
      elseif sortType == 'name' then
          comparatorA, comparatorB = (a.name):lower(), type(b) == 'table' and (b.name):lower() or b
@@ -214,7 +226,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
      end
  
      if comparatorA == nil or comparatorB == nil then
-@@ -1765,6 +1827,29 @@
+@@ -1765,6 +1833,29 @@
      end
  end
  
@@ -244,7 +256,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
  function onZoomChange()
      removeEvent(eventOnCheckCreature)
      eventOnCheckCreature = scheduleEvent(function()
-@@ -1915,6 +2000,10 @@
+@@ -1915,6 +2006,10 @@
              return {
                  age = battleButton.age
              }
@@ -255,7 +267,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
          else
              return {
                  name = battleButton.name
-@@ -1986,6 +2075,61 @@
+@@ -1986,6 +2081,61 @@
      end
  end
  
@@ -272,7 +284,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
 +    local nearby = pokegear and pokegear.nearbyCreatures and pokegear.nearbyCreatures()
 +    if nearby then
 +        for _, creature in ipairs(nearby) do
-+            if creature:isAttackable() then
++            if creature:isAttackable() and not creature:isLocalPlayerSummon() then
 +                candidates[#candidates + 1] = creature
 +            end
 +        end
@@ -317,7 +329,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
  function attackNext(previous)
      local foundTarget = false
      local firstElement = nil
-@@ -1994,14 +2138,14 @@
+@@ -1994,14 +2144,14 @@
      local nextElement = nil
  
      local mainInstance = BattleListManager.instances[0]
@@ -335,7 +347,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
              -- select visible first child
              if not firstElement then
                  firstElement = battleButton
-@@ -2381,6 +2525,16 @@
+@@ -2381,6 +2531,16 @@
      end
  end
  
@@ -352,7 +364,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
  function onCreatureAppear(creature) -- Update battleButton once a creature appear (add)
      if creature:isLocalPlayer() then
          addEvent(updateStaticSquare)
-@@ -2540,7 +2694,22 @@
+@@ -2540,7 +2700,22 @@
  end
  
  
@@ -375,7 +387,7 @@ diff -ruN pristine/modules/game_battle/battle.lua modules/game_battle/battle.lua
      if battleButton:isOn() then
          battleWindow:close()
      else
-@@ -2609,6 +2778,7 @@
+@@ -2609,6 +2784,7 @@
      toggleFilterButton = nil
  
      Keybind.delete("Windows", "Show/hide battle list")
