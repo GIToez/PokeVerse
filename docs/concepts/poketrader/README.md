@@ -1,8 +1,9 @@
 # PokeTrader auction window: concept
 
-This is a concept only; nothing is built yet. Today the auction lives only in Tiger Kelsey's chat
-(`npc/scripts/poketrader.lua`): you say "offers", the item's name, "bids", "cancel" and "time". The
-window shows the same auction, so players can see the lots and bid without typing.
+This is the concept the auction window was built from (#391: `lib/ps/systems/105-pokeTrader.lua` and the
+`game_poketrader` client module). Before it, the auction lived only in Tiger Kelsey's chat: you said "offers",
+the item's name, "bids", "cancel" and "time". The window shows the same auction, so players can see the lots
+and bid without typing.
 
 The art comes from the game's own UI: the Tasks window frame, the Fishing Guide's rows, tabs and
 panels, and the login screen's fields and buttons. It matches the Event Shop and Bank windows. The
@@ -19,7 +20,8 @@ pictures, run `scripts/art/poketrader_concept.py`.
 
 ## Opening it
 
-- Talk to Tiger Kelsey and say "hi". The window opens, and the chat words still work.
+- Talk to Tiger Kelsey: he asks if you're here for the auction. Say "auction" and the window opens. The chat
+  words still work.
 - You can only bid at Tiger Kelsey. There is no PokeGear button, and the window closes when you
   walk away from him, like a shop.
 
@@ -52,7 +54,7 @@ you: always just 1% over the next trainer, never more than your maximum. This is
 - Bidding ends on time, with no extra time for late bids. The new lots come out at the same
   moment.
 - Today the next week starts from the moment the last one ends, so the start time drifts. The new
-  lots should come out at a fixed time instead, for example every Sunday at 20:00.
+  lots come out at a fixed time instead: every Sunday at 20:00 server time.
 
 ## This week
 
