@@ -77,6 +77,7 @@ GLOBAL_STORAGES = {
     DISCORD_PING_ROLES = 7162, -- JSON {roles = {names}, everyone}: the Discord roles the Admin window can ping, sent by the bot (Announcements)
     DECORATIONS_ITEMS = 7163, -- "m;<set>:<item ids>;...": props staff added to a set's list (/deco items <set> add)
     DECORATIONS_SEEDED = 7164, -- the last Decorations.DEFAULT_SPOTS version saved into decoration_spots
+    RARE_SPAWNS = 7165, -- "m;<key>=<due>;...": when each RareSpawns entry (Red Gyarados, Friday Lapras) can come back
     --[[
     FROM 5001 TO 5152 RESERVED TO CAUGHT HIGHSCORES RELATED (last update 23/02/12)
     ]]
