@@ -219,7 +219,7 @@ function doPokemonUseSkill(pokemon, skillName)
             local cooldown = getPokemonSkillCooldownTime(skillName)
             if (isMonster(pokemonTarget)) then
                 if (doPokemonSpecialAbilityCheck(pokemonTarget, POKEMON_SPECIAL_ABILITY_IDS.PRESSURE, nil)) then
-                    cooldown = cooldown * 2
+                    cooldown = cooldown * 1.5
                 elseif (doPokemonSpecialAbilityCheck(pokemonTarget, POKEMON_SPECIAL_ABILITY_IDS.STALL, nil)) then
                     cooldown = cooldown * 1.1
                 end

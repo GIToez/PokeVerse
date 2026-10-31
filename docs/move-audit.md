@@ -110,6 +110,6 @@ Notes, not changed:
 - Final Gambit, Grudge, Me First, Spikes and Wide Guard have spells, but they are copies of Tackle
   (and Me First of Mimic), which is why their configs sit in `others/moves_disabled/`. They need
   their own code before they go on.
-- Pressure doubles the cooldown of moves aimed at its Pokemon (Stall: 1.1x). The legendary birds,
-  beasts, Mewtwo, Lugia, Ho-Oh and Deoxys have it, so fights against them run at half speed. A
-  gentler 1.5x would still mark it.
+- **Pressure** doubled the cooldown of moves aimed at its Pokemon, though its description says
+  50%. It is 1.5x now (Stall: 1.1x). The legendary birds, beasts, Mewtwo, Lugia, Ho-Oh and Deoxys
+  have it.
