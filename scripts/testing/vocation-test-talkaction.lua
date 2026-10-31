@@ -4682,6 +4682,13 @@ local function testAnalyser(cid)
         return a and b and math.abs(a - b) < 0.0001
     end
 
+    check("Mastery: skill 100 makes shinies 1.4 times as likely", math.abs(getSkillMasteryShinyMultiplier(20) - 1.4) < 0.0001)
+    check("Mastery: 100 levels past 80 always give one more Pokemon", getSkillMasteryExtraPokemon(100) == 1)
+    check("Mastery: no levels past 80, no extra Pokemon", getSkillMasteryAmount(1, 0, 100, 25) == 1)
+    check("Mastery: extra Pokemon up to one per 25 levels of the trainer's Pokemon",
+        getSkillMasteryAmount(1, 200, 100, 25) == 3 and getSkillMasteryAmount(1, 200, 25, 25) == 1)
+    check("Mastery: the trainer's own skill counts from 80",
+        getPlayerSkillMastery(cid, PLAYER_SKILL_FISHING) == math.max(0, getPlayerSkillLevel(cid, PLAYER_SKILL_FISHING) - 80))
     check("Analyser: a quarter of the tries or less can't catch", getCatchRollMaxFor(10, false, 2, 0) == nil)
     local max = getCatchRollMaxFor(200, false, 90, 12)
     check("Analyser: 90 tries of 200 with catching 12 rolls 1-199", max == 199, max)

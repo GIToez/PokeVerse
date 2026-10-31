@@ -342,7 +342,7 @@ WikiData = {
             { 'p', "Seals come from seal boxes, which are quest and referral rewards." },
         } },
         { key = 'shiny', title = 'Shiny Pokemon', portrait = 6, body = {
-            { 'p', "About 1 wild Pokemon in 8,192 is shiny, and shinies shimmer so you can spot them. A shiny has 10% more HP and starts with 200 energy instead of 100. Eggs can hatch shiny at the same chance; Headbutt and fishing find them ten times less often. Bonus shiny events, the Double Shiny weekend and the Discord server boost perk raise the chance." },
+            { 'p', "About 1 wild Pokemon in 8,192 is shiny, and shinies shimmer so you can spot them. A shiny has 10% more HP and starts with 200 energy instead of 100. Eggs can hatch shiny at the same chance; Headbutt and fishing find them ten times less often, less so past skill 80. Bonus shiny events, the Double Shiny weekend and the Discord server boost perk raise the chance." },
         } },
         { key = 'specials', title = 'Special abilities', portrait = 4, body = {
             { 'p', "Many Pokemon have a passive ability. For example Overgrow, Blaze and Torrent make Grass, Fire or Water moves 1.5 times stronger at a third of the HP or less, Shield Dust blocks side effects, and Shed Skin has a 30% chance to cure a status." },
@@ -418,6 +418,7 @@ WikiData = {
         } },
         { key = 'headbutt', title = 'Headbutt', portrait = 204, body = {
             { 'p', "Order on a nest tree. Which Pokemon fall out depends on your headbutt skill, the region and your Pokemon's level. They only fight you and leave after 3 minutes. Wait 10 seconds between headbutts." },
+            { 'p', "Past headbutt skill 80, every level makes shinies 2% more likely (x1.4 at 100) and adds a 1% chance of an extra Pokemon (20% at 100), with no cap. Your Pokemon still needs 25 levels for each Pokemon that falls out." },
         } },
         { key = 'flash', title = 'Flash', portrait = 181, body = {
             { 'p', "Order on your own Pokemon to switch its light on or off. A flashlight in the key item slot lights you up too." },
@@ -522,6 +523,7 @@ WikiData = {
             } },
             { 'items', { { 11254, "Old" }, { 11255, "Good" }, { 11256, "Super" } } },
             { 'p', "What bites depends on your fishing skill, the level of your own Pokemon and the region: Kanto's Pokemon bite everywhere, and Johto, the Orange Archipelago and Hoenn add their own." },
+            { 'p', "Past fishing skill 80, every level makes shinies 2% more likely (x1.4 at 100) and adds a 1% chance of hooking an extra Pokemon (20% at 100), with no cap. Your Pokemon still needs 25 levels for each Pokemon you hook." },
             { 'tip', "Anglers level their fishing skill faster, and from rank 4 the Fishing Guide (U) shows everything that bites in each region." },
             { 'see', { 'voc_angler' } },
         } },

@@ -1341,3 +1341,32 @@ function doPlayerAddActivity(cid, kind, text)
         doSendPlayerExtendedOpcode(cid, EXTENDED_IDS.ACTIVITY, JSON.encode({ kind = kind, text = text, quiet = true }))
     end
 end
+
+-- Fishing and headbutting past PLAYER_SKILL_MASTERY_LEVEL: the levels past it, and what they give
+function getPlayerSkillMastery(cid, skill)
+    return math.max(0, (getPlayerSkillLevel(cid, skill) or 0) - PLAYER_SKILL_MASTERY_LEVEL)
+end
+
+function getSkillMasteryShinyMultiplier(levels)
+    return 1 + levels * PLAYER_SKILL_MASTERY_SHINY_PER_LEVEL
+end
+
+-- The whole part is always extra, the rest a chance of one more
+function getSkillMasteryExtraPokemon(levels)
+    local extra = levels * PLAYER_SKILL_MASTERY_EXTRA_PER_LEVEL
+    local count = math.floor(extra)
+    if (math.random() < extra - count) then
+        count = count + 1
+    end
+    return count
+end
+
+-- How many Pokemon a hook or a tree gives: the usual roll, plus the mastery's extra ones up to what
+-- the trainer's Pokemon may face (one per maxAmountDivider levels)
+function getSkillMasteryAmount(amount, levels, pokemonLevel, maxAmountDivider)
+    local extra = getSkillMasteryExtraPokemon(levels)
+    if (extra <= 0) then
+        return amount
+    end
+    return math.max(amount, math.min(amount + extra, math.ceil((pokemonLevel or 1) / maxAmountDivider)))
+end
