@@ -4,7 +4,7 @@
 --
 -- The client talks JSON on EXTENDED_IDS.ANALYSER:
 --   client -> server  {action = "get"} (at login and when the window opens)
---   server -> client  {type = "catch", kill, name, level, chance, tries, unlockAt, skill, skillBonus, catcher, boost, safari, balls =
+--   server -> client  {type = "catch", kill, name, level, chance, tries, unlockAt or rampUntil, skill, skillBonus, catcher, boost, safari, balls =
 --                       {{name, item, rate, roll, chance, expected, half, unlock, blocked}, ...}}
 --                     {type = "catch"} when there is no Pokemon to show
 --                     {type = "pokemon", name, level, exp, prev, next, max, capped, amount}
@@ -158,7 +158,8 @@ Analyser.catchAudit = function(cid, pokemonName, level)
     end
 
     return { type = "catch", name = pokemonName, level = level, chance = round(catchChance, 2), tries = round(tries, 2),
-             unlockAt = not ignoreBallCounter and round(catchChance * 0.25, 2) or nil, skill = skill,
+             unlockAt = not ignoreBallCounter and not CATCH_EARLY_RAMP and round(catchChance * CATCH_EARLY_SHARE, 2) or nil,
+             rampUntil = not ignoreBallCounter and CATCH_EARLY_RAMP and round(catchChance * CATCH_EARLY_SHARE, 2) or nil, skill = skill,
              skillBonus = round(math.min(skill, PLAYER_SKILL_CATCHING_MAX) * PLAYER_SKILL_CATCHING_BONUS_PER_LEVEL * 100, 1),
              catcher = catcher > 0 and round(catcher) or nil, boost = boost > 1 and round(boost) or nil, balls = rows }
 end
