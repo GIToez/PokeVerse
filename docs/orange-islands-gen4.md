@@ -1,7 +1,7 @@
 # Orange Islands: Gen 4 evolutions
 
 **Status: live.** `scripts/mapper/orange-gen4-spawns.py` wrote the spawns below into
-`world/map-spawn.xml` (and the mapper copy): 130 spawns changed and 76 added.
+`world/map-spawn.xml` (and the mapper copy): 169 spawns changed and 1 added.
 
 Sinnoh comes later as its own region, with the Sinnoh families (Turtwig, Starly, Shinx, Gible,
 Riolu and the rest) and the Gen 4 legendaries. Until then, the Orange Islands, the high-level
@@ -67,32 +67,23 @@ with the 45-minute spawn time of the rest of the Porygon line. That floor also h
 
 ## Babies
 
-In each area, about **1 baby for every 2.5** Pokémon of the rest of its line (rounded, after the
-changes above), so an area with 2 or 3 adults gets 1 baby. Babies are passive: they only fight
-back, and a hurt baby calls its family.
+The Orange Islands are a high-level area, so they have no babies: all 57 baby spawns became the
+Pokémon of their line that spawns most in the same area, on the same tile and spawn time.
+Babies now come from Day Care eggs. The only wild babies left are 5 Togepi and 3 Wynaut in Hoenn;
+Kanto and Johto have none.
 
-- Areas with too few get new baby spawns next to the adults, on a free tile of the same ground
-  (up to 2 tiles away), with the adult's spawn time.
-- Areas with too many turn the extra baby spawns into the line's first adult, on the same tile.
-- Areas with a single adult get no baby.
+| Baby | Became (island: area, count) |
+|---|---|
+| Pichu | Raichu: Power Plant of Hamlin (Hamlin) 4; Pikachu: Mountain House (Mandarin North) 1 |
+| Cleffa | Clefable: Giant Mountain (Ascorbia) 3, Mountain Moon (Kumquat) 4, Desert Island #3 Cave (Pummelo) 3 |
+| Igglybuff | Wigglytuff: Giant Mountain (Ascorbia) 5, Mountain Moon (Kumquat) 1, Desert Island #3 Cave (Pummelo) 1 |
+| Togepi | Togetic: Forgotten Temple (Moro) 6 |
+| Tyrogue | Hitmonchan: Area of the Fight (Mikan) 2 |
+| Smoochum | Jynx: Refuge Cold (Mandarin North) 6, Ice Island (Shamouti) 6 |
+| Elekid | Electabuzz: Power Plant of Hamlin (Hamlin) 2, Venomous Jungle (Mandarin North) 1, Lightning Island (Shamouti) 5 |
+| Magby | Magmar: Fairchild Cave (Pinkan) 4, Fire Island (Shamouti) 3 |
 
-| Baby | Added next to its line (island: area, adults -> babies added) | Extra babies turned into adults |
-|---|---|---|
-| Pichu | Hamlin: Power Plant of Hamlin 19 -> 4; Mandarin North: Mountain House 14 -> 5; Shamouti: Lightning Island 19 -> 8 | |
-| Cleffa | Ascorbia: Giant Mountain 21 -> 5; Kumquat: Mountain Moon 15 -> 2 | 1 Clefairy at Desert Island #3 Cave (Pummelo) |
-| Igglybuff | Ascorbia: Around Giant Mountain 7 -> 3; Ascorbia: Giant Mountain 16 -> 1; Kumquat: Mountain Moon 12 -> 4; Pummelo: Desert Island #3 Cave 4 -> 1 | |
-| Togepi | | 4 Togetic at Forgotten Temple (Moro) |
-| Tyrogue | Mikan: Fight Cave 4 -> 1 (no free tile for a second) | |
-| Smoochum | | 4 Jynx at Refuge Cold (Mandarin North), 4 at Ice Island (Shamouti) |
-| Elekid | | 1 Electabuzz at Power Plant of Hamlin, 1 at Lightning Island (Shamouti) |
-| Magby | | 2 Magmar at Fairchild Cave (Pinkan), 1 at Fire Island (Shamouti) |
-| Azurill | Mandarin North: Mountain Lake 6 -> 2; Navel 48 -> 19; Pummelo: Mountain Lake 5 -> 2; Sunburst: Crystal Cave 19 -> 8 | |
-| Wynaut | Moro: Forgotten Temple 3 -> 1 | |
-| Budew | Pummelo: Pummelo Forest 2 -> 1 (next to the Roserade) | |
-| Munchlax | Mandarin South 02: Forested Region 3 -> 1; Seven Grapefruit: Seven Grapefruit #7 2 -> 1 | |
-| Mantyke | Pinkan: Submerged Desert Island #4 7 -> 3; Pinkan: unnamed spot 2 -> 1; Trovitopolis: Sea Trovita 5 -> 2 | |
-
-Chingling, Bonsly, Mime Jr. and Happiny have no adults in the Orange Islands.
+Babies are passive everywhere: they only fight back, and a hurt baby calls its family.
 
 ## Babies from eggs
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Puts the Gen 4 evolutions and two Gen 4 babies in the Orange Islands (docs/orange-islands-gen4.md).
+"""Puts the Gen 4 evolutions in the Orange Islands and takes the babies out (docs/orange-islands-gen4.md).
 
 - Evolutions of older Pokemon: in each area where the pre-evolution spawns, about 1 of every 5 of
   its spawns becomes the evolution (rounded, at least 1; areas with fewer than 3 get none unless
@@ -8,9 +8,9 @@
   a Pokemon of the same habitat become the evolution (HABITAT).
 - Porygon-Z: one new spawn on the deepest floor of the Power Plant of Hamlin, next to Porygon2,
   with the Porygon line's 45-minute spawn time.
-- Babies (BABIES): in each area about one for every ADULTS_PER_BABY Pokemon of the rest of their line
-  (after the changes above). Missing babies are new spawns next to the adults; extra baby spawns
-  become the line's first adult.
+- Babies (BABIES): the Orange Islands are a high-level area, so every baby spawn becomes the
+  Pokemon of its line that spawns most in that area (the first of the line if none does), on
+  the same tile and spawn time.
 
 New spawns go on a free tile next to the spawn they belong to (or 2 tiles away if none is): the same ground as that spawn's
 tile, nothing on it that blocks (items.otb), and no other spawn. Writes core/server/data/world/map-spawn.xml and its mapper copy; refuses to run
@@ -61,7 +61,7 @@ NEXT_TO = [
     ("Porygon-Z", ("Hamlin", "Power Plant of Hamlin", "Porygon2", 2700), {"floor": 10, "count": 1}),
 ]
 
-# baby: the rest of its line, the first one is what a baby spawn too many becomes
+# baby: the rest of its line; the first one is what the baby becomes where none of it spawns
 BABIES = {
     "Pichu": ["Pikachu", "Raichu"], "Cleffa": ["Clefairy", "Clefable"], "Igglybuff": ["Jigglypuff", "Wigglytuff"],
     "Togepi": ["Togetic", "Togekiss"], "Tyrogue": ["Hitmonlee", "Hitmonchan", "Hitmontop"], "Smoochum": ["Jynx"],
@@ -69,7 +69,6 @@ BABIES = {
     "Wynaut": ["Wobbuffet"], "Budew": ["Roselia", "Roserade"], "Chingling": ["Chimecho"], "Bonsly": ["Sudowoodo"],
     "Mime Jr.": ["Mr. Mime"], "Happiny": ["Chansey", "Blissey"], "Munchlax": ["Snorlax"], "Mantyke": ["Mantine"],
 }
-ADULTS_PER_BABY = 2.5
 
 ITEMS_OTB = os.path.join(ROOT, "core/server/data/items/items.otb")
 BLOCKING = 0x1 | 0x4  # items.otb flags: blocks movement, blocks pathfinding
@@ -161,31 +160,21 @@ def main():
         adults = spread(adults, opts.get("count", len(adults)))
         additions.append((name, adults, len(adults), spawntime, zone, area, adult))
 
-    # babies: about one for every ADULTS_PER_BABY of their line in each area, next to the adults
-    line_of = {}
-    for baby, rest in BABIES.items():
-        line_of[baby] = (baby, True)
-        line_of.update({adult: (baby, False) for adult in rest})
-    families = collections.defaultdict(lambda: ([], []))
+    # babies: each becomes the Pokemon of its line that spawns most in its area
+    line_of = {adult: baby for baby, rest in BABIES.items() for adult in rest}
+    families = collections.defaultdict(collections.Counter)
     for s in orange:
         name = s.get("new", s["name"])
-        plain = name[6:] if name.startswith("Shiny ") else name
-        if plain in line_of:
-            baby, is_baby = line_of[plain]
-            families[(baby, s["zone"], s["area"])][0 if is_baby else 1].append(s)
-    for (baby, zone, area), (babies, adults) in sorted(families.items()):
-        if not adults:
-            continue
-        want = int(len(adults) / ADULTS_PER_BABY + 0.5)
-        plain = [s for s in babies if not s["name"].startswith("Shiny ")]
-        if len(babies) > want:
-            for s in spread(plain, min(len(plain), len(babies) - want)):
-                s["new"] = BABIES[baby][0]
-            report.append((BABIES[baby][0], "from " + baby, zone, area, len(babies), len(babies) - want))
-        elif len(babies) < want:
-            first = spread(adults, want - len(babies))
-            additions.append((baby, first + [s for s in adults if s not in first], want - len(babies), None,
-                              zone, area, "its line"))
+        if name in line_of:
+            families[(line_of[name], s["zone"], s["area"])][name] += 1
+    grown = collections.Counter()
+    for s in orange:
+        if s["name"] in BABIES:
+            common = families[(s["name"], s["zone"], s["area"])].most_common(1)
+            s["new"] = common[0][0] if common else BABIES[s["name"]][0]
+            grown[(s["new"], s["name"], s["zone"], s["area"])] += 1
+    for (adult, baby, zone, area), n in sorted(grown.items()):
+        report.append((adult, "from " + baby, zone, area, n, n))
 
     for s in orange:
         if "new" in s:

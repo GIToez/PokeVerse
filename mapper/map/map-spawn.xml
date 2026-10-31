@@ -3771,7 +3771,6 @@
   <spawn centerx="3509" centery="2045" centerz="3" radius="1">
     <monster name="Pikachu" x="0" y="-1" z="3" spawntime="60" level="0"/>
     <monster name="Electabuzz" x="-1" y="1" z="3" spawntime="60" level="100"/>
-    <monster name="Pichu" x="-1" y="-1" z="3" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3525" centery="2045" centerz="3" radius="1">
     <monster name="Ampharos" x="0" y="-1" z="3" spawntime="60" level="100"/>
@@ -3788,7 +3787,6 @@
     <monster name="Mareep" x="-1" y="-1" z="3" spawntime="60" level="0"/>
     <monster name="Raichu" x="1" y="0" z="3" spawntime="60" level="100"/>
     <monster name="Flaaffy" x="-1" y="1" z="3" spawntime="60" level="0"/>
-    <monster name="Pichu" x="0" y="0" z="3" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3503" centery="2061" centerz="3" radius="1">
     <monster name="Ampharos" x="0" y="-1" z="3" spawntime="60" level="100"/>
@@ -3797,9 +3795,8 @@
   <spawn centerx="3511" centery="2063" centerz="3" radius="1">
     <monster name="Electabuzz" x="0" y="1" z="3" spawntime="60" level="100"/>
   </spawn>
-  <spawn centerx="3517" centery="2068" centerz="3" radius="2">
+  <spawn centerx="3517" centery="2068" centerz="3" radius="1">
     <monster name="Raichu" x="-1" y="0" z="3" spawntime="60" level="100"/>
-    <monster name="Pichu" x="-2" y="0" z="3" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2909" centery="2166" centerz="3" radius="1">
     <monster name="Pidgeot" x="-1" y="-1" z="3" spawntime="60" level="0"/>
@@ -8028,10 +8025,9 @@
   <spawn centerx="497" centery="1624" centerz="4" radius="1">
     <monster name="Kirlia" x="-1" y="0" z="4" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3423" centery="1624" centerz="4" radius="2">
+  <spawn centerx="3423" centery="1624" centerz="4" radius="1">
     <monster name="Jigglypuff" x="-1" y="0" z="4" spawntime="60" level="0"/>
     <monster name="Wigglytuff" x="1" y="1" z="4" spawntime="60" level="0"/>
-    <monster name="Igglybuff" x="-2" y="0" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="519" centery="1625" centerz="4" radius="1">
     <monster name="Ralts" x="1" y="1" z="4" spawntime="60" level="0"/>
@@ -8055,7 +8051,7 @@
     <monster name="Clefable" x="-1" y="1" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3421" centery="1637" centerz="4" radius="1">
-    <monster name="Cleffa" x="1" y="-1" z="4" spawntime="60" level="0"/>
+    <monster name="Clefable" x="1" y="-1" z="4" spawntime="60" level="0"/>
     <monster name="Jigglypuff" x="-1" y="1" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3428" centery="1638" centerz="4" radius="1">
@@ -8072,7 +8068,6 @@
   <spawn centerx="3438" centery="1641" centerz="4" radius="1">
     <monster name="Clefable" x="1" y="-1" z="4" spawntime="60" level="0"/>
     <monster name="Clefairy" x="-1" y="0" z="4" spawntime="60" level="0"/>
-    <monster name="Cleffa" x="0" y="-1" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3559" centery="1642" centerz="4" radius="1">
     <monster name="Golem" x="0" y="-1" z="4" spawntime="60" level="0"/>
@@ -8091,7 +8086,7 @@
   </spawn>
   <spawn centerx="4401" centery="1665" centerz="4" radius="1">
     <monster name="Wigglytuff" x="-1" y="-1" z="4" spawntime="60" level="0"/>
-    <monster name="Igglybuff" x="1" y="1" z="4" spawntime="60" level="0"/>
+    <monster name="Wigglytuff" x="1" y="1" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4088" centery="1732" centerz="4" radius="1">
     <monster name="Noctowl" x="0" y="-1" z="4" spawntime="60" level="0"/>
@@ -8309,7 +8304,6 @@
   <spawn centerx="3507" centery="2028" centerz="4" radius="1">
     <monster name="Ampharos" x="-1" y="0" z="4" spawntime="60" level="100"/>
     <monster name="Pikachu" x="1" y="1" z="4" spawntime="60" level="0"/>
-    <monster name="Pichu" x="0" y="1" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3633" centery="2032" centerz="4" radius="1">
     <monster name="Cloyster" x="-1" y="-1" z="4" spawntime="60" level="100"/>
@@ -8320,16 +8314,15 @@
   </spawn>
   <spawn centerx="3621" centery="2039" centerz="4" radius="1">
     <monster name="Jynx" x="1" y="-1" z="4" spawntime="60" level="100"/>
-    <monster name="Smoochum" x="1" y="0" z="4" spawntime="60" level="0"/>
+    <monster name="Jynx" x="1" y="0" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3628" centery="2039" centerz="4" radius="1">
     <monster name="Sneasel" x="0" y="-1" z="4" spawntime="60" level="0"/>
     <monster name="Poliwhirl" x="1" y="0" z="4" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3478" centery="2040" centerz="4" radius="2">
+  <spawn centerx="3478" centery="2040" centerz="4" radius="1">
     <monster name="Pikachu" x="-1" y="-1" z="4" spawntime="60" level="0"/>
     <monster name="Raichu" x="1" y="1" z="4" spawntime="60" level="100"/>
-    <monster name="Pichu" x="0" y="2" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3470" centery="2053" centerz="4" radius="1">
     <monster name="Flaaffy" x="1" y="1" z="4" spawntime="60" level="0"/>
@@ -8338,9 +8331,8 @@
     <monster name="Raichu" x="0" y="-1" z="4" spawntime="60" level="100"/>
     <monster name="Mareep" x="1" y="1" z="4" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3472" centery="2067" centerz="4" radius="2">
+  <spawn centerx="3472" centery="2067" centerz="4" radius="1">
     <monster name="Raichu" x="-1" y="0" z="4" spawntime="60" level="100"/>
-    <monster name="Pichu" x="-2" y="0" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3477" centery="2068" centerz="4" radius="1">
     <monster name="Pikachu" x="1" y="1" z="4" spawntime="60" level="0"/>
@@ -8350,10 +8342,9 @@
     <monster name="Ampharos" x="1" y="-1" z="4" spawntime="60" level="100"/>
     <monster name="Mareep" x="1" y="0" z="4" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3482" centery="2071" centerz="4" radius="2">
+  <spawn centerx="3482" centery="2071" centerz="4" radius="1">
     <monster name="Mareep" x="0" y="-1" z="4" spawntime="60" level="0"/>
     <monster name="Raichu" x="-1" y="1" z="4" spawntime="60" level="100"/>
-    <monster name="Pichu" x="-2" y="1" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3485" centery="2076" centerz="4" radius="1">
     <monster name="Flaaffy" x="1" y="-1" z="4" spawntime="60" level="0"/>
@@ -15493,7 +15484,6 @@
   </spawn>
   <spawn centerx="3435" centery="1646" centerz="5" radius="1">
     <monster name="Wigglytuff" x="-1" y="0" z="5" spawntime="60" level="0"/>
-    <monster name="Igglybuff" x="-1" y="1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3579" centery="1646" centerz="5" radius="1">
     <monster name="Onix" x="0" y="1" z="5" spawntime="60" level="0"/>
@@ -15563,7 +15553,7 @@
   </spawn>
   <spawn centerx="3432" centery="1655" centerz="5" radius="1">
     <monster name="Kangaskhan" x="-1" y="-1" z="5" spawntime="2700" level="0"/>
-    <monster name="Cleffa" x="1" y="0" z="5" spawntime="60" level="0"/>
+    <monster name="Clefable" x="1" y="0" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="504" centery="1657" centerz="5" radius="1">
     <monster name="Ludicolo" x="-1" y="-1" z="5" spawntime="60" level="0"/>
@@ -15606,13 +15596,13 @@
   </spawn>
   <spawn centerx="4412" centery="1671" centerz="5" radius="1">
     <monster name="Clefable" x="-1" y="0" z="5" spawntime="60" level="0"/>
-    <monster name="Cleffa" x="1" y="1" z="5" spawntime="60" level="0"/>
+    <monster name="Clefable" x="1" y="1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4441" centery="1671" centerz="5" radius="1">
     <monster name="Clefable" x="-1" y="1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4451" centery="1671" centerz="5" radius="1">
-    <monster name="Cleffa" x="1" y="-1" z="5" spawntime="60" level="0"/>
+    <monster name="Clefable" x="1" y="-1" z="5" spawntime="60" level="0"/>
     <monster name="Clefable" x="-1" y="1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="975" centery="1672" centerz="5" radius="1">
@@ -15630,7 +15620,6 @@
   </spawn>
   <spawn centerx="4421" centery="1673" centerz="5" radius="1">
     <monster name="Clefable" x="-1" y="-1" z="5" spawntime="60" level="0"/>
-    <monster name="Cleffa" x="-1" y="0" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4406" centery="1674" centerz="5" radius="1">
     <monster name="Clefable" x="-1" y="0" z="5" spawntime="60" level="0"/>
@@ -15648,8 +15637,7 @@
   </spawn>
   <spawn centerx="4429" centery="1675" centerz="5" radius="1">
     <monster name="Clefable" x="-1" y="-1" z="5" spawntime="60" level="0"/>
-    <monster name="Igglybuff" x="-1" y="0" z="5" spawntime="60" level="0"/>
-    <monster name="Cleffa" x="0" y="-1" z="5" spawntime="60" level="0"/>
+    <monster name="Wigglytuff" x="-1" y="0" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="944" centery="1677" centerz="5" radius="1">
     <monster name="Manectric" x="0" y="-1" z="5" spawntime="60" level="0"/>
@@ -15691,10 +15679,9 @@
     <monster name="Manectric" x="1" y="-1" z="5" spawntime="60" level="0"/>
     <monster name="Metagross" x="0" y="1" z="5" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="4419" centery="1685" centerz="5" radius="2">
+  <spawn centerx="4419" centery="1685" centerz="5" radius="1">
     <monster name="Clefable" x="1" y="0" z="5" spawntime="60" level="0"/>
     <monster name="Clefairy" x="-1" y="1" z="5" spawntime="60" level="0"/>
-    <monster name="Cleffa" x="2" y="0" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4402" centery="1686" centerz="5" radius="1">
     <monster name="Wigglytuff" x="-1" y="0" z="5" spawntime="60" level="0"/>
@@ -15711,7 +15698,6 @@
   </spawn>
   <spawn centerx="4427" centery="1687" centerz="5" radius="1">
     <monster name="Clefable" x="0" y="-1" z="5" spawntime="60" level="0"/>
-    <monster name="Cleffa" x="-1" y="-1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4403" centery="1690" centerz="5" radius="1">
     <monster name="Jigglypuff" x="1" y="-1" z="5" spawntime="60" level="0"/>
@@ -16483,7 +16469,7 @@
     <monster name="Mawile" x="-1" y="0" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3476" centery="2047" centerz="5" radius="1">
-    <monster name="Elekid" x="1" y="-1" z="5" spawntime="60" level="0"/>
+    <monster name="Electabuzz" x="1" y="-1" z="5" spawntime="60" level="0"/>
     <monster name="Ampharos" x="-1" y="0" z="5" spawntime="60" level="100"/>
   </spawn>
   <spawn centerx="512" centery="2049" centerz="5" radius="1">
@@ -16561,12 +16547,11 @@
   </spawn>
   <spawn centerx="3514" centery="2078" centerz="5" radius="1">
     <monster name="Flaaffy" x="0" y="-1" z="5" spawntime="60" level="0"/>
-    <monster name="Elekid" x="0" y="1" z="5" spawntime="60" level="0"/>
+    <monster name="Electabuzz" x="0" y="1" z="5" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3498" centery="2082" centerz="5" radius="2">
+  <spawn centerx="3498" centery="2082" centerz="5" radius="1">
     <monster name="Raichu" x="-1" y="-1" z="5" spawntime="60" level="100"/>
     <monster name="Mareep" x="1" y="0" z="5" spawntime="60" level="0"/>
-    <monster name="Pichu" x="-1" y="-2" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3492" centery="2086" centerz="5" radius="1">
     <monster name="Raichu" x="1" y="0" z="5" spawntime="60" level="0"/>
@@ -16666,9 +16651,8 @@
   <spawn centerx="2939" centery="2151" centerz="5" radius="1">
     <monster name="Arcanine" x="0" y="-1" z="5" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2909" centery="2162" centerz="5" radius="2">
+  <spawn centerx="2909" centery="2162" centerz="5" radius="1">
     <monster name="Pikachu" x="-1" y="-1" z="5" spawntime="60" level="0"/>
-    <monster name="Pichu" x="-2" y="-1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2916" centery="2165" centerz="5" radius="1">
     <monster name="Haunter" x="1" y="-1" z="5" spawntime="60" level="0"/>
@@ -16694,7 +16678,7 @@
     <monster name="Electrode" x="1" y="1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3006" centery="2184" centerz="5" radius="1">
-    <monster name="Elekid" x="-1" y="-1" z="5" spawntime="60" level="0"/>
+    <monster name="Electabuzz" x="-1" y="-1" z="5" spawntime="60" level="0"/>
     <monster name="Electrode" x="1" y="1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3020" centery="2187" centerz="5" radius="1">
@@ -16813,7 +16797,7 @@
   </spawn>
   <spawn centerx="2682" centery="2393" centerz="5" radius="1">
     <monster name="Primeape" x="-1" y="-1" z="5" spawntime="60" level="0"/>
-    <monster name="Tyrogue" x="1" y="1" z="5" spawntime="2700" level="0"/>
+    <monster name="Hitmonchan" x="1" y="1" z="5" spawntime="2700" level="0"/>
   </spawn>
   <spawn centerx="2684" centery="2400" centerz="5" radius="1">
     <monster name="Mankey" x="1" y="-1" z="5" spawntime="60" level="0"/>
@@ -16844,7 +16828,7 @@
     <monster name="Primeape" x="-1" y="1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2728" centery="2424" centerz="5" radius="1">
-    <monster name="Tyrogue" x="-1" y="-1" z="5" spawntime="2700" level="0"/>
+    <monster name="Hitmonchan" x="-1" y="-1" z="5" spawntime="2700" level="0"/>
   </spawn>
   <spawn centerx="2718" centery="2428" centerz="5" radius="1">
     <monster name="Primeape" x="0" y="-1" z="5" spawntime="60" level="0"/>
@@ -17154,7 +17138,6 @@
   </spawn>
   <spawn centerx="4565" centery="2693" centerz="5" radius="1">
     <monster name="Snorlax" x="1" y="0" z="5" spawntime="60" level="0"/>
-    <monster name="Munchlax" x="0" y="0" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4588" centery="2694" centerz="5" radius="1">
     <monster name="Blastoise" x="0" y="-1" z="5" spawntime="60" level="0"/>
@@ -17596,7 +17579,6 @@
   <spawn centerx="3652" centery="3288" centerz="5" radius="1">
     <monster name="Snorlax" x="-1" y="-1" z="5" spawntime="60" level="0"/>
     <monster name="Yanma" x="0" y="1" z="5" spawntime="60" level="0"/>
-    <monster name="Munchlax" x="0" y="0" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3657" centery="3290" centerz="5" radius="1">
     <monster name="Ledian" x="0" y="-1" z="5" spawntime="60" level="0"/>
@@ -25037,10 +25019,9 @@
     <monster name="Weepinbell" x="-1" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Victreebel" x="1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3082" centery="1615" centerz="6" radius="2">
+  <spawn centerx="3082" centery="1615" centerz="6" radius="1">
     <monster name="Roserade" x="1" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Bellsprout" x="-1" y="1" z="6" spawntime="60" level="0"/>
-    <monster name="Budew" x="1" y="-2" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="246" centery="1616" centerz="6" radius="1">
     <monster name="Breloom" x="0" y="1" z="6" spawntime="60" level="0"/>
@@ -25254,14 +25235,12 @@
     <monster name="Plusle" x="-1" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Minun" x="1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3460" centery="1639" centerz="6" radius="2">
+  <spawn centerx="3460" centery="1639" centerz="6" radius="1">
     <monster name="Wigglytuff" x="-1" y="-1" z="6" spawntime="60" level="0"/>
-    <monster name="Igglybuff" x="-2" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3467" centery="1639" centerz="6" radius="1">
     <monster name="Clefable" x="-1" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Clefairy" x="1" y="1" z="6" spawntime="60" level="0"/>
-    <monster name="Cleffa" x="1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="461" centery="1640" centerz="6" radius="1">
     <monster name="Ludicolo" x="1" y="1" z="6" spawntime="60" level="0"/>
@@ -25283,7 +25262,6 @@
   <spawn centerx="4415" centery="1641" centerz="6" radius="1">
     <monster name="Jigglypuff" x="0" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Wigglytuff" x="1" y="0" z="6" spawntime="60" level="0"/>
-    <monster name="Igglybuff" x="0" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="777" centery="1642" centerz="6" radius="1">
     <monster name="Electrike" x="1" y="-1" z="6" spawntime="60" level="0"/>
@@ -25351,12 +25329,11 @@
   </spawn>
   <spawn centerx="3417" centery="1649" centerz="6" radius="1">
     <monster name="Clefable" x="1" y="-1" z="6" spawntime="60" level="0"/>
-    <monster name="Igglybuff" x="1" y="1" z="6" spawntime="60" level="0"/>
+    <monster name="Wigglytuff" x="1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3447" centery="1649" centerz="6" radius="1">
-    <monster name="Cleffa" x="1" y="0" z="6" spawntime="60" level="0"/>
+    <monster name="Clefable" x="1" y="0" z="6" spawntime="60" level="0"/>
     <monster name="Wigglytuff" x="0" y="1" z="6" spawntime="60" level="0"/>
-    <monster name="Igglybuff" x="-1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="691" centery="1650" centerz="6" radius="1">
     <monster name="Electrike" x="-1" y="-1" z="6" spawntime="60" level="0"/>
@@ -25396,8 +25373,7 @@
   </spawn>
   <spawn centerx="4405" centery="1653" centerz="6" radius="1">
     <monster name="Wigglytuff" x="1" y="-1" z="6" spawntime="60" level="0"/>
-    <monster name="Igglybuff" x="1" y="0" z="6" spawntime="60" level="0"/>
-    <monster name="Igglybuff" x="0" y="-1" z="6" spawntime="60" level="0"/>
+    <monster name="Wigglytuff" x="1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="250" centery="1655" centerz="6" radius="1">
     <monster name="Breloom" x="-1" y="-1" z="6" spawntime="60" level="0"/>
@@ -25431,7 +25407,7 @@
   </spawn>
   <spawn centerx="3422" centery="1657" centerz="6" radius="1">
     <monster name="Wigglytuff" x="-1" y="-1" z="6" spawntime="60" level="0"/>
-    <monster name="Cleffa" x="0" y="-1" z="6" spawntime="60" level="0"/>
+    <monster name="Clefable" x="0" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Clefairy" x="-1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4413" centery="1657" centerz="6" radius="1">
@@ -25530,7 +25506,7 @@
   </spawn>
   <spawn centerx="4413" centery="1671" centerz="6" radius="1">
     <monster name="Wigglytuff" x="0" y="-1" z="6" spawntime="60" level="0"/>
-    <monster name="Igglybuff" x="-1" y="0" z="6" spawntime="60" level="0"/>
+    <monster name="Wigglytuff" x="-1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="940" centery="1672" centerz="6" radius="1">
     <monster name="Electrike" x="0" y="1" z="6" spawntime="60" level="0"/>
@@ -25547,7 +25523,7 @@
   </spawn>
   <spawn centerx="4444" centery="1674" centerz="6" radius="1">
     <monster name="Clefable" x="1" y="0" z="6" spawntime="60" level="0"/>
-    <monster name="Igglybuff" x="1" y="1" z="6" spawntime="60" level="0"/>
+    <monster name="Wigglytuff" x="1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="311" centery="1677" centerz="6" radius="1">
     <monster name="Taillow" x="1" y="1" z="6" spawntime="60" level="0"/>
@@ -25583,7 +25559,6 @@
   </spawn>
   <spawn centerx="4440" centery="1681" centerz="6" radius="1">
     <monster name="Clefairy" x="1" y="-1" z="6" spawntime="60" level="0"/>
-    <monster name="Cleffa" x="-1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="1287" centery="1684" centerz="6" radius="1">
     <monster name="Corphish" x="0" y="-1" z="6" spawntime="60" level="0"/>
@@ -25605,7 +25580,7 @@
   </spawn>
   <spawn centerx="4403" centery="1689" centerz="6" radius="1">
     <monster name="Clefairy" x="1" y="-1" z="6" spawntime="60" level="0"/>
-    <monster name="Cleffa" x="-1" y="1" z="6" spawntime="60" level="0"/>
+    <monster name="Clefable" x="-1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="925" centery="1690" centerz="6" radius="1">
     <monster name="Electrike" x="1" y="-1" z="6" spawntime="60" level="0"/>
@@ -26854,7 +26829,7 @@
     <monster name="Sneasel" x="-1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3623" centery="2056" centerz="6" radius="1">
-    <monster name="Smoochum" x="1" y="-1" z="6" spawntime="60" level="0"/>
+    <monster name="Jynx" x="1" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Cloyster" x="0" y="1" z="6" spawntime="60" level="100"/>
   </spawn>
   <spawn centerx="3503" centery="2057" centerz="6" radius="1">
@@ -26878,7 +26853,7 @@
   </spawn>
   <spawn centerx="3507" centery="2065" centerz="6" radius="1">
     <monster name="Magnemite" x="-1" y="0" z="6" spawntime="60" level="0"/>
-    <monster name="Elekid" x="1" y="0" z="6" spawntime="60" level="0"/>
+    <monster name="Electabuzz" x="1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="502" centery="2067" centerz="6" radius="1">
     <monster name="Grumpig" x="-1" y="0" z="6" spawntime="60" level="0"/>
@@ -26941,14 +26916,12 @@
   <spawn centerx="2940" centery="2144" centerz="6" radius="1">
     <monster name="Growlithe" x="0" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2926" centery="2145" centerz="6" radius="2">
+  <spawn centerx="2926" centery="2145" centerz="6" radius="1">
     <monster name="Pikachu" x="-1" y="-1" z="6" spawntime="60" level="0"/>
-    <monster name="Pichu" x="1" y="0" z="6" spawntime="60" level="0"/>
-    <monster name="Pichu" x="-2" y="-1" z="6" spawntime="60" level="0"/>
+    <monster name="Pikachu" x="1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2917" centery="2148" centerz="6" radius="1">
     <monster name="Raichu" x="-1" y="-1" z="6" spawntime="60" level="0"/>
-    <monster name="Pichu" x="-1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2913" centery="2151" centerz="6" radius="1">
     <monster name="Pikachu" x="0" y="-1" z="6" spawntime="60" level="0"/>
@@ -26966,7 +26939,6 @@
   </spawn>
   <spawn centerx="2909" centery="2160" centerz="6" radius="1">
     <monster name="Raichu" x="0" y="-1" z="6" spawntime="60" level="0"/>
-    <monster name="Pichu" x="-1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2936" centery="2162" centerz="6" radius="1">
     <monster name="Pikachu" x="0" y="-1" z="6" spawntime="60" level="0"/>
@@ -26988,7 +26960,6 @@
   <spawn centerx="2914" centery="2175" centerz="6" radius="1">
     <monster name="Pikachu" x="-1" y="0" z="6" spawntime="60" level="0"/>
     <monster name="Raichu" x="1" y="1" z="6" spawntime="60" level="0"/>
-    <monster name="Pichu" x="1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2927" centery="2175" centerz="6" radius="1">
     <monster name="Pikachu" x="0" y="-1" z="6" spawntime="60" level="0"/>
@@ -27151,7 +27122,6 @@
     <monster name="Slowbro" x="0" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Marill" x="1" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Slowpoke" x="-1" y="0" z="6" spawntime="60" level="0"/>
-    <monster name="Azurill" x="1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4398" centery="2286" centerz="6" radius="1">
     <monster name="Slowbro" x="-1" y="-1" z="6" spawntime="60" level="0"/>
@@ -27161,11 +27131,10 @@
   <spawn centerx="4373" centery="2288" centerz="6" radius="1">
     <monster name="Slowbro" x="-1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="4363" centery="2291" centerz="6" radius="2">
+  <spawn centerx="4363" centery="2291" centerz="6" radius="1">
     <monster name="Marill" x="0" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Slowbro" x="1" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Slowpoke" x="-1" y="1" z="6" spawntime="60" level="0"/>
-    <monster name="Azurill" x="0" y="-2" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4389" centery="2291" centerz="6" radius="1">
     <monster name="Slowpoke" x="-1" y="-1" z="6" spawntime="60" level="0"/>
@@ -27178,7 +27147,6 @@
   <spawn centerx="4423" centery="2293" centerz="6" radius="1">
     <monster name="Slowbro" x="-1" y="0" z="6" spawntime="60" level="0"/>
     <monster name="Marill" x="1" y="1" z="6" spawntime="60" level="0"/>
-    <monster name="Azurill" x="0" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2966" centery="2294" centerz="6" radius="1">
     <npc name="Captain Mackenzie Duke" x="1" y="0" z="6" spawntime="60" level="0"/>
@@ -41316,7 +41284,6 @@
   </spawn>
   <spawn centerx="4400" centery="1643" centerz="7" radius="1">
     <monster name="Jigglypuff" x="1" y="0" z="7" spawntime="60" level="0"/>
-    <monster name="Igglybuff" x="1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="289" centery="1644" centerz="7" radius="1">
     <monster name="Shroomish" x="0" y="-1" z="7" spawntime="60" level="0"/>
@@ -41409,9 +41376,8 @@
   <spawn centerx="3472" centery="1649" centerz="7" radius="1">
     <monster name="Ambipom" x="-1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="4417" centery="1649" centerz="7" radius="2">
+  <spawn centerx="4417" centery="1649" centerz="7" radius="1">
     <monster name="Wigglytuff" x="1" y="0" z="7" spawntime="60" level="0"/>
-    <monster name="Igglybuff" x="2" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="454" centery="1650" centerz="7" radius="1">
     <monster name="Lotad" x="0" y="-1" z="7" spawntime="60" level="0"/>
@@ -43653,7 +43619,7 @@
     <monster name="Spinarak" x="1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3643" centery="1928" centerz="7" radius="1">
-    <monster name="Magby" x="1" y="0" z="7" spawntime="60" level="0"/>
+    <monster name="Magmar" x="1" y="0" z="7" spawntime="60" level="0"/>
     <monster name="Magcargo" x="1" y="1" z="7" spawntime="60" level="100"/>
   </spawn>
   <spawn centerx="515" centery="1929" centerz="7" radius="1">
@@ -44465,9 +44431,8 @@
     <monster name="Psyduck" x="-1" y="0" z="7" spawntime="60" level="0"/>
     <monster name="Golduck" x="1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="4443" centery="2197" centerz="7" radius="2">
+  <spawn centerx="4443" centery="2197" centerz="7" radius="1">
     <monster name="Azumarill" x="-1" y="1" z="7" spawntime="60" level="0"/>
-    <monster name="Azurill" x="-2" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3001" centery="2198" centerz="7" radius="1">
     <monster name="Koffing" x="0" y="-1" z="7" spawntime="60" level="0"/>
@@ -44482,9 +44447,8 @@
     <monster name="Ekans" x="-1" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Koffing" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="4377" centery="2199" centerz="7" radius="2">
+  <spawn centerx="4377" centery="2199" centerz="7" radius="1">
     <monster name="Azumarill" x="-1" y="-1" z="7" spawntime="60" level="0"/>
-    <monster name="Azurill" x="-1" y="-2" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2941" centery="2200" centerz="7" radius="1">
     <monster name="Venomoth" x="0" y="1" z="7" spawntime="60" level="0"/>
@@ -44504,11 +44468,9 @@
   <spawn centerx="4396" centery="2201" centerz="7" radius="1">
     <monster name="Golduck" x="1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="4419" centery="2201" centerz="7" radius="2">
+  <spawn centerx="4419" centery="2201" centerz="7" radius="1">
     <monster name="Marill" x="-1" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Azumarill" x="1" y="1" z="7" spawntime="60" level="0"/>
-    <monster name="Azurill" x="0" y="1" z="7" spawntime="60" level="0"/>
-    <monster name="Azurill" x="-2" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2951" centery="2202" centerz="7" radius="1">
     <monster name="Ekans" x="-1" y="0" z="7" spawntime="60" level="0"/>
@@ -44523,11 +44485,10 @@
     <monster name="Marill" x="0" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Golduck" x="-1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="4391" centery="2204" centerz="7" radius="2">
+  <spawn centerx="4391" centery="2204" centerz="7" radius="1">
     <monster name="Azumarill" x="-1" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Marill" x="1" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Marill" x="-1" y="1" z="7" spawntime="60" level="0"/>
-    <monster name="Azurill" x="-2" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2973" centery="2205" centerz="7" radius="1">
     <monster name="Koffing" x="1" y="-1" z="7" spawntime="60" level="0"/>
@@ -44565,12 +44526,10 @@
   </spawn>
   <spawn centerx="4357" centery="2211" centerz="7" radius="1">
     <monster name="Azumarill" x="1" y="-1" z="7" spawntime="60" level="0"/>
-    <monster name="Azurill" x="0" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4455" centery="2211" centerz="7" radius="1">
     <monster name="Marill" x="1" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Azumarill" x="0" y="1" z="7" spawntime="60" level="0"/>
-    <monster name="Azurill" x="-1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4391" centery="2213" centerz="7" radius="1">
     <monster name="Psyduck" x="-1" y="1" z="7" spawntime="60" level="0"/>
@@ -44589,7 +44548,6 @@
   <spawn centerx="4462" centery="2220" centerz="7" radius="1">
     <monster name="Marill" x="-1" y="1" z="7" spawntime="60" level="0"/>
     <monster name="Azumarill" x="1" y="1" z="7" spawntime="60" level="0"/>
-    <monster name="Azurill" x="-1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2944" centery="2222" centerz="7" radius="1">
     <npc name="Darius Linton" x="-1" y="1" z="7" spawntime="60" level="0"/>
@@ -44598,10 +44556,9 @@
     <monster name="Golduck" x="1" y="0" z="7" spawntime="60" level="0"/>
     <monster name="Marill" x="-1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="4348" centery="2227" centerz="7" radius="2">
+  <spawn centerx="4348" centery="2227" centerz="7" radius="1">
     <monster name="Golduck" x="-1" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Marill" x="-1" y="1" z="7" spawntime="60" level="0"/>
-    <monster name="Azurill" x="-2" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4470" centery="2228" centerz="7" radius="1">
     <monster name="Psyduck" x="-1" y="0" z="7" spawntime="60" level="0"/>
@@ -44620,10 +44577,9 @@
   <spawn centerx="4475" centery="2239" centerz="7" radius="1">
     <monster name="Psyduck" x="-1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="4343" centery="2242" centerz="7" radius="2">
+  <spawn centerx="4343" centery="2242" centerz="7" radius="1">
     <monster name="Azumarill" x="-1" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Psyduck" x="0" y="1" z="7" spawntime="60" level="0"/>
-    <monster name="Azurill" x="-2" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4353" centery="2242" centerz="7" radius="1">
     <monster name="Psyduck" x="-1" y="1" z="7" spawntime="60" level="0"/>
@@ -44650,7 +44606,6 @@
     <monster name="Marill" x="0" y="-1" z="7" spawntime="1792" level="0"/>
     <monster name="Golduck" x="1" y="0" z="7" spawntime="60" level="0"/>
     <monster name="Marill" x="-1" y="1" z="7" spawntime="60" level="0"/>
-    <monster name="Azurill" x="-1" y="-1" z="7" spawntime="1792" level="0"/>
   </spawn>
   <spawn centerx="4473" centery="2263" centerz="7" radius="1">
     <monster name="Psyduck" x="0" y="-1" z="7" spawntime="60" level="0"/>
@@ -44709,10 +44664,9 @@
     <monster name="Skiploom" x="-1" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Hoppip" x="0" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="4348" centery="2287" centerz="7" radius="2">
+  <spawn centerx="4348" centery="2287" centerz="7" radius="1">
     <monster name="Psyduck" x="-1" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Marill" x="-1" y="1" z="7" spawntime="60" level="0"/>
-    <monster name="Azurill" x="-2" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4128" centery="2289" centerz="7" radius="1">
     <monster name="Hoppip" x="0" y="-1" z="7" spawntime="60" level="0"/>
@@ -44756,7 +44710,6 @@
   <spawn centerx="4354" centery="2298" centerz="7" radius="1">
     <monster name="Azumarill" x="0" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Golduck" x="-1" y="1" z="7" spawntime="60" level="0"/>
-    <monster name="Azurill" x="-1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4452" centery="2298" centerz="7" radius="1">
     <monster name="Psyduck" x="-1" y="1" z="7" spawntime="60" level="0"/>
@@ -44771,16 +44724,14 @@
   <spawn centerx="4372" centery="2300" centerz="7" radius="1">
     <monster name="Golduck" x="0" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Azumarill" x="1" y="1" z="7" spawntime="60" level="0"/>
-    <monster name="Azurill" x="0" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4446" centery="2300" centerz="7" radius="1">
     <monster name="Golduck" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="4456" centery="2300" centerz="7" radius="2">
+  <spawn centerx="4456" centery="2300" centerz="7" radius="1">
     <monster name="Azumarill" x="1" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Marill" x="-1" y="0" z="7" spawntime="60" level="0"/>
     <monster name="Marill" x="1" y="1" z="7" spawntime="60" level="0"/>
-    <monster name="Azurill" x="2" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4141" centery="2301" centerz="7" radius="1">
     <monster name="Hoppip" x="1" y="1" z="7" spawntime="60" level="0"/>
@@ -44809,7 +44760,6 @@
   <spawn centerx="4426" centery="2305" centerz="7" radius="1">
     <monster name="Marill" x="0" y="-1" z="7" spawntime="1792" level="0"/>
     <monster name="Azumarill" x="1" y="0" z="7" spawntime="60" level="0"/>
-    <monster name="Azurill" x="0" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4436" centery="2305" centerz="7" radius="1">
     <monster name="Psyduck" x="-1" y="1" z="7" spawntime="60" level="0"/>
@@ -45156,7 +45106,6 @@
   <spawn centerx="2732" centery="2404" centerz="7" radius="1">
     <monster name="Machop" x="1" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Hitmonlee" x="-1" y="1" z="7" spawntime="2700" level="0"/>
-    <monster name="Tyrogue" x="1" y="0" z="7" spawntime="2700" level="0"/>
   </spawn>
   <spawn centerx="4080" centery="2405" centerz="7" radius="1">
     <monster name="Slowbro" x="-1" y="0" z="7" spawntime="60" level="0"/>
@@ -51530,7 +51479,7 @@
   </spawn>
   <spawn centerx="3456" centery="1384" centerz="8" radius="1">
     <monster name="Voltorb" x="-1" y="-1" z="8" spawntime="60" level="0"/>
-    <monster name="Pichu" x="1" y="1" z="8" spawntime="60" level="0"/>
+    <monster name="Raichu" x="1" y="1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3483" centery="1386" centerz="8" radius="1">
     <monster name="Voltorb" x="0" y="-1" z="8" spawntime="60" level="0"/>
@@ -51562,7 +51511,6 @@
   </spawn>
   <spawn centerx="3449" centery="1397" centerz="8" radius="1">
     <monster name="Pikachu" x="0" y="-1" z="8" spawntime="60" level="0"/>
-    <monster name="Pichu" x="1" y="0" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3489" centery="1397" centerz="8" radius="1">
     <monster name="Voltorb" x="-1" y="0" z="8" spawntime="60" level="0"/>
@@ -52856,14 +52804,13 @@
   <spawn centerx="2891" centery="1880" centerz="8" radius="1">
     <monster name="Wigglytuff" x="-1" y="-1" z="8" spawntime="60" level="0"/>
     <monster name="Jigglypuff" x="1" y="0" z="8" spawntime="60" level="0"/>
-    <monster name="Igglybuff" x="0" y="-1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2900" centery="1881" centerz="8" radius="1">
     <monster name="Geodude" x="-1" y="-1" z="8" spawntime="60" level="0"/>
     <monster name="Graveler" x="1" y="1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2889" centery="1884" centerz="8" radius="1">
-    <monster name="Igglybuff" x="1" y="1" z="8" spawntime="60" level="0"/>
+    <monster name="Wigglytuff" x="1" y="1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2908" centery="1887" centerz="8" radius="1">
     <monster name="Rhyhorn" x="1" y="1" z="8" spawntime="60" level="0"/>
@@ -52877,7 +52824,7 @@
     <monster name="Arbok" x="-1" y="1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2915" centery="1892" centerz="8" radius="1">
-    <monster name="Cleffa" x="-1" y="-1" z="8" spawntime="60" level="0"/>
+    <monster name="Clefable" x="-1" y="-1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2901" centery="1893" centerz="8" radius="1">
     <monster name="Graveler" x="1" y="1" z="8" spawntime="60" level="0"/>
@@ -52928,8 +52875,8 @@
     <monster name="Charmeleon" x="-1" y="-1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2918" centery="1915" centerz="8" radius="1">
-    <monster name="Clefairy" x="-1" y="-1" z="8" spawntime="60" level="0"/>
-    <monster name="Cleffa" x="0" y="-1" z="8" spawntime="60" level="0"/>
+    <monster name="Clefable" x="-1" y="-1" z="8" spawntime="60" level="0"/>
+    <monster name="Clefable" x="0" y="-1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3930" centery="1915" centerz="8" radius="1">
     <monster name="Grimer" x="-1" y="1" z="8" spawntime="60" level="0"/>
@@ -52994,7 +52941,7 @@
     <monster name="Grimer" x="0" y="-1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3664" centery="1938" centerz="8" radius="1">
-    <monster name="Magby" x="-1" y="1" z="8" spawntime="60" level="0"/>
+    <monster name="Magmar" x="-1" y="1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3916" centery="1938" centerz="8" radius="1">
     <monster name="Crobat" x="-1" y="-1" z="8" spawntime="60" level="0"/>
@@ -53046,12 +52993,10 @@
     <monster name="Lairon" x="1" y="0" z="8" spawntime="60" level="0"/>
     <monster name="Aron" x="0" y="1" z="8" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2934" centery="1949" centerz="8" radius="2">
+  <spawn centerx="2934" centery="1949" centerz="8" radius="1">
     <monster name="Azumarill" x="0" y="-1" z="8" spawntime="60" level="0"/>
     <monster name="Marill" x="1" y="-1" z="8" spawntime="60" level="0"/>
     <monster name="Chinchou" x="-1" y="1" z="8" spawntime="60" level="0"/>
-    <monster name="Azurill" x="0" y="-2" z="8" spawntime="60" level="0"/>
-    <monster name="Azurill" x="-2" y="0" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2894" centery="1951" centerz="8" radius="1">
     <monster name="Lapras" x="1" y="-1" z="8" spawntime="60" level="0"/>
@@ -53079,7 +53024,6 @@
   </spawn>
   <spawn centerx="2933" centery="1954" centerz="8" radius="1">
     <monster name="Azumarill" x="1" y="1" z="8" spawntime="60" level="0"/>
-    <monster name="Azurill" x="0" y="1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="308" centery="1955" centerz="8" radius="1">
     <monster name="Aggron" x="0" y="-1" z="8" spawntime="60" level="0"/>
@@ -53296,7 +53240,7 @@
   </spawn>
   <spawn centerx="3488" centery="2031" centerz="8" radius="1">
     <monster name="Magnemite" x="1" y="0" z="8" spawntime="60" level="0"/>
-    <monster name="Elekid" x="1" y="1" z="8" spawntime="60" level="0"/>
+    <monster name="Electabuzz" x="1" y="1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3495" centery="2034" centerz="8" radius="1">
     <monster name="Magneton" x="1" y="0" z="8" spawntime="60" level="100"/>
@@ -54224,7 +54168,7 @@
   </spawn>
   <spawn centerx="3932" centery="3039" centerz="8" radius="1">
     <monster name="Abra" x="1" y="-1" z="8" spawntime="60" level="0"/>
-    <monster name="Togepi" x="-1" y="0" z="8" spawntime="2700" level="0"/>
+    <monster name="Togetic" x="-1" y="0" z="8" spawntime="2700" level="0"/>
   </spawn>
   <spawn centerx="3913" centery="3040" centerz="8" radius="1">
     <monster name="Abra" x="-1" y="1" z="8" spawntime="60" level="0"/>
@@ -54348,10 +54292,9 @@
   <spawn centerx="3292" centery="3185" centerz="8" radius="1">
     <monster name="Chinchou" x="0" y="-1" z="8" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3273" centery="3188" centerz="8" radius="2">
+  <spawn centerx="3273" centery="3188" centerz="8" radius="1">
     <monster name="Mantine" x="-1" y="-1" z="8" spawntime="60" level="0"/>
     <monster name="Remoraid" x="0" y="1" z="8" spawntime="60" level="0"/>
-    <monster name="Mantyke" x="-2" y="-1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3313" centery="3188" centerz="8" radius="1">
     <monster name="Lanturn" x="-1" y="0" z="8" spawntime="60" level="0"/>
@@ -54371,9 +54314,8 @@
   <spawn centerx="3311" centery="3197" centerz="8" radius="1">
     <monster name="Mantine" x="-1" y="1" z="8" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3271" centery="3204" centerz="8" radius="2">
+  <spawn centerx="3271" centery="3204" centerz="8" radius="1">
     <monster name="Mantine" x="1" y="0" z="8" spawntime="60" level="0"/>
-    <monster name="Mantyke" x="2" y="0" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3309" centery="3208" centerz="8" radius="1">
     <monster name="Lanturn" x="-1" y="0" z="8" spawntime="60" level="0"/>
@@ -58074,22 +58016,21 @@
   </spawn>
   <spawn centerx="3489" centery="1389" centerz="9" radius="1">
     <monster name="Magneton" x="-1" y="-1" z="9" spawntime="60" level="0"/>
-    <monster name="Pichu" x="1" y="1" z="9" spawntime="60" level="0"/>
+    <monster name="Raichu" x="1" y="1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3452" centery="1390" centerz="9" radius="1">
     <monster name="Magnezone" x="-1" y="-1" z="9" spawntime="60" level="0"/>
-    <monster name="Pichu" x="1" y="0" z="9" spawntime="60" level="0"/>
+    <monster name="Raichu" x="1" y="0" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3448" centery="1396" centerz="9" radius="1">
     <monster name="Pikachu" x="0" y="-1" z="9" spawntime="60" level="0"/>
     <monster name="Electrode" x="-1" y="1" z="9" spawntime="60" level="0"/>
-    <monster name="Pichu" x="-1" y="-1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3488" centery="1398" centerz="9" radius="1">
     <monster name="Magnemite" x="1" y="1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3454" centery="1401" centerz="9" radius="1">
-    <monster name="Pichu" x="-1" y="1" z="9" spawntime="60" level="0"/>
+    <monster name="Raichu" x="-1" y="1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3464" centery="1403" centerz="9" radius="1">
     <monster name="Voltorb" x="-1" y="0" z="9" spawntime="60" level="0"/>
@@ -58099,7 +58040,7 @@
     <monster name="Raichu" x="1" y="-1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3455" centery="1408" centerz="9" radius="1">
-    <monster name="Elekid" x="1" y="-1" z="9" spawntime="60" level="0"/>
+    <monster name="Electabuzz" x="1" y="-1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3480" centery="1410" centerz="9" radius="1">
     <monster name="Voltorb" x="1" y="-1" z="9" spawntime="60" level="0"/>
@@ -58401,10 +58342,9 @@
   <spawn centerx="3499" centery="1952" centerz="9" radius="1">
     <monster name="Typhlosion" x="-1" y="0" z="9" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="2906" centery="1954" centerz="9" radius="2">
+  <spawn centerx="2906" centery="1954" centerz="9" radius="1">
     <monster name="Marill" x="1" y="-1" z="9" spawntime="60" level="0"/>
     <monster name="Chinchou" x="-1" y="0" z="9" spawntime="60" level="0"/>
-    <monster name="Azurill" x="-1" y="-2" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2919" centery="1954" centerz="9" radius="1">
     <monster name="Azumarill" x="1" y="1" z="9" spawntime="60" level="0"/>
@@ -58491,7 +58431,7 @@
   </spawn>
   <spawn centerx="2942" centery="1986" centerz="9" radius="1">
     <monster name="Jynx" x="-1" y="1" z="9" spawntime="60" level="0"/>
-    <monster name="Smoochum" x="1" y="1" z="9" spawntime="60" level="0"/>
+    <monster name="Jynx" x="1" y="1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2864" centery="1989" centerz="9" radius="1">
     <monster name="Dewgong" x="1" y="-1" z="9" spawntime="60" level="0"/>
@@ -58520,7 +58460,7 @@
   </spawn>
   <spawn centerx="2924" centery="2000" centerz="9" radius="1">
     <monster name="Jynx" x="0" y="-1" z="9" spawntime="60" level="0"/>
-    <monster name="Smoochum" x="1" y="1" z="9" spawntime="60" level="0"/>
+    <monster name="Jynx" x="1" y="1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2876" centery="2006" centerz="9" radius="1">
     <monster name="Lapras" x="1" y="-1" z="9" spawntime="60" level="0"/>
@@ -59060,7 +59000,7 @@
     <monster name="Haunter" x="1" y="-1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3898" centery="3045" centerz="9" radius="1">
-    <monster name="Togepi" x="-1" y="-1" z="9" spawntime="2700" level="0"/>
+    <monster name="Togetic" x="-1" y="-1" z="9" spawntime="2700" level="0"/>
     <monster name="Kadabra" x="1" y="-1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3901" centery="3047" centerz="9" radius="1">
@@ -59080,7 +59020,6 @@
   <spawn centerx="3935" centery="3062" centerz="9" radius="1">
     <monster name="Kadabra" x="0" y="-1" z="9" spawntime="60" level="0"/>
     <monster name="Wobbuffet" x="1" y="1" z="9" spawntime="2700" level="0"/>
-    <monster name="Wynaut" x="0" y="1" z="9" spawntime="2700" level="0"/>
   </spawn>
   <spawn centerx="3941" centery="3067" centerz="9" radius="1">
     <monster name="Togetic" x="-1" y="-1" z="9" spawntime="60" level="0"/>
@@ -60143,9 +60082,8 @@
   <spawn centerx="4790" centery="1091" centerz="10" radius="1">
     <monster name="Goldeen" x="-1" y="1" z="10" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3484" centery="1342" centerz="10" radius="2">
+  <spawn centerx="3484" centery="1342" centerz="10" radius="1">
     <monster name="Raichu" x="0" y="-1" z="10" spawntime="60" level="0"/>
-    <monster name="Pichu" x="0" y="-2" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3489" centery="1345" centerz="10" radius="1">
     <monster name="Voltorb" x="0" y="-1" z="10" spawntime="60" level="0"/>
@@ -60193,7 +60131,6 @@
   </spawn>
   <spawn centerx="3521" centery="1421" centerz="10" radius="1">
     <monster name="Raichu" x="0" y="-1" z="10" spawntime="60" level="0"/>
-    <monster name="Pichu" x="-1" y="-1" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3550" centery="1422" centerz="10" radius="1">
     <monster name="Voltorb" x="0" y="-1" z="10" spawntime="60" level="0"/>
@@ -60367,7 +60304,7 @@
     <monster name="Slugma" x="0" y="1" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3481" centery="2444" centerz="10" radius="1">
-    <monster name="Magby" x="-1" y="-1" z="10" spawntime="60" level="0"/>
+    <monster name="Magmar" x="-1" y="-1" z="10" spawntime="60" level="0"/>
     <monster name="Quilava" x="0" y="1" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3517" centery="2444" centerz="10" radius="1">
@@ -60386,7 +60323,7 @@
     <monster name="Cyndaquil" x="-1" y="-1" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3485" centery="2449" centerz="10" radius="1">
-    <monster name="Magby" x="1" y="0" z="10" spawntime="60" level="0"/>
+    <monster name="Magmar" x="1" y="0" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3501" centery="2449" centerz="10" radius="1">
     <monster name="Magmar" x="1" y="-1" z="10" spawntime="60" level="0"/>
@@ -60465,11 +60402,9 @@
     <monster name="Geodude" x="-1" y="0" z="10" spawntime="60" level="0"/>
     <monster name="Rhyhorn" x="-1" y="1" z="10" spawntime="60" level="0"/>
     <monster name="Azumarill" x="1" y="1" z="10" spawntime="60" level="0"/>
-    <monster name="Azurill" x="1" y="0" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3059" centery="2491" centerz="10" radius="1">
     <monster name="Azumarill" x="0" y="1" z="10" spawntime="60" level="0"/>
-    <monster name="Azurill" x="1" y="1" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3495" centery="2494" centerz="10" radius="1">
     <monster name="Cyndaquil" x="1" y="0" z="10" spawntime="60" level="0"/>
@@ -60505,7 +60440,6 @@
     <monster name="Rhyhorn" x="0" y="-1" z="10" spawntime="60" level="0"/>
     <monster name="Marill" x="1" y="-1" z="10" spawntime="60" level="0"/>
     <monster name="Geodude" x="0" y="1" z="10" spawntime="60" level="0"/>
-    <monster name="Azurill" x="0" y="0" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3498" centery="2506" centerz="10" radius="1">
     <monster name="Magcargo" x="0" y="-1" z="10" spawntime="60" level="0"/>
@@ -60513,9 +60447,8 @@
   <spawn centerx="3042" centery="2509" centerz="10" radius="1">
     <monster name="Graveler" x="1" y="1" z="10" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3009" centery="2511" centerz="10" radius="2">
+  <spawn centerx="3009" centery="2511" centerz="10" radius="1">
     <monster name="Azumarill" x="1" y="1" z="10" spawntime="60" level="0"/>
-    <monster name="Azurill" x="1" y="2" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3511" centery="2511" centerz="10" radius="1">
     <monster name="Magcargo" x="0" y="-1" z="10" spawntime="60" level="0"/>
@@ -60667,9 +60600,8 @@
     <monster name="Qwilfish" x="1" y="1" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3625" centery="2756" centerz="10" radius="1"/>
-  <spawn centerx="3620" centery="2760" centerz="10" radius="2">
+  <spawn centerx="3620" centery="2760" centerz="10" radius="1">
     <monster name="Mantine" x="1" y="-1" z="10" spawntime="60" level="0"/>
-    <monster name="Mantyke" x="2" y="-2" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3584" centery="2762" centerz="10" radius="1">
     <monster name="Lanturn" x="1" y="1" z="10" spawntime="60" level="0"/>
@@ -61318,7 +61250,6 @@
     <monster name="Geodude" x="0" y="-1" z="11" spawntime="60" level="0"/>
     <monster name="Marill" x="-1" y="0" z="11" spawntime="60" level="0"/>
     <monster name="Graveler" x="1" y="1" z="11" spawntime="60" level="0"/>
-    <monster name="Azurill" x="-1" y="1" z="11" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3041" centery="2490" centerz="11" radius="1">
     <monster name="Geodude" x="1" y="-1" z="11" spawntime="60" level="0"/>
@@ -61339,7 +61270,6 @@
   <spawn centerx="3035" centery="2501" centerz="11" radius="1">
     <monster name="Geodude" x="-1" y="-1" z="11" spawntime="60" level="0"/>
     <monster name="Azumarill" x="-1" y="1" z="11" spawntime="60" level="0"/>
-    <monster name="Azurill" x="-1" y="0" z="11" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3028" centery="2504" centerz="11" radius="1">
     <monster name="Geodude" x="1" y="0" z="11" spawntime="60" level="0"/>
@@ -61354,7 +61284,6 @@
   <spawn centerx="3047" centery="2510" centerz="11" radius="1">
     <monster name="Azumarill" x="0" y="-1" z="11" spawntime="60" level="0"/>
     <monster name="Marill" x="1" y="1" z="11" spawntime="60" level="0"/>
-    <monster name="Azurill" x="0" y="0" z="11" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3810" centery="2623" centerz="11" radius="1">
     <monster name="Marowak" x="-1" y="0" z="11" spawntime="60" level="0"/>
@@ -61507,10 +61436,9 @@
   <spawn centerx="3631" centery="2772" centerz="11" radius="1">
     <monster name="Lanturn" x="-1" y="-1" z="11" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3621" centery="2774" centerz="11" radius="2">
+  <spawn centerx="3621" centery="2774" centerz="11" radius="1">
     <monster name="Horsea" x="-1" y="-1" z="11" spawntime="60" level="0"/>
     <monster name="Mantine" x="1" y="1" z="11" spawntime="60" level="0"/>
-    <monster name="Mantyke" x="2" y="1" z="11" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3599" centery="2776" centerz="11" radius="1">
     <monster name="Chinchou" x="-1" y="-1" z="11" spawntime="60" level="0"/>
@@ -61585,9 +61513,8 @@
   <spawn centerx="3048" centery="2505" centerz="12" radius="1">
     <monster name="Golem" x="-1" y="0" z="12" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3028" centery="2507" centerz="12" radius="3">
+  <spawn centerx="3028" centery="2507" centerz="12" radius="1">
     <monster name="Marill" x="1" y="-1" z="12" spawntime="60" level="0"/>
-    <monster name="Azurill" x="2" y="-3" z="12" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3038" centery="2507" centerz="12" radius="1">
     <monster name="Marill" x="1" y="-1" z="12" spawntime="60" level="0"/>
@@ -61675,9 +61602,8 @@
     <monster name="Remoraid" x="-1" y="-1" z="12" spawntime="60" level="0"/>
     <monster name="Lanturn" x="0" y="1" z="12" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3588" centery="2729" centerz="12" radius="2">
+  <spawn centerx="3588" centery="2729" centerz="12" radius="1">
     <monster name="Mantine" x="-1" y="-1" z="12" spawntime="60" level="0"/>
-    <monster name="Mantyke" x="-2" y="-1" z="12" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3602" centery="2729" centerz="12" radius="1">
     <monster name="Gyarados" x="-1" y="-1" z="12" spawntime="60" level="0"/>
@@ -61714,9 +61640,8 @@
   <spawn centerx="3506" centery="2778" centerz="12" radius="1">
     <monster name="Gyarados" x="1" y="1" z="12" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3519" centery="2781" centerz="12" radius="2">
+  <spawn centerx="3519" centery="2781" centerz="12" radius="1">
     <monster name="Mantine" x="-1" y="-1" z="12" spawntime="60" level="0"/>
-    <monster name="Mantyke" x="-2" y="-1" z="12" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3611" centery="2781" centerz="12" radius="1">
     <monster name="Gyarados" x="-1" y="1" z="12" spawntime="60" level="0"/>
