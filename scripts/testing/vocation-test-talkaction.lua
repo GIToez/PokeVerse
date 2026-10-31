@@ -4723,6 +4723,8 @@ local function testAnalyser(cid)
 
     local audit = Analyser.catchAudit(cid, "Pidgey", 5)
     local poke = audit.balls and audit.balls[1]
+    check("Analyser: the catching skill comes with its roll bonus in percent",
+        near(audit.skillBonus, math.min(audit.skill, PLAYER_SKILL_CATCHING_MAX) / 10), audit.skillBonus)
     check("Analyser: Pidgey lists the poke ball first", poke and poke.name == "poke" and poke.item == getItemInfo(balls["poke"].charged).clientId,
         poke and poke.name)
     local roll = getCatchRollMaxFor(getPlayerPokemonCatchChance(cid, "Pidgey"), getPokemonIgnoreBallCounter("Pidgey"),
