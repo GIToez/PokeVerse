@@ -578,14 +578,10 @@ end
 local function withoutCalendarBonuses(test)
     return function(cid)
         local multiplier, shiny = EventCalendar.multiplier, getShinyEventMultiplier()
-        local getEvents, getActive = EventCalendar.getEvents, EventCalendar.getActive
         EventCalendar.multiplier = function() return 1 end
-        EventCalendar.getEvents = function() return {} end
-        EventCalendar.getActive = function() return {} end
         setShinyEventMultiplier(1)
         local ok, err = pcall(test, cid)
         EventCalendar.multiplier = multiplier
-        EventCalendar.getEvents, EventCalendar.getActive = getEvents, getActive
         setShinyEventMultiplier(shiny)
         if (not ok) then
             error(err, 0)
@@ -1140,28 +1136,6 @@ local function testDaycare(cid)
         check("daycare: rolls are remembered up to today",
             getPlayerStorageValue(cid, playersStorages.eggRollDay) == 10, getPlayerStorageValue(cid, playersStorages.eggRollDay))
     end)
-
-    -- Breeding events speed the wait up only for the time that fell inside them
-    local keys, now = Daycare.EVENTS.breeding, os.time()
-    local saved = { getStorage(keys.multiplier), getStorage(keys.start), getStorage(keys.ends) }
-    doSetStorage(keys.multiplier, 200)
-    doSetStorage(keys.start, now - 3 * 86400)
-    doSetStorage(keys.ends, now - 86400)
-    local overlapped = Daycare.eggWaited(now - 5 * 86400, now)
-    local after = Daycare.eggWaited(now - 12 * 3600, now)
-    doSetStorage(keys.multiplier, 200)
-    doSetStorage(keys.start, now - 3600)
-    doSetStorage(keys.ends, now + 3600)
-    local speed = Daycare.eggSpeed()
-    doSetStorage(keys.multiplier, saved[1])
-    doSetStorage(keys.start, saved[2])
-    doSetStorage(keys.ends, saved[3])
-    check("daycare: two event days count twice (5 days waited count as 7)", overlapped == 7 * 86400, overlapped)
-    check("daycare: a wait that starts after the event gains nothing", after == 12 * 3600, after)
-    check("daycare: a running breeding event makes the wait 2x as fast", speed == 2, speed)
-    check("daycare: breeding events no longer change the daily chance", Daycare.eggChance(cid) <= 0.15 + getPlayerExtraEggRateValue(cid) / 100,
-        Daycare.eggChance(cid))
-
     db.executeQuery("DELETE FROM daycare_male WHERE player_id = " .. guid)
     db.executeQuery("UPDATE players SET lasteggtime = 0 WHERE id = " .. guid)
     doPlayerRemoveMoney(cid, getPlayerMoney(cid))
@@ -5619,7 +5593,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", withoutCalendarBonuses(testBreederIncubator) }, { "daycare", withoutCalendarBonuses(testDaycare) }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "pokemon outfit", testPokemonOutfit }, { "tmnt blastoise", testTurtleBlastoise }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "bag", testBag }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", withoutCalendarBonuses(testBreederIncubator) }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "pokemon outfit", testPokemonOutfit }, { "tmnt blastoise", testTurtleBlastoise }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "bag", testBag }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then

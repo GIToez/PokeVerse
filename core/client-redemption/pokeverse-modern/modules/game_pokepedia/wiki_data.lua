@@ -358,7 +358,7 @@ WikiData = {
             { 'p', "An egg can come when both Pokemon have trained together for at least 24 hours and are compatible: a male and a female of matching groups, or Ditto with any Pokemon that can breed (not two Dittos). The wait counts from your last egg, or from your first visit: from day 7 each day has a 10% chance of an egg, and on day 14 it is certain. The egg waits in the window's egg slot; take it there or greet a keeper. A plate deposited in the window steers the egg move." },
             { 'p', "Put the egg in an incubator ($100 at the Old Lady) and use it again after 60 minutes. The baby hatches at level 1 in a Poke Ball with no EVs. It inherits 3 IVs from its parents (5 with a Destiny Knot, and a parent holding a Power item passes on that stat). It keeps a parent's Nature only with an Everstone. If it has an egg move, you choose which move it replaces." },
             { 'items', { { 12374, "Incubator" } } },
-            { 'tip', "Breeders hatch eggs faster, and with Premium they have a better daily egg chance (11 to 15%) and a chance of a second egg. During the Breeding Weekend (and staff breeding events) the wait runs twice as fast, so days 7 and 14 come sooner, and eggs put in an incubator hatch twice as fast." },
+            { 'tip', "Breeders hatch eggs faster, and with Premium they have a better daily egg chance (11 to 15%) and a chance of a second egg. Breeding and Day Care events raise the chances too." },
             { 'see', { 'ivs', 'voc_breeder' } },
         } },
     } },
@@ -1054,7 +1054,7 @@ WikiData = {
             { 'p', "Press C, or the calendar in the top bar, to see what runs now, what comes next and every event of the month. Events start and end at 06:00 server time (Pacific); the calendar shows the times in your own time zone." },
             { 'keys', { "C" } },
             { 'h', "Weekends" },
-            { 'p', "From Friday 17:00 to Monday 05:00 (server time) there is a weekend bonus, taking turns each week: Double EXP, Double Shiny, the Breeding Weekend (Day Care eggs come and hatch twice as fast), then Double Loot. Bonuses that run at the same time multiply." },
+            { 'p', "From Friday 17:00 to Monday 05:00 (server time) there is a weekend bonus, taking turns each week: Double EXP, Double Shiny, the Breeding Weekend (eggs hatch twice as fast in incubators), then Double Loot. Bonuses that run at the same time multiply." },
             { 'h', "Holidays" },
             { 'table', {
                 { "Holiday", "What" },

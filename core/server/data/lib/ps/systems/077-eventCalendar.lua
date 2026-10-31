@@ -29,7 +29,7 @@ local MAX_RANGE = 62 * DAY
 
 EventCalendar.LAUNCH_YEAR = 2026 -- the first anniversary is the one a year later
 EventCalendar.BONUS_KINDS = { "exp", "shiny", "loot", "breeding", "hatching", "fishing" }
-EventCalendar.BONUS_LABELS = { exp = "kill EXP", shiny = "shiny chance", loot = "loot", breeding = "Day Care egg speed",
+EventCalendar.BONUS_LABELS = { exp = "kill EXP", shiny = "shiny chance", loot = "loot", breeding = "Day Care egg chance",
                                hatching = "egg hatching speed", fishing = "fishing bites" }
 EventCalendar.MAX_BONUS = 10
 
@@ -197,7 +197,7 @@ EventCalendar.HOLIDAYS = {
           return y and days(y, m, d, 3) or {}
       end },
     { id = "valentines", name = "Valentine's", color = "#f080b0",
-      description = "Day Care eggs come twice as fast, Luvdisc bite more often while fishing, and a rare candy when you log in.",
+      description = "2x Day Care egg chance, Luvdisc bite more often while fishing, and a rare candy when you log in.",
       bonuses = { breeding = 2 }, luvdisc = true, gift = { items = { { 14463, 1 } } },
       dates = function(year) return days(year, 2, 13, 3) end },
     { id = "pokemonday", name = "Pokemon Day", color = "#f0c040",
@@ -459,8 +459,8 @@ EventCalendar.SERVER_EVENTS = {
     { id = "doubleshiny", name = "Double Shiny", color = "#f0d850", description = "2x shiny chance.",
       bonuses = { shiny = 2 }, dates = rotation(1) },
     { id = "doubleeggs", name = "Breeding Weekend", color = "#f0a0c0",
-      description = "Day Care eggs come twice as fast and eggs hatch twice as fast.",
-      bonuses = { breeding = 2, hatching = 2 }, dates = rotation(2) },
+      description = "Eggs hatch twice as fast in incubators.",
+      bonuses = { hatching = 2 }, dates = rotation(2) },
     { id = "doubleloot", name = "Double Loot", color = "#a0e080", description = "2x loot.",
       bonuses = { loot = 2 }, dates = rotation(3) },
 }

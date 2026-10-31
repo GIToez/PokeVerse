@@ -241,9 +241,6 @@ local function fillEgg(egg, slots)
         lines[#lines + 1] = tr('From day %d of the wait each day has a chance of an egg; on day %d it is certain.',
             egg.fromDay or 7, egg.certainDay or 14)
     end
-    if not ready and egg.speed and (egg.status == 'waiting' or egg.status == 'chance') then
-        lines[#lines + 1] = tr('Breeding event: the wait runs %s as fast.', multiplier(egg.speed))
-    end
     if state.plate then
         lines[#lines + 1] = tr('Your %s guides its move.', state.plate.name)
     end
@@ -352,9 +349,9 @@ end
 local function fillEvents()
     local box = window.events
     box:destroyChildren()
-    local labels = { daycare = 'Training EXP', breeding = 'Egg speed', hatching = 'Hatching speed' }
+    local labels = { daycare = 'Training EXP', breeding = 'Egg chance' }
     local parts = {}
-    for _, kind in ipairs({ 'daycare', 'breeding', 'hatching' }) do
+    for _, kind in ipairs({ 'daycare', 'breeding' }) do
         local event = (state.events or {})[kind]
         if event then
             parts[#parts + 1] = tr('%s %s for %s', multiplier(event.multiplier), tr(labels[kind]), duration(event.left))

@@ -1,5 +1,5 @@
 -- /bonusdaycare  multiplies the training EXP Pokemon earn at the Day Care while it runs
--- /bonusbreeding makes the wait for a Day Care egg run that many times faster while it runs
+-- /bonusbreeding multiplies the daily egg chance at the Day Care while it runs
 -- Same arguments as /doubleexp:
 --   /bonusdaycare <duration>               2x, e.g. /bonusdaycare 2h
 --   /bonusdaycare <multiplier>x <duration> e.g. /bonusbreeding 3x 1d or 1.5x 30m
