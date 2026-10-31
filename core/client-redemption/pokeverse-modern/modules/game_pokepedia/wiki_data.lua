@@ -589,15 +589,17 @@ WikiData = {
             { 'see', { 'gts', 'ivs', 'pc' } },
         } },
         { key = 'poketrader', title = 'PokeTrader auction', item = 3043, body = {
-            { 'p', "Tiger Kelsey, the PokeTrader, runs a weekly auction. Each time the server starts he stands in one of nine Kanto towns, picked at random: Viridian, Pewter, Cerulean, Saffron, Celadon, Vermilion, Lavender, Fuchsia or Cinnabar." },
+            { 'p', "Tiger Kelsey, the PokeTrader, runs a weekly auction. Each time the server starts he stands in one of nine Kanto towns, picked at random: Viridian, Pewter, Cerulean, Saffron, Celadon, Vermilion, Lavender, Fuchsia or Cinnabar. You can only bid at him." },
             { 'p', "Every week he offers 100 Lava Cookies and a Blue Flute (one per trainer, ever). Most weeks (80%) he adds two TMs or plates, and some weeks (30%) one evolution item: a stone, Up-Grade, Dubious Disc, Razor Claw, Protector or any of the others." },
             { 'steps', {
-                "Say offers to see this week's items and their minimum bids.",
-                "Say the item's name and your bid. The money is taken when you bid.",
-                "A bid has to beat the highest by at least 1%. You can have one bid on each item.",
-                "Say bids to see yours and the highest, and time for how long is left.",
+                "Say hi and auction to open the auction window. It closes when you walk away from him.",
+                "Pick a lot and set your maximum: the most you'd pay. The auction bids for you, 1% over the next trainer, never past your maximum.",
+                "The whole maximum is held from your bank (then your bag) when you set it. You can raise it any time, and lower it or take it back while someone else leads.",
+                "If two maximums are within 1% of each other, the one set first leads. Nobody sees your maximum, only the price.",
             } },
-            { 'p', "When the week ends, the highest bid wins: the item goes to your depot. Every other bid goes back to your bank. Say cancel to take a bid back early, except while it's the highest." },
+            { 'p', "Bidding ends every Sunday at 20:00 server time, with no extra time for late bids, and the next lots come out at once. The winner pays the price and gets the item in their depot and the rest of their maximum back in the bank. Everyone else gets all of theirs back. If someone beats your maximum you get a message." },
+            { 'p', "My bids shows your bids, the money held for them, what you won in the last two weeks and how each lot's price moved. History shows the last two weeks' winners and what they paid. Other bidders stay anonymous until the week ends." },
+            { 'tip', "Without the window, say an item and the most you'd pay, like Dusk Stone 40000. Offers, bids, cancel and time work too." },
             { 'see', { 'evoitems', 'tms', 'bank' } },
         } },
         { key = 'unique', title = 'Unique items', item = 11118, body = {

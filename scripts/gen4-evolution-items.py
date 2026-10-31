@@ -215,10 +215,10 @@ def main():
         more = ''.join(';' + nl + '\t\t%s, %d' % (name, sid) for (_, name, *_), sid in zip(ITEMS, server))
         s = s.replace('\t\tPrism Scale, 28914' + nl, '\t\tPrism Scale, 28914' + more + nl, 1)
         write(p, s)
-    p = os.path.join(DATA, 'npc', 'scripts', 'poketrader.lua')
+    p = os.path.join(DATA, 'lib', 'ps', 'systems', '105-pokeTrader.lua')
     s = read(p)
-    s = G.insert_after(s, r'^ +\{itemId = 18096, count = 1, minBid = 30000\}, -- Spin Machine',
-                       ['            {itemId = %d, count = 1, minBid = %d}, -- %s' % (sid, price, name)
+    s = G.insert_after(s, r'^ +\{ itemId = 18096, count = 1, minBid = 30000 \}, -- Spin Machine',
+                       ['        { itemId = %d, count = 1, minBid = %d }, -- %s' % (sid, price, name)
                         for (_, name, _, _, price), sid in zip(ITEMS, server)])
     write(p, s)
 
