@@ -496,6 +496,8 @@ local function throwAt(cid, pos, pokemon, after)
         check("catch test: monster", false, pokemon)
         return
     end
+    -- a busy tile puts the monster on a free one next to it, and its body falls there
+    pos = getThingPosition(m)
     doTargetCombatHealth(cid, m, COMBAT_PHYSICALDAMAGE, -10000000, -10000000, CONST_ME_NONE)
     addEvent(function()
         -- its own body: other tests running at the same time leave bodies on these tiles too
