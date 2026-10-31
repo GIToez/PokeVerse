@@ -416,6 +416,7 @@ local function skillDamage(fromCid, toCid, skillName, skillBasePower, damage, ty
     if (isPokemonWild(toCid) and not hasTarget(toCid)) then
         doMonsterSetTarget(toCid, fromCid)
     end
+    BabyCall.onHit(toCid, fromCid)
 
     local backProjectile = getPokemonSkillBackProjectile(skillName)
     if (backProjectile) then

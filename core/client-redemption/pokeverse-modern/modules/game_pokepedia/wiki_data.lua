@@ -70,6 +70,7 @@ WikiData = {
             { 'items', { { 11118, "Poke Ball" }, { 11122, "Great Ball" } } },
             { 'p', "A catch gives experience: the Pokemon's experience times its level times two. It also registers the species in your Pokedex. Some species need a specific ball, and in the Safari Zone only Safari Balls work." },
             { 'tip', "Carrying six Pokemon already? The new ball goes straight to your PC's Poke boxes. If those are full too, you can't throw." },
+            { 'p', "Careful with wild babies such as Pichu, Munchlax or Mantyke: attack one and it cries for its family, and every wild Pokemon of its line nearby, even from just off the screen (Pikachu and Raichu for a Pichu), comes for your Pokemon. A baby cries at most once every 30 seconds." },
             { 'see', { 'pc', 'safari', 'ivs' } },
         } },
         { key = 'loot', title = 'Loot', item = 3043, body = {
@@ -585,6 +586,18 @@ WikiData = {
             { 'tip', "Add everything under $500 fills the basket with your cheap Pokemon, skipping shinies, 5+ perfect IVs and locked ones." },
             { 'p', "Walking more than 5 tiles away closes the window." },
             { 'see', { 'gts', 'ivs', 'pc' } },
+        } },
+        { key = 'poketrader', title = 'PokeTrader auction', item = 3043, body = {
+            { 'p', "Tiger Kelsey, the PokeTrader, runs a weekly auction. Each time the server starts he stands in one of nine Kanto towns, picked at random: Viridian, Pewter, Cerulean, Saffron, Celadon, Vermilion, Lavender, Fuchsia or Cinnabar." },
+            { 'p', "Every week he offers 100 Lava Cookies and a Blue Flute (one per trainer, ever). Most weeks (80%) he adds two TMs or plates, and some weeks (30%) one evolution item: a stone, Up-Grade, Dubious Disc, Razor Claw, Protector or any of the others." },
+            { 'steps', {
+                "Say offers to see this week's items and their minimum bids.",
+                "Say the item's name and your bid. The money is taken when you bid.",
+                "A bid has to beat the highest by at least 1%. You can have one bid on each item.",
+                "Say bids to see yours and the highest, and time for how long is left.",
+            } },
+            { 'p', "When the week ends, the highest bid wins: the item goes to your depot. Every other bid goes back to your bank. Say cancel to take a bid back early, except while it's the highest." },
+            { 'see', { 'evoitems', 'tms', 'bank' } },
         } },
         { key = 'unique', title = 'Unique items', item = 11118, body = {
             { 'p', "Unique items belong to one trainer: only they can carry them, they can't be traded, and they can only be put on the floor inside a house. Their look text says so." },
