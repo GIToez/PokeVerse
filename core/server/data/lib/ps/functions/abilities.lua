@@ -162,6 +162,8 @@ SURF_SPEED = {
 	["Seadra"] = 190,
 	["Golduck"] = 190,
 	["Snorlax"] = 180,
+	["Pikachu"] = 180,
+	["Raichu"] = 190,
     -- 2nd Gen
     ["Totodile"] = 180,
     ["Croconaw"] = 190,

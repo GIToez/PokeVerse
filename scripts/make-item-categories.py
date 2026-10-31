@@ -55,7 +55,7 @@ RULES = {
                      'collar', 'nose', 'beard', 'headdress', 'tattoo', 'shoulder', 'bow', 'ribbon', 'disguise',
                      'ninja pack', 'pirate pack', 'mummy pack', 'metal pack', 'metalic pack', 'rastafari', 'eye patch',
                      'lipstick', 'life jacket', 'shower cap', 'pumpkinhead', 'squad jacket', 'champion belt',
-                     'eyeglasses', 'postman bag', 'traveler bag', 'backpack'),
+                     'eyeglasses', 'postman bag', 'traveler bag', 'backpack', 'surfboard'),
     'Boxes': words('treasure chest', 'surprise box', 'surprise bag', 'present', 'present bag', 'pokemon box',
                    'piggy bank', 'parcel', 'crate', 'box', 'chest'),
     'Boosts & Tickets': words('ticket', 'boost', 'booster', 'spirit tonic', 'mastery stone', 'stone of knowledge',

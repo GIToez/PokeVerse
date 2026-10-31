@@ -770,6 +770,7 @@ local ITEM_NAME_BY_ID = {
     [29860] = "Dawn Stone",
     [29861] = "Ice Stone",
     [29862] = "Oval Stone",
+    [29870] = "Surfboard",
     [29863] = "Razor Claw",
     [29864] = "Razor Fang",
     [29865] = "Electirizer",

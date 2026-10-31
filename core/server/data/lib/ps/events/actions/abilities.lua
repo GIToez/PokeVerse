@@ -318,7 +318,8 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
             if (not isPremium(cid) and not isSurfing(cid)) then
                 doPlayerSendDefaultCancel(cid, RETURNVALUE_YOUNEEDPREMIUMACCOUNT)
 
-            elseif (getPokemonAbilityAvailable(nil, POKEMON_ABILITIES.SURF, pokemonName) and
+            elseif ((getPokemonAbilityAvailable(nil, POKEMON_ABILITIES.SURF, pokemonName) or
+                    PokemonAddon.givesAbility((getPlayerBall(cid) or {}).uid, POKEMON_ABILITIES.SURF)) and
                     getDistanceBetween(playerPosition, toPosition) < 2) then
                 if (isSurfing(cid)) then
                     local groundName = "shallow water"
