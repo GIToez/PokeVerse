@@ -333,6 +333,23 @@ CREATE TABLE IF NOT EXISTS `poketrader_bids` (
   KEY `player_id` (`player_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- the most the trainer would pay (held when it is set); `bid` is the price they pay now (PokeTrader)
+ALTER TABLE `poketrader_bids`
+  ADD COLUMN IF NOT EXISTS `max_bid` BIGINT NOT NULL DEFAULT 0;
+UPDATE `poketrader_bids` SET `max_bid` = `bid` WHERE `max_bid` < `bid`;
+
+-- each new price or leader of a lot this week, for the bid log in the auction window
+CREATE TABLE IF NOT EXISTS `poketrader_bid_log` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `offert_id` INT UNSIGNED NOT NULL,
+  `player_id` INT UNSIGNED NOT NULL,
+  `price` BIGINT NOT NULL,
+  `auto` TINYINT NOT NULL DEFAULT 0,
+  `created` BIGINT NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `offert_id` (`offert_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 -- ---------------------------------------------------------------------------
 -- Elite Four
 -- ---------------------------------------------------------------------------

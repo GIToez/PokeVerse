@@ -57,6 +57,7 @@ Module
     - game_expboost
     - game_mart
     - game_bank
+    - game_poketrader
     - game_eventshop
     - game_admin
     - game_quests

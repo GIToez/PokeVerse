@@ -142,5 +142,7 @@ playersStorages = {
     pokemonOutfitClient = base + 139, -- 1 while the trainer's client has the Pokemon Outfit window (it says hello at login)
     warpStylesClient = base + 140, -- 1 once the trainer's client has drawn Warp Styles (it says hello at login); others get the old effects
     warpStyles = base + 141, -- "login=beam;teleport=spin": the Warp Styles the trainer equipped where they differ from the defaults (WarpStyles)
+    pokeTraderClient = base + 142, -- 1 while the trainer's client has the PokeTrader auction window (it says hello at login)
+    pokeTraderNpc = base + 143, -- the name of the PokeTrader NPC whose auction window the trainer has open (PokeTrader)
     -- tournamentWeekWinnerStorage = base + 65
 }
