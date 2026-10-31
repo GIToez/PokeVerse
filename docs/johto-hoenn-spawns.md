@@ -179,11 +179,8 @@ Where they spawn:
 2. **Special spawns:** the Red Gyarados and the Friday Lapras are built
    in `106-rareSpawns.lua`. The rest are planned in the future features
    list.
-3. **Server test checks:**
-   - every Johto and Hoenn area is within density bounds;
-   - no species outside its Bulbapedia list (plus evolutions on raised or
-     deeper floors);
-   - caves get harder going down.
+3. **Checks:** `spawn_audit.py` is rerun on the result (see "Result" below). The
+   in-game rare spawn checks are in the server test (`testRareSpawns`).
 
 ## Decided (October 31)
 
@@ -191,15 +188,44 @@ Where they spawn:
 - **Levels stay the species' own** (`minLevel` to `maxLevel`). The first Johto routes start
   around level 20, which is fine. Roads still feel easier because they get the first stages,
   which have the lowest levels.
-- **Wild starters stay**, as in Kanto, but only in a few special areas. Hoenn's Torchic on
-  Jagged Pass and Treecko on Route 113 move to one special spot each, and their evolutions
-  come off the general routes.
+- **Wild starters stay**, as in Kanto, but only in a few special areas, and each region has
+  its own three. Hoenn already had themed grounds (Torchic on Jagged Pass and Mt. Chimney,
+  Treecko on Route 113 and the Fortree outskirts, Mudkip around Fallarbor); they are kept as
+  they are. Johto had none and gets three: Chikorita in Arbor Woods, Cyndaquil in the Mortar
+  Badlands and Totodile in the Rage Marshes.
 - **Water Pokemon spawn on land by the water:** along the coast, on islands and around lakes
   and cave pools. Underwater spawns come with diving later.
 - **Special spawns** go on the future features list, except the Red Gyarados and the Friday
   Lapras.
 
-## Still to decide
+- **Hoenn's crowded filler areas** are brought to Kanto density like every other area.
 
-- **Hoenn's crowded filler areas** (the "Outskirts of ..." and "Around ..." land): bring them
-  down to Kanto density, or only fill the sparse areas and leave them as they are.
+## Result
+
+`build_region_spawns.py` (seed 31) removed 10,784 old wild spawns and placed 11,858 new ones.
+Spawns kept by name: NPCs, fixed-level spawns, other spawn times, the specials, Unown, the Route
+30 Togepi and Hoenn's starter grounds.
+
+| Region | Open ground | Kept | Placed | Removed | Spawns per 1,000 tiles |
+|---|---:|---:|---:|---:|---:|
+| Johto | 505,866 | 11 | 6,530 | 4,573 | 12.9 |
+| Hoenn | 480,581 | 308 | 5,328 | 6,211 | 11.7 |
+
+Johto's new wild starters: 25 Chikorita, 20 Cyndaquil and 29 Totodile (with their
+evolutions on the same grounds).
+
+`spawn_audit.py` afterwards (its own open-ground count, so the numbers differ a little):
+
+| Region | Floors | Spawns per 1,000 tiles |
+|---|---|---:|
+| Kanto | above | 10.2 |
+| Kanto | surface | 5.6 |
+| Kanto | below | 14.3 |
+| Johto | above | 12.8 |
+| Johto | surface | 8.4 |
+| Johto | below | 15.2 |
+| Hoenn | above | 10.1 |
+| Hoenn | surface | 9.1 |
+| Hoenn | below | 15.1 |
+
+`legendaryAnchors.lua` and `pokepedia.lua` are regenerated from the new spawns.
