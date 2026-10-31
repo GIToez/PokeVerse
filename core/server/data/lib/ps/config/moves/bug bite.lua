@@ -14,6 +14,6 @@ MOVES["Bug Bite"] = {
     effect = EFFECT_BITE,
     projectile = PROJECTILE_GRAVEL,
     maxDistance = 1,
-    cooldownTime = 5,
+    cooldownTime = 9,
     cooldownStorage = 15010
 }

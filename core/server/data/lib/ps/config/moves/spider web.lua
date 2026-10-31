@@ -13,5 +13,5 @@ MOVES["Spider Web"] = {
     projectile = PROJECTILE_STRING_SHOT,
     maxDistance = 6,
     cooldownTime = 20,
-    cooldownStorage = 15288
+    cooldownStorage = 15484
 }
