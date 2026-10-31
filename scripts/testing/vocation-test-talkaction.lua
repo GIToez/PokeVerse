@@ -4953,7 +4953,19 @@ local function testAnalyser(cid)
         getSkillMasteryAmount(1, 200, 100, 25) == 3 and getSkillMasteryAmount(1, 200, 25, 25) == 1)
     check("Mastery: the trainer's own skill counts from 80",
         getPlayerSkillMastery(cid, PLAYER_SKILL_FISHING) == math.max(0, getPlayerSkillLevel(cid, PLAYER_SKILL_FISHING) - 80))
-    check("Analyser: a quarter of the tries or less can't catch", getCatchRollMaxFor(10, false, 2, 0) == nil)
+    local ramp = CATCH_EARLY_RAMP
+    CATCH_EARLY_RAMP = false
+    check("Catching: with the early ramp off, a quarter of the tries or less can't catch", getCatchRollMaxFor(10, false, 2, 0) == nil)
+    CATCH_EARLY_RAMP = true
+    check("Catching: no ball counter yet, no catch", getCatchRollMaxFor(200, false, 0, 0) == nil)
+    check("Catching: halfway to a quarter of the tries, a quarter of the normal odds",
+        getCatchRollMaxFor(200, false, 25, 0) == 800, getCatchRollMaxFor(200, false, 25, 0))
+    check("Catching: at a quarter of the tries, the normal odds", getCatchRollMaxFor(200, false, 50, 0) == 200,
+        getCatchRollMaxFor(200, false, 50, 0))
+    check("Catching: the early roll keeps the skill bonus", getCatchRollMaxFor(200, false, 25, 100) == 720,
+        getCatchRollMaxFor(200, false, 25, 100))
+    check("Catching: a Mythical's first poke ball rolls up to getRandom's limit",
+        getCatchRollMaxFor(100000, false, 1, 0) == CATCH_ROLL_MAX_LIMIT, getCatchRollMaxFor(100000, false, 1, 0))
     local max = getCatchRollMaxFor(200, false, 90, 12)
     check("Analyser: 90 tries of 200 with catching 12 rolls 1-198 (1.2% off)", max == 198, max)
     check("Analyser: an ultra ball against 1-198 is 3/198", near(Analyser.throwChance(3, max, 0, 1), 3 / 198))
@@ -4968,8 +4980,14 @@ local function testAnalyser(cid)
     check("Analyser: a coloured ball rolls as 2", near(Analyser.throwChance(2.5, 100, 0, 1), 0.02))
     check("Analyser: species without the ball counter keep their chance", getCatchRollMaxFor(7.5, true, 0, 0) == 7.5)
 
+    CATCH_EARLY_RAMP = false
     local first, expected, half, unlock = Analyser.simulate({ catchChance = 10, tries = 0, skill = 0, step = 1, rate = 1 })
-    check("Analyser: a fresh 10-chance Pokemon needs two throws to open", first == 0 and unlock == 2, unlock)
+    check("Analyser: with the early ramp off, a fresh 10-chance Pokemon needs two throws to open", first == 0 and unlock == 2, unlock)
+    CATCH_EARLY_RAMP = true
+    first, expected, half, unlock = Analyser.simulate({ catchChance = 10, tries = 0, skill = 0, step = 1, rate = 1 })
+    check("Analyser: with the early ramp, a fresh 10-chance Pokemon's first throw is 1 in 63", near(first, 1 / 63) and unlock == 0,
+        first)
+    CATCH_EARLY_RAMP = ramp
     check("Analyser: it catches in the end", expected and expected > 2 and half and half > 2, expected)
     first, expected = Analyser.simulate({ catchChance = 10, tries = 0, skill = 0, step = 1, rate = 1, guaranteed = true })
     check("Analyser: a sure ball catches with the first throw", first == 1 and expected == 1, expected)

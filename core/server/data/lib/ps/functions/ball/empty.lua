@@ -57,6 +57,13 @@ function getPlayerPokemonCatchChance(cid, pokemonName)
     return getPokemonCatchChance(pokemonName) / (RATE_CATCH + getPlayerExtraCatchRateValue(cid))
 end
 
+-- Up to a quarter of the species chance on the ball counter, true: the odds climb on a curve, (counter / quarter)^2
+-- of the normal odds, so the first throws have almost none. false: the old rule, no ball catches at all.
+CATCH_EARLY_RAMP = true
+CATCH_EARLY_SHARE = 0.25
+-- getRandom draws from 24 bits (rand24b in tools.cpp), so a larger roll max would not lower the odds
+CATCH_ROLL_MAX_LIMIT = 16777216
+
 -- getCatchRollMax without the trainer: tries are the ball counter (getPlayerCatchTries), skill the catching skill
 function getCatchRollMaxFor(catchChance, ignoreBallCounter, tries, skill)
     if (ignoreBallCounter) then
@@ -64,11 +71,18 @@ function getCatchRollMaxFor(catchChance, ignoreBallCounter, tries, skill)
     end
 
     local triesFactor = tries / catchChance
-    if (triesFactor <= 0.25) then -- Never catch with equal or less 25% of tries
-        return nil
+    local skillBonus = math.min(skill, PLAYER_SKILL_CATCHING_MAX) * PLAYER_SKILL_CATCHING_BONUS_PER_LEVEL
+    if (triesFactor <= CATCH_EARLY_SHARE) then
+        if (not CATCH_EARLY_RAMP or tries <= 0) then
+            return nil
+        end
+        local normalMax = math.ceil(catchChance * (1 - skillBonus))
+        if (normalMax < 5) then
+            normalMax = ((catchChance < 5 and catchChance > 0) and catchChance or 5)
+        end
+        return math.min(CATCH_ROLL_MAX_LIMIT, math.ceil(normalMax / ((triesFactor / CATCH_EARLY_SHARE) ^ 2)))
     end
 
-    local skillBonus = math.min(skill, PLAYER_SKILL_CATCHING_MAX) * PLAYER_SKILL_CATCHING_BONUS_PER_LEVEL
 	local chanceMax = math.ceil((catchChance * (1 - skillBonus)) -
             (triesFactor > 1.0 and ((triesFactor - 1.0) * catchChance) or 0)) -- After 100% tries, each new % will be discounted to favor the catch, Ex: 100 tries to caught Bulbasaur, on 150 tries the player will receive 50% of favor
 	if (chanceMax < 5) then
