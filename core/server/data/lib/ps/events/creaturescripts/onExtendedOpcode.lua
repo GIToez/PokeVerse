@@ -38,6 +38,8 @@ function onExtendedOpcode(cid, opcode, buffer)
         ExpBoost.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.BANK) then
         Bank.onClientMessage(cid, buffer)
+    elseif (opcode == EXTENDED_IDS.POKETRADER) then
+        PokeTrader.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.EVENT_SHOP) then
         EventShop.onClientMessage(cid, buffer)
     elseif (opcode == EXTENDED_IDS.ANALYSER) then
