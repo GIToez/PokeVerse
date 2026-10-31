@@ -144,85 +144,23 @@ the level, not the location.
    area, not clumped, so the share of screens with a Pokemon matches Kanto.
 6. **Group size and respawn time stay the same** as now: about 60 seconds,
    with Kanto's spacing.
-7. **Not touched:** Battle Tower, the Rocket Hideout, Bell Tower, towns,
-   houses, Legendary spots, NPC and quest spawns, and the Orange Islands.
+7. **Not touched:** Kanto, the Orange Islands, Battle Tower, the Rocket
+   Hideout, Bell Tower, towns, houses, Legendary spots, and NPC and quest
+   spawns.
 
 ## Special spawns
 
-Status: **In game** means it already works; **Partial** means the species
-spawns but without the condition; **Missing** means it isn't there.
+The full list for both regions is saved in
+[upcoming-features.md, section 29](upcoming-features.md#29-special-spawns-from-the-games-two-built).
+Two are built (`106-rareSpawns.lua`):
 
-### Johto (HeartGold/SoulSilver)
+- **Red Gyarados** at the Lake of Rage: back 6 hours after it is caught or defeated.
+- **Lapras** on Union Cave B2F: Fridays only, back 3 hours after it is caught or defeated.
 
-| Special spawn | Where | When or how | Status |
-|---|---|---|---|
-| Lapras | Union Cave B2F | Fridays only, one per week, level 20 | Partial: 33 Lapras spawn with no Friday rule |
-| Red Gyarados | Lake of Rage | One-off, level 30, always shiny | Missing |
-| Sudowoodo | Route 36 | Blocks the path; Squirtbottle wakes it, level 20 | Missing on Route 36; berry trees can drop one |
-| Electrode (3) | Rocket Hideout in Mahogany | Three fixed battles, level 23 | Missing |
-| Bug-Catching Contest | National Park | Tuesday, Thursday, Saturday: Scyther, Pinsir, Venonat, Butterfree, Beedrill, Paras and more | Missing |
-| Unown | Ruins of Alph chambers | Only inside the chambers, letters by puzzle | Partial: 6 spawns |
-| Wobbuffet | Dark Cave (Blackthorn side) | Cave table | Missing |
-| Dunsparce | Dark Cave | Cave table, plus a swarm | Partial: 13 elsewhere |
-| Time of day | Routes 29 to 46 | Hoothoot, Noctowl, Spinarak, Rattata at night; Ledyba, Pidgey, Sentret in the morning and day | Missing |
-| Swarms (mass outbreaks) | See the list below | One random swarm per day | Missing |
-| Gifts | Various | Togepi egg (Mr. Pokemon), Eevee (Bill), Shuckle (Cianwood), Tyrogue (Mt. Mortar), Dratini (Dragon's Den), Spearow (Goldenrod) | Not part of spawns |
-| Legendaries | Various | Lugia, Ho-Oh, the beasts, Celebi | In game (Wild Legendaries system) |
+Where they spawn:
 
-HeartGold/SoulSilver swarms. One area and species is picked each day.
-
-| Species | Area | How |
-|---|---|---|
-| Yanma | Route 35 | Grass |
-| Dunsparce | Dark Cave | Cave |
-| Snubbull | Route 38 | Grass |
-| Marill | Mt. Mortar | Cave |
-| Ditto | Route 47 | Grass |
-| Ralts | Route 34 | Grass |
-| Swablu | Route 45 | Grass |
-| Qwilfish | Route 32 | Fishing |
-| Remoraid | Route 44 | Fishing |
-| Whiscash | Violet City | Fishing |
-| Chansey | Kanto Route 13 | Grass |
-| Poochyena | Kanto Route 1 | Grass |
-| Sableye (HG) or Mawile (SS) | Kanto Route 9 | Grass |
-| Baltoy (HG) or Gulpin (SS) | Kanto Route 3 | Grass |
-| Kricketot | Viridian Forest | Grass |
-| Buneary | Kanto Route 25 | Grass |
-| Wingull | Vermilion City | Surf |
-| Clamperl | Kanto Route 19 | Surf |
-| Luvdisc | Route 27 | Surf |
-| Relicanth | Kanto Route 12 | Fishing |
-
-### Hoenn (Ruby/Sapphire/Emerald)
-
-| Special spawn | Where | When or how | Status |
-|---|---|---|---|
-| Feebas | Route 119 | Only on 6 secret fishing tiles that move | Partial: 8 Feebas spawn on Route 131 |
-| Kecleon | Routes 119 and 120 | Invisible; the Devon Scope reveals it | Partial: 12 visible spawns |
-| Voltorb and Electrode | Team Aqua and Magma hideouts, New Mauville | Pose as items | Missing (New Mauville has no Voltorb) |
-| Sudowoodo | Battle Frontier (Emerald) | One fixed battle, Wailmer Pail | Missing |
-| Wynaut | Mirage Island | The island only shows up on some days | Partial: 3 spawns |
-| Chimecho | Mt. Pyre summit | Rare (2%) | Partial: 2 spawns |
-| Bagon | Meteor Falls back room | Lower floor, needs Waterfall | Partial: 20 spawns, not in the back room |
-| Absol | Route 120 | Grass | Partial: 4 spawns |
-| Tropius | Route 119 | Grass | Partial: 12 spawns |
-| Zubat (Emerald) | Altering Cave | The cave's only species | Check |
-| Dive spots | Routes 124, 126 and 128 underwater | Clamperl, Relicanth, Chinchou | Partial: spawns on shore |
-| Snorunt and Spheal | Shoal Cave ice room | Low tide only | Partial |
-| Safari Zone extension (Emerald) | Safari Zone | Johto species: Phanpy, Aipom, Sunkern, Teddiursa, Hoothoot, Spinarak | Check |
-| Swarms | See below | One random swarm per day | Missing |
-| Gifts | Various | Castform (Weather Institute), Beldum (Steven), fossils, Wynaut egg | Not part of spawns |
-| Legendaries | Various | Regis, Latios and Latias, Kyogre, Groudon, Rayquaza, Jirachi, Deoxys | In game (Wild Legendaries system) |
-
-Ruby/Sapphire/Emerald swarms:
-
-| Species | Areas |
-|---|---|
-| Surskit | Routes 102, 114, 117, 120 |
-| Skitty | Route 116 |
-| Seedot (Emerald) | Routes 102, 117, 120 |
-| Nuzleaf (Emerald) | Route 114 |
+- [Lake of Rage](concepts/rare-spawns/redGyarados.png)
+- [Union Cave B2F](concepts/rare-spawns/fridayLapras.png)
 
 ## Implementation plan
 
@@ -238,34 +176,30 @@ Ruby/Sapphire/Emerald swarms:
    It is run once and the result committed, like `build_johto.py`.
    `spawn_audit.py` is rerun afterwards to check density, screen coverage
    and the Bulbapedia match.
-2. **Special spawns** reuse the pattern in `103-beachPikachu.lua`:
-   - Lapras on Fridays in Union Cave, with the current always-on Lapras
-     removed;
-   - the Red Gyarados at Lake of Rage, once per player;
-   - Feebas on hidden Route 119 tiles that move each week;
-   - the Bug-Catching Contest days at National Park;
-   - daily swarms from the lists above;
-   - Sudowoodo on Route 36 and the Rocket Hideout Electrode as fixed
-     battles.
+2. **Special spawns:** the Red Gyarados and the Friday Lapras are built
+   in `106-rareSpawns.lua`. The rest are planned in the future features
+   list.
 3. **Server test checks:**
    - every Johto and Hoenn area is within density bounds;
    - no species outside its Bulbapedia list (plus evolutions on raised or
      deeper floors);
    - caves get harder going down.
 
-## Decisions needed
+## Decided (October 31)
 
-1. **Levels for Gen 2 and 3 early commons.** Options:
-   - (a) lower their `minLevel` to Kanto-style values (this also changes
-     Kanto and the Orange Islands wherever they spawn);
-   - (b) leave the species alone and give each Johto and Hoenn spawn a
-     fixed `level` from Bulbapedia's per-area levels;
-   - (c) leave levels as they are.
+- **Kanto is not touched.** Only Johto and Hoenn spawns change.
+- **Levels stay the species' own** (`minLevel` to `maxLevel`). The first Johto routes start
+  around level 20, which is fine. Roads still feel easier because they get the first stages,
+  which have the lowest levels.
+- **Wild starters stay**, as in Kanto, but only in a few special areas. Hoenn's Torchic on
+  Jagged Pass and Treecko on Route 113 move to one special spot each, and their evolutions
+  come off the general routes.
+- **Water Pokemon spawn on land by the water:** along the coast, on islands and around lakes
+  and cave pools. Underwater spawns come with diving later.
+- **Special spawns** go on the future features list, except the Red Gyarados and the Friday
+  Lapras.
 
-   Option (b) is the most accurate and touches nothing else.
-2. **Hoenn's wild starters** (Torchic, Treecko and their evolutions): keep
-   them like Kanto, or remove them to follow Bulbapedia.
-3. **Hoenn's crowded filler areas:** cut them down to Kanto density, or only
-   add spawns where an area is sparse.
-4. **Which special systems to build** from the list above. All of them is
-   the default; the swarms and the Bug-Catching Contest are the largest.
+## Still to decide
+
+- **Hoenn's crowded filler areas** (the "Outskirts of ..." and "Around ..." land): bring them
+  down to Kanto density, or only fill the sparse areas and leave them as they are.

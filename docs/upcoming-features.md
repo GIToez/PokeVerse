@@ -3786,6 +3786,62 @@ and Defeat effects (fireworks, a trophy, a Pokemon cheering, a sweat drop).
   prizes.
 - More Victory and Defeat effects beyond the two defaults, and where they come from.
 
+## 29. Special spawns from the games (two built)
+
+The special spawns found in the [Johto and Hoenn spawning pass](johto-hoenn-spawns.md), from
+Bulbapedia. They need planning first, so only the first two are built.
+
+**Built** (`106-rareSpawns.lua`): the levels are the species' own, and when each one comes back
+is kept over a restart.
+
+- **Red Gyarados** at the Lake of Rage: one Shiny Gyarados on the lake shore, back 6 hours after
+  it is caught or defeated.
+- **Lapras** on Union Cave B2F: Fridays only (server time), on the underground lake's shore, back
+  3 hours after it is caught or defeated. It swims off when Friday ends.
+
+### Johto (HeartGold and SoulSilver)
+
+| Special spawn | Where | When or how | Today |
+|---|---|---|---|
+| Sudowoodo | Route 36 | Blocks the path; the Squirtbottle wakes it | Berry trees can drop one |
+| Electrode (3) | Rocket Hideout in Mahogany | Three fixed battles | Missing |
+| Bug-Catching Contest | National Park | Tuesday, Thursday and Saturday: Scyther, Pinsir, Venonat, Butterfree, Beedrill, Paras and more | Missing |
+| Unown | Ruins of Alph chambers | Only inside the chambers, letters by puzzle | 6 spawns |
+| Wobbuffet | Dark Cave (Blackthorn side) | Cave table | Missing |
+| Time of day | Routes 29 to 46 | Hoothoot, Noctowl, Spinarak and Rattata at night; Ledyba, Pidgey and Sentret in the morning and day | Missing |
+| Daily swarms | See below | One random swarm a day | Missing |
+
+HeartGold and SoulSilver swarms: Yanma (Route 35), Dunsparce (Dark Cave), Snubbull (Route 38),
+Marill (Mt. Mortar), Ditto (Route 47), Ralts (Route 34), Swablu (Route 45), Qwilfish (Route 32,
+fishing), Remoraid (Route 44, fishing), Whiscash (Violet City, fishing), Chansey (Kanto Route
+13), Poochyena (Kanto Route 1), Sableye or Mawile (Kanto Route 9), Baltoy or Gulpin (Kanto
+Route 3), Kricketot (Viridian Forest), Buneary (Kanto Route 25), Wingull (Vermilion City,
+surf), Clamperl (Kanto Route 19, surf), Luvdisc (Route 27, surf) and Relicanth (Kanto Route
+12, fishing).
+
+### Hoenn (Ruby, Sapphire and Emerald)
+
+| Special spawn | Where | When or how | Today |
+|---|---|---|---|
+| Feebas | Route 119 | Only on 6 secret fishing tiles that move | 8 spawn on Route 131 |
+| Kecleon | Routes 119 and 120 | Invisible; the Devon Scope shows it | 12 visible spawns |
+| Voltorb and Electrode | Team Aqua and Magma hideouts, New Mauville | Pose as items | Missing |
+| Sudowoodo | Battle Frontier (Emerald) | One fixed battle, the Wailmer Pail | Missing |
+| Wynaut | Mirage Island | The island only shows up on some days | 3 spawns |
+| Chimecho | Mt. Pyre summit | Rare (2%) | 2 spawns |
+| Bagon | Meteor Falls back room | Lower floor, needs Waterfall | 20 spawns, not in the back room |
+| Absol | Route 120 | Grass | 4 spawns |
+| Tropius | Route 119 | Grass | 12 spawns |
+| Zubat (Emerald) | Altering Cave | The cave's only Pokemon | To check |
+| Dive spots | Routes 124, 126 and 128 under the sea | Clamperl, Relicanth, Chinchou | On the shore for now |
+| Snorunt and Spheal | Shoal Cave ice room | Low tide only | Always |
+| Safari Zone extension (Emerald) | Safari Zone | Phanpy, Aipom, Sunkern, Teddiursa, Hoothoot, Spinarak | To check |
+| Daily swarms | Surskit (Routes 102, 114, 117, 120), Skitty (Route 116), Seedot (Routes 102, 117, 120), Nuzleaf (Route 114) | One random swarm a day | Missing |
+
+Gifts from the games (Togepi egg, Eevee, Shuckle, Tyrogue, Dratini, Spearow, Castform, Beldum,
+the fossils, the Wynaut egg) aren't spawns. The legendaries are in the
+[Legendary revamp](#22-legendary-revamp-stages-1-to-3-built).
+
 ## Going private
 
 Everything is ready ([client-updates.md](client-updates.md)). Switch this repository to
