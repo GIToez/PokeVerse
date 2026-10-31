@@ -135,7 +135,7 @@ Analyser.catchAudit = function(cid, pokemonName, level)
     local catchChance = getPlayerPokemonCatchChance(cid, pokemonName)
     local ignoreBallCounter = getPokemonIgnoreBallCounter(pokemonName) and true or false
     local tries = getPlayerCatchTries(cid, getPokemonNumberByName(pokemonName))
-    local skill = math.min(getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING), PLAYER_SKILL_CATCHING_MAX)
+    local skill = getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING)
     local catcher = Vocations.perk(cid, "catcher", "catchChance") or 0
     local boost = DiscordBoostPerks.catchMultiplier() or 1
 

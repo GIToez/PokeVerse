@@ -378,9 +378,6 @@ local function skill(cid, id)
     local tries = tonumber(getPlayerSkillTries(cid, id)) or 0
     local needed = tonumber(getPlayerRequiredSkillTries(cid, id, level + 1)) or 0
     local percent = needed > 0 and math.min(99, math.floor(tries * 100 / needed)) or 0
-    if (id == PLAYER_SKILL_CATCHING and level >= PLAYER_SKILL_CATCHING_MAX) then
-        level, percent = PLAYER_SKILL_CATCHING_MAX, 100
-    end
     return { level = level, percent = percent }
 end
 

@@ -68,8 +68,8 @@ function getCatchRollMaxFor(catchChance, ignoreBallCounter, tries, skill)
         return nil
     end
 
-    skill = math.min(skill, PLAYER_SKILL_CATCHING_MAX)
-	local chanceMax = math.ceil((catchChance - skill / 10) -
+    local skillBonus = math.min(skill * PLAYER_SKILL_CATCHING_BONUS_PER_LEVEL, PLAYER_SKILL_CATCHING_BONUS_MAX)
+	local chanceMax = math.ceil((catchChance * (1 - skillBonus)) -
             (triesFactor > 1.0 and ((triesFactor - 1.0) * catchChance) or 0)) -- After 100% tries, each new % will be discounted to favor the catch, Ex: 100 tries to caught Bulbasaur, on 150 tries the player will receive 50% of favor
 	if (chanceMax < 5) then
         chanceMax = ((catchChance < 5 and catchChance > 0) and catchChance or 5)
@@ -115,14 +115,24 @@ local function rollCatch(cid, pokemonName, ballName, ballId, pokemonLevel)
     return DiscordBoostPerks.catchBonusRoll(math.min(1, chance * (1 + (Vocations.perk(cid, "catcher", "catchChance") or 0))))
 end
 
+-- Catching skill tries for a throw: base / (skill + 1) below the slowdown level, then 1 try with a
+-- chance that shrinks PLAYER_SKILL_CATCHING_SLOWDOWN times every level, so there is no cap but
+-- every level takes longer (about 150 throws at 110, 700 at 150, 5000 at 200)
+function doPlayerAddCatchingSkillTry(cid, base)
+    local skill = getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING)
+    if (skill < PLAYER_SKILL_CATCHING_SLOWDOWN_LEVEL) then
+        doPlayerAddSkillTry(cid, PLAYER_SKILL_CATCHING, math.ceil(base / (skill + 1)))
+    elseif (math.random() < PLAYER_SKILL_CATCHING_SLOWDOWN ^ -(skill - PLAYER_SKILL_CATCHING_SLOWDOWN_LEVEL)) then
+        doPlayerAddSkillTry(cid, PLAYER_SKILL_CATCHING, 1)
+    end
+end
+
 function catchMiss(cid, ballName, ballItemid, pokemon, wastedBallsMsg)
 	if (not isPlayer(cid)) then
         return
     end
 
-    if (getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING) < PLAYER_SKILL_CATCHING_MAX) then
-		doPlayerAddSkillTry(cid, PLAYER_SKILL_CATCHING, math.ceil(50 / (getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING) + 1)))
-	end
+    doPlayerAddCatchingSkillTry(cid, 50)
 
 	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, string.format(__L(cid, "Ouch! Your %s ball broke."), ballName))
 	doSendMagicEffect(getCreaturePosition(cid), EFFECT_EMOTION_THREE_POINTS)
@@ -152,9 +162,7 @@ pokemonSpecialAbilitie, wastedBallsMsg, tries)
         nil, pokemonSpecialAbilitie, nil, nil, nil, nil, nil, getPlayerTown(cid) ~= TOWN_IDS.TUTORIAL_ISLAND)
     doSendMagicEffect(getCreaturePosition(cid), EFFECT_EMOTION_EXCLAMATION)
 
-	if (getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING) < PLAYER_SKILL_CATCHING_MAX) then
-		doPlayerAddSkillTry(cid, PLAYER_SKILL_CATCHING, math.ceil(PLAYER_SKILL_CATCHING_MAX / (getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING) + 1)))
-    end
+	doPlayerAddCatchingSkillTry(cid, 100)
 
     onCaughtPokemon(cid, {name = pokemonName, level = pokemonLevel}, tries)
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, wastedBallsMsg)
@@ -173,9 +181,7 @@ pokemonSpecialAbilitie, wastedBallsMsg, tries)
     Sounds.onCatch(cid)
     local ballUid = doCreatePokemonBall(cid, "safari", pokemonName, pokemonLevel, pokemonSex, nil, 0, nil, true, nil, nil, pokemonSpecialAbilitie)
 	doSendMagicEffect(getCreaturePosition(cid), EFFECT_EMOTION_EXCLAMATION)
-	if (getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING) < PLAYER_SKILL_CATCHING_MAX) then
-		doPlayerAddSkillTry(cid, PLAYER_SKILL_CATCHING, math.ceil(PLAYER_SKILL_CATCHING_MAX / (getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING) + 1)))
-    end
+	doPlayerAddCatchingSkillTry(cid, 100)
 
     onCaughtPokemon(cid, {name = pokemonName, level = pokemonLevel}, tries)
     doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, wastedBallsMsg)
@@ -198,7 +204,7 @@ pokemonSpecialAbilitie, wastedBallsMsg)
 	doPlayerRemoveItem(cid, 13497, getPlayerItemCount(cid, 13497)) -- Removing special small stones
 	doPlayerAddItem(cid, 13820, 100, false) -- Start cookies
 	doSendMagicEffect(getCreaturePosition(cid), EFFECT_EMOTION_EXCLAMATION)
-	doPlayerAddSkillTry(cid, PLAYER_SKILL_CATCHING, math.ceil(PLAYER_SKILL_CATCHING_MAX / (getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING) + 1)))
+	doPlayerAddCatchingSkillTry(cid, 100)
 
 	local playerLevel = getPlayerLevel(cid)
 	if (playerLevel < 8) then
