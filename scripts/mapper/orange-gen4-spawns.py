@@ -8,9 +8,11 @@
   a Pokemon of the same habitat become the evolution (HABITAT).
 - Porygon-Z: one new spawn on the deepest floor of the Power Plant of Hamlin, next to Porygon2,
   with the Porygon line's 45-minute spawn time.
-- Munchlax and Mantyke: one new spawn next to each Snorlax and Mantine of their area.
+- Babies (BABIES): in each area about one for every ADULTS_PER_BABY Pokemon of the rest of their line
+  (after the changes above). Missing babies are new spawns next to the adults; extra baby spawns
+  become the line's first adult.
 
-New spawns go on a free tile next to the spawn they belong to: the same ground as that spawn's
+New spawns go on a free tile next to the spawn they belong to (or 2 tiles away if none is): the same ground as that spawn's
 tile, nothing on it that blocks (items.otb), and no other spawn. Writes core/server/data/world/map-spawn.xml and its mapper copy; refuses to run
 twice. Run scripts/make-pokepedia-data.py afterwards.
 
@@ -57,9 +59,17 @@ HABITAT = {
 # new Pokemon: (zone, area, the Pokemon it spawns next to, spawn time or None for the adult's)
 NEXT_TO = [
     ("Porygon-Z", ("Hamlin", "Power Plant of Hamlin", "Porygon2", 2700), {"floor": 10, "count": 1}),
-    ("Munchlax", ("Mandarin South 02", "Forested Region", "Snorlax", None), {}),
-    ("Mantyke", ("Pinkan", "Submerged Desert Island #4", "Mantine", None), {}),
 ]
+
+# baby: the rest of its line, the first one is what a baby spawn too many becomes
+BABIES = {
+    "Pichu": ["Pikachu", "Raichu"], "Cleffa": ["Clefairy", "Clefable"], "Igglybuff": ["Jigglypuff", "Wigglytuff"],
+    "Togepi": ["Togetic", "Togekiss"], "Tyrogue": ["Hitmonlee", "Hitmonchan", "Hitmontop"], "Smoochum": ["Jynx"],
+    "Elekid": ["Electabuzz", "Electivire"], "Magby": ["Magmar", "Magmortar"], "Azurill": ["Marill", "Azumarill"],
+    "Wynaut": ["Wobbuffet"], "Budew": ["Roselia", "Roserade"], "Chingling": ["Chimecho"], "Bonsly": ["Sudowoodo"],
+    "Mime Jr.": ["Mr. Mime"], "Happiny": ["Chansey", "Blissey"], "Munchlax": ["Snorlax"], "Mantyke": ["Mantine"],
+}
+ADULTS_PER_BABY = 2.5
 
 ITEMS_OTB = os.path.join(ROOT, "core/server/data/items/items.otb")
 BLOCKING = 0x1 | 0x4  # items.otb flags: blocks movement, blocks pathfinding
@@ -141,11 +151,6 @@ def main():
             s["new"] = evo
         report.append((evo, pre, zone, area, len(by_area[(pre, zone, area)]), k))
 
-    for s in orange:
-        if "new" in s:
-            lines[s["line"]] = MONSTER.sub(lambda m: m.group(1) + s["new"] + m.group(3), lines[s["line"]], 1)
-
-    taken = {(s["x"], s["y"], s["z"]) for s in monsters}
     additions = []
     for name, (zone, area, adult, spawntime), opts in NEXT_TO:
         adults = by_area[(adult, zone, area)]
@@ -154,20 +159,53 @@ def main():
         if not adults:
             raise SystemExit("%s: no %s at %s (%s)" % (name, adult, area, zone))
         adults = spread(adults, opts.get("count", len(adults)))
-        wanted = set()
-        for s in adults:
-            wanted |= {(s["x"] + dx, s["y"] + dy, s["z"]) for dx in (-1, 0, 1) for dy in (-1, 0, 1)}
-        additions.append((name, adults, spawntime, wanted, zone, area, adult))
-    tiles = pvmap.read_tiles(anchors.MAP, set().union(*(a[3] for a in additions)))
+        additions.append((name, adults, len(adults), spawntime, zone, area, adult))
+
+    # babies: about one for every ADULTS_PER_BABY of their line in each area, next to the adults
+    line_of = {}
+    for baby, rest in BABIES.items():
+        line_of[baby] = (baby, True)
+        line_of.update({adult: (baby, False) for adult in rest})
+    families = collections.defaultdict(lambda: ([], []))
+    for s in orange:
+        name = s.get("new", s["name"])
+        plain = name[6:] if name.startswith("Shiny ") else name
+        if plain in line_of:
+            baby, is_baby = line_of[plain]
+            families[(baby, s["zone"], s["area"])][0 if is_baby else 1].append(s)
+    for (baby, zone, area), (babies, adults) in sorted(families.items()):
+        if not adults:
+            continue
+        want = int(len(adults) / ADULTS_PER_BABY + 0.5)
+        plain = [s for s in babies if not s["name"].startswith("Shiny ")]
+        if len(babies) > want:
+            for s in spread(plain, min(len(plain), len(babies) - want)):
+                s["new"] = BABIES[baby][0]
+            report.append((BABIES[baby][0], "from " + baby, zone, area, len(babies), len(babies) - want))
+        elif len(babies) < want:
+            first = spread(adults, want - len(babies))
+            additions.append((baby, first + [s for s in adults if s not in first], want - len(babies), None,
+                              zone, area, "its line"))
+
+    for s in orange:
+        if "new" in s:
+            lines[s["line"]] = MONSTER.sub(lambda m: m.group(1) + s["new"] + m.group(3), lines[s["line"]], 1)
+
+    taken = {(s["x"], s["y"], s["z"]) for s in monsters}
+    near = [(dx, dy) for dx in range(-2, 3) for dy in range(-2, 3) if dx or dy]
+    wanted = {(s["x"] + dx, s["y"] + dy, s["z"]) for a in additions for s in a[1] for dx, dy in near + [(0, 0)]}
+    tiles = pvmap.read_tiles(anchors.MAP, wanted)
     blocking = blocking_items()
 
     inserts = collections.defaultdict(list)
-    for name, adults, spawntime, _, zone, area, adult in additions:
+    for name, adults, needed, spawntime, zone, area, adult in additions:
         placed = 0
         for s in adults:
+            if placed == needed:
+                break
             own = tiles.get((s["x"], s["y"], s["z"]))
-            spots = sorted(((s["x"] + dx, s["y"] + dy, s["z"]) for dx in (-1, 0, 1) for dy in (-1, 0, 1)
-                            if dx or dy), key=lambda p: abs(p[0] - s["x"]) + abs(p[1] - s["y"]))
+            spots = sorted(((s["x"] + dx, s["y"] + dy, s["z"]) for dx, dy in near),
+                           key=lambda p: (max(abs(p[0] - s["x"]), abs(p[1] - s["y"])), abs(p[0] - s["x"]) + abs(p[1] - s["y"])))
             for p in spots:
                 t = tiles.get(p)
                 if p in taken or not t or not own or t[0] != own[0] or blocking & set(t):
@@ -178,8 +216,8 @@ def main():
                                            % (name, p[0] - cx, p[1] - cy, p[2], spawntime or s["spawntime"]))
                 placed += 1
                 break
-            else:
-                print("  no free tile next to the %s at %d, %d, %d" % (adult, s["x"], s["y"], s["z"]))
+        if placed < needed:
+            print("  %s at %s: no free tile for %d of %d" % (name, area, needed - placed, needed))
         report.append((name, "next to " + adult, zone, area, len(adults), placed))
 
     for block in sorted(inserts, reverse=True):
