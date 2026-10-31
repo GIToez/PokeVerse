@@ -2255,6 +2255,52 @@ local function testOutfits(cid)
     Vocations.updateOutfit(cid)
 end
 
+local function testRareSpawns()
+    local gyarados, lapras = RareSpawns.find("redGyarados"), RareSpawns.find("fridayLapras")
+    for _, entry in ipairs(RareSpawns.LIST) do
+        RareSpawns.sendAway(entry)
+        RareSpawns.reset(entry.key)
+    end
+
+    local friday = os.time({ year = 2026, month = 10, day = 30, hour = 12 })
+    check("Rare spawns: Lapras is only out on Fridays, the Red Gyarados every day",
+        RareSpawns.inSeason(lapras, friday) and not RareSpawns.inSeason(lapras, friday + 86400)
+        and RareSpawns.inSeason(gyarados, friday + 86400))
+
+    RareSpawns.onThink(true)
+    local cid = RareSpawns.get("redGyarados")
+    local pos = cid and getCreaturePosition(cid)
+    check("Rare spawns: the Red Gyarados is a Shiny Gyarados at the Lake of Rage",
+        cid and getCreatureName(cid) == "Shiny Gyarados" and pos.z == 7 and pos.x >= 2495 and pos.x <= 2610
+        and pos.y >= 140 and pos.y <= 230, cid and string.format("%d,%d,%d", pos.x, pos.y, pos.z))
+    local isFriday = RareSpawns.inSeason(lapras)
+    check("Rare spawns: Lapras is in Union Cave on a Friday and not on other days",
+        (RareSpawns.get("fridayLapras") ~= nil) == isFriday)
+
+    doRemoveCreature(cid)
+    RareSpawns.onThink(true)
+    local due = RareSpawns.dueAt("redGyarados")
+    check("Rare spawns: once caught, the Red Gyarados is back in 6 hours",
+        RareSpawns.get("redGyarados") == nil and due and math.abs(due - os.time() - gyarados.respawn) <= 5, due)
+
+    RareSpawns.sendAway(lapras)
+    cid = RareSpawns.spawn(lapras)
+    pos = cid and getCreaturePosition(cid)
+    check("Rare spawns: Lapras appears on the shore of the Union Cave B2F lake",
+        cid and getCreatureName(cid) == "Lapras" and pos.z == 10 and pos.x >= 2420 and pos.x <= 2465
+        and pos.y >= 870 and pos.y <= 915, cid and string.format("%d,%d,%d", pos.x, pos.y, pos.z))
+    if (not isFriday) then
+        RareSpawns.onThink(true)
+        check("Rare spawns: Lapras swims off when it isn't Friday",
+            RareSpawns.get("fridayLapras") == nil and not isCreature(cid))
+    end
+
+    for _, entry in ipairs(RareSpawns.LIST) do
+        RareSpawns.sendAway(entry)
+        RareSpawns.reset(entry.key)
+    end
+end
+
 local function testCalendar(cid)
     local function date(time) return os.date("%Y-%m-%d %H:%M", time) end
     local function day(time) return os.date("%Y-%m-%d", time) end
@@ -2349,6 +2395,7 @@ local function testCalendar(cid)
     local range = EventCalendar.rangeData(at(2026, 9, 28), at(2026, 11, 9))
     check("Calendar: a month range lists events and moons", range and #range.events > 0 and #range.moons >= 2)
     check("Calendar: too long a range is refused", EventCalendar.rangeData(at(2026, 1, 1), at(2026, 6, 1)) == nil)
+    testRareSpawns()
 end
 
 local function testHalloween(cid)
@@ -3352,52 +3399,6 @@ local function testSurfingPikachu(cid)
         left = left + (isCreature(swarmCid) and 1 or 0)
     end
     check("Beach swarm: ending it sends them away", BeachPikachu.getSwarm() == nil and left == 0, left)
-end
-
-local function testRareSpawns()
-    local gyarados, lapras = RareSpawns.find("redGyarados"), RareSpawns.find("fridayLapras")
-    for _, entry in ipairs(RareSpawns.LIST) do
-        RareSpawns.sendAway(entry)
-        RareSpawns.reset(entry.key)
-    end
-
-    local friday = os.time({ year = 2026, month = 10, day = 30, hour = 12 })
-    check("Rare spawns: Lapras is only out on Fridays, the Red Gyarados every day",
-        RareSpawns.inSeason(lapras, friday) and not RareSpawns.inSeason(lapras, friday + 86400)
-        and RareSpawns.inSeason(gyarados, friday + 86400))
-
-    RareSpawns.onThink(true)
-    local cid = RareSpawns.get("redGyarados")
-    local pos = cid and getCreaturePosition(cid)
-    check("Rare spawns: the Red Gyarados is a Shiny Gyarados at the Lake of Rage",
-        cid and getCreatureName(cid) == "Shiny Gyarados" and pos.z == 7 and pos.x >= 2495 and pos.x <= 2610
-        and pos.y >= 140 and pos.y <= 230, cid and string.format("%d,%d,%d", pos.x, pos.y, pos.z))
-    local isFriday = RareSpawns.inSeason(lapras)
-    check("Rare spawns: Lapras is in Union Cave on a Friday and not on other days",
-        (RareSpawns.get("fridayLapras") ~= nil) == isFriday)
-
-    doRemoveCreature(cid)
-    RareSpawns.onThink(true)
-    local due = RareSpawns.dueAt("redGyarados")
-    check("Rare spawns: once caught, the Red Gyarados is back in 6 hours",
-        RareSpawns.get("redGyarados") == nil and due and math.abs(due - os.time() - gyarados.respawn) <= 5, due)
-
-    RareSpawns.sendAway(lapras)
-    cid = RareSpawns.spawn(lapras)
-    pos = cid and getCreaturePosition(cid)
-    check("Rare spawns: Lapras appears on the shore of the Union Cave B2F lake",
-        cid and getCreatureName(cid) == "Lapras" and pos.z == 10 and pos.x >= 2420 and pos.x <= 2465
-        and pos.y >= 870 and pos.y <= 915, cid and string.format("%d,%d,%d", pos.x, pos.y, pos.z))
-    if (not isFriday) then
-        RareSpawns.onThink(true)
-        check("Rare spawns: Lapras swims off when it isn't Friday",
-            RareSpawns.get("fridayLapras") == nil and not isCreature(cid))
-    end
-
-    for _, entry in ipairs(RareSpawns.LIST) do
-        RareSpawns.sendAway(entry)
-        RareSpawns.reset(entry.key)
-    end
 end
 
 local function testTurtleBlastoise(cid)
@@ -5791,7 +5792,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", withoutCalendarBonuses(testBreederIncubator) }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "pokemon outfit", testPokemonOutfit }, { "tmnt blastoise", testTurtleBlastoise }, { "rare spawns", testRareSpawns }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "bag", testBag }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "baby call", function() testBabyCall(cid, arena) end }, { "poketrader", function() testPokeTrader(cid, friend) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", withoutCalendarBonuses(testBreederIncubator) }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "pokemon outfit", testPokemonOutfit }, { "tmnt blastoise", testTurtleBlastoise }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "bag", testBag }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "baby call", function() testBabyCall(cid, arena) end }, { "poketrader", function() testPokeTrader(cid, friend) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
