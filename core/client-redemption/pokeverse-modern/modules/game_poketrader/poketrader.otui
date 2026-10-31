@@ -1,0 +1,513 @@
+// The PokeTrader auction window (docs/concepts/poketrader). Frame from game_dailytasks, panels, rows and tabs from
+// game_fishing, buttons and fields from client_entergame, the scroll bar from game_gts.
+
+TraderText < UILabel
+  font: verdana-11px-antialised
+  color: #dce6ff
+  phantom: true
+
+TraderMuted < TraderText
+  color: #96aacd
+
+TraderBold < UILabel
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 12
+  color: #ffffff
+  text-auto-resize: true
+  phantom: true
+
+TraderTab < UIButton
+  height: 30
+  image-source: /modules/game_fishing/images/tab
+  image-border: 8
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 12
+  color: #96aacd
+  text-offset: 0 1
+  focusable: false
+  $hover !on:
+    color: #dce6ff
+  $on:
+    image-source: /modules/game_fishing/images/tab_on
+    color: #ffffff
+
+  UIWidget
+    id: dot
+    size: 8 8
+    background-color: #ff8a3c
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin: 6 8 0 0
+    visible: false
+    phantom: true
+
+TraderTag < UILabel
+  height: 18
+  padding: 0 8 0 8
+  image-source: /modules/game_fishing/images/tab
+  image-border: 6
+  ttf-font: /fonts/ttf/arialb.ttf
+  ttf-font-size: 10
+  color: #dce6ff
+  text-auto-resize: true
+  text-offset: 0 1
+  phantom: true
+
+TraderRow < UIButton
+  height: 52
+  image-source: /modules/game_fishing/images/row
+  image-border: 8
+  focusable: false
+  $hover !checked !on:
+    image-source: /modules/game_fishing/images/row_hover
+  $checked:
+    image-source: /modules/game_fishing/images/row_on
+  $on:
+    image-source: /modules/game_fishing/images/row_locked
+    opacity: 0.6
+
+  UIWidget
+    id: frame
+    size: 40 40
+    image-source: /modules/game_fishing/images/portrait
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 6
+    phantom: true
+
+    UIItem
+      id: item
+      size: 32 32
+      anchors.centerIn: parent
+      virtual: true
+      phantom: true
+
+  TraderBold
+    id: name
+    color: #ffd75a
+    anchors.left: frame.right
+    anchors.top: parent.top
+    margin: 9 0 0 8
+
+  TraderMuted
+    id: note
+    anchors.left: name.left
+    anchors.right: price.left
+    anchors.top: name.bottom
+    margin: 3 6 0 0
+    height: 14
+
+  TraderBold
+    id: price
+    ttf-font-size: 13
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin: 9 10 0 0
+
+  TraderTag
+    id: tag
+    anchors.right: parent.right
+    anchors.top: price.bottom
+    margin: 3 8 0 0
+
+TraderLine < UIWidget
+  height: 34
+  phantom: true
+
+  TraderBold
+    id: text
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-top: 2
+
+  TraderMuted
+    id: when
+    text-auto-resize: true
+    anchors.left: parent.left
+    anchors.top: text.bottom
+    margin-top: 2
+
+  TraderBold
+    id: amount
+    ttf-font-size: 13
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+
+  UIWidget
+    id: line
+    height: 1
+    background-color: #2a3a5a
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    phantom: true
+
+TraderFact < UIWidget
+  height: 20
+  phantom: true
+
+  TraderMuted
+    id: caption
+    text-auto-resize: true
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  TraderBold
+    id: value
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+
+TraderQuick < PVBlueButton
+  height: 28
+  ttf-font-size: 11
+
+TraderList < ScrollablePanel
+  layout:
+    type: verticalBox
+    spacing: 4
+
+TraderWindow < UIWindow
+  size: 760 560
+  image-source: /modules/game_dailytasks/images/window
+  image-border: 24
+  padding: 26 26 20 26
+  draggable: true
+  focusable: true
+  @onEscape: modules.game_poketrader.close()
+
+  UIItem
+    id: headerIcon
+    size: 32 32
+    item-id: 3043
+    virtual: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    phantom: true
+
+  UILabel
+    id: headerTitle
+    !text: tr('PokeTrader auction')
+    ttf-font: /fonts/ttf/arialb.ttf
+    ttf-font-size: 22
+    color: #ffffff
+    text-auto-resize: true
+    anchors.left: headerIcon.right
+    anchors.top: parent.top
+    margin: -3 0 0 10
+    phantom: true
+
+  TraderMuted
+    id: subtitle
+    text-auto-resize: true
+    anchors.left: headerTitle.left
+    anchors.top: headerTitle.bottom
+    margin-top: 2
+
+  PVCloseButton
+    id: closeButton
+    size: 24 24
+    anchors.top: parent.top
+    anchors.right: parent.right
+    @onClick: modules.game_poketrader.close()
+
+  UIWidget
+    id: bank
+    anchors.top: parent.top
+    anchors.right: closeButton.left
+    margin-right: 14
+    size: 200 40
+    phantom: true
+
+    TraderMuted
+      id: caption
+      !text: tr('In your bank')
+      text-auto-resize: true
+      anchors.top: parent.top
+      anchors.right: parent.right
+
+    UILabel
+      id: value
+      ttf-font: /fonts/ttf/arialb.ttf
+      ttf-font-size: 16
+      color: #ffd75a
+      text-auto-resize: true
+      anchors.top: caption.bottom
+      anchors.right: parent.right
+      margin-top: 2
+      phantom: true
+
+  UIWidget
+    id: tabs
+    height: 30
+    anchors.top: headerIcon.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 14
+    layout:
+      type: horizontalBox
+      spacing: 6
+
+    TraderTab
+      id: lots
+      width: 130
+      !text: tr('This week')
+    TraderTab
+      id: mine
+      width: 130
+      !text: tr('My bids')
+    TraderTab
+      id: history
+      width: 130
+      !text: tr('History')
+
+  TraderMuted
+    id: footer
+    text-auto-resize: true
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+
+  // This week
+  FishingPanel
+    id: lotsPanel
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: details.left
+    anchors.bottom: footer.top
+    margin: 8 8 8 0
+
+    TraderList
+      id: list
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: listScroll.left
+      anchors.bottom: parent.bottom
+      margin-right: 6
+      vertical-scrollbar: listScroll
+
+    GtsScrollBar
+      id: listScroll
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+
+    TraderMuted
+      id: empty
+      !text: tr('Nothing is up for auction right now.')
+      anchors.centerIn: list
+      text-auto-resize: true
+
+  FishingPanel
+    id: details
+    width: 280
+    anchors.top: tabs.bottom
+    anchors.right: parent.right
+    anchors.bottom: footer.top
+    margin: 8 0 8 0
+    padding: 12 14 12 14
+
+    TraderBold
+      id: name
+      ttf-font-size: 15
+      color: #ffd75a
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    TraderMuted
+      id: kind
+      text-auto-resize: true
+      anchors.top: name.bottom
+      anchors.left: parent.left
+      margin-top: 2
+
+    TraderFact
+      id: minimum
+      anchors.top: kind.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 10
+    TraderFact
+      id: highest
+      anchors.top: minimum.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+    TraderFact
+      id: yours
+      anchors.top: highest.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+    TraderFact
+      id: count
+      anchors.top: yours.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+
+    TraderMuted
+      id: maxCaption
+      !text: tr('The most you would pay')
+      text-auto-resize: true
+      anchors.top: count.bottom
+      anchors.left: parent.left
+      margin-top: 12
+
+    PVField
+      id: amount
+      height: 32
+      padding: 6 10 6 10
+      anchors.top: maxCaption.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 4
+
+    UIWidget
+      id: quick
+      height: 28
+      anchors.top: amount.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 6
+      layout:
+        type: grid
+        cell-size: 80 28
+        cell-spacing: 6
+        flow: true
+
+      TraderQuick
+        id: lowest
+        !text: tr('Lowest')
+      TraderQuick
+        id: plus5
+        !text: '+5%'
+      TraderQuick
+        id: plus10
+        !text: '+10%'
+
+    TraderMuted
+      id: note
+      text-wrap: true
+      text-auto-resize: true
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: action.top
+      margin-bottom: 8
+
+    PVGreenButton
+      id: action
+      height: 38
+      ttf-font-size: 14
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: takeBack.top
+      margin-bottom: 6
+
+    PVRedButton
+      id: takeBack
+      height: 30
+      ttf-font-size: 12
+      !text: tr('Take my bid back')
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+
+  // My bids
+  FishingPanel
+    id: minePanel
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: logPanel.left
+    anchors.bottom: footer.top
+    margin: 8 8 8 0
+
+    TraderBold
+      id: held
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    TraderList
+      id: list
+      anchors.top: held.bottom
+      anchors.left: parent.left
+      anchors.right: listScroll.left
+      anchors.bottom: parent.bottom
+      margin: 8 6 0 0
+      vertical-scrollbar: listScroll
+
+    GtsScrollBar
+      id: listScroll
+      anchors.top: list.top
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+
+    TraderMuted
+      id: empty
+      !text: tr('You have no bids this week.')
+      anchors.centerIn: list
+      text-auto-resize: true
+
+  FishingPanel
+    id: logPanel
+    width: 280
+    anchors.top: tabs.bottom
+    anchors.right: parent.right
+    anchors.bottom: footer.top
+    margin: 8 0 8 0
+    padding: 12 14 12 14
+
+    TraderBold
+      id: title
+      !text: tr('Bid log')
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    TraderMuted
+      id: subtitle
+      text-wrap: true
+      text-auto-resize: true
+      anchors.top: title.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 2
+
+    ScrollablePanel
+      id: list
+      anchors.top: subtitle.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin-top: 8
+      layout:
+        type: verticalBox
+        spacing: 2
+
+  // History
+  FishingPanel
+    id: historyPanel
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: footer.top
+    margin: 8 0 8 0
+    padding: 10 12 10 12
+
+    ScrollablePanel
+      id: list
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: listScroll.left
+      anchors.bottom: parent.bottom
+      margin-right: 6
+      vertical-scrollbar: listScroll
+      layout:
+        type: verticalBox
+        spacing: 2
+
+    GtsScrollBar
+      id: listScroll
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+
+    TraderMuted
+      id: empty
+      !text: tr('Loading...')
+      text-auto-resize: true
+      anchors.centerIn: list

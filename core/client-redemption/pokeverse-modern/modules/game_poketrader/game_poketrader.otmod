@@ -1,0 +1,8 @@
+Module
+  name: game_poketrader
+  description: PokeVerse PokeTrader auction window: Tiger Kelsey's weekly lots, maximum bids, your bids and the last two weeks' winners
+  author: PokeVerse
+  sandboxed: true
+  scripts: [ poketrader ]
+  @onLoad: init()
+  @onUnload: terminate()
