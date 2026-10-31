@@ -1,7 +1,7 @@
 # Orange Islands: Gen 4 evolutions
 
 **Status: live.** `scripts/mapper/orange-gen4-spawns.py` wrote the spawns below into
-`world/map-spawn.xml` (and the mapper copy): 112 spawns changed and 8 added.
+`world/map-spawn.xml` (and the mapper copy): 130 spawns changed and 76 added.
 
 Sinnoh comes later as its own region, with the Sinnoh families (Turtwig, Starly, Shinx, Gible,
 Riolu and the rest) and the Gen 4 legendaries. Until then, the Orange Islands, the high-level
@@ -58,20 +58,51 @@ same habitat, on the same tiles and spawn times.
 | Roserade | Roselia (Shiny Stone) | 2 at Pummelo Forest (Pummelo), replacing Victreebel |
 | Leafeon | Eevee (Leaf Stone) | 2 at Seven Grapefruit #2 (Seven Grapefruit), replacing Tangela |
 
-## Added spawns
+## Porygon-Z
 
-- **Porygon-Z:** 1 on the deepest floor of the Power Plant of Hamlin (floor 10), next to a
-  Porygon2, with the 45-minute spawn time of the rest of the Porygon line.
-- **Munchlax:** 1 next to each of the 3 Snorlax at Forested Region (Mandarin South 02).
-- **Mantyke:** 1 next to 4 of the 7 Mantine at Submerged Desert Island #4 (Pinkan); the other
-  three have no free water tile next to them.
+1 new spawn on the deepest floor of the Power Plant of Hamlin (floor 10), next to a Porygon2,
+with the 45-minute spawn time of the rest of the Porygon line. That floor also has 2 Porygon2,
+1 Porygon, 1 Electivire, 1 Electabuzz, 1 Magnezone, 4 Magneton, 1 Magnemite, 6 Voltorb,
+3 Electrode, 3 Pikachu and 5 Raichu.
+
+## Babies
+
+In each area, about **1 baby for every 2.5** Pokémon of the rest of its line (rounded, after the
+changes above), so an area with 2 or 3 adults gets 1 baby. Babies are passive: they only fight
+back, and a hurt baby calls its family.
+
+- Areas with too few get new baby spawns next to the adults, on a free tile of the same ground
+  (up to 2 tiles away), with the adult's spawn time.
+- Areas with too many turn the extra baby spawns into the line's first adult, on the same tile.
+- Areas with a single adult get no baby.
+
+| Baby | Added next to its line (island: area, adults -> babies added) | Extra babies turned into adults |
+|---|---|---|
+| Pichu | Hamlin: Power Plant of Hamlin 19 -> 4; Mandarin North: Mountain House 14 -> 5; Shamouti: Lightning Island 19 -> 8 | |
+| Cleffa | Ascorbia: Giant Mountain 21 -> 5; Kumquat: Mountain Moon 15 -> 2 | 1 Clefairy at Desert Island #3 Cave (Pummelo) |
+| Igglybuff | Ascorbia: Around Giant Mountain 7 -> 3; Ascorbia: Giant Mountain 16 -> 1; Kumquat: Mountain Moon 12 -> 4; Pummelo: Desert Island #3 Cave 4 -> 1 | |
+| Togepi | | 4 Togetic at Forgotten Temple (Moro) |
+| Tyrogue | Mikan: Fight Cave 4 -> 1 (no free tile for a second) | |
+| Smoochum | | 4 Jynx at Refuge Cold (Mandarin North), 4 at Ice Island (Shamouti) |
+| Elekid | | 1 Electabuzz at Power Plant of Hamlin, 1 at Lightning Island (Shamouti) |
+| Magby | | 2 Magmar at Fairchild Cave (Pinkan), 1 at Fire Island (Shamouti) |
+| Azurill | Mandarin North: Mountain Lake 6 -> 2; Navel 48 -> 19; Pummelo: Mountain Lake 5 -> 2; Sunburst: Crystal Cave 19 -> 8 | |
+| Wynaut | Moro: Forgotten Temple 3 -> 1 | |
+| Budew | Pummelo: Pummelo Forest 2 -> 1 (next to the Roserade) | |
+| Munchlax | Mandarin South 02: Forested Region 3 -> 1; Seven Grapefruit: Seven Grapefruit #7 2 -> 1 | |
+| Mantyke | Pinkan: Submerged Desert Island #4 7 -> 3; Pinkan: unnamed spot 2 -> 1; Trovitopolis: Sea Trovita 5 -> 2 | |
+
+Chingling, Bonsly, Mime Jr. and Happiny have no adults in the Orange Islands.
 
 ## Babies from eggs
 
-A Day Care egg hatches the first form of the mother's line. The Gen 4 babies now start their
-lines: Snorlax lays Munchlax eggs, Mantine Mantyke, Chansey and Blissey Happiny, Mr. Mime
-Mime Jr., Sudowoodo Bonsly, Roselia (and Roserade, as before) Budew, and Chimecho Chingling.
-Eggs already laid keep their species (a Snorlax egg still hatches Snorlax).
+A Day Care egg hatches the first form of the mother's line (with Ditto, the other parent's), so
+every Pokémon of a line with a baby lays the baby's egg: Pikachu and Raichu lay Pichu eggs,
+Hitmonlee, Hitmonchan and Hitmontop Tyrogue, Snorlax Munchlax, Mantine Mantyke, Chansey and
+Blissey Happiny, Mr. Mime Mime Jr., Sudowoodo Bonsly, Roselia and Roserade Budew, Chimecho
+Chingling, and so on. The Hitmons, Mr. Mime, Chansey and Blissey couldn't breed before; they now
+have their egg groups (Human-Like, Fairy). Eggs already laid keep their species, and so do the
+quest eggs (the Hitmonlee and Hitmonchan eggs from the rock quest).
 
 ## Kept for Sinnoh
 
