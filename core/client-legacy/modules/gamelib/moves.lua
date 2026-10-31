@@ -794,6 +794,19 @@ MOVES[#MOVES + 1] = {name = "Vacuum Wave", iconItemId = 29002}
 MOVES[#MOVES + 1] = {name = "Liquidation", iconItemId = 29003}
 MOVES[#MOVES + 1] = {name = "Body Press", iconItemId = 29004}
 MOVES[#MOVES + 1] = {name = "Feint", iconItemId = 29005}
+MOVES[#MOVES + 1] = {name = "Lunar Dance", iconItemId = 29871}
+MOVES[#MOVES + 1] = {name = "Ice Hammer", iconItemId = 29872}
+MOVES[#MOVES + 1] = {name = "Sparkling Aria", iconItemId = 29873}
+MOVES[#MOVES + 1] = {name = "Psyshield Bash", iconItemId = 29874}
+MOVES[#MOVES + 1] = {name = "Barb Barrage", iconItemId = 29875}
+MOVES[#MOVES + 1] = {name = "Raging Bull", iconItemId = 29876}
+MOVES[#MOVES + 1] = {name = "Rage Fist", iconItemId = 29877}
+MOVES[#MOVES + 1] = {name = "Hyper Drill", iconItemId = 29878}
+MOVES[#MOVES + 1] = {name = "Dragon Hammer", iconItemId = 29879}
+MOVES[#MOVES + 1] = {name = "Belly Drum", iconItemId = 29880}
+MOVES[#MOVES + 1] = {name = "Morning Sun", iconItemId = 29881}
+MOVES[#MOVES + 1] = {name = "Whirlwind", iconItemId = 29882}
+MOVES[#MOVES + 1] = {name = "Spikes", iconItemId = 27659}
 
 local MOVE_BY_ICON_ITEM_ID = {}
 for k, v in pairs(MOVES) do
@@ -1604,6 +1617,19 @@ MOVES_DESCRIPTIONS["Vacuum Wave"] = "The user whirls its fists to send a wave of
 MOVES_DESCRIPTIONS["Liquidation"] = "The user slams into the target using a full-force blast of water. It has a 20%% chance of lowering the target's Defense and Special Defense by one stage each."
 MOVES_DESCRIPTIONS["Body Press"] = "The user attacks by slamming its body into the target."
 MOVES_DESCRIPTIONS["Feint"] = "Feint hits through moves such as Protect or Detect and lifts their effect. It has a short cooldown."
+MOVES_DESCRIPTIONS["Lunar Dance"] = "The user faints, giving everything of its strength to its allies: they are fully healed and cured of every status problem."
+MOVES_DESCRIPTIONS["Ice Hammer"] = "The user swings and hits with its strong, heavy fist."
+MOVES_DESCRIPTIONS["Sparkling Aria"] = "The user bursts into song, sending bubbles at everything around it. Its allies are cured of burns."
+MOVES_DESCRIPTIONS["Psyshield Bash"] = "The user rams the target wrapped in psychic energy. It also raises the user's Defense."
+MOVES_DESCRIPTIONS["Barb Barrage"] = "The user launches countless toxic barbs at the target. It has a 50%% chance of poisoning it."
+MOVES_DESCRIPTIONS["Raging Bull"] = "The user tackles the target like a raging bull. It breaks through the target's Protect."
+MOVES_DESCRIPTIONS["Rage Fist"] = "The user turns its rage into energy and punches the target. The more hurt the user is, the harder it hits, up to double."
+MOVES_DESCRIPTIONS["Hyper Drill"] = "The user spins the pointed part of its body and drills into the target. It goes through the target's Protect."
+MOVES_DESCRIPTIONS["Dragon Hammer"] = "The user uses its body like a hammer to attack the target."
+MOVES_DESCRIPTIONS["Belly Drum"] = "The user maximizes its Attack by giving up half of its HP. It fails if the user has half of its HP or less."
+MOVES_DESCRIPTIONS["Morning Sun"] = "The user restores half of its HP, or all of it in daylight."
+MOVES_DESCRIPTIONS["Whirlwind"] = "The user whips up a gust that blows the Pokemon in front of it back."
+MOVES_DESCRIPTIONS["Spikes"] = "The user lays spikes around the target. Every Pokemon there that touches the ground is hurt."
 
 function getMoveDescriptionByName(name)
     return MOVES_DESCRIPTIONS[name] and tr(MOVES_DESCRIPTIONS[name]) or ""
