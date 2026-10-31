@@ -38892,4 +38892,7 @@
 		<attribute key="description" value="A peculiar object used for making certain kinds of pokemon evolve." />
 		<attribute key="rareEffect" value="1" />
 	</item>
+	<item id="31095" article="a" name="surfboard">
+		<attribute key="description" value="It is a Pokemon addon kit for Pikachu and Raichu. Wearing it, they can surf. Category: Rare." />
+	</item>
 </items>
