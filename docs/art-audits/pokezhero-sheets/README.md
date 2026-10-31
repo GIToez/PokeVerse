@@ -1,6 +1,6 @@
 # PokeZHero contact sheets
 
-Rendered from the PokeZHero OTC 1.2 client. Ids match `../pokezhero-items.csv` and `../pokezhero-outfits.csv`. Nothing here is in the game yet; pick what you want and it gets imported by hand.
+Rendered from the PokeZHero OTC 1.2 client. Ids match `../pokezhero-items.csv` and `../pokezhero-outfits.csv`. The non-Tibia floors, walls, machines and trees and every trainer and Pokemon look are imported in #386 (see `../pokezhero.md`).
 
 ## Trainer outfits
 
@@ -43,7 +43,7 @@ Town square on Tibia grass 4526: beige path, orange track 31686, blue pool 32107
 
 ## White exterior walls (2222-2233)
 
-A full plain white wall set, unlike any of ours: 2222 runs left-right, 2224 up-down, 2228 is the corner and 2226 the end post. 2230 / 2231 / 2233 are the same walls with grey window frames. 2223 / 2225 / 2229 are a cream version with a carved trim, and 5009 / 5010 a plain cream one.
+We already have these (ours are 2222-2233 and the cream 24871-24877), so they are not imported: 2222 runs left-right, 2224 up-down, 2228 is the corner and 2226 the end post. 2230 / 2231 / 2233 are the same walls with grey window frames. 2223 / 2225 / 2229 are a cream version with a carved trim, and 5009 / 5010 a plain cream one.
 
 ![white wall set](white_wall_set.png)
 
