@@ -123,6 +123,8 @@ local function onHealEnd(cid, msg)
 end
 
 local function onHealStart(cid, target, item, targetPosition, playerPosition, forceFirstHeal)
+    -- the Medic's trial counts real heals: a hurt Pokemon without a potion already running
+    local counts = forceFirstHeal and getCreatureHealth(target) < getCreatureMaxHealth(target)
     local condition, healthGain = getHealCondition(item.itemid, Vocations.perk(cid, "medic", "healing"))
     setIsPokemonUsingHealthPotion(target, true)
     doAddCondition(target, condition)
@@ -136,7 +138,7 @@ local function onHealStart(cid, target, item, targetPosition, playerPosition, fo
     Sounds.around(targetPosition, "heal_hp")
     doSendDistanceShoot(playerPosition, targetPosition, PROJECTILE_GRAVEL)
     doRemoveItem(item.uid, 1)
-    if (target ~= cid) then
+    if (target ~= cid and counts) then
         Vocations.addTrial(cid, "medic", "heal")
         if (getCreatureMaster(target) ~= cid) then
             Vocations.addTrial(cid, "medic", "healOther")

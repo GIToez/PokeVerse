@@ -246,14 +246,17 @@ Vocations.TRIALS = {
     catcher = {
         { on = "catch", text = "Catch %d Pokemon", goals = { 50, 150, 300, 600 } },
         { on = "catch", unique = true, text = "Catch %d different species", goals = { 10, 25, 45, 70 } },
-        { on = "catch", shiny = true, text = "Catch %d shiny Pokemon", goals = { 0, 0, 1, 2 } },
+        -- shinies are 1 wild Pokemon in 8,192, so only the last rank asks for one (as the Ranger's)
+        { on = "catch", shiny = true, text = "Catch %d shiny Pokemon", goals = { 0, 0, 0, 1 } },
     },
     breeder = {
-        { on = "hatch", text = "Hatch %d eggs", goals = { 2, 4, 6, 10 } },
-        { on = "hatch", unique = true, text = "Hatch %d different species", goals = { 1, 2, 3, 5 } },
+        -- an account gets a Day Care egg about every 10 days, so these are months of breeding
+        { on = "hatch", text = "Hatch %d eggs", goals = { 1, 2, 3, 4 } },
+        { on = "hatch", unique = true, text = "Hatch %d different species", goals = { 0, 2, 2, 3 } },
     },
     ranger = {
-        { on = "scan", text = "Find wild Pokemon with %d radar scans", goals = { 100, 300, 600, 1200 } },
+        -- scans, not Pokemon: a scan counts once when it finds at least one
+        { on = "scan", text = "Make %d radar scans that find wild Pokemon", goals = { 100, 300, 600, 1200 } },
         { on = "find", unique = true, text = "Find %d different species on the radar", goals = { 10, 25, 45, 70 } },
         { on = "find", shiny = true, text = "Find %d shiny Pokemon on the radar", goals = { 0, 0, 0, 1 } },
     },

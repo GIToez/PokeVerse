@@ -305,6 +305,8 @@ local function testTrials(cid)
     become(cid, "catcher", 1)
     check("trial: Catcher rank 1 has no shiny goal", #Vocations.getTrial(cid).goals == 2, goalsOf(Vocations.getTrial(cid)))
     become(cid, "catcher", 3)
+    check("trial: Catcher rank 3 has no shiny goal either", #Vocations.getTrial(cid).goals == 2, goalsOf(Vocations.getTrial(cid)))
+    become(cid, "catcher", 4)
     Vocations.addTrial(cid, "catcher", "catch", "Rattata")
     local trial = Vocations.getTrial(cid)
     check("trial: only shinies count for the shiny goal", #trial.goals == 3 and trial.goals[3].have == 0 and
@@ -1965,6 +1967,25 @@ local function testMedic(cid, friend, arena)
     become(cid, "medic", 1)
     healed = heal()
     check("Medic rank 1 heals +3%", healed == math.min(math.floor(base * 1.03), getCreatureMaxHealth(m) - 1), healed)
+    local function counted()
+        local goals = Vocations.getTrial(cid).goals
+        return goals[1].have .. "/" .. goals[2].have
+    end
+    local function potionOn()
+        local potion = doPlayerAddItem(cid, 12245, 1)
+        env.onUse(cid, getThing(potion), getThingPosition(potion), { uid = m, itemid = 0 }, getCreaturePosition(m))
+        doPlayerRemoveItem(cid, 12245, getPlayerItemCount(cid, 12245))
+    end
+    Vocations.resetTrial(cid)
+    heal()
+    check("Medic trial: healing a hurt Pokemon counts for both goals", counted() == "1/1", counted())
+    potionOn()
+    check("Medic trial: a potion while one is running doesn't count", counted() == "1/1", counted())
+    doRemoveCondition(m, CONDITION_REGENERATION, CONDITION_SUBID.REGENERATION.HEALTH_POTION)
+    setIsPokemonUsingHealthPotion(m, false)
+    doCreatureAddHealth(m, getCreatureMaxHealth(m))
+    potionOn()
+    check("Medic trial: a potion on a Pokemon at full health doesn't count", counted() == "1/1", counted())
     local function markedFor(pid, from)
         for index = from or 1, #marks do
             if (marks[index].to == pid and marks[index].data.id == m) then
