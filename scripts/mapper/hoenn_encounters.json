@@ -1,0 +1,3579 @@
+{
+ "101": {
+  "main": {
+   "land": {
+    "Poochyena": 21.67,
+    "Wurmple": 45.0,
+    "Zigzagoon": 33.33
+   },
+   "levels": {
+    "Poochyena": [
+     2,
+     3
+    ],
+    "Wurmple": [
+     2,
+     3
+    ],
+    "Zigzagoon": [
+     2,
+     3
+    ]
+   }
+  }
+ },
+ "102": {
+  "Swarm": {
+   "land": {
+    "Seedot": 16.67,
+    "Surskit": 33.33
+   },
+   "levels": {
+    "Seedot": [
+     3,
+     3
+    ],
+    "Surskit": [
+     3,
+     3
+    ]
+   }
+  },
+  "main": {
+   "fishing": {
+    "Corphish": 120.0,
+    "Goldeen": 50.0,
+    "Magikarp": 130.0
+   },
+   "land": {
+    "Lotad": 13.33,
+    "Poochyena": 20.0,
+    "Ralts": 4.0,
+    "Seedot": 7.0,
+    "Surskit": 0.67,
+    "Wurmple": 30.0,
+    "Zigzagoon": 25.0
+   },
+   "levels": {
+    "Corphish": [
+     10,
+     45
+    ],
+    "Goldeen": [
+     5,
+     30
+    ],
+    "Lotad": [
+     3,
+     4
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Marill": [
+     5,
+     35
+    ],
+    "Poochyena": [
+     3,
+     4
+    ],
+    "Ralts": [
+     4,
+     4
+    ],
+    "Seedot": [
+     3,
+     4
+    ],
+    "Surskit": [
+     3,
+     30
+    ],
+    "Wurmple": [
+     3,
+     4
+    ],
+    "Zigzagoon": [
+     3,
+     4
+    ]
+   },
+   "water": {
+    "Goldeen": 0.33,
+    "Marill": 99.0,
+    "Surskit": 0.67
+   }
+  }
+ },
+ "103": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Sharpedo": 40.0,
+    "Tentacool": 50.0,
+    "Wailmer": 80.0
+   },
+   "land": {
+    "Poochyena": 40.0,
+    "Wingull": 13.34,
+    "Zigzagoon": 46.67
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Poochyena": [
+     2,
+     4
+    ],
+    "Sharpedo": [
+     30,
+     35
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     2,
+     30
+    ],
+    "Zigzagoon": [
+     2,
+     4
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "104": {
+  "main": {
+   "fishing": {
+    "Magikarp": 300.0
+   },
+   "land": {
+    "Marill": 6.67,
+    "Poochyena": 13.33,
+    "Taillow": 10.0,
+    "Wingull": 10.0,
+    "Wurmple": 26.67,
+    "Zigzagoon": 33.33
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     45
+    ],
+    "Marill": [
+     4,
+     5
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Poochyena": [
+     4,
+     5
+    ],
+    "Taillow": [
+     4,
+     5
+    ],
+    "Wingull": [
+     3,
+     30
+    ],
+    "Wurmple": [
+     4,
+     5
+    ],
+    "Zigzagoon": [
+     4,
+     5
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Wingull": 95.0
+   }
+  }
+ },
+ "105": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Tentacool": 50.0,
+    "Wailmer": 120.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "106": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Tentacool": 50.0,
+    "Wailmer": 120.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "107": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Tentacool": 50.0,
+    "Wailmer": 120.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "108": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Tentacool": 50.0,
+    "Wailmer": 120.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "109": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Tentacool": 50.0,
+    "Wailmer": 120.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "110": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Tentacool": 50.0,
+    "Wailmer": 120.0
+   },
+   "land": {
+    "Electrike": 30.0,
+    "Gulpin": 15.0,
+    "Minun": 10.67,
+    "Oddish": 10.0,
+    "Plusle": 6.33,
+    "Poochyena": 6.67,
+    "Wingull": 8.0,
+    "Zigzagoon": 13.33
+   },
+   "levels": {
+    "Electrike": [
+     12,
+     13
+    ],
+    "Gulpin": [
+     12,
+     13
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Minun": [
+     12,
+     13
+    ],
+    "Oddish": [
+     13,
+     13
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Plusle": [
+     12,
+     13
+    ],
+    "Poochyena": [
+     12,
+     12
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ],
+    "Zigzagoon": [
+     12,
+     12
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "111": {
+  "main": {
+   "fishing": {
+    "Barboach": 120.0,
+    "Goldeen": 50.0,
+    "Magikarp": 130.0
+   },
+   "land": {
+    "Baltoy": 14.67,
+    "Cacnea": 15.33,
+    "Sandshrew": 35.0,
+    "Trapinch": 35.0
+   },
+   "levels": {
+    "Baltoy": [
+     19,
+     22
+    ],
+    "Barboach": [
+     10,
+     45
+    ],
+    "Cacnea": [
+     19,
+     22
+    ],
+    "Geodude": [
+     5,
+     20
+    ],
+    "Goldeen": [
+     5,
+     30
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Marill": [
+     5,
+     35
+    ],
+    "Sandshrew": [
+     19,
+     21
+    ],
+    "Surskit": [
+     20,
+     30
+    ],
+    "Trapinch": [
+     19,
+     21
+    ]
+   },
+   "rock smash": {
+    "Geodude": 100.0
+   },
+   "water": {
+    "Goldeen": 0.33,
+    "Marill": 99.0,
+    "Surskit": 0.67
+   }
+  }
+ },
+ "112": {
+  "main": {
+   "land": {
+    "Machop": 16.67,
+    "Marill": 8.33,
+    "Numel": 75.0
+   },
+   "levels": {
+    "Machop": [
+     14,
+     16
+    ],
+    "Marill": [
+     14,
+     16
+    ],
+    "Numel": [
+     14,
+     16
+    ]
+   }
+  }
+ },
+ "113": {
+  "main": {
+   "land": {
+    "Sandshrew": 16.67,
+    "Skarmory": 5.0,
+    "Slugma": 8.33,
+    "Spinda": 70.0
+   },
+   "levels": {
+    "Sandshrew": [
+     14,
+     16
+    ],
+    "Skarmory": [
+     16,
+     16
+    ],
+    "Slugma": [
+     14,
+     16
+    ],
+    "Spinda": [
+     14,
+     16
+    ]
+   }
+  }
+ },
+ "114": {
+  "Swarm": {
+   "land": {
+    "Nuzleaf": 16.67,
+    "Surskit": 33.33
+   },
+   "levels": {
+    "Nuzleaf": [
+     15,
+     15
+    ],
+    "Surskit": [
+     15,
+     15
+    ]
+   }
+  },
+  "main": {
+   "fishing": {
+    "Barboach": 120.0,
+    "Goldeen": 50.0,
+    "Magikarp": 130.0
+   },
+   "land": {
+    "Lombre": 10.0,
+    "Lotad": 20.0,
+    "Nuzleaf": 3.66,
+    "Seedot": 10.0,
+    "Seviper": 9.33,
+    "Surskit": 0.67,
+    "Swablu": 40.0,
+    "Zangoose": 6.33
+   },
+   "levels": {
+    "Barboach": [
+     10,
+     45
+    ],
+    "Geodude": [
+     5,
+     20
+    ],
+    "Goldeen": [
+     5,
+     30
+    ],
+    "Lombre": [
+     16,
+     18
+    ],
+    "Lotad": [
+     15,
+     16
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Marill": [
+     5,
+     35
+    ],
+    "Nuzleaf": [
+     15,
+     18
+    ],
+    "Seedot": [
+     15,
+     16
+    ],
+    "Seviper": [
+     15,
+     17
+    ],
+    "Surskit": [
+     15,
+     30
+    ],
+    "Swablu": [
+     15,
+     17
+    ],
+    "Zangoose": [
+     15,
+     17
+    ]
+   },
+   "rock smash": {
+    "Geodude": 100.0
+   },
+   "water": {
+    "Goldeen": 0.33,
+    "Marill": 99.0,
+    "Surskit": 0.67
+   }
+  }
+ },
+ "115": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Tentacool": 50.0,
+    "Wailmer": 120.0
+   },
+   "land": {
+    "Jigglypuff": 10.0,
+    "Swablu": 30.0,
+    "Swellow": 10.0,
+    "Taillow": 40.0,
+    "Wingull": 10.0
+   },
+   "levels": {
+    "Jigglypuff": [
+     24,
+     25
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Swablu": [
+     23,
+     25
+    ],
+    "Swellow": [
+     25,
+     25
+    ],
+    "Taillow": [
+     23,
+     25
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "116": {
+  "Swarm": {
+   "land": {
+    "Skitty": 50.0
+   },
+   "levels": {
+    "Skitty": [
+     8,
+     15
+    ]
+   }
+  },
+  "main": {
+   "land": {
+    "Abra": 3.33,
+    "Nincada": 20.0,
+    "Poochyena": 9.33,
+    "Skitty": 2.0,
+    "Taillow": 20.0,
+    "Whismur": 26.67,
+    "Zigzagoon": 18.67
+   },
+   "levels": {
+    "Abra": [
+     7,
+     7
+    ],
+    "Nincada": [
+     6,
+     7
+    ],
+    "Poochyena": [
+     6,
+     8
+    ],
+    "Skitty": [
+     7,
+     8
+    ],
+    "Taillow": [
+     6,
+     8
+    ],
+    "Whismur": [
+     6,
+     7
+    ],
+    "Zigzagoon": [
+     6,
+     8
+    ]
+   }
+  }
+ },
+ "117": {
+  "Swarm": {
+   "land": {
+    "Seedot": 16.67,
+    "Surskit": 33.33
+   },
+   "levels": {
+    "Seedot": [
+     13,
+     13
+    ],
+    "Surskit": [
+     15,
+     15
+    ]
+   }
+  },
+  "main": {
+   "fishing": {
+    "Corphish": 120.0,
+    "Goldeen": 50.0,
+    "Magikarp": 130.0
+   },
+   "land": {
+    "Illumise": 12.33,
+    "Marill": 10.0,
+    "Oddish": 20.0,
+    "Poochyena": 10.0,
+    "Roselia": 20.0,
+    "Seedot": 0.33,
+    "Surskit": 0.67,
+    "Volbeat": 6.67,
+    "Zigzagoon": 20.0
+   },
+   "levels": {
+    "Corphish": [
+     10,
+     45
+    ],
+    "Goldeen": [
+     5,
+     30
+    ],
+    "Illumise": [
+     13,
+     14
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Marill": [
+     5,
+     35
+    ],
+    "Oddish": [
+     13,
+     14
+    ],
+    "Poochyena": [
+     13,
+     14
+    ],
+    "Roselia": [
+     13,
+     14
+    ],
+    "Seedot": [
+     13,
+     13
+    ],
+    "Surskit": [
+     13,
+     30
+    ],
+    "Volbeat": [
+     13,
+     14
+    ],
+    "Zigzagoon": [
+     13,
+     14
+    ]
+   },
+   "water": {
+    "Goldeen": 0.33,
+    "Marill": 99.0,
+    "Surskit": 0.67
+   }
+  }
+ },
+ "118": {
+  "main": {
+   "fishing": {
+    "Carvanha": 80.0,
+    "Magikarp": 130.0,
+    "Sharpedo": 40.0,
+    "Tentacool": 50.0
+   },
+   "land": {
+    "Electrike": 30.0,
+    "Kecleon": 1.0,
+    "Linoone": 10.0,
+    "Manectric": 10.0,
+    "Wingull": 19.0,
+    "Zigzagoon": 30.0
+   },
+   "levels": {
+    "Carvanha": [
+     10,
+     45
+    ],
+    "Electrike": [
+     24,
+     26
+    ],
+    "Kecleon": [
+     25,
+     25
+    ],
+    "Linoone": [
+     26,
+     26
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Manectric": [
+     26,
+     26
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Sharpedo": [
+     30,
+     35
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wingull": [
+     10,
+     30
+    ],
+    "Zigzagoon": [
+     24,
+     26
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "119": {
+  "Long grass": {
+   "land": {
+    "Kecleon": 1.0,
+    "Linoone": 30.0,
+    "Oddish": 30.0,
+    "Tropius": 9.0,
+    "Zigzagoon": 30.0
+   },
+   "levels": {
+    "Kecleon": [
+     25,
+     25
+    ],
+    "Linoone": [
+     25,
+     27
+    ],
+    "Oddish": [
+     24,
+     27
+    ],
+    "Tropius": [
+     25,
+     27
+    ],
+    "Zigzagoon": [
+     25,
+     27
+    ]
+   }
+  },
+  "main": {
+   "fishing": {
+    "Carvanha": 120.0,
+    "Magikarp": 130.0,
+    "Tentacool": 50.0
+   },
+   "levels": {
+    "Carvanha": [
+     10,
+     45
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "120": {
+  "Long grass": {
+   "land": {
+    "Absol": 8.0,
+    "Kecleon": 1.0,
+    "Linoone": 20.0,
+    "Marill": 15.0,
+    "Mightyena": 10.0,
+    "Oddish": 25.0,
+    "Poochyena": 6.67,
+    "Seedot": 0.33,
+    "Surskit": 0.67,
+    "Zigzagoon": 13.33
+   },
+   "levels": {
+    "Absol": [
+     25,
+     27
+    ],
+    "Kecleon": [
+     25,
+     25
+    ],
+    "Linoone": [
+     25,
+     27
+    ],
+    "Marill": [
+     25,
+     27
+    ],
+    "Mightyena": [
+     25,
+     27
+    ],
+    "Oddish": [
+     25,
+     27
+    ],
+    "Poochyena": [
+     25,
+     25
+    ],
+    "Seedot": [
+     25,
+     25
+    ],
+    "Surskit": [
+     25,
+     25
+    ],
+    "Zigzagoon": [
+     25,
+     25
+    ]
+   }
+  },
+  "Swarm": {
+   "land": {
+    "Seedot": 16.67,
+    "Surskit": 33.33
+   },
+   "levels": {
+    "Seedot": [
+     25,
+     25
+    ],
+    "Surskit": [
+     28,
+     28
+    ]
+   }
+  },
+  "main": {
+   "fishing": {
+    "Barboach": 120.0,
+    "Goldeen": 50.0,
+    "Magikarp": 130.0
+   },
+   "levels": {
+    "Barboach": [
+     10,
+     45
+    ],
+    "Goldeen": [
+     5,
+     30
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Marill": [
+     5,
+     35
+    ],
+    "Surskit": [
+     20,
+     30
+    ]
+   },
+   "water": {
+    "Goldeen": 0.33,
+    "Marill": 99.0,
+    "Surskit": 0.67
+   }
+  }
+ },
+ "121": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Tentacool": 50.0,
+    "Wailmer": 120.0
+   },
+   "land": {
+    "Duskull": 10.0,
+    "Gloom": 5.0,
+    "Kecleon": 1.0,
+    "Linoone": 13.33,
+    "Mightyena": 6.67,
+    "Oddish": 15.0,
+    "Poochyena": 6.67,
+    "Shuppet": 20.0,
+    "Wingull": 9.0,
+    "Zigzagoon": 13.33
+   },
+   "levels": {
+    "Duskull": [
+     26,
+     28
+    ],
+    "Gloom": [
+     28,
+     28
+    ],
+    "Kecleon": [
+     25,
+     25
+    ],
+    "Linoone": [
+     26,
+     28
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Mightyena": [
+     26,
+     28
+    ],
+    "Oddish": [
+     26,
+     28
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Poochyena": [
+     26,
+     26
+    ],
+    "Shuppet": [
+     26,
+     28
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ],
+    "Zigzagoon": [
+     26,
+     26
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "122": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Sharpedo": 40.0,
+    "Tentacool": 50.0,
+    "Wailmer": 80.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Sharpedo": [
+     30,
+     35
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "123": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Tentacool": 50.0,
+    "Wailmer": 120.0
+   },
+   "land": {
+    "Duskull": 10.0,
+    "Gloom": 5.0,
+    "Kecleon": 1.0,
+    "Linoone": 13.33,
+    "Mightyena": 6.67,
+    "Oddish": 15.0,
+    "Poochyena": 6.67,
+    "Shuppet": 20.0,
+    "Wingull": 9.0,
+    "Zigzagoon": 13.33
+   },
+   "levels": {
+    "Duskull": [
+     26,
+     28
+    ],
+    "Gloom": [
+     28,
+     28
+    ],
+    "Kecleon": [
+     25,
+     25
+    ],
+    "Linoone": [
+     26,
+     28
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Mightyena": [
+     26,
+     28
+    ],
+    "Oddish": [
+     26,
+     28
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Poochyena": [
+     26,
+     26
+    ],
+    "Shuppet": [
+     26,
+     28
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ],
+    "Zigzagoon": [
+     26,
+     26
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "124": {
+  "Underwater": {
+   "dive": {
+    "Chinchou": 30.0,
+    "Clamperl": 65.0,
+    "Relicanth": 5.0
+   },
+   "levels": {
+    "Chinchou": [
+     20,
+     30
+    ],
+    "Clamperl": [
+     20,
+     35
+    ],
+    "Relicanth": [
+     30,
+     35
+    ]
+   }
+  },
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Sharpedo": 40.0,
+    "Tentacool": 50.0,
+    "Wailmer": 80.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Sharpedo": [
+     30,
+     35
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "125": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Sharpedo": 40.0,
+    "Tentacool": 50.0,
+    "Wailmer": 80.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Sharpedo": [
+     30,
+     35
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "126": {
+  "Underwater": {
+   "dive": {
+    "Chinchou": 30.0,
+    "Clamperl": 65.0,
+    "Relicanth": 5.0
+   },
+   "levels": {
+    "Chinchou": [
+     20,
+     30
+    ],
+    "Clamperl": [
+     20,
+     35
+    ],
+    "Relicanth": [
+     30,
+     35
+    ]
+   }
+  },
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Sharpedo": 40.0,
+    "Tentacool": 50.0,
+    "Wailmer": 80.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Sharpedo": [
+     30,
+     35
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "127": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Sharpedo": 40.0,
+    "Tentacool": 50.0,
+    "Wailmer": 80.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Sharpedo": [
+     30,
+     35
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "128": {
+  "main": {
+   "fishing": {
+    "Corsola": 15.0,
+    "Luvdisc": 60.0,
+    "Magikarp": 130.0,
+    "Tentacool": 30.0,
+    "Wailmer": 65.0
+   },
+   "levels": {
+    "Corsola": [
+     30,
+     35
+    ],
+    "Luvdisc": [
+     10,
+     35
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "129": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Sharpedo": 40.0,
+    "Tentacool": 50.0,
+    "Wailmer": 80.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Sharpedo": [
+     30,
+     35
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wailord": [
+     25,
+     40
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 4.0,
+    "Tentacool": 60.0,
+    "Wailord": 1.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "130": {
+  "Mirage Island": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Sharpedo": 40.0,
+    "Tentacool": 50.0,
+    "Wailmer": 80.0
+   },
+   "land": {
+    "Wynaut": 100.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Sharpedo": [
+     30,
+     35
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ],
+    "Wynaut": [
+     5,
+     50
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "131": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Sharpedo": 40.0,
+    "Tentacool": 50.0,
+    "Wailmer": 80.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Sharpedo": [
+     30,
+     35
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "132": {
+  "main": {
+   "fishing": {
+    "Horsea": 15.0,
+    "Magikarp": 130.0,
+    "Sharpedo": 40.0,
+    "Tentacool": 50.0,
+    "Wailmer": 65.0
+   },
+   "levels": {
+    "Horsea": [
+     25,
+     30
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Sharpedo": [
+     30,
+     35
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "133": {
+  "main": {
+   "fishing": {
+    "Horsea": 15.0,
+    "Magikarp": 130.0,
+    "Sharpedo": 40.0,
+    "Tentacool": 50.0,
+    "Wailmer": 65.0
+   },
+   "levels": {
+    "Horsea": [
+     25,
+     30
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Sharpedo": [
+     30,
+     35
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "134": {
+  "main": {
+   "fishing": {
+    "Horsea": 15.0,
+    "Magikarp": 130.0,
+    "Sharpedo": 40.0,
+    "Tentacool": 50.0,
+    "Wailmer": 65.0
+   },
+   "levels": {
+    "Horsea": [
+     25,
+     30
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Sharpedo": [
+     30,
+     35
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "Abandoned Ship": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Tentacool": 150.0,
+    "Tentacruel": 20.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Tentacruel": [
+     20,
+     35
+    ]
+   },
+   "water": {
+    "Tentacool": 99.0,
+    "Tentacruel": 1.0
+   }
+  }
+ },
+ "Altering Cave": {
+  "main": {
+   "land": {
+    "Zubat": 100.0
+   },
+   "levels": {
+    "Zubat": [
+     6,
+     16
+    ]
+   }
+  }
+ },
+ "Ancient Tomb": {},
+ "Artisan Cave": {
+  "main": {
+   "land": {
+    "Smeargle": 33.33
+   },
+   "levels": {
+    "Smeargle": [
+     40,
+     50
+    ]
+   }
+  }
+ },
+ "Birth Island": {},
+ "Cave of Origin": {
+  "1F-B3F": {
+   "land": {
+    "Golbat": 10.0,
+    "Mawile": 10.0,
+    "Sableye": 20.0,
+    "Zubat": 60.0
+   },
+   "levels": {
+    "Golbat": [
+     33,
+     36
+    ],
+    "Mawile": [
+     30,
+     34
+    ],
+    "Sableye": [
+     30,
+     34
+    ],
+    "Zubat": [
+     30,
+     34
+    ]
+   }
+  },
+  "Entrance": {
+   "land": {
+    "Golbat": 10.0,
+    "Zubat": 90.0
+   },
+   "levels": {
+    "Golbat": [
+     33,
+     36
+    ],
+    "Zubat": [
+     28,
+     35
+    ]
+   }
+  }
+ },
+ "Desert Ruins": {},
+ "Desert Underpass": {
+  "main": {
+   "land": {
+    "Ditto": 16.67,
+    "Loudred": 5.33,
+    "Whismur": 11.33
+   },
+   "levels": {
+    "Ditto": [
+     38,
+     45
+    ],
+    "Loudred": [
+     38,
+     44
+    ],
+    "Whismur": [
+     35,
+     38
+    ]
+   }
+  }
+ },
+ "Dewford Town": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Tentacool": 50.0,
+    "Wailmer": 120.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "Ever Grande City": {
+  "main": {
+   "fishing": {
+    "Corsola": 15.0,
+    "Luvdisc": 60.0,
+    "Magikarp": 130.0,
+    "Tentacool": 30.0,
+    "Wailmer": 65.0
+   },
+   "levels": {
+    "Corsola": [
+     30,
+     35
+    ],
+    "Luvdisc": [
+     10,
+     35
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "Faraway Island": {},
+ "Fiery Path": {
+  "main": {
+   "land": {
+    "Grimer": 9.66,
+    "Koffing": 17.34,
+    "Machop": 15.0,
+    "Numel": 30.0,
+    "Slugma": 10.0,
+    "Torkoal": 18.0
+   },
+   "levels": {
+    "Grimer": [
+     14,
+     16
+    ],
+    "Koffing": [
+     14,
+     16
+    ],
+    "Machop": [
+     15,
+     16
+    ],
+    "Numel": [
+     15,
+     16
+    ],
+    "Slugma": [
+     15,
+     15
+    ],
+    "Torkoal": [
+     14,
+     16
+    ]
+   }
+  }
+ },
+ "Fortree City": {},
+ "Granite Cave": {
+  "1F": {
+   "land": {
+    "Abra": 10.0,
+    "Geodude": 10.0,
+    "Makuhita": 50.0,
+    "Zubat": 30.0
+   },
+   "levels": {
+    "Abra": [
+     8,
+     8
+    ],
+    "Geodude": [
+     6,
+     9
+    ],
+    "Makuhita": [
+     6,
+     10
+    ],
+    "Zubat": [
+     7,
+     8
+    ]
+   }
+  },
+  "B1F": {
+   "land": {
+    "Abra": 10.0,
+    "Aron": 40.0,
+    "Makuhita": 10.0,
+    "Mawile": 3.33,
+    "Sableye": 6.67,
+    "Zubat": 30.0
+   },
+   "levels": {
+    "Abra": [
+     9,
+     9
+    ],
+    "Aron": [
+     9,
+     11
+    ],
+    "Makuhita": [
+     10,
+     11
+    ],
+    "Mawile": [
+     9,
+     11
+    ],
+    "Sableye": [
+     9,
+     11
+    ],
+    "Zubat": [
+     9,
+     10
+    ]
+   }
+  },
+  "B2F": {
+   "land": {
+    "Abra": 10.0,
+    "Aron": 40.0,
+    "Mawile": 6.67,
+    "Sableye": 13.33,
+    "Zubat": 30.0
+   },
+   "levels": {
+    "Abra": [
+     10,
+     10
+    ],
+    "Aron": [
+     10,
+     12
+    ],
+    "Geodude": [
+     5,
+     20
+    ],
+    "Mawile": [
+     10,
+     12
+    ],
+    "Nosepass": [
+     10,
+     20
+    ],
+    "Sableye": [
+     10,
+     12
+    ],
+    "Zubat": [
+     10,
+     11
+    ]
+   },
+   "rock smash": {
+    "Geodude": 70.0,
+    "Nosepass": 30.0
+   }
+  },
+  "Steven's room": {
+   "land": {
+    "Abra": 10.0,
+    "Aron": 10.0,
+    "Makuhita": 50.0,
+    "Zubat": 30.0
+   },
+   "levels": {
+    "Abra": [
+     8,
+     8
+    ],
+    "Aron": [
+     7,
+     8
+    ],
+    "Makuhita": [
+     6,
+     10
+    ],
+    "Zubat": [
+     7,
+     8
+    ]
+   }
+  }
+ },
+ "Island Cave": {},
+ "Jagged Pass": {
+  "main": {
+   "land": {
+    "Machop": 25.0,
+    "Numel": 55.0,
+    "Spoink": 20.0
+   },
+   "levels": {
+    "Machop": [
+     18,
+     22
+    ],
+    "Numel": [
+     18,
+     22
+    ],
+    "Spoink": [
+     18,
+     22
+    ]
+   }
+  }
+ },
+ "Lilycove City": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Staryu": 15.0,
+    "Tentacool": 50.0,
+    "Wailmer": 105.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Staryu": [
+     25,
+     30
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "Littleroot Town": {},
+ "Magma Hideout": {},
+ "Marine Cave": {},
+ "Mauville City": {},
+ "Meteor Falls": {
+  "1F 1R": {
+   "fishing": {
+    "Barboach": 120.0,
+    "Goldeen": 50.0,
+    "Magikarp": 130.0
+   },
+   "land": {
+    "Lunatone": 6.67,
+    "Solrock": 13.33,
+    "Zubat": 80.0
+   },
+   "levels": {
+    "Barboach": [
+     10,
+     45
+    ],
+    "Goldeen": [
+     5,
+     30
+    ],
+    "Lunatone": [
+     5,
+     35
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Solrock": [
+     5,
+     35
+    ],
+    "Zubat": [
+     5,
+     35
+    ]
+   },
+   "water": {
+    "Lunatone": 3.33,
+    "Solrock": 6.67,
+    "Zubat": 90.0
+   }
+  },
+  "1F 2R & B1F 1R": {
+   "fishing": {
+    "Barboach": 100.0,
+    "Goldeen": 50.0,
+    "Magikarp": 130.0,
+    "Whiscash": 20.0
+   },
+   "land": {
+    "Golbat": 65.0,
+    "Lunatone": 11.67,
+    "Solrock": 23.33
+   },
+   "levels": {
+    "Barboach": [
+     10,
+     35
+    ],
+    "Golbat": [
+     30,
+     40
+    ],
+    "Goldeen": [
+     5,
+     30
+    ],
+    "Lunatone": [
+     5,
+     39
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Solrock": [
+     5,
+     39
+    ],
+    "Whiscash": [
+     30,
+     45
+    ]
+   },
+   "water": {
+    "Golbat": 90.0,
+    "Lunatone": 3.33,
+    "Solrock": 6.67
+   }
+  },
+  "B1F 2R": {
+   "fishing": {
+    "Barboach": 100.0,
+    "Goldeen": 50.0,
+    "Magikarp": 130.0,
+    "Whiscash": 20.0
+   },
+   "land": {
+    "Bagon": 25.0,
+    "Golbat": 50.0,
+    "Lunatone": 8.33,
+    "Solrock": 16.67
+   },
+   "levels": {
+    "Bagon": [
+     25,
+     35
+    ],
+    "Barboach": [
+     10,
+     35
+    ],
+    "Golbat": [
+     30,
+     40
+    ],
+    "Goldeen": [
+     5,
+     30
+    ],
+    "Lunatone": [
+     5,
+     39
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Solrock": [
+     5,
+     39
+    ],
+    "Whiscash": [
+     30,
+     45
+    ]
+   },
+   "water": {
+    "Golbat": 90.0,
+    "Lunatone": 3.33,
+    "Solrock": 6.67
+   }
+  },
+  "Steven's cave": {
+   "land": {
+    "Golbat": 21.67,
+    "Solrock": 11.67
+   },
+   "levels": {
+    "Golbat": [
+     33,
+     40
+    ],
+    "Solrock": [
+     33,
+     39
+    ]
+   }
+  }
+ },
+ "Mirage Island": {},
+ "Mossdeep City": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Sharpedo": 40.0,
+    "Tentacool": 50.0,
+    "Wailmer": 80.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Sharpedo": [
+     30,
+     35
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "Mt. Pyre": {
+  "1F-3F": {
+   "land": {
+    "Duskull": 33.33,
+    "Shuppet": 66.67
+   },
+   "levels": {
+    "Duskull": [
+     22,
+     29
+    ],
+    "Shuppet": [
+     22,
+     29
+    ]
+   }
+  },
+  "4F-6F": {
+   "land": {
+    "Duskull": 36.67,
+    "Shuppet": 63.33
+   },
+   "levels": {
+    "Duskull": [
+     22,
+     29
+    ],
+    "Shuppet": [
+     22,
+     29
+    ]
+   }
+  },
+  "Exterior": {
+   "land": {
+    "Duskull": 13.33,
+    "Meditite": 20.0,
+    "Shuppet": 33.33,
+    "Vulpix": 23.33,
+    "Wingull": 10.0
+   },
+   "levels": {
+    "Duskull": [
+     27,
+     29
+    ],
+    "Meditite": [
+     27,
+     29
+    ],
+    "Shuppet": [
+     27,
+     29
+    ],
+    "Vulpix": [
+     25,
+     29
+    ],
+    "Wingull": [
+     26,
+     28
+    ]
+   }
+  },
+  "Summit": {
+   "land": {
+    "Chimecho": 2.0,
+    "Duskull": 37.0,
+    "Shuppet": 61.0
+   },
+   "levels": {
+    "Chimecho": [
+     28,
+     28
+    ],
+    "Duskull": [
+     24,
+     30
+    ],
+    "Shuppet": [
+     24,
+     30
+    ]
+   }
+  }
+ },
+ "Navel Rock": {},
+ "New Mauville": {
+  "Basement": {
+   "land": {
+    "Electrode": 1.0,
+    "Magnemite": 49.0,
+    "Magneton": 1.0,
+    "Voltorb": 49.0
+   },
+   "levels": {
+    "Electrode": [
+     26,
+     26
+    ],
+    "Magnemite": [
+     22,
+     26
+    ],
+    "Magneton": [
+     26,
+     26
+    ],
+    "Voltorb": [
+     22,
+     26
+    ]
+   }
+  },
+  "Entrance": {
+   "land": {
+    "Magnemite": 50.0,
+    "Voltorb": 50.0
+   },
+   "levels": {
+    "Magnemite": [
+     22,
+     26
+    ],
+    "Voltorb": [
+     22,
+     26
+    ]
+   }
+  }
+ },
+ "Pacifidlog Town": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Sharpedo": 40.0,
+    "Tentacool": 50.0,
+    "Wailmer": 80.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Sharpedo": [
+     30,
+     35
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "Petalburg City": {
+  "main": {
+   "fishing": {
+    "Corphish": 120.0,
+    "Goldeen": 50.0,
+    "Magikarp": 130.0
+   },
+   "levels": {
+    "Corphish": [
+     10,
+     45
+    ],
+    "Goldeen": [
+     5,
+     30
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Marill": [
+     5,
+     35
+    ]
+   },
+   "water": {
+    "Marill": 100.0
+   }
+  }
+ },
+ "Petalburg Woods": {
+  "main": {
+   "land": {
+    "Cascoon": 10.0,
+    "Poochyena": 10.0,
+    "Shroomish": 15.0,
+    "Silcoon": 10.0,
+    "Slakoth": 5.0,
+    "Taillow": 5.0,
+    "Wurmple": 25.0,
+    "Zigzagoon": 20.0
+   },
+   "levels": {
+    "Cascoon": [
+     5,
+     5
+    ],
+    "Poochyena": [
+     5,
+     6
+    ],
+    "Shroomish": [
+     5,
+     6
+    ],
+    "Silcoon": [
+     5,
+     5
+    ],
+    "Slakoth": [
+     5,
+     6
+    ],
+    "Taillow": [
+     5,
+     6
+    ],
+    "Wurmple": [
+     5,
+     6
+    ],
+    "Zigzagoon": [
+     5,
+     6
+    ]
+   }
+  }
+ },
+ "Rustboro City": {},
+ "Rusturf Tunnel": {
+  "main": {
+   "land": {
+    "Whismur": 100.0
+   },
+   "levels": {
+    "Whismur": [
+     5,
+     8
+    ]
+   }
+  }
+ },
+ "Safari Zone": {
+  "Area 1 - Central": {
+   "land": {
+    "Doduo": 10.0,
+    "Girafarig": 20.0,
+    "Gloom": 5.0,
+    "Natu": 10.0,
+    "Oddish": 40.0,
+    "Pikachu": 5.0,
+    "Wobbuffet": 10.0
+   },
+   "levels": {
+    "Doduo": [
+     25,
+     25
+    ],
+    "Girafarig": [
+     25,
+     27
+    ],
+    "Gloom": [
+     25,
+     25
+    ],
+    "Natu": [
+     25,
+     25
+    ],
+    "Oddish": [
+     25,
+     27
+    ],
+    "Pikachu": [
+     25,
+     27
+    ],
+    "Wobbuffet": [
+     27,
+     29
+    ]
+   }
+  },
+  "Area 2 - West": {
+   "fishing": {
+    "Goldeen": 150.0,
+    "Magikarp": 130.0,
+    "Seaking": 20.0
+   },
+   "land": {
+    "Doduo": 10.0,
+    "Girafarig": 20.0,
+    "Gloom": 5.0,
+    "Natu": 10.0,
+    "Oddish": 40.0,
+    "Pikachu": 5.0,
+    "Wobbuffet": 10.0
+   },
+   "levels": {
+    "Doduo": [
+     25,
+     27
+    ],
+    "Girafarig": [
+     25,
+     27
+    ],
+    "Gloom": [
+     25,
+     25
+    ],
+    "Goldeen": [
+     5,
+     35
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Natu": [
+     25,
+     25
+    ],
+    "Oddish": [
+     25,
+     27
+    ],
+    "Pikachu": [
+     25,
+     27
+    ],
+    "Psyduck": [
+     20,
+     35
+    ],
+    "Seaking": [
+     25,
+     40
+    ],
+    "Wobbuffet": [
+     27,
+     29
+    ]
+   },
+   "water": {
+    "Psyduck": 100.0
+   }
+  },
+  "Area 3 - Northwest": {
+   "fishing": {
+    "Goldeen": 150.0,
+    "Magikarp": 130.0,
+    "Seaking": 20.0
+   },
+   "land": {
+    "Dodrio": 5.0,
+    "Doduo": 15.0,
+    "Gloom": 15.0,
+    "Oddish": 30.0,
+    "Pinsir": 5.0,
+    "Rhyhorn": 30.0
+   },
+   "levels": {
+    "Dodrio": [
+     29,
+     31
+    ],
+    "Doduo": [
+     27,
+     29
+    ],
+    "Gloom": [
+     29,
+     31
+    ],
+    "Goldeen": [
+     5,
+     35
+    ],
+    "Golduck": [
+     25,
+     40
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Oddish": [
+     27,
+     29
+    ],
+    "Pinsir": [
+     27,
+     29
+    ],
+    "Psyduck": [
+     20,
+     35
+    ],
+    "Rhyhorn": [
+     27,
+     29
+    ],
+    "Seaking": [
+     25,
+     40
+    ]
+   },
+   "water": {
+    "Golduck": 5.0,
+    "Psyduck": 95.0
+   }
+  },
+  "Area 4 - North": {
+   "land": {
+    "Gloom": 15.0,
+    "Heracross": 5.0,
+    "Natu": 15.0,
+    "Oddish": 30.0,
+    "Phanpy": 30.0,
+    "Xatu": 5.0
+   },
+   "levels": {
+    "Geodude": [
+     5,
+     30
+    ],
+    "Gloom": [
+     29,
+     31
+    ],
+    "Heracross": [
+     27,
+     29
+    ],
+    "Natu": [
+     27,
+     29
+    ],
+    "Oddish": [
+     27,
+     29
+    ],
+    "Phanpy": [
+     27,
+     29
+    ],
+    "Xatu": [
+     29,
+     31
+    ]
+   },
+   "rock smash": {
+    "Geodude": 100.0
+   }
+  },
+  "Area 5 - East": {
+   "fishing": {
+    "Goldeen": 30.0,
+    "Magikarp": 43.33,
+    "Octillery": 0.33,
+    "Remoraid": 26.34
+   },
+   "land": {
+    "Aipom": 3.33,
+    "Gligar": 1.67,
+    "Hoothoot": 1.67,
+    "Mareep": 10.0,
+    "Snubbull": 1.67,
+    "Spinarak": 3.33,
+    "Stantler": 1.67,
+    "Sunkern": 10.0
+   },
+   "levels": {
+    "Aipom": [
+     34,
+     34
+    ],
+    "Gligar": [
+     37,
+     40
+    ],
+    "Goldeen": [
+     25,
+     30
+    ],
+    "Hoothoot": [
+     35,
+     35
+    ],
+    "Magikarp": [
+     25,
+     30
+    ],
+    "Mareep": [
+     34,
+     36
+    ],
+    "Marill": [
+     25,
+     35
+    ],
+    "Octillery": [
+     35,
+     40
+    ],
+    "Quagsire": [
+     35,
+     40
+    ],
+    "Remoraid": [
+     25,
+     35
+    ],
+    "Snubbull": [
+     34,
+     34
+    ],
+    "Spinarak": [
+     33,
+     33
+    ],
+    "Stantler": [
+     36,
+     39
+    ],
+    "Sunkern": [
+     33,
+     35
+    ],
+    "Wooper": [
+     25,
+     30
+    ]
+   },
+   "water": {
+    "Marill": 13.0,
+    "Quagsire": 0.33,
+    "Wooper": 20.0
+   }
+  },
+  "Area 6 - Northeast": {
+   "land": {
+    "Aipom": 10.0,
+    "Hoothoot": 1.67,
+    "Houndour": 1.67,
+    "Ledyba": 3.33,
+    "Miltank": 1.67,
+    "Pineco": 1.67,
+    "Sunkern": 3.33,
+    "Teddiursa": 10.0
+   },
+   "levels": {
+    "Aipom": [
+     33,
+     35
+    ],
+    "Hoothoot": [
+     35,
+     35
+    ],
+    "Houndour": [
+     36,
+     39
+    ],
+    "Ledyba": [
+     33,
+     33
+    ],
+    "Miltank": [
+     37,
+     40
+    ],
+    "Pineco": [
+     34,
+     34
+    ],
+    "Shuckle": [
+     20,
+     40
+    ],
+    "Sunkern": [
+     34,
+     34
+    ],
+    "Teddiursa": [
+     34,
+     36
+    ]
+   },
+   "rock smash": {
+    "Shuckle": 33.33
+   }
+  }
+ },
+ "Scorched Slab": {},
+ "Seafloor Cavern": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Tentacool": 50.0,
+    "Wailmer": 120.0
+   },
+   "land": {
+    "Golbat": 10.0,
+    "Zubat": 90.0
+   },
+   "levels": {
+    "Golbat": [
+     30,
+     36
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Zubat": [
+     5,
+     35
+    ]
+   },
+   "water": {
+    "Golbat": 5.0,
+    "Tentacool": 60.0,
+    "Zubat": 35.0
+   }
+  }
+ },
+ "Sealed Chamber": {},
+ "Shoal Cave": {
+  "Ice room": {
+   "land": {
+    "Golbat": 5.0,
+    "Snorunt": 10.0,
+    "Spheal": 45.0,
+    "Zubat": 40.0
+   },
+   "levels": {
+    "Golbat": [
+     30,
+     32
+    ],
+    "Snorunt": [
+     26,
+     30
+    ],
+    "Spheal": [
+     26,
+     32
+    ],
+    "Zubat": [
+     26,
+     30
+    ]
+   }
+  },
+  "Main cave": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Tentacool": 50.0,
+    "Wailmer": 120.0
+   },
+   "land": {
+    "Golbat": 5.0,
+    "Spheal": 50.0,
+    "Zubat": 45.0
+   },
+   "levels": {
+    "Golbat": [
+     32,
+     32
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Spheal": [
+     25,
+     35
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Zubat": [
+     5,
+     35
+    ]
+   },
+   "water": {
+    "Spheal": 10.0,
+    "Tentacool": 60.0,
+    "Zubat": 30.0
+   }
+  }
+ },
+ "Sky Pillar": {
+  "1F": {
+   "land": {
+    "Banette": 10.0,
+    "Claydol": 25.0,
+    "Dusclops": 5.0,
+    "Golbat": 30.0,
+    "Mawile": 10.0,
+    "Sableye": 20.0
+   },
+   "levels": {
+    "Banette": [
+     37,
+     50
+    ],
+    "Claydol": [
+     36,
+     50
+    ],
+    "Dusclops": [
+     48,
+     50
+    ],
+    "Golbat": [
+     34,
+     50
+    ],
+    "Mawile": [
+     48,
+     50
+    ],
+    "Sableye": [
+     33,
+     50
+    ]
+   }
+  },
+  "3F": {
+   "land": {
+    "Banette": 10.0,
+    "Claydol": 25.0,
+    "Dusclops": 5.0,
+    "Golbat": 30.0,
+    "Mawile": 10.0,
+    "Sableye": 20.0
+   },
+   "levels": {
+    "Banette": [
+     37,
+     53
+    ],
+    "Claydol": [
+     36,
+     53
+    ],
+    "Dusclops": [
+     51,
+     53
+    ],
+    "Golbat": [
+     34,
+     53
+    ],
+    "Mawile": [
+     51,
+     53
+    ],
+    "Sableye": [
+     33,
+     53
+    ]
+   }
+  },
+  "5F": {
+   "land": {
+    "Altaria": 6.0,
+    "Banette": 10.0,
+    "Claydol": 19.0,
+    "Dusclops": 5.0,
+    "Golbat": 30.0,
+    "Mawile": 10.0,
+    "Sableye": 20.0
+   },
+   "levels": {
+    "Altaria": [
+     38,
+     60
+    ],
+    "Banette": [
+     37,
+     56
+    ],
+    "Claydol": [
+     36,
+     56
+    ],
+    "Dusclops": [
+     54,
+     56
+    ],
+    "Golbat": [
+     34,
+     56
+    ],
+    "Mawile": [
+     54,
+     56
+    ],
+    "Sableye": [
+     33,
+     56
+    ]
+   }
+  }
+ },
+ "Slateport City": {
+  "main": {
+   "fishing": {
+    "Magikarp": 130.0,
+    "Tentacool": 50.0,
+    "Wailmer": 120.0
+   },
+   "levels": {
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Pelipper": [
+     25,
+     30
+    ],
+    "Tentacool": [
+     5,
+     35
+    ],
+    "Wailmer": [
+     10,
+     45
+    ],
+    "Wingull": [
+     10,
+     30
+    ]
+   },
+   "water": {
+    "Pelipper": 5.0,
+    "Tentacool": 60.0,
+    "Wingull": 35.0
+   }
+  }
+ },
+ "Sootopolis City": {
+  "main": {
+   "fishing": {
+    "Gyarados": 20.0,
+    "Magikarp": 260.0,
+    "Tentacool": 20.0
+   },
+   "levels": {
+    "Gyarados": [
+     5,
+     45
+    ],
+    "Magikarp": [
+     5,
+     35
+    ],
+    "Tentacool": [
+     5,
+     10
+    ]
+   },
+   "water": {
+    "Magikarp": 100.0
+   }
+  }
+ },
+ "Southern Island": {},
+ "Terra Cave": {},
+ "Victory Road": {
+  "1F": {
+   "land": {
+    "Aron": 5.0,
+    "Golbat": 25.0,
+    "Hariyama": 25.0,
+    "Lairon": 10.0,
+    "Loudred": 10.0,
+    "Makuhita": 10.0,
+    "Whismur": 5.0,
+    "Zubat": 10.0
+   },
+   "levels": {
+    "Aron": [
+     36,
+     36
+    ],
+    "Golbat": [
+     38,
+     40
+    ],
+    "Hariyama": [
+     38,
+     40
+    ],
+    "Lairon": [
+     40,
+     40
+    ],
+    "Loudred": [
+     40,
+     40
+    ],
+    "Makuhita": [
+     36,
+     36
+    ],
+    "Whismur": [
+     36,
+     36
+    ],
+    "Zubat": [
+     36,
+     36
+    ]
+   }
+  },
+  "B1F": {
+   "land": {
+    "Golbat": 35.0,
+    "Hariyama": 35.0,
+    "Lairon": 18.33,
+    "Mawile": 1.67,
+    "Medicham": 6.67,
+    "Meditite": 3.33
+   },
+   "levels": {
+    "Geodude": [
+     30,
+     40
+    ],
+    "Golbat": [
+     38,
+     42
+    ],
+    "Graveler": [
+     30,
+     40
+    ],
+    "Hariyama": [
+     38,
+     42
+    ],
+    "Lairon": [
+     40,
+     42
+    ],
+    "Mawile": [
+     38,
+     38
+    ],
+    "Medicham": [
+     40,
+     40
+    ],
+    "Meditite": [
+     38,
+     38
+    ]
+   },
+   "rock smash": {
+    "Geodude": 30.0,
+    "Graveler": 70.0
+   }
+  },
+  "B2F": {
+   "fishing": {
+    "Barboach": 100.0,
+    "Goldeen": 50.0,
+    "Magikarp": 130.0,
+    "Whiscash": 20.0
+   },
+   "land": {
+    "Golbat": 35.0,
+    "Lairon": 18.33,
+    "Mawile": 13.34,
+    "Medicham": 10.0,
+    "Sableye": 23.33
+   },
+   "levels": {
+    "Barboach": [
+     10,
+     35
+    ],
+    "Golbat": [
+     25,
+     44
+    ],
+    "Goldeen": [
+     5,
+     30
+    ],
+    "Lairon": [
+     40,
+     44
+    ],
+    "Magikarp": [
+     5,
+     30
+    ],
+    "Mawile": [
+     40,
+     44
+    ],
+    "Medicham": [
+     40,
+     44
+    ],
+    "Sableye": [
+     40,
+     44
+    ],
+    "Whiscash": [
+     30,
+     45
+    ]
+   },
+   "water": {
+    "Golbat": 100.0
+   }
+  }
+ }
+}
