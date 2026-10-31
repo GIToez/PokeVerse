@@ -114,7 +114,9 @@
 	<item id="467" article="a" name="stone tile">
 		<attribute key="description" value="It seems to be a switch." />
 	</item>
-	<item id="468" article="a" name="loose stone pile" />
+	<item id="468" article="a" name="loose stone pile">
+		<attribute key="description" value="It looks like it can be dug." />
+	</item>
 	<item id="469" article="a" name="hole">
 		<attribute key="floorchange" value="down" />
 		<attribute key="decayTo" value="468" />
@@ -131,13 +133,17 @@
 	<item fromid="479" toid="480" article="a" name="hole">
 		<attribute key="floorchange" value="down" />
 	</item>
-	<item id="481" article="a" name="loose stone pile" />
+	<item id="481" article="a" name="loose stone pile">
+		<attribute key="description" value="It looks like it can be dug." />
+	</item>
 	<item id="482" article="a" name="hole">
 		<attribute key="floorchange" value="down" />
 		<attribute key="decayTo" value="481" />
 		<attribute key="duration" value="300" />
 	</item>
-	<item id="483" article="a" name="loose ice pile" />
+	<item id="483" article="a" name="loose ice pile">
+		<attribute key="description" value="It looks like it can be dug." />
+	</item>
 	<item id="484" article="a" name="hole">
 		<attribute key="floorchange" value="down" />
 		<attribute key="decayTo" value="483" />
@@ -411,7 +417,10 @@
 	<item fromid="1278" toid="1279" article="a" name="sail" />
 	<item fromid="1280" toid="1283" article="a" name="rudder of the boat" />
 	<item id="1284" article="a" name="drawbridge" />
-	<item fromid="1285" toid="1292" article="a" name="stone" />
+	<item id="1285" article="a" name="stone">
+		<attribute key="description" value="It looks like it can be smashed." />
+	</item>
+	<item fromid="1286" toid="1292" article="a" name="stone" />
 	<item id="1293" article="a" name="stone">
 		<attribute key="weight" value="1500" />
 	</item>
@@ -4029,7 +4038,9 @@
 		<attribute key="decayTo" value="2782" />
 		<attribute key="duration" value="30" />
 	</item>
-	<item id="2782" name="jungle grass" />
+	<item id="2782" name="jungle grass">
+		<attribute key="description" value="It looks like it can be cut." />
+	</item>
 	<item id="2783" article="a" name="swamp flower" />
 	<item id="2784" article="a" name="dry bush" />
 	<item id="2785" article="a" name="blueberry bush" />
@@ -6122,7 +6133,10 @@
 	<item id="3552" article="an" name="open door">
 		<attribute key="type" value="door" />
 	</item>
-	<item fromid="3569" toid="3574" article="a" name="waterfall" />
+	<item fromid="3569" toid="3572" article="a" name="waterfall">
+		<attribute key="description" value="It looks like it can be climbed with Waterfall." />
+	</item>
+	<item fromid="3573" toid="3574" article="a" name="waterfall" />
 	<item fromid="3587" toid="3596" article="a" name="small boat" />
 	<item fromid="3597" toid="3598" article="a" name="sail" />
 	<item fromid="3599" toid="3600" article="a" name="paddle" />
@@ -6569,7 +6583,9 @@
 		<attribute key="decayTo" value="3985" />
 		<attribute key="duration" value="240" />
 	</item>
-	<item id="3985" name="jungle grass" />
+	<item id="3985" name="jungle grass">
+		<attribute key="description" value="It looks like it can be cut." />
+	</item>
 	<item fromid="3986" toid="4005" article="a" name="thorn bush" />
 	<item id="4006" article="an" name="orange tree" />
 	<item id="4007" article="a" name="thread tree" />
@@ -10276,7 +10292,7 @@
 	<item id="6499" article="a" name="diploma">
 		<attribute key="weight" value="1000" />
 	</item>
-	<item id="6500" name="soul coin">
+	<item id="6500" name="verse orb">
 		<attribute key="description" value="Someone might be interested in trading this." />
 	</item>
 	<item id="6501" article="a" name="gingerbread man" plural="gingerbread men">
@@ -13415,7 +13431,9 @@
 		<attribute key="corpseType" value="blood" />
 		<attribute key="fluidSource" value="blood" />
 	</item>
-	<item id="7932" article="a" name="burried hole" />
+	<item id="7932" article="a" name="burried hole">
+		<attribute key="description" value="It looks like it can be dug." />
+	</item>
 	<item id="7933" article="a" name="hole">
 		<attribute key="floorchange" value="down" />
 		<attribute key="decayTo" value="7932" />
@@ -13863,7 +13881,9 @@
 	<item id="8575" article="a" name="magma hole" />
 	<item id="8577" />
 	<item id="8578" name="grass" />
-	<item id="8579" article="a" name="hole" />
+	<item id="8579" article="a" name="hole">
+		<attribute key="description" value="It looks like it can be dug." />
+	</item>
 	<item id="8580" article="a" name="grate" />
 	<item id="8581" article="a" name="wooden cart" />
 	<item id="8582" article="a" name="branch" />
@@ -18274,8 +18294,11 @@
 	<item id="12292" article="an" name="old fishing rod" />
 	<item id="12293" article="a" name="good fishing rod" />
 	<item id="12294" article="a" name="super fishing rod" />
-	<item id="12295" article="a" name="nest tree" />
+	<item id="12295" article="a" name="nest tree">
+		<attribute key="description" value="It looks like it can be headbutted." />
+	</item>
 	<item id="12296" article="a" name="nest tree">
+		<attribute key="description" value="It was headbutted a moment ago. Come back in a minute." />
 		<attribute key="decayTo" value="12295" />
 		<attribute key="duration" value="60" />
 	</item>
@@ -20525,8 +20548,8 @@
 	<item fromid="13921" toid="13970" article="a" name="pokemon portrait">
 		<attribute key="slotType" value="legs" />
 	</item>
-	<item id="13971" name="stamina recover">
-		<attribute key="description" value="This powerful drink can recover 10 hours of stamina." />
+	<item id="13971" article="a" name="spirit tonic">
+		<attribute key="description" value="A fizzy drink that restores 10 hours of Trainer Spirit. It works below 30 hours." />
 	</item>
 	<item id="13972" article="a" name="moon stone fragment">
 		<attribute key="description" value="It is as black as the night sky." />
@@ -24728,12 +24751,14 @@
 	<item id="18645" article="a" name="great golden bug" />
 	<item id="18646" article="an" name="old respect box" />
 	<item id="18648" article="a" name="tree" />
-	<item id="18649" article="a" name="ball pillar">
+	<item id="18649" article="a" name="pokemon habitat">
+		<attribute key="description" value="An older habitat that still holds a Pokemon. Use it to take the ball back." />
 		<attribute key="forceSerialize" value="1" />
 		<attribute key="forceTransferToDepot" value="1" />
 		<attribute key="weight" value="090" />
 	</item>
-	<item id="18650" article="a" name="ball pillar">
+	<item id="18650" article="a" name="pokemon habitat">
+		<attribute key="description" value="Place this in your house. Drop a charged Poke Ball on it, or use the stand on a ball in your bag. That Pokemon walks the house. The ball looks the same as in your bag." />
 		<attribute key="forceSerialize" value="1" />
 		<attribute key="forceTransferToDepot" value="1" />
 	</item>
@@ -24751,7 +24776,7 @@
 		<attribute key="floorchange" value="down" />
 	</item>
 	<item fromid="18710" toid="18716" article="a" name="white stone wall" />
-	<item id="18717" article="a" name="catcher clothes kit" />
+	<item id="18717" article="a" name="duelist clothes kit" />
 	<item id="18718" article="a" name="ray fitz package" />
 	<item id="18719" article="a" name="halloween #1 clothes kit (skull / frankenstein)" />
 	<item id="18720" article="a" name="halloween #2 clothes kit (witch / mummy)" />
@@ -24803,7 +24828,9 @@
 	<item id="18739" article="a" name="horn trumpet" />
 	<item id="18740" name="nothing special" /> <!-- Moltres Dungeon invisible tile -->
 	<item id="18741" article="an" name="ice block" />
-	<item id="18742" name="ice pillar" />
+	<item id="18742" name="ice pillar">
+		<attribute key="description" value="It looks like it can be smashed." />
+	</item>
 	<item id="18743" name="nothing special" /> <!-- Articuno Dungeon invisible tile -->
 	<item id="18744" article="a" name="legendary chest" />
 	<item id="18745" article="an" name="energized barrel" />
@@ -24828,6 +24855,7 @@
 	</item>
 	<item id="18753" article="a" name="trainer card" />
 	<item id="18754" article="a" name="running shoes">
+		<attribute key="description" value="Worn in the key item slot, they make you a little faster. Unlike the bike, you can still call your Pokemon and battle." />
 		<attribute key="slotType" value="ring" />
 		<attribute key="speed" value="60" />
 		<attribute key="showattributes" value="1" />
@@ -25978,8 +26006,13 @@
 	<item fromid="21443" toid="21446" article="a" name="bookshelf" />
 	<item fromid="21524" toid="21527" article="a" name="cord" />
 
-	<item id="23443" article="a" name="big rock" />
-	<item fromid="23444" toid="23449" article="a" name="mountain climb rock" />
+	<item id="23443" article="a" name="big rock">
+		<attribute key="description" value="It looks like it can be moved with Strength." />
+	</item>
+	<item fromid="23444" toid="23445" article="a" name="mountain climb rock" />
+	<item fromid="23446" toid="23449" article="a" name="mountain climb rock">
+		<attribute key="description" value="It looks like it can be climbed with Rock Climb." />
+	</item>
 	<item id="23450" article="a" name="calcium vitamin">
 		<attribute key="description" value="Adds extra (5%, 8%, 10%) special attack stats to the target pokemon per use, until reach 3 uses." />
 		<attribute key="rareEffect" value="1" />
@@ -26214,7 +26247,7 @@
 		<attribute key="rareEffect" value="1" />
 	</item>
 	<item id="23525" article="a" name="held polkadot bow">
-		<attribute key="description" value="Boosts the power of ???-type moves when held." />
+		<attribute key="description" value="Boosts the power of Normal-type moves by 10% when held." />
 		<attribute key="rareEffect" value="1" />
 	</item>
 	<item id="23526" article="a" name="held sharp beak" sellprice="40000">
@@ -35855,6 +35888,12 @@
 		<attribute key="weight" value="0" />
 		<attribute key="containerOnlyAttribute" value="10002" />
 	</item>
+	<item id="30152" article="a" name="lucky egg">
+		<attribute key="description" value="When held, the Pokemon gains 50% more experience from the wild Pokemon it defeats." />
+	</item>
+	<item id="30153" article="an" name="exp share">
+		<attribute key="description" value="When held by a Pokemon on your belt that is not out, it shares half of the experience your Pokemon out earns. Several holders split that half." />
+	</item>
 	
 	<item id="30001" name="water" />
 	<item id="30002" name="blood" />
@@ -35874,4 +35913,3162 @@
 	<item id="30027" name="rum" />
 	<item id="30028" name="swamp" />
 	<item id="30035" name="tea" />
+	<!-- pokemon footprints -->
+	<item id="30154" name="dirt floor">
+		<attribute key="decayTo" value="351" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30155" name="grass floor">
+		<attribute key="decayTo" value="4526" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30156" name="sand floor">
+		<attribute key="decayTo" value="231" />
+		<attribute key="duration" value="30" />
+	</item>
+	<!-- turned footprints -->
+	<item id="30157" name="dirt floor">
+		<attribute key="decayTo" value="351" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30158" name="dirt floor">
+		<attribute key="decayTo" value="351" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30159" name="dirt floor">
+		<attribute key="decayTo" value="351" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30160" name="grass floor">
+		<attribute key="decayTo" value="4526" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30161" name="grass floor">
+		<attribute key="decayTo" value="4526" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30162" name="grass floor">
+		<attribute key="decayTo" value="4526" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30163" name="sand floor">
+		<attribute key="decayTo" value="231" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30164" name="sand floor">
+		<attribute key="decayTo" value="231" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30165" name="sand floor">
+		<attribute key="decayTo" value="231" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30166" name="dirt floor">
+		<attribute key="decayTo" value="351" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30167" name="dirt floor">
+		<attribute key="decayTo" value="351" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30168" name="dirt floor">
+		<attribute key="decayTo" value="351" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30169" name="grass floor">
+		<attribute key="decayTo" value="4526" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30170" name="grass floor">
+		<attribute key="decayTo" value="4526" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30171" name="grass floor">
+		<attribute key="decayTo" value="4526" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30172" name="sand floor">
+		<attribute key="decayTo" value="231" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30173" name="sand floor">
+		<attribute key="decayTo" value="231" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30174" name="sand floor">
+		<attribute key="decayTo" value="231" />
+		<attribute key="duration" value="30" />
+	</item>
+	<item id="30175" article="an" name="empty mega ring">
+		<attribute key="description" value="A Mega Ring without its Key Stone. Use the Key Stone on it (or it on the Key Stone) to complete the ring." />
+	</item>
+	<item id="30176" article="a" name="key stone">
+		<attribute key="description" value="A stone filled with a mysterious power. Use it on an empty Mega Ring (or the ring on it) to complete the ring." />
+	</item>
+	<item id="30177" article="a" name="mega ring">
+		<attribute key="slotType" value="ring" />
+		<attribute key="description" value="Worn in the key item slot, it lets a Pokemon holding its Mega Stone Mega Evolve." />
+	</item>
+	<item id="30178" article="a" name="venusaurite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Venusaur, it lets it Mega Evolve into Mega Venusaur." />
+	</item>
+	<item id="30179" article="a" name="charizardite x">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Charizard, it lets it Mega Evolve into Mega Charizard X." />
+	</item>
+	<item id="30180" article="a" name="charizardite y">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Charizard, it lets it Mega Evolve into Mega Charizard Y." />
+	</item>
+	<item id="30181" article="a" name="blastoisinite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Blastoise, it lets it Mega Evolve into Mega Blastoise." />
+	</item>
+	<item id="30182" article="a" name="beedrillite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Beedrill, it lets it Mega Evolve into Mega Beedrill." />
+	</item>
+	<item id="30183" article="a" name="pidgeotite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Pidgeot, it lets it Mega Evolve into Mega Pidgeot." />
+	</item>
+	<item id="30184" article="an" name="alakazite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Alakazam, it lets it Mega Evolve into Mega Alakazam." />
+	</item>
+	<item id="30185" article="a" name="slowbronite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Slowbro, it lets it Mega Evolve into Mega Slowbro." />
+	</item>
+	<item id="30186" article="a" name="gengarite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Gengar, it lets it Mega Evolve into Mega Gengar." />
+	</item>
+	<item id="30187" article="a" name="kangaskhanite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Kangaskhan, it lets it Mega Evolve into Mega Kangaskhan." />
+	</item>
+	<item id="30188" article="a" name="pinsirite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Pinsir, it lets it Mega Evolve into Mega Pinsir." />
+	</item>
+	<item id="30189" article="a" name="gyaradosite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Gyarados, it lets it Mega Evolve into Mega Gyarados." />
+	</item>
+	<item id="30190" article="an" name="aerodactylite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Aerodactyl, it lets it Mega Evolve into Mega Aerodactyl." />
+	</item>
+	<item id="30191" article="a" name="mewtwonite x">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Mewtwo, it lets it Mega Evolve into Mega Mewtwo X." />
+	</item>
+	<item id="30192" article="a" name="mewtwonite y">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Mewtwo, it lets it Mega Evolve into Mega Mewtwo Y." />
+	</item>
+	<item id="30193" article="an" name="ampharosite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Ampharos, it lets it Mega Evolve into Mega Ampharos." />
+	</item>
+	<item id="30194" article="a" name="steelixite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Steelix, it lets it Mega Evolve into Mega Steelix." />
+	</item>
+	<item id="30195" article="a" name="scizorite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Scizor, it lets it Mega Evolve into Mega Scizor." />
+	</item>
+	<item id="30196" article="a" name="heracronite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Heracross, it lets it Mega Evolve into Mega Heracross." />
+	</item>
+	<item id="30197" article="a" name="houndoominite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Houndoom, it lets it Mega Evolve into Mega Houndoom." />
+	</item>
+	<item id="30198" article="a" name="tyranitarite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Tyranitar, it lets it Mega Evolve into Mega Tyranitar." />
+	</item>
+	<item id="30199" article="a" name="sceptilite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Sceptile, it lets it Mega Evolve into Mega Sceptile." />
+	</item>
+	<item id="30200" article="a" name="blazikenite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Blaziken, it lets it Mega Evolve into Mega Blaziken." />
+	</item>
+	<item id="30201" article="a" name="swampertite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Swampert, it lets it Mega Evolve into Mega Swampert." />
+	</item>
+	<item id="30202" article="a" name="gardevoirite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Gardevoir, it lets it Mega Evolve into Mega Gardevoir." />
+	</item>
+	<item id="30203" article="a" name="sablenite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Sableye, it lets it Mega Evolve into Mega Sableye." />
+	</item>
+	<item id="30204" article="a" name="mawilite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Mawile, it lets it Mega Evolve into Mega Mawile." />
+	</item>
+	<item id="30205" article="an" name="aggronite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Aggron, it lets it Mega Evolve into Mega Aggron." />
+	</item>
+	<item id="30206" article="a" name="medichamite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Medicham, it lets it Mega Evolve into Mega Medicham." />
+	</item>
+	<item id="30207" article="a" name="manectite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Manectric, it lets it Mega Evolve into Mega Manectric." />
+	</item>
+	<item id="30208" article="a" name="sharpedonite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Sharpedo, it lets it Mega Evolve into Mega Sharpedo." />
+	</item>
+	<item id="30209" article="a" name="cameruptite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Camerupt, it lets it Mega Evolve into Mega Camerupt." />
+	</item>
+	<item id="30210" article="an" name="altarianite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Altaria, it lets it Mega Evolve into Mega Altaria." />
+	</item>
+	<item id="30211" article="a" name="banettite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Banette, it lets it Mega Evolve into Mega Banette." />
+	</item>
+	<item id="30212" article="an" name="absolite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Absol, it lets it Mega Evolve into Mega Absol." />
+	</item>
+	<item id="30213" article="a" name="glalitite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Glalie, it lets it Mega Evolve into Mega Glalie." />
+	</item>
+	<item id="30214" article="a" name="salamencite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Salamence, it lets it Mega Evolve into Mega Salamence." />
+	</item>
+	<item id="30215" article="a" name="metagrossite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Metagross, it lets it Mega Evolve into Mega Metagross." />
+	</item>
+	<item id="30216" article="a" name="latiasite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Latias, it lets it Mega Evolve into Mega Latias." />
+	</item>
+	<item id="30217" article="a" name="latiosite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Latios, it lets it Mega Evolve into Mega Latios." />
+	</item>
+	<item id="30218" article="a" name="lopunnite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Lopunny, it lets it Mega Evolve into Mega Lopunny." />
+	</item>
+	<item id="30219" article="a" name="garchompite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Garchomp, it lets it Mega Evolve into Mega Garchomp." />
+	</item>
+	<item id="30220" article="a" name="lucarionite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Lucario, it lets it Mega Evolve into Mega Lucario." />
+	</item>
+	<item id="30221" article="an" name="abomasite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Abomasnow, it lets it Mega Evolve into Mega Abomasnow." />
+	</item>
+	<item id="30222" article="a" name="galladite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Gallade, it lets it Mega Evolve into Mega Gallade." />
+	</item>
+	<item id="30223" article="an" name="audinite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Audino, it lets it Mega Evolve into Mega Audino." />
+	</item>
+	<item id="30224" article="a" name="diancite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Diancie, it lets it Mega Evolve into Mega Diancie." />
+	</item>
+	<item id="30225" article="a" name="clefablite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Clefable, it lets it Mega Evolve into Mega Clefable." />
+	</item>
+	<item id="30226" article="a" name="victreebelite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Victreebel, it lets it Mega Evolve into Mega Victreebel." />
+	</item>
+	<item id="30227" article="a" name="starminite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Starmie, it lets it Mega Evolve into Mega Starmie." />
+	</item>
+	<item id="30228" article="a" name="dragoninite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Dragonite, it lets it Mega Evolve into Mega Dragonite." />
+	</item>
+	<item id="30229" article="a" name="meganiumite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Meganium, it lets it Mega Evolve into Mega Meganium." />
+	</item>
+	<item id="30230" article="a" name="feraligite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Feraligatr, it lets it Mega Evolve into Mega Feraligatr." />
+	</item>
+	<item id="30231" article="a" name="skarmorite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Skarmory, it lets it Mega Evolve into Mega Skarmory." />
+	</item>
+	<item id="30232" article="a" name="froslassite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Froslass, it lets it Mega Evolve into Mega Froslass." />
+	</item>
+	<item id="30233" article="an" name="emboarite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Emboar, it lets it Mega Evolve into Mega Emboar." />
+	</item>
+	<item id="30234" article="an" name="excadrite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Excadrill, it lets it Mega Evolve into Mega Excadrill." />
+	</item>
+	<item id="30235" article="a" name="scolipite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Scolipede, it lets it Mega Evolve into Mega Scolipede." />
+	</item>
+	<item id="30236" article="a" name="scraftinite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Scrafty, it lets it Mega Evolve into Mega Scrafty." />
+	</item>
+	<item id="30237" article="an" name="eelektrossite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Eelektross, it lets it Mega Evolve into Mega Eelektross." />
+	</item>
+	<item id="30238" article="a" name="chandelurite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Chandelure, it lets it Mega Evolve into Mega Chandelure." />
+	</item>
+	<item id="30239" article="a" name="chesnaughtite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Chesnaught, it lets it Mega Evolve into Mega Chesnaught." />
+	</item>
+	<item id="30240" article="a" name="delphoxite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Delphox, it lets it Mega Evolve into Mega Delphox." />
+	</item>
+	<item id="30241" article="a" name="greninjite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Greninja, it lets it Mega Evolve into Mega Greninja." />
+	</item>
+	<item id="30242" article="a" name="pyroarite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Pyroar, it lets it Mega Evolve into Mega Pyroar." />
+	</item>
+	<item id="30243" article="a" name="floettite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Floette, it lets it Mega Evolve into Mega Floette." />
+	</item>
+	<item id="30244" article="a" name="malamarite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Malamar, it lets it Mega Evolve into Mega Malamar." />
+	</item>
+	<item id="30245" article="a" name="barbaracite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Barbaracle, it lets it Mega Evolve into Mega Barbaracle." />
+	</item>
+	<item id="30246" article="a" name="dragalgite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Dragalge, it lets it Mega Evolve into Mega Dragalge." />
+	</item>
+	<item id="30247" article="a" name="hawluchanite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Hawlucha, it lets it Mega Evolve into Mega Hawlucha." />
+	</item>
+	<item id="30248" article="a" name="zygardite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Zygarde, it lets it Mega Evolve into Mega Zygarde." />
+	</item>
+	<item id="30249" article="a" name="drampanite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Drampa, it lets it Mega Evolve into Mega Drampa." />
+	</item>
+	<item id="30250" article="a" name="falinksite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Falinks, it lets it Mega Evolve into Mega Falinks." />
+	</item>
+	<item id="30251" article="a" name="raichunite x">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Raichu, it lets it Mega Evolve into Mega Raichu X." />
+	</item>
+	<item id="30252" article="a" name="raichunite y">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Raichu, it lets it Mega Evolve into Mega Raichu Y." />
+	</item>
+	<item id="30253" article="a" name="chimechite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Chimecho, it lets it Mega Evolve into Mega Chimecho." />
+	</item>
+	<item id="30254" article="an" name="absolite z">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Absol, it lets it Mega Evolve into Mega Absol Z." />
+	</item>
+	<item id="30255" article="a" name="staraptite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Staraptor, it lets it Mega Evolve into Mega Staraptor." />
+	</item>
+	<item id="30256" article="a" name="garchompite z">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Garchomp, it lets it Mega Evolve into Mega Garchomp Z." />
+	</item>
+	<item id="30257" article="a" name="lucarionite z">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Lucario, it lets it Mega Evolve into Mega Lucario Z." />
+	</item>
+	<item id="30258" article="a" name="heatranite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Heatran, it lets it Mega Evolve into Mega Heatran." />
+	</item>
+	<item id="30259" article="a" name="darkranite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Darkrai, it lets it Mega Evolve into Mega Darkrai." />
+	</item>
+	<item id="30260" article="a" name="golurkite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Golurk, it lets it Mega Evolve into Mega Golurk." />
+	</item>
+	<item id="30261" article="a" name="meowsticite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Meowstic, it lets it Mega Evolve into Mega Meowstic." />
+	</item>
+	<item id="30262" article="a" name="crabominite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Crabominable, it lets it Mega Evolve into Mega Crabominable." />
+	</item>
+	<item id="30263" article="a" name="golisopite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Golisopod, it lets it Mega Evolve into Mega Golisopod." />
+	</item>
+	<item id="30264" article="a" name="magearnite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Magearna, it lets it Mega Evolve into Mega Magearna." />
+	</item>
+	<item id="30265" article="a" name="zeraorite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Zeraora, it lets it Mega Evolve into Mega Zeraora." />
+	</item>
+	<item id="30266" article="a" name="scovillainite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Scovillain, it lets it Mega Evolve into Mega Scovillain." />
+	</item>
+	<item id="30267" article="a" name="baxcalibrite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Baxcalibur, it lets it Mega Evolve into Mega Baxcalibur." />
+	</item>
+	<item id="30268" article="a" name="tatsugirinite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Tatsugiri, it lets it Mega Evolve into Mega Tatsugiri." />
+	</item>
+	<item id="30269" article="a" name="glimmoranite">
+		<attribute key="description" value="One of the mysterious Mega Stones. Held by Glimmora, it lets it Mega Evolve into Mega Glimmora." />
+	</item>
+	<item id="30270" article="a" name="red orb">
+		<attribute key="description" value="An orb said to hold an ancient power. Held by Groudon, it lets it undergo Primal Reversion." />
+	</item>
+	<item id="30271" article="a" name="blue orb">
+		<attribute key="description" value="An orb said to hold an ancient power. Held by Kyogre, it lets it undergo Primal Reversion." />
+	</item>
+	<!-- Mega and Primal forms' portraits (config/pokemon portrait), worn in the portrait slot like 12702-12853 -->
+	<item fromid="30272" toid="30337" article="a" name="pokemon portrait">
+		<attribute key="slotType" value="legs" />
+	</item>
+	<!-- Gen 4 (scripts/gen4-import.py): portraits, corpses, eggs and dolls -->
+	<item fromid="30338" toid="30537" article="a" name="pokemon portrait">
+		<attribute key="slotType" value="legs" />
+	</item>
+	<item id="30538" article="a" name="fainted turtwig">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30539" />
+	</item>
+	<item id="30539" article="a" name="fainted turtwig">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30752" article="a" name="fainted shiny turtwig">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30753" />
+	</item>
+	<item id="30753" article="a" name="fainted shiny turtwig">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30540" article="a" name="fainted grotle">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30541" />
+	</item>
+	<item id="30541" article="a" name="fainted grotle">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30754" article="a" name="fainted shiny grotle">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30755" />
+	</item>
+	<item id="30755" article="a" name="fainted shiny grotle">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30542" article="a" name="fainted torterra">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30543" />
+	</item>
+	<item id="30543" article="a" name="fainted torterra">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30756" article="a" name="fainted shiny torterra">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30757" />
+	</item>
+	<item id="30757" article="a" name="fainted shiny torterra">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30544" article="a" name="fainted chimchar">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30545" />
+	</item>
+	<item id="30545" article="a" name="fainted chimchar">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30758" article="a" name="fainted shiny chimchar">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30759" />
+	</item>
+	<item id="30759" article="a" name="fainted shiny chimchar">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30546" article="a" name="fainted monferno">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30547" />
+	</item>
+	<item id="30547" article="a" name="fainted monferno">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30760" article="a" name="fainted shiny monferno">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30761" />
+	</item>
+	<item id="30761" article="a" name="fainted shiny monferno">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30548" article="a" name="fainted infernape">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30549" />
+	</item>
+	<item id="30549" article="a" name="fainted infernape">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30762" article="a" name="fainted shiny infernape">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30763" />
+	</item>
+	<item id="30763" article="a" name="fainted shiny infernape">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30550" article="a" name="fainted piplup">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30551" />
+	</item>
+	<item id="30551" article="a" name="fainted piplup">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30764" article="a" name="fainted shiny piplup">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30765" />
+	</item>
+	<item id="30765" article="a" name="fainted shiny piplup">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30552" article="a" name="fainted prinplup">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30553" />
+	</item>
+	<item id="30553" article="a" name="fainted prinplup">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30766" article="a" name="fainted shiny prinplup">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30767" />
+	</item>
+	<item id="30767" article="a" name="fainted shiny prinplup">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30554" article="a" name="fainted empoleon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30555" />
+	</item>
+	<item id="30555" article="a" name="fainted empoleon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30768" article="a" name="fainted shiny empoleon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30769" />
+	</item>
+	<item id="30769" article="a" name="fainted shiny empoleon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30556" article="a" name="fainted starly">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30557" />
+	</item>
+	<item id="30557" article="a" name="fainted starly">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30770" article="a" name="fainted shiny starly">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30771" />
+	</item>
+	<item id="30771" article="a" name="fainted shiny starly">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30558" article="a" name="fainted staravia">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30559" />
+	</item>
+	<item id="30559" article="a" name="fainted staravia">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30772" article="a" name="fainted shiny staravia">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30773" />
+	</item>
+	<item id="30773" article="a" name="fainted shiny staravia">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30560" article="a" name="fainted staraptor">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30561" />
+	</item>
+	<item id="30561" article="a" name="fainted staraptor">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30774" article="a" name="fainted shiny staraptor">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30775" />
+	</item>
+	<item id="30775" article="a" name="fainted shiny staraptor">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30562" article="a" name="fainted bidoof">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30563" />
+	</item>
+	<item id="30563" article="a" name="fainted bidoof">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30776" article="a" name="fainted shiny bidoof">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30777" />
+	</item>
+	<item id="30777" article="a" name="fainted shiny bidoof">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30564" article="a" name="fainted bibarel">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30565" />
+	</item>
+	<item id="30565" article="a" name="fainted bibarel">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30778" article="a" name="fainted shiny bibarel">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30779" />
+	</item>
+	<item id="30779" article="a" name="fainted shiny bibarel">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30566" article="a" name="fainted kricketot">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30567" />
+	</item>
+	<item id="30567" article="a" name="fainted kricketot">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30780" article="a" name="fainted shiny kricketot">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30781" />
+	</item>
+	<item id="30781" article="a" name="fainted shiny kricketot">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30568" article="a" name="fainted kricketune">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30569" />
+	</item>
+	<item id="30569" article="a" name="fainted kricketune">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30782" article="a" name="fainted shiny kricketune">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30783" />
+	</item>
+	<item id="30783" article="a" name="fainted shiny kricketune">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30570" article="a" name="fainted shinx">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30571" />
+	</item>
+	<item id="30571" article="a" name="fainted shinx">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30784" article="a" name="fainted shiny shinx">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30785" />
+	</item>
+	<item id="30785" article="a" name="fainted shiny shinx">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30572" article="a" name="fainted luxio">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30573" />
+	</item>
+	<item id="30573" article="a" name="fainted luxio">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30786" article="a" name="fainted shiny luxio">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30787" />
+	</item>
+	<item id="30787" article="a" name="fainted shiny luxio">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30574" article="a" name="fainted luxray">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30575" />
+	</item>
+	<item id="30575" article="a" name="fainted luxray">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30788" article="a" name="fainted shiny luxray">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30789" />
+	</item>
+	<item id="30789" article="a" name="fainted shiny luxray">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30576" article="a" name="fainted budew">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30577" />
+	</item>
+	<item id="30577" article="a" name="fainted budew">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30790" article="a" name="fainted shiny budew">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30791" />
+	</item>
+	<item id="30791" article="a" name="fainted shiny budew">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30578" article="a" name="fainted roserade">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30579" />
+	</item>
+	<item id="30579" article="a" name="fainted roserade">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30792" article="a" name="fainted shiny roserade">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30793" />
+	</item>
+	<item id="30793" article="a" name="fainted shiny roserade">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30580" article="a" name="fainted cranidos">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30581" />
+	</item>
+	<item id="30581" article="a" name="fainted cranidos">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30794" article="a" name="fainted shiny cranidos">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30795" />
+	</item>
+	<item id="30795" article="a" name="fainted shiny cranidos">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30582" article="a" name="fainted rampardos">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30583" />
+	</item>
+	<item id="30583" article="a" name="fainted rampardos">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30796" article="a" name="fainted shiny rampardos">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30797" />
+	</item>
+	<item id="30797" article="a" name="fainted shiny rampardos">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30584" article="a" name="fainted shieldon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30585" />
+	</item>
+	<item id="30585" article="a" name="fainted shieldon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30798" article="a" name="fainted shiny shieldon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30799" />
+	</item>
+	<item id="30799" article="a" name="fainted shiny shieldon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30586" article="a" name="fainted bastiodon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30587" />
+	</item>
+	<item id="30587" article="a" name="fainted bastiodon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30800" article="a" name="fainted shiny bastiodon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30801" />
+	</item>
+	<item id="30801" article="a" name="fainted shiny bastiodon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30588" article="a" name="fainted burmy">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30589" />
+	</item>
+	<item id="30589" article="a" name="fainted burmy">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30802" article="a" name="fainted shiny burmy">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30803" />
+	</item>
+	<item id="30803" article="a" name="fainted shiny burmy">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30590" article="a" name="fainted wormadam">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30591" />
+	</item>
+	<item id="30591" article="a" name="fainted wormadam">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30804" article="a" name="fainted shiny wormadam">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30805" />
+	</item>
+	<item id="30805" article="a" name="fainted shiny wormadam">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30592" article="a" name="fainted mothim">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30593" />
+	</item>
+	<item id="30593" article="a" name="fainted mothim">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30806" article="a" name="fainted shiny mothim">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30807" />
+	</item>
+	<item id="30807" article="a" name="fainted shiny mothim">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30594" article="a" name="fainted combee">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30595" />
+	</item>
+	<item id="30595" article="a" name="fainted combee">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30808" article="a" name="fainted shiny combee">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30809" />
+	</item>
+	<item id="30809" article="a" name="fainted shiny combee">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30596" article="a" name="fainted vespiquen">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30597" />
+	</item>
+	<item id="30597" article="a" name="fainted vespiquen">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30810" article="a" name="fainted shiny vespiquen">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30811" />
+	</item>
+	<item id="30811" article="a" name="fainted shiny vespiquen">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30598" article="a" name="fainted pachirisu">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30599" />
+	</item>
+	<item id="30599" article="a" name="fainted pachirisu">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30812" article="a" name="fainted shiny pachirisu">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30813" />
+	</item>
+	<item id="30813" article="a" name="fainted shiny pachirisu">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30600" article="a" name="fainted buizel">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30601" />
+	</item>
+	<item id="30601" article="a" name="fainted buizel">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30814" article="a" name="fainted shiny buizel">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30815" />
+	</item>
+	<item id="30815" article="a" name="fainted shiny buizel">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30602" article="a" name="fainted floatzel">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30603" />
+	</item>
+	<item id="30603" article="a" name="fainted floatzel">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30816" article="a" name="fainted shiny floatzel">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30817" />
+	</item>
+	<item id="30817" article="a" name="fainted shiny floatzel">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30604" article="a" name="fainted cherubi">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30605" />
+	</item>
+	<item id="30605" article="a" name="fainted cherubi">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30818" article="a" name="fainted shiny cherubi">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30819" />
+	</item>
+	<item id="30819" article="a" name="fainted shiny cherubi">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30606" article="a" name="fainted cherrim">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30607" />
+	</item>
+	<item id="30607" article="a" name="fainted cherrim">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30820" article="a" name="fainted shiny cherrim">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30821" />
+	</item>
+	<item id="30821" article="a" name="fainted shiny cherrim">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30608" article="a" name="fainted shellos">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30609" />
+	</item>
+	<item id="30609" article="a" name="fainted shellos">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30822" article="a" name="fainted shiny shellos">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30823" />
+	</item>
+	<item id="30823" article="a" name="fainted shiny shellos">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30610" article="a" name="fainted gastrodon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30611" />
+	</item>
+	<item id="30611" article="a" name="fainted gastrodon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30824" article="a" name="fainted shiny gastrodon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30825" />
+	</item>
+	<item id="30825" article="a" name="fainted shiny gastrodon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30612" article="a" name="fainted ambipom">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30613" />
+	</item>
+	<item id="30613" article="a" name="fainted ambipom">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30826" article="a" name="fainted shiny ambipom">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30827" />
+	</item>
+	<item id="30827" article="a" name="fainted shiny ambipom">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30614" article="a" name="fainted drifloon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30615" />
+	</item>
+	<item id="30615" article="a" name="fainted drifloon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30828" article="a" name="fainted shiny drifloon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30829" />
+	</item>
+	<item id="30829" article="a" name="fainted shiny drifloon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30616" article="a" name="fainted drifblim">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30617" />
+	</item>
+	<item id="30617" article="a" name="fainted drifblim">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30830" article="a" name="fainted shiny drifblim">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30831" />
+	</item>
+	<item id="30831" article="a" name="fainted shiny drifblim">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30618" article="a" name="fainted buneary">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30619" />
+	</item>
+	<item id="30619" article="a" name="fainted buneary">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30832" article="a" name="fainted shiny buneary">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30833" />
+	</item>
+	<item id="30833" article="a" name="fainted shiny buneary">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30620" article="a" name="fainted lopunny">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30621" />
+	</item>
+	<item id="30621" article="a" name="fainted lopunny">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30834" article="a" name="fainted shiny lopunny">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30835" />
+	</item>
+	<item id="30835" article="a" name="fainted shiny lopunny">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30622" article="a" name="fainted mismagius">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30623" />
+	</item>
+	<item id="30623" article="a" name="fainted mismagius">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30836" article="a" name="fainted shiny mismagius">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30837" />
+	</item>
+	<item id="30837" article="a" name="fainted shiny mismagius">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30624" article="a" name="fainted honchkrow">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30625" />
+	</item>
+	<item id="30625" article="a" name="fainted honchkrow">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30838" article="a" name="fainted shiny honchkrow">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30839" />
+	</item>
+	<item id="30839" article="a" name="fainted shiny honchkrow">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30626" article="a" name="fainted glameow">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30627" />
+	</item>
+	<item id="30627" article="a" name="fainted glameow">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30840" article="a" name="fainted shiny glameow">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30841" />
+	</item>
+	<item id="30841" article="a" name="fainted shiny glameow">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30628" article="a" name="fainted purugly">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30629" />
+	</item>
+	<item id="30629" article="a" name="fainted purugly">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30842" article="a" name="fainted shiny purugly">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30843" />
+	</item>
+	<item id="30843" article="a" name="fainted shiny purugly">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30630" article="a" name="fainted chingling">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30631" />
+	</item>
+	<item id="30631" article="a" name="fainted chingling">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30844" article="a" name="fainted shiny chingling">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30845" />
+	</item>
+	<item id="30845" article="a" name="fainted shiny chingling">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30632" article="a" name="fainted stunky">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30633" />
+	</item>
+	<item id="30633" article="a" name="fainted stunky">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30846" article="a" name="fainted shiny stunky">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30847" />
+	</item>
+	<item id="30847" article="a" name="fainted shiny stunky">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30634" article="a" name="fainted skuntank">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30635" />
+	</item>
+	<item id="30635" article="a" name="fainted skuntank">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30848" article="a" name="fainted shiny skuntank">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30849" />
+	</item>
+	<item id="30849" article="a" name="fainted shiny skuntank">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30636" article="a" name="fainted bronzor">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30637" />
+	</item>
+	<item id="30637" article="a" name="fainted bronzor">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30850" article="a" name="fainted shiny bronzor">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30851" />
+	</item>
+	<item id="30851" article="a" name="fainted shiny bronzor">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30638" article="a" name="fainted bronzong">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30639" />
+	</item>
+	<item id="30639" article="a" name="fainted bronzong">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30852" article="a" name="fainted shiny bronzong">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30853" />
+	</item>
+	<item id="30853" article="a" name="fainted shiny bronzong">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30640" article="a" name="fainted bonsly">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30641" />
+	</item>
+	<item id="30641" article="a" name="fainted bonsly">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30854" article="a" name="fainted shiny bonsly">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30855" />
+	</item>
+	<item id="30855" article="a" name="fainted shiny bonsly">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30642" article="a" name="fainted mime jr.">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30643" />
+	</item>
+	<item id="30643" article="a" name="fainted mime jr.">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30856" article="a" name="fainted shiny mime jr.">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30857" />
+	</item>
+	<item id="30857" article="a" name="fainted shiny mime jr.">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30644" article="a" name="fainted happiny">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30645" />
+	</item>
+	<item id="30645" article="a" name="fainted happiny">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30858" article="a" name="fainted shiny happiny">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30859" />
+	</item>
+	<item id="30859" article="a" name="fainted shiny happiny">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30646" article="a" name="fainted chatot">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30647" />
+	</item>
+	<item id="30647" article="a" name="fainted chatot">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30860" article="a" name="fainted shiny chatot">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30861" />
+	</item>
+	<item id="30861" article="a" name="fainted shiny chatot">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30648" article="a" name="fainted spiritomb">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30649" />
+	</item>
+	<item id="30649" article="a" name="fainted spiritomb">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30862" article="a" name="fainted shiny spiritomb">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30863" />
+	</item>
+	<item id="30863" article="a" name="fainted shiny spiritomb">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30650" article="a" name="fainted gible">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30651" />
+	</item>
+	<item id="30651" article="a" name="fainted gible">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30864" article="a" name="fainted shiny gible">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30865" />
+	</item>
+	<item id="30865" article="a" name="fainted shiny gible">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30652" article="a" name="fainted gabite">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30653" />
+	</item>
+	<item id="30653" article="a" name="fainted gabite">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30866" article="a" name="fainted shiny gabite">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30867" />
+	</item>
+	<item id="30867" article="a" name="fainted shiny gabite">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30654" article="a" name="fainted garchomp">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30655" />
+	</item>
+	<item id="30655" article="a" name="fainted garchomp">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30868" article="a" name="fainted shiny garchomp">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30869" />
+	</item>
+	<item id="30869" article="a" name="fainted shiny garchomp">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30656" article="a" name="fainted munchlax">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30657" />
+	</item>
+	<item id="30657" article="a" name="fainted munchlax">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30870" article="a" name="fainted shiny munchlax">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30871" />
+	</item>
+	<item id="30871" article="a" name="fainted shiny munchlax">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30658" article="a" name="fainted riolu">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30659" />
+	</item>
+	<item id="30659" article="a" name="fainted riolu">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30872" article="a" name="fainted shiny riolu">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30873" />
+	</item>
+	<item id="30873" article="a" name="fainted shiny riolu">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30660" article="a" name="fainted lucario">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30661" />
+	</item>
+	<item id="30661" article="a" name="fainted lucario">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30874" article="a" name="fainted shiny lucario">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30875" />
+	</item>
+	<item id="30875" article="a" name="fainted shiny lucario">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30662" article="a" name="fainted hippopotas">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30663" />
+	</item>
+	<item id="30663" article="a" name="fainted hippopotas">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30876" article="a" name="fainted shiny hippopotas">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30877" />
+	</item>
+	<item id="30877" article="a" name="fainted shiny hippopotas">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30664" article="a" name="fainted hippowdon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30665" />
+	</item>
+	<item id="30665" article="a" name="fainted hippowdon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30878" article="a" name="fainted shiny hippowdon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30879" />
+	</item>
+	<item id="30879" article="a" name="fainted shiny hippowdon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30666" article="a" name="fainted skorupi">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30667" />
+	</item>
+	<item id="30667" article="a" name="fainted skorupi">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30880" article="a" name="fainted shiny skorupi">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30881" />
+	</item>
+	<item id="30881" article="a" name="fainted shiny skorupi">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30668" article="a" name="fainted drapion">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30669" />
+	</item>
+	<item id="30669" article="a" name="fainted drapion">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30882" article="a" name="fainted shiny drapion">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30883" />
+	</item>
+	<item id="30883" article="a" name="fainted shiny drapion">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30670" article="a" name="fainted croagunk">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30671" />
+	</item>
+	<item id="30671" article="a" name="fainted croagunk">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30884" article="a" name="fainted shiny croagunk">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30885" />
+	</item>
+	<item id="30885" article="a" name="fainted shiny croagunk">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30672" article="a" name="fainted toxicroak">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30673" />
+	</item>
+	<item id="30673" article="a" name="fainted toxicroak">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30886" article="a" name="fainted shiny toxicroak">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30887" />
+	</item>
+	<item id="30887" article="a" name="fainted shiny toxicroak">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30674" article="a" name="fainted carnivine">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30675" />
+	</item>
+	<item id="30675" article="a" name="fainted carnivine">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30888" article="a" name="fainted shiny carnivine">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30889" />
+	</item>
+	<item id="30889" article="a" name="fainted shiny carnivine">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30676" article="a" name="fainted finneon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30677" />
+	</item>
+	<item id="30677" article="a" name="fainted finneon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30890" article="a" name="fainted shiny finneon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30891" />
+	</item>
+	<item id="30891" article="a" name="fainted shiny finneon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30678" article="a" name="fainted lumineon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30679" />
+	</item>
+	<item id="30679" article="a" name="fainted lumineon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30892" article="a" name="fainted shiny lumineon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30893" />
+	</item>
+	<item id="30893" article="a" name="fainted shiny lumineon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30680" article="a" name="fainted mantyke">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30681" />
+	</item>
+	<item id="30681" article="a" name="fainted mantyke">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30894" article="a" name="fainted shiny mantyke">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30895" />
+	</item>
+	<item id="30895" article="a" name="fainted shiny mantyke">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30682" article="a" name="fainted snover">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30683" />
+	</item>
+	<item id="30683" article="a" name="fainted snover">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30896" article="a" name="fainted shiny snover">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30897" />
+	</item>
+	<item id="30897" article="a" name="fainted shiny snover">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30684" article="a" name="fainted abomasnow">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30685" />
+	</item>
+	<item id="30685" article="a" name="fainted abomasnow">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30898" article="a" name="fainted shiny abomasnow">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30899" />
+	</item>
+	<item id="30899" article="a" name="fainted shiny abomasnow">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30686" article="a" name="fainted weavile">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30687" />
+	</item>
+	<item id="30687" article="a" name="fainted weavile">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30900" article="a" name="fainted shiny weavile">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30901" />
+	</item>
+	<item id="30901" article="a" name="fainted shiny weavile">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30688" article="a" name="fainted magnezone">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30689" />
+	</item>
+	<item id="30689" article="a" name="fainted magnezone">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30902" article="a" name="fainted shiny magnezone">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30903" />
+	</item>
+	<item id="30903" article="a" name="fainted shiny magnezone">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30690" article="a" name="fainted lickilicky">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30691" />
+	</item>
+	<item id="30691" article="a" name="fainted lickilicky">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30904" article="a" name="fainted shiny lickilicky">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30905" />
+	</item>
+	<item id="30905" article="a" name="fainted shiny lickilicky">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30692" article="a" name="fainted rhyperior">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30693" />
+	</item>
+	<item id="30693" article="a" name="fainted rhyperior">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30906" article="a" name="fainted shiny rhyperior">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30907" />
+	</item>
+	<item id="30907" article="a" name="fainted shiny rhyperior">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30694" article="a" name="fainted tangrowth">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30695" />
+	</item>
+	<item id="30695" article="a" name="fainted tangrowth">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30908" article="a" name="fainted shiny tangrowth">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30909" />
+	</item>
+	<item id="30909" article="a" name="fainted shiny tangrowth">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30696" article="a" name="fainted electivire">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30697" />
+	</item>
+	<item id="30697" article="a" name="fainted electivire">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30910" article="a" name="fainted shiny electivire">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30911" />
+	</item>
+	<item id="30911" article="a" name="fainted shiny electivire">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30698" article="a" name="fainted magmortar">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30699" />
+	</item>
+	<item id="30699" article="a" name="fainted magmortar">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30912" article="a" name="fainted shiny magmortar">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30913" />
+	</item>
+	<item id="30913" article="a" name="fainted shiny magmortar">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30700" article="a" name="fainted togekiss">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30701" />
+	</item>
+	<item id="30701" article="a" name="fainted togekiss">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30914" article="a" name="fainted shiny togekiss">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30915" />
+	</item>
+	<item id="30915" article="a" name="fainted shiny togekiss">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30702" article="a" name="fainted yanmega">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30703" />
+	</item>
+	<item id="30703" article="a" name="fainted yanmega">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30916" article="a" name="fainted shiny yanmega">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30917" />
+	</item>
+	<item id="30917" article="a" name="fainted shiny yanmega">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30704" article="a" name="fainted leafeon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30705" />
+	</item>
+	<item id="30705" article="a" name="fainted leafeon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30918" article="a" name="fainted shiny leafeon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30919" />
+	</item>
+	<item id="30919" article="a" name="fainted shiny leafeon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30706" article="a" name="fainted glaceon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30707" />
+	</item>
+	<item id="30707" article="a" name="fainted glaceon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30920" article="a" name="fainted shiny glaceon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30921" />
+	</item>
+	<item id="30921" article="a" name="fainted shiny glaceon">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30708" article="a" name="fainted gliscor">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30709" />
+	</item>
+	<item id="30709" article="a" name="fainted gliscor">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30922" article="a" name="fainted shiny gliscor">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30923" />
+	</item>
+	<item id="30923" article="a" name="fainted shiny gliscor">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30710" article="a" name="fainted mamoswine">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30711" />
+	</item>
+	<item id="30711" article="a" name="fainted mamoswine">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30924" article="a" name="fainted shiny mamoswine">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30925" />
+	</item>
+	<item id="30925" article="a" name="fainted shiny mamoswine">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30712" article="a" name="fainted porygon-z">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30713" />
+	</item>
+	<item id="30713" article="a" name="fainted porygon-z">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30926" article="a" name="fainted shiny porygon-z">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30927" />
+	</item>
+	<item id="30927" article="a" name="fainted shiny porygon-z">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30714" article="a" name="fainted gallade">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30715" />
+	</item>
+	<item id="30715" article="a" name="fainted gallade">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30928" article="a" name="fainted shiny gallade">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30929" />
+	</item>
+	<item id="30929" article="a" name="fainted shiny gallade">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30716" article="a" name="fainted probopass">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30717" />
+	</item>
+	<item id="30717" article="a" name="fainted probopass">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30930" article="a" name="fainted shiny probopass">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30931" />
+	</item>
+	<item id="30931" article="a" name="fainted shiny probopass">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30718" article="a" name="fainted dusknoir">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30719" />
+	</item>
+	<item id="30719" article="a" name="fainted dusknoir">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30932" article="a" name="fainted shiny dusknoir">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30933" />
+	</item>
+	<item id="30933" article="a" name="fainted shiny dusknoir">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30720" article="a" name="fainted froslass">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30721" />
+	</item>
+	<item id="30721" article="a" name="fainted froslass">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30934" article="a" name="fainted shiny froslass">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30935" />
+	</item>
+	<item id="30935" article="a" name="fainted shiny froslass">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30722" article="a" name="fainted rotom">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30723" />
+	</item>
+	<item id="30723" article="a" name="fainted rotom">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30936" article="a" name="fainted shiny rotom">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30937" />
+	</item>
+	<item id="30937" article="a" name="fainted shiny rotom">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30724" article="a" name="fainted uxie">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30725" />
+	</item>
+	<item id="30725" article="a" name="fainted uxie">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30726" article="a" name="fainted mesprit">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30727" />
+	</item>
+	<item id="30727" article="a" name="fainted mesprit">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30728" article="a" name="fainted azelf">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30729" />
+	</item>
+	<item id="30729" article="a" name="fainted azelf">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30730" article="a" name="fainted dialga">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30731" />
+	</item>
+	<item id="30731" article="a" name="fainted dialga">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30732" article="a" name="fainted palkia">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30733" />
+	</item>
+	<item id="30733" article="a" name="fainted palkia">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30734" article="a" name="fainted heatran">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30735" />
+	</item>
+	<item id="30735" article="a" name="fainted heatran">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30736" article="a" name="fainted regigigas">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30737" />
+	</item>
+	<item id="30737" article="a" name="fainted regigigas">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30738" article="a" name="fainted giratina">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30739" />
+	</item>
+	<item id="30739" article="a" name="fainted giratina">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30740" article="a" name="fainted cresselia">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30741" />
+	</item>
+	<item id="30741" article="a" name="fainted cresselia">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30742" article="a" name="fainted phione">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30743" />
+	</item>
+	<item id="30743" article="a" name="fainted phione">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30744" article="a" name="fainted manaphy">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30745" />
+	</item>
+	<item id="30745" article="a" name="fainted manaphy">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30746" article="a" name="fainted darkrai">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30747" />
+	</item>
+	<item id="30747" article="a" name="fainted darkrai">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30748" article="a" name="fainted shaymin">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30749" />
+	</item>
+	<item id="30749" article="a" name="fainted shaymin">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30750" article="a" name="fainted arceus">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="20" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="30751" />
+	</item>
+	<item id="30751" article="a" name="fainted arceus">
+		<attribute key="containerSize" value="10" />
+		<attribute key="duration" value="40" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="30938" article="a" name="turtwig egg" />
+	<item id="30939" article="a" name="chimchar egg" />
+	<item id="30940" article="a" name="piplup egg" />
+	<item id="30941" article="a" name="starly egg" />
+	<item id="30942" article="a" name="bidoof egg" />
+	<item id="30943" article="a" name="kricketot egg" />
+	<item id="30944" article="a" name="shinx egg" />
+	<item id="30945" article="a" name="budew egg" />
+	<item id="30946" article="a" name="cranidos egg" />
+	<item id="30947" article="a" name="shieldon egg" />
+	<item id="30948" article="a" name="burmy egg" />
+	<item id="30949" article="a" name="combee egg" />
+	<item id="30950" article="a" name="pachirisu egg" />
+	<item id="30951" article="a" name="buizel egg" />
+	<item id="30952" article="a" name="cherubi egg" />
+	<item id="30953" article="a" name="shellos egg" />
+	<item id="30954" article="a" name="drifloon egg" />
+	<item id="30955" article="a" name="buneary egg" />
+	<item id="30956" article="a" name="glameow egg" />
+	<item id="30957" article="a" name="chingling egg" />
+	<item id="30958" article="a" name="stunky egg" />
+	<item id="30959" article="a" name="bronzor egg" />
+	<item id="30960" article="a" name="bonsly egg" />
+	<item id="30961" article="a" name="mime jr. egg" />
+	<item id="30962" article="a" name="happiny egg" />
+	<item id="30963" article="a" name="chatot egg" />
+	<item id="30964" article="a" name="spiritomb egg" />
+	<item id="30965" article="a" name="gible egg" />
+	<item id="30966" article="a" name="munchlax egg" />
+	<item id="30967" article="a" name="riolu egg" />
+	<item id="30968" article="a" name="hippopotas egg" />
+	<item id="30969" article="a" name="skorupi egg" />
+	<item id="30970" article="a" name="croagunk egg" />
+	<item id="30971" article="a" name="carnivine egg" />
+	<item id="30972" article="a" name="finneon egg" />
+	<item id="30973" article="a" name="mantyke egg" />
+	<item id="30974" article="a" name="snover egg" />
+	<item id="30975" article="a" name="rotom egg" />
+	<item id="30976" article="a" name="turtwig doll" sellprice="80"/>
+	<item id="30977" article="a" name="grotle doll" sellprice="130"/>
+	<item id="30978" article="a" name="torterra doll" sellprice="150"/>
+	<item id="30979" article="a" name="chimchar doll" sellprice="80"/>
+	<item id="30980" article="a" name="monferno doll" sellprice="130"/>
+	<item id="30981" article="a" name="infernape doll" sellprice="150"/>
+	<item id="30982" article="a" name="piplup doll" sellprice="80"/>
+	<item id="30983" article="a" name="prinplup doll" sellprice="130"/>
+	<item id="30984" article="a" name="empoleon doll" sellprice="150"/>
+	<item id="30985" article="a" name="starly doll" sellprice="80"/>
+	<item id="30986" article="a" name="staravia doll" sellprice="130"/>
+	<item id="30987" article="a" name="staraptor doll" sellprice="150"/>
+	<item id="30988" article="a" name="bidoof doll" sellprice="80"/>
+	<item id="30989" article="a" name="bibarel doll" sellprice="150"/>
+	<item id="30990" article="a" name="kricketot doll" sellprice="80"/>
+	<item id="30991" article="a" name="kricketune doll" sellprice="150"/>
+	<item id="30992" article="a" name="shinx doll" sellprice="80"/>
+	<item id="30993" article="a" name="luxio doll" sellprice="130"/>
+	<item id="30994" article="a" name="luxray doll" sellprice="150"/>
+	<item id="30995" article="a" name="budew doll" sellprice="80"/>
+	<item id="30996" article="a" name="roserade doll" sellprice="150"/>
+	<item id="30997" article="a" name="cranidos doll" sellprice="80"/>
+	<item id="30998" article="a" name="rampardos doll" sellprice="150"/>
+	<item id="30999" article="a" name="shieldon doll" sellprice="80"/>
+	<item id="31000" article="a" name="bastiodon doll" sellprice="150"/>
+	<item id="31001" article="a" name="burmy doll" sellprice="80"/>
+	<item id="31002" article="a" name="wormadam doll" sellprice="150"/>
+	<item id="31003" article="a" name="mothim doll" sellprice="150"/>
+	<item id="31004" article="a" name="combee doll" sellprice="80"/>
+	<item id="31005" article="a" name="vespiquen doll" sellprice="150"/>
+	<item id="31006" article="a" name="pachirisu doll" sellprice="130"/>
+	<item id="31007" article="a" name="buizel doll" sellprice="80"/>
+	<item id="31008" article="a" name="floatzel doll" sellprice="150"/>
+	<item id="31009" article="a" name="cherubi doll" sellprice="80"/>
+	<item id="31010" article="a" name="cherrim doll" sellprice="150"/>
+	<item id="31011" article="a" name="shellos doll" sellprice="80"/>
+	<item id="31012" article="a" name="gastrodon doll" sellprice="150"/>
+	<item id="31013" article="a" name="ambipom doll" sellprice="150"/>
+	<item id="31014" article="a" name="drifloon doll" sellprice="80"/>
+	<item id="31015" article="a" name="drifblim doll" sellprice="150"/>
+	<item id="31016" article="a" name="buneary doll" sellprice="80"/>
+	<item id="31017" article="a" name="lopunny doll" sellprice="150"/>
+	<item id="31018" article="a" name="mismagius doll" sellprice="150"/>
+	<item id="31019" article="a" name="honchkrow doll" sellprice="150"/>
+	<item id="31020" article="a" name="glameow doll" sellprice="80"/>
+	<item id="31021" article="a" name="purugly doll" sellprice="150"/>
+	<item id="31022" article="a" name="chingling doll" sellprice="80"/>
+	<item id="31023" article="a" name="stunky doll" sellprice="80"/>
+	<item id="31024" article="a" name="skuntank doll" sellprice="150"/>
+	<item id="31025" article="a" name="bronzor doll" sellprice="80"/>
+	<item id="31026" article="a" name="bronzong doll" sellprice="150"/>
+	<item id="31027" article="a" name="bonsly doll" sellprice="80"/>
+	<item id="31028" article="a" name="mime jr. doll" sellprice="80"/>
+	<item id="31029" article="a" name="happiny doll" sellprice="80"/>
+	<item id="31030" article="a" name="chatot doll" sellprice="130"/>
+	<item id="31031" article="a" name="spiritomb doll" sellprice="130"/>
+	<item id="31032" article="a" name="gible doll" sellprice="80"/>
+	<item id="31033" article="a" name="gabite doll" sellprice="130"/>
+	<item id="31034" article="a" name="garchomp doll" sellprice="150"/>
+	<item id="31035" article="a" name="munchlax doll" sellprice="80"/>
+	<item id="31036" article="a" name="riolu doll" sellprice="80"/>
+	<item id="31037" article="a" name="lucario doll" sellprice="150"/>
+	<item id="31038" article="a" name="hippopotas doll" sellprice="80"/>
+	<item id="31039" article="a" name="hippowdon doll" sellprice="150"/>
+	<item id="31040" article="a" name="skorupi doll" sellprice="80"/>
+	<item id="31041" article="a" name="drapion doll" sellprice="150"/>
+	<item id="31042" article="a" name="croagunk doll" sellprice="80"/>
+	<item id="31043" article="a" name="toxicroak doll" sellprice="150"/>
+	<item id="31044" article="a" name="carnivine doll" sellprice="130"/>
+	<item id="31045" article="a" name="finneon doll" sellprice="80"/>
+	<item id="31046" article="a" name="lumineon doll" sellprice="150"/>
+	<item id="31047" article="a" name="mantyke doll" sellprice="80"/>
+	<item id="31048" article="a" name="snover doll" sellprice="80"/>
+	<item id="31049" article="a" name="abomasnow doll" sellprice="150"/>
+	<item id="31050" article="a" name="weavile doll" sellprice="150"/>
+	<item id="31051" article="a" name="magnezone doll" sellprice="150"/>
+	<item id="31052" article="a" name="lickilicky doll" sellprice="150"/>
+	<item id="31053" article="a" name="rhyperior doll" sellprice="150"/>
+	<item id="31054" article="a" name="tangrowth doll" sellprice="150"/>
+	<item id="31055" article="a" name="electivire doll" sellprice="150"/>
+	<item id="31056" article="a" name="magmortar doll" sellprice="150"/>
+	<item id="31057" article="a" name="togekiss doll" sellprice="150"/>
+	<item id="31058" article="a" name="yanmega doll" sellprice="150"/>
+	<item id="31059" article="a" name="leafeon doll" sellprice="150"/>
+	<item id="31060" article="a" name="glaceon doll" sellprice="150"/>
+	<item id="31061" article="a" name="gliscor doll" sellprice="150"/>
+	<item id="31062" article="a" name="mamoswine doll" sellprice="150"/>
+	<item id="31063" article="a" name="porygon-z doll" sellprice="150"/>
+	<item id="31064" article="a" name="gallade doll" sellprice="150"/>
+	<item id="31065" article="a" name="probopass doll" sellprice="150"/>
+	<item id="31066" article="a" name="dusknoir doll" sellprice="150"/>
+	<item id="31067" article="a" name="froslass doll" sellprice="150"/>
+	<item id="31068" article="a" name="rotom doll" sellprice="130"/>
+	<item id="31069" article="a" name="uxie doll" sellprice="200"/>
+	<item id="31070" article="a" name="mesprit doll" sellprice="200"/>
+	<item id="31071" article="a" name="azelf doll" sellprice="200"/>
+	<item id="31072" article="a" name="dialga doll" sellprice="200"/>
+	<item id="31073" article="a" name="palkia doll" sellprice="200"/>
+	<item id="31074" article="a" name="heatran doll" sellprice="200"/>
+	<item id="31075" article="a" name="regigigas doll" sellprice="200"/>
+	<item id="31076" article="a" name="giratina doll" sellprice="200"/>
+	<item id="31077" article="a" name="cresselia doll" sellprice="200"/>
+	<item id="31078" article="a" name="phione doll" sellprice="200"/>
+	<item id="31079" article="a" name="manaphy doll" sellprice="200"/>
+	<item id="31080" article="a" name="darkrai doll" sellprice="200"/>
+	<item id="31081" article="a" name="shaymin doll" sellprice="200"/>
+	<item id="31082" article="a" name="arceus doll" sellprice="200"/>
+	<item id="31083" article="a" name="Shiny Stone" sellprice="35000">
+		<attribute key="description" value="A stone used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31084" article="a" name="Dusk Stone" sellprice="35000">
+		<attribute key="description" value="A stone used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31085" article="a" name="Dawn Stone" sellprice="35000">
+		<attribute key="description" value="A stone used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31086" article="an" name="Ice Stone" sellprice="35000">
+		<attribute key="description" value="A stone used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31087" article="an" name="Oval Stone" sellprice="35000">
+		<attribute key="description" value="A stone used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31088" article="a" name="Razor Claw" sellprice="150000">
+		<attribute key="description" value="A peculiar object used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31089" article="a" name="Razor Fang" sellprice="150000">
+		<attribute key="description" value="A peculiar object used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31090" article="an" name="Electirizer" sellprice="150000">
+		<attribute key="description" value="A peculiar object used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31091" article="a" name="Magmarizer" sellprice="150000">
+		<attribute key="description" value="A peculiar object used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31092" article="a" name="Protector" sellprice="150000">
+		<attribute key="description" value="A peculiar object used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31093" article="a" name="Reaper Cloth" sellprice="150000">
+		<attribute key="description" value="A peculiar object used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31094" article="a" name="Dubious Disc" sellprice="150000">
+		<attribute key="description" value="A peculiar object used for making certain kinds of pokemon evolve." />
+		<attribute key="rareEffect" value="1" />
+	</item>
+	<item id="31095" article="a" name="surfboard">
+		<attribute key="description" value="It is a Pokemon addon kit for Pikachu and Raichu. Wearing it, they can surf. Category: Rare." />
+	</item>
+	<item id="31096" name="orange race track floor"/>
+	<item id="31097" name="orange race track floor"/>
+	<item id="31098" name="orange race track floor"/>
+	<item id="31099" name="orange race track floor"/>
+	<item id="31100" name="orange race track floor"/>
+	<item id="31101" name="orange race track floor"/>
+	<item id="31102" name="orange race track floor"/>
+	<item id="31103" name="orange race track floor"/>
+	<item id="31104" name="orange race track floor"/>
+	<item id="31105" name="orange race track floor"/>
+	<item id="31106" name="orange race track floor"/>
+	<item id="31107" name="orange race track floor"/>
+	<item id="31108" name="orange race track floor"/>
+	<item id="31109" name="orange race track floor"/>
+	<item id="31110" name="orange race track floor"/>
+	<item id="31111" name="blue floor"/>
+	<item id="31112" name="blue floor"/>
+	<item id="31113" name="blue floor"/>
+	<item id="31114" name="blue floor"/>
+	<item id="31115" name="blue floor"/>
+	<item id="31116" name="blue floor"/>
+	<item id="31117" name="blue floor"/>
+	<item id="31118" name="blue floor"/>
+	<item id="31119" name="blue floor"/>
+	<item id="31120" name="blue floor"/>
+	<item id="31121" name="blue floor"/>
+	<item id="31122" name="blue floor"/>
+	<item id="31123" name="blue floor"/>
+	<item id="31124" name="blue floor"/>
+	<item id="31125" name="blue floor"/>
+	<item id="31126" name="blue floor"/>
+	<item id="31127" name="blue floor"/>
+	<item id="31128" name="blue floor"/>
+	<item id="31129" name="light blue floor"/>
+	<item id="31130" name="grey floor"/>
+	<item id="31131" name="grey floor"/>
+	<item id="31132" name="grey floor"/>
+	<item id="31133" name="green carpet"/>
+	<item id="31134" name="green carpet"/>
+	<item id="31135" name="green carpet"/>
+	<item id="31136" name="green carpet"/>
+	<item id="31137" name="green carpet"/>
+	<item id="31138" name="green carpet"/>
+	<item id="31139" name="green carpet"/>
+	<item id="31140" name="green carpet"/>
+	<item id="31141" name="green carpet"/>
+	<item id="31142" name="green carpet"/>
+	<item id="31143" name="green carpet"/>
+	<item id="31144" name="green carpet"/>
+	<item id="31145" name="green carpet"/>
+	<item id="31146" name="green carpet"/>
+	<item id="31147" name="green carpet"/>
+	<item id="31148" name="gym floor"/>
+	<item id="31149" name="gym floor"/>
+	<item id="31150" name="gym floor"/>
+	<item id="31151" name="gym floor"/>
+	<item id="31152" name="gym floor"/>
+	<item id="31153" name="gym floor"/>
+	<item id="31154" name="gym floor"/>
+	<item id="31155" name="gym floor"/>
+	<item id="31156" name="gym floor"/>
+	<item id="31157" name="gym floor"/>
+	<item id="31158" name="gym floor"/>
+	<item id="31159" name="gym floor"/>
+	<item id="31160" name="gym floor"/>
+	<item id="31161" name="gym floor"/>
+	<item id="31162" name="gym floor"/>
+	<item id="31163" name="gym floor"/>
+	<item id="31164" name="gym floor"/>
+	<item id="31165" name="gym floor"/>
+	<item id="31166" name="gym floor"/>
+	<item id="31167" name="gym floor"/>
+	<item id="31168" name="gym floor"/>
+	<item id="31169" name="gym floor"/>
+	<item id="31170" name="gym floor"/>
+	<item id="31171" name="gym floor"/>
+	<item id="31172" name="gym floor"/>
+	<item id="31173" name="gym floor"/>
+	<item id="31174" name="gym floor"/>
+	<item id="31175" name="gym floor"/>
+	<item id="31176" name="gym floor"/>
+	<item id="31177" name="gym floor"/>
+	<item id="31178" name="gym floor"/>
+	<item id="31179" name="gym floor"/>
+	<item id="31180" name="gym floor"/>
+	<item id="31181" name="gym floor"/>
+	<item id="31182" name="gym floor"/>
+	<item id="31183" name="gym floor"/>
+	<item id="31184" name="gym floor"/>
+	<item id="31185" name="gym floor"/>
+	<item id="31186" name="gym floor"/>
+	<item id="31187" name="gym floor"/>
+	<item id="31188" name="gym floor"/>
+	<item id="31189" name="gym floor"/>
+	<item id="31190" name="wall"/>
+	<item id="31191" name="wall"/>
+	<item id="31192" name="wall"/>
+	<item id="31193" name="wall"/>
+	<item id="31194" name="wall"/>
+	<item id="31195" name="wall"/>
+	<item id="31196" name="wall"/>
+	<item id="31197" name="wall"/>
+	<item id="31198" name="wall"/>
+	<item id="31199" name="wall"/>
+	<item id="31200" name="wall"/>
+	<item id="31201" name="wall"/>
+	<item id="31202" name="wall"/>
+	<item id="31203" name="wall"/>
+	<item id="31204" name="wall"/>
+	<item id="31205" name="wall"/>
+	<item id="31206" name="wall"/>
+	<item id="31207" name="wall"/>
+	<item id="31208" name="wall"/>
+	<item id="31209" name="wall"/>
+	<item id="31210" name="wall"/>
+	<item id="31211" name="wall"/>
+	<item id="31212" name="wall"/>
+	<item id="31213" name="wall"/>
+	<item id="31214" name="wall"/>
+	<item id="31215" name="wall"/>
+	<item id="31216" name="wall"/>
+	<item id="31217" name="wall"/>
+	<item id="31218" name="wall"/>
+	<item id="31219" name="wall"/>
+	<item id="31220" name="wall"/>
+	<item id="31221" name="wall"/>
+	<item id="31222" name="wall"/>
+	<item id="31223" name="wall"/>
+	<item id="31224" name="stairs"/>
+	<item id="31225" name="stairs"/>
+	<item id="31226" name="stairs"/>
+	<item id="31227" name="stairs"/>
+	<item id="31228" name="stairs"/>
+	<item id="31229" name="stairs"/>
+	<item id="31230" name="stairs"/>
+	<item id="31231" name="stairs"/>
+	<item id="31232" name="stairs"/>
+	<item id="31233" name="stairs"/>
+	<item id="31234" name="stairs"/>
+	<item id="31235" name="stairs"/>
+	<item id="31236" name="stairs"/>
+	<item id="31237" name="stairs"/>
+	<item id="31238" name="stairs"/>
+	<item id="31239" name="stairs"/>
+	<item id="31240" name="stairs"/>
+	<item id="31241" name="stairs"/>
+	<item id="31242" name="glass"/>
+	<item id="31243" name="glass"/>
+	<item id="31244" name="glass"/>
+	<item id="31245" name="machine"/>
+	<item id="31246" name="machine"/>
+	<item id="31247" name="machine"/>
+	<item id="31248" name="machine"/>
+	<item id="31249" name="machine"/>
+	<item id="31250" name="machine"/>
+	<item id="31251" name="machine"/>
+	<item id="31252" name="machine"/>
+	<item id="31253" name="machine"/>
+	<item id="31254" name="machine"/>
+	<item id="31255" name="machine"/>
+	<item id="31256" name="machine"/>
+	<item id="31257" name="machine"/>
+	<item id="31258" name="machine"/>
+	<item id="31259" name="machine"/>
+	<item id="31260" name="machine"/>
+	<item id="31261" name="tree"/>
+	<item id="31262" name="tree"/>
+	<item id="31263" name="tree"/>
+	<item id="31264" name="tree"/>
+	<item id="31265" name="orange race track floor"/>
+	<item id="31266" name="orange race track floor"/>
+	<item id="31267" name="orange race track floor"/>
+	<item id="31268" name="orange race track floor"/>
+	<item id="31269" name="orange race track floor"/>
+	<item id="31270" name="orange race track floor"/>
+	<item id="31271" name="orange race track floor"/>
 </items>

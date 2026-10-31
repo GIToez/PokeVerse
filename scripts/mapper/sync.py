@@ -40,6 +40,14 @@ def copy_rme():
         copy(os.path.join(RME_SRC, 'data', name), os.path.join(RME, 'data', name))
     for name in os.listdir(os.path.join(RME_SRC, 'data', '854')):
         copy(os.path.join(RME_SRC, 'data', '854', name), os.path.join(DATA, name))
+    tilesets = os.path.join(DATA, 'tilesets.xml')
+    with open(tilesets, encoding='utf-8') as f:
+        xml = f.read()
+    with open(os.path.join(ROOT, 'scripts', 'mapper', 'pokeverse-tilesets.xml'), encoding='utf-8') as f:
+        ours = f.read()
+    end = xml.rindex('</materials>')
+    with open(tilesets, 'w', encoding='utf-8') as f:
+        f.write(xml[:end] + ours + xml[end:])
 
 
 def copy_items():
