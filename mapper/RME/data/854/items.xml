@@ -38895,21 +38895,21 @@
 	<item id="31095" article="a" name="surfboard">
 		<attribute key="description" value="It is a Pokemon addon kit for Pikachu and Raichu. Wearing it, they can surf. Category: Rare." />
 	</item>
-	<item id="31096" name="orange race track floor"/>
-	<item id="31097" name="orange race track floor"/>
-	<item id="31098" name="orange race track floor"/>
-	<item id="31099" name="orange race track floor"/>
-	<item id="31100" name="orange race track floor"/>
-	<item id="31101" name="orange race track floor"/>
-	<item id="31102" name="orange race track floor"/>
-	<item id="31103" name="orange race track floor"/>
-	<item id="31104" name="orange race track floor"/>
-	<item id="31105" name="orange race track floor"/>
-	<item id="31106" name="orange race track floor"/>
-	<item id="31107" name="orange race track floor"/>
-	<item id="31108" name="orange race track floor"/>
-	<item id="31109" name="orange race track floor"/>
-	<item id="31110" name="orange race track floor"/>
+	<item id="31096" name="orange gym mat"/>
+	<item id="31097" name="orange gym mat"/>
+	<item id="31098" name="orange gym mat"/>
+	<item id="31099" name="orange gym mat"/>
+	<item id="31100" name="orange gym mat"/>
+	<item id="31101" name="orange gym mat"/>
+	<item id="31102" name="orange gym mat"/>
+	<item id="31103" name="orange gym mat"/>
+	<item id="31104" name="orange gym mat"/>
+	<item id="31105" name="orange gym mat"/>
+	<item id="31106" name="orange gym mat"/>
+	<item id="31107" name="orange gym mat"/>
+	<item id="31108" name="orange gym mat"/>
+	<item id="31109" name="orange gym mat"/>
+	<item id="31110" name="orange gym mat"/>
 	<item id="31111" name="blue floor"/>
 	<item id="31112" name="blue floor"/>
 	<item id="31113" name="blue floor"/>
@@ -39064,11 +39064,11 @@
 	<item id="31262" name="tree"/>
 	<item id="31263" name="tree"/>
 	<item id="31264" name="tree"/>
-	<item id="31265" name="orange race track floor"/>
-	<item id="31266" name="orange race track floor"/>
-	<item id="31267" name="orange race track floor"/>
-	<item id="31268" name="orange race track floor"/>
-	<item id="31269" name="orange race track floor"/>
-	<item id="31270" name="orange race track floor"/>
-	<item id="31271" name="orange race track floor"/>
+	<item id="31265" name="orange gym mat"/>
+	<item id="31266" name="orange gym mat"/>
+	<item id="31267" name="orange gym mat"/>
+	<item id="31268" name="orange gym mat"/>
+	<item id="31269" name="orange gym mat"/>
+	<item id="31270" name="orange gym mat"/>
+	<item id="31271" name="orange gym mat"/>
 </items>

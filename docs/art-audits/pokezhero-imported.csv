@@ -1,19 +1,19 @@
 kind,source id,client id,server id,name
-item,31683,29883,31096,orange race track floor
-item,31684,29884,31097,orange race track floor
-item,31685,29885,31098,orange race track floor
-item,31686,29886,31099,orange race track floor
-item,31687,29887,31100,orange race track floor
-item,31688,29888,31101,orange race track floor
-item,31689,29889,31102,orange race track floor
-item,31690,29890,31103,orange race track floor
-item,31691,29891,31104,orange race track floor
-item,31692,29892,31105,orange race track floor
-item,31693,29893,31106,orange race track floor
-item,31694,29894,31107,orange race track floor
-item,31707,29895,31108,orange race track floor
-item,31708,29896,31109,orange race track floor
-item,31709,29897,31110,orange race track floor
+item,31683,29883,31096,orange gym mat
+item,31684,29884,31097,orange gym mat
+item,31685,29885,31098,orange gym mat
+item,31686,29886,31099,orange gym mat
+item,31687,29887,31100,orange gym mat
+item,31688,29888,31101,orange gym mat
+item,31689,29889,31102,orange gym mat
+item,31690,29890,31103,orange gym mat
+item,31691,29891,31104,orange gym mat
+item,31692,29892,31105,orange gym mat
+item,31693,29893,31106,orange gym mat
+item,31694,29894,31107,orange gym mat
+item,31707,29895,31108,orange gym mat
+item,31708,29896,31109,orange gym mat
+item,31709,29897,31110,orange gym mat
 item,32107,29898,31111,blue floor
 item,32108,29899,31112,blue floor
 item,32109,29900,31113,blue floor
@@ -1511,10 +1511,10 @@ outfit,3481,4245,,
 outfit,3482,4246,,
 outfit,3483,4247,,
 outfit,3488,4248,,
-drawn,orange-floor/left.png,30052,31265,orange race track floor (left)
-drawn,orange-floor/right.png,30053,31266,orange race track floor (right)
-drawn,orange-floor/bottom.png,30054,31267,orange race track floor (bottom)
-drawn,orange-floor/bottom-left.png,30055,31268,orange race track floor (bottom-left corner)
-drawn,orange-floor/bottom-right.png,30056,31269,orange race track floor (bottom-right corner)
-drawn,orange-floor/bottom-turn-right.png,30057,31270,orange race track floor (bottom turn right)
-drawn,orange-floor/bottom-turn-left.png,30058,31271,orange race track floor (bottom turn left)
+drawn,orange-floor/left.png,30052,31265,orange gym mat (left)
+drawn,orange-floor/right.png,30053,31266,orange gym mat (right)
+drawn,orange-floor/bottom.png,30054,31267,orange gym mat (bottom)
+drawn,orange-floor/bottom-left.png,30055,31268,orange gym mat (bottom-left corner)
+drawn,orange-floor/bottom-right.png,30056,31269,orange gym mat (bottom-right corner)
+drawn,orange-floor/bottom-turn-right.png,30057,31270,orange gym mat (bottom turn right)
+drawn,orange-floor/bottom-turn-left.png,30058,31271,orange gym mat (bottom turn left)

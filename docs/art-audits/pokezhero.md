@@ -10,8 +10,8 @@ encrypted: 10.98 layout, alpha-channel sprites, 36,863 items, 3,489 outfits, 933
 
 | | PokeZHero ids | Client ids | Server ids |
 | --- | --- | --- | --- |
-| Orange race track floor | 31683-31694, 31707-31709 | 29883-29897 | 31096-31110 |
-| Orange floor pieces drawn for it (`orange-floor/`) | | 30052-30058 | 31265-31271 |
+| Orange gym mat (a carpet: goes on top of a floor) | 31683-31694, 31707-31709 | 29883-29897 | 31096-31110 |
+| Orange mat pieces drawn for it (`orange-floor/`) | | 30052-30058 | 31265-31271 |
 | Blue, light blue and grey floors | 32107-32118, 30582-30587, 30568, 27785, 31506, 31508 | 29898-29919 | 31111-31132 |
 | Green carpet | 28654-28668 | 29920-29934 | 31133-31147 |
 | Poke Ball gym floor | 27159-27200 | 29935-29976 | 31148-31189 |
@@ -23,9 +23,10 @@ encrypted: 10.98 layout, alpha-channel sprites, 36,863 items, 3,489 outfits, 933
 
 The orange set had only a top edge; `orange-floor/` adds the left, right and bottom lanes, the
 bottom corners and two bottom turns (`area.png` shows a whole area). Every orange piece is
-repainted on one seamless floor with a brown rim outside the line, so an area has no
-per-tile frames or shading. The map editor lists the floors and buildings under the
-PokeVerse floors / PokeVerse buildings tilesets. Not imported: the branded PokeDash floors
+repainted seamless with a brown rim outside the line, and the set is a carpet like our red
+carpets (border, not a ground), so it lies on a floor and the cut corners show the floor below.
+The map editor lists them under the PokeVerse carpets, PokeVerse floors and
+PokeVerse buildings tilesets. Not imported: the branded PokeDash floors
 (23962-23978, 29319-29333), the Magikarp statues, the white walls (we have 2222-2233) and the
 Tibia monster looks.
 
