@@ -3170,6 +3170,28 @@ local function testSurfingPikachu(cid)
         offered = offered or offer.id == "addon_surfboard"
     end
     check("Surfing Pikachu: the Surfboard addon is gone from the store", not offered)
+
+    BeachPikachu.endSwarm()
+    local beach = BeachPikachu.findBeach("slateport")
+    local ok, result = BeachPikachu.startSwarm(beach, true)
+    local swarm = BeachPikachu.getSwarm()
+    local surfers, raichus = 0, 0
+    for _, swarmCid in ipairs(swarm and swarm.cids or {}) do
+        local name = isCreature(swarmCid) and getCreatureName(swarmCid) or ""
+        surfers = surfers + ((name == "Surfing Pikachu" or name == "Shiny Surfing Pikachu") and 1 or 0)
+        raichus = raichus + ((name == "Surfing Raichu" or name == "Shiny Surfing Raichu") and 1 or 0)
+    end
+    check("Beach swarm: staff start one on Slateport Beach, Surfing Pikachu and a Surfing Raichu",
+        ok and swarm and swarm.beach == beach and surfers >= 1 and raichus <= BeachPikachu.SWARM_RAICHUS
+        and surfers + raichus == #swarm.cids, string.format("%s %d/%d", tostring(result), surfers, raichus))
+    check("Beach swarm: only one at a time", not BeachPikachu.startSwarm(nil, true))
+    local cids = swarm and swarm.cids or {}
+    BeachPikachu.endSwarm()
+    local left = 0
+    for _, swarmCid in ipairs(cids) do
+        left = left + (isCreature(swarmCid) and 1 or 0)
+    end
+    check("Beach swarm: ending it sends them away", BeachPikachu.getSwarm() == nil and left == 0, left)
 end
 
 local function testTurtleBlastoise(cid)
