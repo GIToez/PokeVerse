@@ -586,6 +586,18 @@ WikiData = {
             { 'p', "Walking more than 5 tiles away closes the window." },
             { 'see', { 'gts', 'ivs', 'pc' } },
         } },
+        { key = 'poketrader', title = 'PokeTrader auction', item = 3043, body = {
+            { 'p', "Tiger Kelsey, the PokeTrader, runs a weekly auction. Each time the server starts he stands in one of nine Kanto towns, picked at random: Viridian, Pewter, Cerulean, Saffron, Celadon, Vermilion, Lavender, Fuchsia or Cinnabar." },
+            { 'p', "Every week he offers 100 Lava Cookies and a Blue Flute (one per trainer, ever). Most weeks (80%) he adds two TMs or plates, and some weeks (30%) one evolution item: a stone, Up-Grade, Dubious Disc, Razor Claw, Protector or any of the others." },
+            { 'steps', {
+                "Say offers to see this week's items and their minimum bids.",
+                "Say the item's name and your bid. The money is taken when you bid.",
+                "A bid has to beat the highest by at least 1%. You can have one bid on each item.",
+                "Say bids to see yours and the highest, and time for how long is left.",
+            } },
+            { 'p', "When the week ends, the highest bid wins: the item goes to your depot. Every other bid goes back to your bank. Say cancel to take a bid back early, except while it's the highest." },
+            { 'see', { 'evoitems', 'tms', 'bank' } },
+        } },
         { key = 'unique', title = 'Unique items', item = 11118, body = {
             { 'p', "Unique items belong to one trainer: only they can carry them, they can't be traded, and they can only be put on the floor inside a house. Their look text says so." },
         } },
