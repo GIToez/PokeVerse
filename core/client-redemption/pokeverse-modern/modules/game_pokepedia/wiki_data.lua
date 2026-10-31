@@ -889,7 +889,7 @@ WikiData = {
                 { "Medic", "Healing, also other trainers' Pokemon" },
             } },
             { 'h', "Ranks" },
-            { 'p', "Each rank has a trial: goals for what your vocation does, such as defeating, catching, hatching, scanning, hooking or healing Pokemon. When the goals are done and you have the trainer level, press Rank up in the vocation window. A red ! on the top bar button means you can." },
+            { 'p', "Each rank has a trial: goals for what your vocation does, such as defeating, catching, hatching, scanning, hooking or healing Pokemon. A Ranger's radar goal counts scans that find at least one Pokemon, not the Pokemon found. When the goals are done and you have the trainer level, press Rank up in the vocation window. A red ! on the top bar button means you can." },
             { 'table', {
                 { "Rank", "Trainer level" },
                 { "1", "20" },
@@ -1013,6 +1013,7 @@ WikiData = {
                 { "5. Chief Medic", "+15%" },
             } },
             { 'p', "Use a health potion on another trainer's Pokemon to heal it. It doesn't work while either trainer is in a duel, the PvP arena or a battle with an NPC trainer." },
+            { 'p', "For the rank-up trial a potion counts when the Pokemon is hurt and has no potion running yet." },
             { 'see', { 'potions', 'vocations' } },
         } },
     } },
