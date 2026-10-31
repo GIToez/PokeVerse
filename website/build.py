@@ -47,7 +47,7 @@ TYPE_COLORS = {
 }
 GENERATIONS = ((1, 151, "Kanto"), (152, 251, "Johto"), (252, 386, "Hoenn"), (387, 493, "Sinnoh"))
 ABILITY_FIXES = {"Strenght": "Strength", "RockMSmash": "Rock Smash"}
-TRAILER_YOUTUBE_ID = "g5Fr0ctX77c"
+TRAILER_YOUTUBE_ID = "H0JQXUN76M4"
 
 
 def esc(value):
