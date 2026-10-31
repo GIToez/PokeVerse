@@ -70,6 +70,7 @@ WikiData = {
             { 'items', { { 11118, "Poke Ball" }, { 11122, "Great Ball" } } },
             { 'p', "A catch gives experience: the Pokemon's experience times its level times two. It also registers the species in your Pokedex. Some species need a specific ball, and in the Safari Zone only Safari Balls work." },
             { 'tip', "Carrying six Pokemon already? The new ball goes straight to your PC's Poke boxes. If those are full too, you can't throw." },
+            { 'p', "Careful with wild babies such as Pichu, Munchlax or Mantyke: attack one and it cries for its family, and every wild Pokemon of its line within 8 tiles (Pikachu and Raichu for a Pichu) comes for your Pokemon. A baby cries at most once every 30 seconds." },
             { 'see', { 'pc', 'safari', 'ivs' } },
         } },
         { key = 'loot', title = 'Loot', item = 3043, body = {

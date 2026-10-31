@@ -1680,6 +1680,52 @@ local function testMoveInfo(cid, arena)
     end
 end
 
+local function testBabyCall(cid, arena)
+    local made = {}
+    local function make(name, dx)
+        local m = doCreateMonster(name, { x = arena.x + dx, y = arena.y, z = arena.z }, false)
+        made[#made + 1] = m
+        return m
+    end
+    local pet, pichu, pikachu, raichu, rattata = make("Snorlax", 1), make("Pichu", 2), make("Pikachu", 3),
+        make("Raichu", 4), make("Rattata", 5)
+    local ok, err = pcall(function()
+        if (not (isMonster(pet) and isMonster(pichu) and isMonster(pikachu) and isMonster(raichu) and isMonster(rattata))) then
+            check("baby call: room for the test Pokemon", false)
+            return
+        end
+        doConvinceCreature(cid, pet)
+        local line = BabyCall.lineOf("Pichu")
+        check("baby call: Pichu's line is Pikachu and Raichu", line and line["Pikachu"] and line["Raichu"] and not line["Rattata"])
+        check("baby call: Munchlax calls Snorlax", BabyCall.lineOf("Munchlax") and BabyCall.lineOf("Munchlax")["Snorlax"])
+        check("baby call: Pikachu is not a baby", BabyCall.onHit(pikachu, pet) == nil)
+        check("baby call: a wild attacker gets no call", BabyCall.onHit(pichu, rattata) == nil)
+
+        local came
+        local text = captureMessages(function() came = BabyCall.onHit(pichu, pet) end)
+        check("baby call: Pikachu and Raichu answer Pichu", came == 2, tostring(came))
+        check("baby call: they target the attacker", getCreatureTarget(pikachu) == pet and getCreatureTarget(raichu) == pet)
+        check("baby call: Rattata stays out of it", getCreatureTarget(rattata) ~= pet)
+        check("baby call: the trainer is told", text:find("cried out for help", 1, true) ~= nil, text)
+        check("baby call: once per cooldown", BabyCall.onHit(pichu, pet) == nil)
+
+        local original, hooked = BabyCall.onHit, nil
+        BabyCall.onHit = function(baby, attacker) hooked = { baby, attacker } end
+        local damaged, damageErr = pcall(doSkillDamage, pet, pichu, "Tackle", 1)
+        BabyCall.onHit = original
+        check("baby call: a move's damage calls it", hooked and hooked[1] == pichu and hooked[2] == pet,
+            damaged and "not called" or tostring(damageErr))
+    end)
+    for _, m in ipairs(made) do
+        if (isCreature(m)) then
+            doRemoveCreature(m)
+        end
+    end
+    if (not ok) then
+        check("baby call: ran without errors", false, err)
+    end
+end
+
 local function testDuelWilds(cid, arena)
     local allowed = 1 -- RET_NOERROR
     local pet = doCreateMonster("Snorlax", { x = arena.x + 1, y = arena.y, z = arena.z }, false)
@@ -5593,7 +5639,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", withoutCalendarBonuses(testBreederIncubator) }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "pokemon outfit", testPokemonOutfit }, { "tmnt blastoise", testTurtleBlastoise }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "bag", testBag }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", withoutCalendarBonuses(testBreederIncubator) }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "pokemon outfit", testPokemonOutfit }, { "tmnt blastoise", testTurtleBlastoise }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "bag", testBag }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "baby call", function() testBabyCall(cid, arena) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then
