@@ -435,7 +435,7 @@
     <monster name="Dewgong" x="1" y="1" z="1" spawntime="60" level="100"/>
   </spawn>
   <spawn centerx="3631" centery="2051" centerz="1" radius="1">
-    <monster name="Sneasel" x="1" y="-1" z="1" spawntime="60" level="0"/>
+    <monster name="Weavile" x="1" y="-1" z="1" spawntime="60" level="0"/>
     <monster name="Jynx" x="-1" y="1" z="1" spawntime="60" level="100"/>
   </spawn>
   <spawn centerx="3627" centery="2058" centerz="1" radius="1">
@@ -450,7 +450,7 @@
     <monster name="Sneasel" x="-1" y="1" z="1" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3618" centery="2066" centerz="1" radius="1">
-    <monster name="Jynx" x="-1" y="0" z="1" spawntime="60" level="100"/>
+    <monster name="Froslass" x="-1" y="0" z="1" spawntime="60" level="100"/>
   </spawn>
   <spawn centerx="3622" centery="2068" centerz="1" radius="1">
     <monster name="Seel" x="-1" y="1" z="1" spawntime="60" level="0"/>
@@ -468,7 +468,7 @@
   </spawn>
   <spawn centerx="4388" centery="2244" centerz="1" radius="1">
     <monster name="Swinub" x="1" y="-1" z="1" spawntime="60" level="0"/>
-    <monster name="Piloswine" x="0" y="1" z="1" spawntime="60" level="0"/>
+    <monster name="Mamoswine" x="0" y="1" z="1" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4417" centery="2248" centerz="1" radius="1">
     <monster name="Sneasel" x="0" y="-1" z="1" spawntime="60" level="0"/>
@@ -483,7 +483,7 @@
     <monster name="Swinub" x="1" y="0" z="1" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4379" centery="2258" centerz="1" radius="1">
-    <monster name="Sneasel" x="-1" y="0" z="1" spawntime="60" level="0"/>
+    <monster name="Weavile" x="-1" y="0" z="1" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4406" centery="2259" centerz="1" radius="1">
     <monster name="Piloswine" x="1" y="-1" z="1" spawntime="60" level="0"/>
@@ -494,7 +494,7 @@
     <monster name="Delibird" x="-1" y="0" z="1" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4402" centery="2265" centerz="1" radius="1">
-    <monster name="Piloswine" x="0" y="-1" z="1" spawntime="60" level="0"/>
+    <monster name="Mamoswine" x="0" y="-1" z="1" spawntime="60" level="0"/>
     <monster name="Delibird" x="1" y="-1" z="1" spawntime="60" level="0"/>
     <monster name="Sneasel" x="-1" y="1" z="1" spawntime="60" level="0"/>
   </spawn>
@@ -1382,7 +1382,7 @@
   </spawn>
   <spawn centerx="3632" centery="2038" centerz="2" radius="1">
     <monster name="Sneasel" x="1" y="0" z="2" spawntime="60" level="0"/>
-    <monster name="Dewgong" x="-1" y="1" z="2" spawntime="60" level="100"/>
+    <monster name="Glaceon" x="-1" y="1" z="2" spawntime="60" level="100"/>
   </spawn>
   <spawn centerx="3619" centery="2040" centerz="2" radius="1">
     <monster name="Sneasel" x="-1" y="-1" z="2" spawntime="60" level="0"/>
@@ -1396,7 +1396,7 @@
     <monster name="Smoochum" x="0" y="1" z="2" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3626" centery="2058" centerz="2" radius="1">
-    <monster name="Sneasel" x="-1" y="1" z="2" spawntime="60" level="0"/>
+    <monster name="Weavile" x="-1" y="1" z="2" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3625" centery="2066" centerz="2" radius="1">
     <monster name="Dewgong" x="0" y="-1" z="2" spawntime="60" level="100"/>
@@ -1419,7 +1419,7 @@
   </spawn>
   <spawn centerx="4396" centery="2250" centerz="2" radius="1">
     <monster name="Swinub" x="0" y="-1" z="2" spawntime="60" level="0"/>
-    <monster name="Piloswine" x="1" y="0" z="2" spawntime="60" level="0"/>
+    <monster name="Mamoswine" x="1" y="0" z="2" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4389" centery="2254" centerz="2" radius="1">
     <monster name="Swinub" x="1" y="-1" z="2" spawntime="60" level="0"/>
@@ -1436,7 +1436,7 @@
   </spawn>
   <spawn centerx="4384" centery="2275" centerz="2" radius="1">
     <monster name="Delibird" x="-1" y="-1" z="2" spawntime="60" level="0"/>
-    <monster name="Sneasel" x="-1" y="0" z="2" spawntime="60" level="0"/>
+    <monster name="Weavile" x="-1" y="0" z="2" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3037" centery="2902" centerz="2" radius="1">
     <npc name="Hope" x="0" y="-1" z="2" spawntime="60" level="0"/>
@@ -3515,7 +3515,7 @@
   </spawn>
   <spawn centerx="3555" centery="1637" centerz="3" radius="1">
     <monster name="Rhyhorn" x="-1" y="-1" z="3" spawntime="60" level="0"/>
-    <monster name="Rhydon" x="1" y="0" z="3" spawntime="60" level="0"/>
+    <monster name="Rhyperior" x="1" y="0" z="3" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3523" centery="1638" centerz="3" radius="1">
     <monster name="Donphan" x="0" y="-1" z="3" spawntime="60" level="0"/>
@@ -3813,7 +3813,7 @@
     <monster name="Swinub" x="1" y="-1" z="3" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4400" centery="2236" centerz="3" radius="1">
-    <monster name="Piloswine" x="-1" y="-1" z="3" spawntime="60" level="0"/>
+    <monster name="Mamoswine" x="-1" y="-1" z="3" spawntime="60" level="0"/>
     <monster name="Swinub" x="1" y="1" z="3" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4409" centery="2239" centerz="3" radius="1">
@@ -3848,7 +3848,7 @@
     <monster name="Piloswine" x="1" y="-1" z="3" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4392" centery="2263" centerz="3" radius="1">
-    <monster name="Piloswine" x="1" y="-1" z="3" spawntime="60" level="0"/>
+    <monster name="Mamoswine" x="1" y="-1" z="3" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4382" centery="2268" centerz="3" radius="1">
     <monster name="Piloswine" x="1" y="-1" z="3" spawntime="60" level="0"/>
@@ -8078,7 +8078,7 @@
     <monster name="Phanpy" x="0" y="-1" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3579" centery="1645" centerz="4" radius="1">
-    <monster name="Rhydon" x="0" y="-1" z="4" spawntime="60" level="0"/>
+    <monster name="Rhyperior" x="0" y="-1" z="4" spawntime="60" level="0"/>
     <monster name="Golem" x="1" y="1" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3583" centery="1651" centerz="4" radius="1">
@@ -8294,11 +8294,11 @@
     <monster name="Flaaffy" x="1" y="1" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3626" centery="2026" centerz="4" radius="1">
-    <monster name="Piloswine" x="-1" y="0" z="4" spawntime="60" level="100"/>
+    <monster name="Mamoswine" x="-1" y="0" z="4" spawntime="60" level="100"/>
     <monster name="Seel" x="1" y="1" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3490" centery="2028" centerz="4" radius="1">
-    <monster name="Electabuzz" x="-1" y="-1" z="4" spawntime="60" level="100"/>
+    <monster name="Electivire" x="-1" y="-1" z="4" spawntime="60" level="100"/>
     <monster name="Raichu" x="-1" y="1" z="4" spawntime="60" level="100"/>
   </spawn>
   <spawn centerx="3507" centery="2028" centerz="4" radius="1">
@@ -8424,7 +8424,7 @@
     <monster name="Electrode" x="-1" y="-1" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3000" centery="2186" centerz="4" radius="1">
-    <monster name="Magneton" x="1" y="-1" z="4" spawntime="60" level="0"/>
+    <monster name="Magnezone" x="1" y="-1" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3011" centery="2186" centerz="4" radius="1">
     <monster name="Electrode" x="1" y="-1" z="4" spawntime="60" level="0"/>
@@ -8576,7 +8576,7 @@
     <monster name="Rhydon" x="1" y="-1" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3480" centery="2476" centerz="4" radius="1">
-    <monster name="Rhydon" x="1" y="-1" z="4" spawntime="60" level="0"/>
+    <monster name="Rhyperior" x="1" y="-1" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3512" centery="2479" centerz="4" radius="1">
     <monster name="Rhydon" x="-1" y="0" z="4" spawntime="60" level="0"/>
@@ -8677,7 +8677,7 @@
   </spawn>
   <spawn centerx="3809" centery="2617" centerz="4" radius="1">
     <monster name="Murkrow" x="0" y="-1" z="4" spawntime="60" level="0"/>
-    <monster name="Murkrow" x="1" y="1" z="4" spawntime="60" level="0"/>
+    <monster name="Honchkrow" x="1" y="1" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3812" centery="2620" centerz="4" radius="1">
     <monster name="Hoothoot" x="1" y="-1" z="4" spawntime="60" level="0"/>
@@ -8703,7 +8703,7 @@
     <monster name="Noctowl" x="-1" y="1" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3809" centery="2633" centerz="4" radius="1">
-    <monster name="Murkrow" x="0" y="-1" z="4" spawntime="60" level="0"/>
+    <monster name="Honchkrow" x="0" y="-1" z="4" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4620" centery="2772" centerz="4" radius="1">
     <monster name="Snorlax" x="-1" y="-1" z="4" spawntime="60" level="0"/>
@@ -16435,7 +16435,7 @@
     <monster name="Hariyama" x="0" y="-1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3603" centery="2034" centerz="5" radius="1">
-    <monster name="Dewgong" x="1" y="-1" z="5" spawntime="60" level="100"/>
+    <monster name="Glaceon" x="1" y="-1" z="5" spawntime="60" level="100"/>
     <monster name="Cloyster" x="-1" y="0" z="5" spawntime="60" level="100"/>
   </spawn>
   <spawn centerx="3609" centery="2034" centerz="5" radius="1">
@@ -17029,7 +17029,7 @@
     <monster name="Exeggutor" x="1" y="1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4341" centery="2533" centerz="5" radius="1">
-    <monster name="Tangela" x="-1" y="-1" z="5" spawntime="60" level="0"/>
+    <monster name="Tangrowth" x="-1" y="-1" z="5" spawntime="60" level="0"/>
     <monster name="Ivysaur" x="0" y="1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4347" centery="2540" centerz="5" radius="1">
@@ -17116,7 +17116,7 @@
   </spawn>
   <spawn centerx="3831" centery="2624" centerz="5" radius="1">
     <monster name="Murkrow" x="0" y="-1" z="5" spawntime="60" level="0"/>
-    <monster name="Murkrow" x="1" y="0" z="5" spawntime="60" level="0"/>
+    <monster name="Honchkrow" x="1" y="0" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3823" centery="2627" centerz="5" radius="1">
     <monster name="Murkrow" x="-1" y="-1" z="5" spawntime="60" level="0"/>
@@ -17529,7 +17529,7 @@
     <monster name="Gloom" x="-1" y="-1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3365" centery="3266" centerz="5" radius="1">
-    <monster name="Tangela" x="0" y="1" z="5" spawntime="60" level="0"/>
+    <monster name="Tangrowth" x="0" y="1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3631" centery="3267" centerz="5" radius="1">
     <monster name="Granbull" x="-1" y="-1" z="5" spawntime="60" level="0"/>
@@ -17566,6 +17566,7 @@
   </spawn>
   <spawn centerx="3668" centery="3279" centerz="5" radius="1">
     <monster name="Snorlax" x="1" y="-1" z="5" spawntime="60" level="0"/>
+    <monster name="Munchlax" x="0" y="-1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3655" centery="3281" centerz="5" radius="1">
     <monster name="Murkrow" x="1" y="1" z="5" spawntime="60" level="0"/>
@@ -17579,6 +17580,7 @@
   <spawn centerx="3652" centery="3288" centerz="5" radius="1">
     <monster name="Snorlax" x="-1" y="-1" z="5" spawntime="60" level="0"/>
     <monster name="Yanma" x="0" y="1" z="5" spawntime="60" level="0"/>
+    <monster name="Munchlax" x="0" y="0" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3657" centery="3290" centerz="5" radius="1">
     <monster name="Ledian" x="0" y="-1" z="5" spawntime="60" level="0"/>
@@ -17604,8 +17606,9 @@
   <spawn centerx="3561" centery="3301" centerz="5" radius="1">
     <monster name="Granbull" x="1" y="-1" z="5" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3649" centery="3301" centerz="5" radius="1">
+  <spawn centerx="3649" centery="3301" centerz="5" radius="2">
     <monster name="Snorlax" x="-1" y="-1" z="5" spawntime="60" level="0"/>
+    <monster name="Munchlax" x="-2" y="-1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4022" centery="3422" centerz="5" radius="1">
     <monster name="Spearow" x="-1" y="0" z="5" spawntime="60" level="0"/>
@@ -25020,7 +25023,7 @@
     <monster name="Victreebel" x="1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3082" centery="1615" centerz="6" radius="1">
-    <monster name="Victreebel" x="1" y="-1" z="6" spawntime="60" level="0"/>
+    <monster name="Roserade" x="1" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Bellsprout" x="-1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="246" centery="1616" centerz="6" radius="1">
@@ -25253,7 +25256,7 @@
     <monster name="Manectric" x="-1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3073" centery="1641" centerz="6" radius="1">
-    <monster name="Victreebel" x="0" y="-1" z="6" spawntime="60" level="0"/>
+    <monster name="Roserade" x="0" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Weepinbell" x="-1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3448" centery="1641" centerz="6" radius="1">
@@ -26318,7 +26321,7 @@
   </spawn>
   <spawn centerx="3864" centery="1921" centerz="6" radius="1">
     <monster name="Weedle" x="-1" y="0" z="6" spawntime="60" level="0"/>
-    <monster name="Yanma" x="1" y="1" z="6" spawntime="60" level="0"/>
+    <monster name="Yanmega" x="1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="509" centery="1923" centerz="6" radius="1">
     <monster name="Linoone" x="1" y="-1" z="6" spawntime="60" level="0"/>
@@ -26613,7 +26616,7 @@
     <monster name="Venonat" x="1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3964" centery="1972" centerz="6" radius="1">
-    <monster name="Yanma" x="0" y="-1" z="6" spawntime="60" level="0"/>
+    <monster name="Yanmega" x="0" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Ariados" x="0" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3448" centery="1973" centerz="6" radius="1">
@@ -26726,7 +26729,7 @@
   </spawn>
   <spawn centerx="3628" centery="2032" centerz="6" radius="1">
     <monster name="Dewgong" x="-1" y="0" z="6" spawntime="60" level="100"/>
-    <monster name="Sneasel" x="1" y="0" z="6" spawntime="60" level="0"/>
+    <monster name="Weavile" x="1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="505" centery="2034" centerz="6" radius="1">
     <monster name="Grumpig" x="-1" y="-1" z="6" spawntime="60" level="0"/>
@@ -26786,7 +26789,7 @@
     <monster name="Shellder" x="1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3626" centery="2045" centerz="6" radius="1">
-    <monster name="Jynx" x="-1" y="-1" z="6" spawntime="60" level="100"/>
+    <monster name="Froslass" x="-1" y="-1" z="6" spawntime="60" level="100"/>
     <monster name="Smoochum" x="-1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3645" centery="2045" centerz="6" radius="1">
@@ -26849,7 +26852,7 @@
     <monster name="Spoink" x="-1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3498" centery="2063" centerz="6" radius="1">
-    <monster name="Magneton" x="-1" y="1" z="6" spawntime="60" level="100"/>
+    <monster name="Magnezone" x="-1" y="1" z="6" spawntime="60" level="100"/>
   </spawn>
   <spawn centerx="3507" centery="2065" centerz="6" radius="1">
     <monster name="Magnemite" x="-1" y="0" z="6" spawntime="60" level="0"/>
@@ -26955,7 +26958,7 @@
     <monster name="Magneton" x="1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3001" centery="2174" centerz="6" radius="1">
-    <monster name="Magneton" x="-1" y="-1" z="6" spawntime="60" level="0"/>
+    <monster name="Magnezone" x="-1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2914" centery="2175" centerz="6" radius="1">
     <monster name="Pikachu" x="-1" y="0" z="6" spawntime="60" level="0"/>
@@ -27683,7 +27686,7 @@
     <monster name="Feraligatr" x="0" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4221" centery="2608" centerz="6" radius="1">
-    <monster name="Yanma" x="0" y="-1" z="6" spawntime="60" level="0"/>
+    <monster name="Yanmega" x="0" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Spinarak" x="1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4394" centery="2609" centerz="6" radius="1">
@@ -28131,7 +28134,7 @@
     <monster name="Oddish" x="1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3048" centery="2934" centerz="6" radius="1">
-    <monster name="Yanma" x="-1" y="-1" z="6" spawntime="60" level="0"/>
+    <monster name="Yanmega" x="-1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2962" centery="2936" centerz="6" radius="1">
     <monster name="Gloom" x="0" y="-1" z="6" spawntime="60" level="0"/>
@@ -28196,7 +28199,7 @@
   </spawn>
   <spawn centerx="3048" centery="2952" centerz="6" radius="1">
     <monster name="Spinarak" x="1" y="-1" z="6" spawntime="60" level="0"/>
-    <monster name="Yanma" x="-1" y="0" z="6" spawntime="60" level="0"/>
+    <monster name="Yanmega" x="-1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4108" centery="2952" centerz="6" radius="1">
     <monster name="Heracross" x="-1" y="0" z="6" spawntime="60" level="0"/>
@@ -28288,7 +28291,7 @@
   </spawn>
   <spawn centerx="3035" centery="2975" centerz="6" radius="1">
     <monster name="Spinarak" x="1" y="-1" z="6" spawntime="60" level="0"/>
-    <monster name="Yanma" x="-1" y="1" z="6" spawntime="60" level="0"/>
+    <monster name="Yanmega" x="-1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3885" centery="2975" centerz="6" radius="1">
     <monster name="Nidoking" x="-1" y="0" z="6" spawntime="60" level="0"/>
@@ -28355,7 +28358,7 @@
   </spawn>
   <spawn centerx="3030" centery="2993" centerz="6" radius="1">
     <monster name="Spinarak" x="-1" y="-1" z="6" spawntime="60" level="0"/>
-    <monster name="Yanma" x="1" y="1" z="6" spawntime="60" level="0"/>
+    <monster name="Yanmega" x="1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2944" centery="2994" centerz="6" radius="1">
     <monster name="Ariados" x="0" y="-1" z="6" spawntime="60" level="0"/>
@@ -28394,7 +28397,7 @@
     <monster name="Sunkern" x="-1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3924" centery="3010" centerz="6" radius="1">
-    <monster name="Tangela" x="1" y="-1" z="6" spawntime="60" level="0"/>
+    <monster name="Tangrowth" x="1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3872" centery="3013" centerz="6" radius="1">
     <monster name="Sunflora" x="-1" y="-1" z="6" spawntime="60" level="0"/>
@@ -28425,7 +28428,7 @@
     <monster name="Sunkern" x="1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3859" centery="3028" centerz="6" radius="1">
-    <monster name="Tangela" x="1" y="1" z="6" spawntime="60" level="0"/>
+    <monster name="Tangrowth" x="1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3940" centery="3028" centerz="6" radius="1">
     <monster name="Ivysaur" x="-1" y="0" z="6" spawntime="60" level="0"/>
@@ -28453,7 +28456,7 @@
     <monster name="Exeggutor" x="1" y="0" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3964" centery="3049" centerz="6" radius="1">
-    <monster name="Tangela" x="0" y="-1" z="6" spawntime="60" level="0"/>
+    <monster name="Tangrowth" x="0" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3953" centery="3050" centerz="6" radius="1">
     <monster name="Sunflora" x="-1" y="-1" z="6" spawntime="60" level="0"/>
@@ -28502,7 +28505,7 @@
     <monster name="Sunkern" x="-1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3914" centery="3074" centerz="6" radius="1">
-    <monster name="Tangela" x="-1" y="1" z="6" spawntime="60" level="0"/>
+    <monster name="Tangrowth" x="-1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3902" centery="3076" centerz="6" radius="1">
     <monster name="Sunkern" x="0" y="1" z="6" spawntime="60" level="0"/>
@@ -28831,14 +28834,14 @@
     <monster name="Vileplume" x="0" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3317" centery="3232" centerz="6" radius="1">
-    <monster name="Tangela" x="1" y="-1" z="6" spawntime="60" level="0"/>
+    <monster name="Tangrowth" x="1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4073" centery="3232" centerz="6" radius="1">
     <monster name="Bulbasaur" x="0" y="-1" z="6" spawntime="60" level="0"/>
     <monster name="Bayleef" x="0" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3585" centery="3233" centerz="6" radius="1">
-    <monster name="Yanma" x="1" y="1" z="6" spawntime="60" level="0"/>
+    <monster name="Yanmega" x="1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3615" centery="3233" centerz="6" radius="1">
     <monster name="Ledyba" x="-1" y="-1" z="6" spawntime="60" level="0"/>
@@ -28954,7 +28957,7 @@
     <monster name="Weedle" x="0" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3651" centery="3254" centerz="6" radius="1">
-    <monster name="Murkrow" x="-1" y="-1" z="6" spawntime="60" level="0"/>
+    <monster name="Honchkrow" x="-1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4184" centery="3255" centerz="6" radius="1">
     <monster name="Ledyba" x="0" y="-1" z="6" spawntime="60" level="0"/>
@@ -29006,7 +29009,7 @@
     <monster name="Gloom" x="-1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3648" centery="3264" centerz="6" radius="1">
-    <monster name="Yanma" x="1" y="-1" z="6" spawntime="60" level="0"/>
+    <monster name="Yanmega" x="1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3352" centery="3266" centerz="6" radius="1">
     <monster name="Bellossom" x="0" y="1" z="6" spawntime="60" level="0"/>
@@ -40844,7 +40847,7 @@
     <monster name="Electrike" x="1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3089" centery="1604" centerz="7" radius="1">
-    <monster name="Tangela" x="0" y="1" z="7" spawntime="60" level="0"/>
+    <monster name="Tangrowth" x="0" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="693" centery="1605" centerz="7" radius="1">
     <monster name="Cascoon" x="1" y="0" z="7" spawntime="60" level="0"/>
@@ -41374,7 +41377,7 @@
     <monster name="Beautifly" x="1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3472" centery="1649" centerz="7" radius="1">
-    <monster name="Aipom" x="-1" y="-1" z="7" spawntime="60" level="0"/>
+    <monster name="Ambipom" x="-1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4417" centery="1649" centerz="7" radius="1">
     <monster name="Wigglytuff" x="1" y="0" z="7" spawntime="60" level="0"/>
@@ -41426,7 +41429,7 @@
     <monster name="Hoppip" x="-1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3520" centery="1653" centerz="7" radius="1">
-    <monster name="Murkrow" x="-1" y="-1" z="7" spawntime="60" level="0"/>
+    <monster name="Honchkrow" x="-1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3595" centery="1653" centerz="7" radius="1">
     <monster name="Golem" x="0" y="-1" z="7" spawntime="60" level="0"/>
@@ -41484,7 +41487,7 @@
     <monster name="Hoppip" x="1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3001" centery="1657" centerz="7" radius="1">
-    <monster name="Tangela" x="-1" y="1" z="7" spawntime="60" level="0"/>
+    <monster name="Tangrowth" x="-1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3406" centery="1657" centerz="7" radius="1">
     <monster name="Aipom" x="-1" y="1" z="7" spawntime="60" level="0"/>
@@ -41668,7 +41671,7 @@
     <monster name="Electrike" x="0" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3430" centery="1669" centerz="7" radius="1">
-    <monster name="Aipom" x="-1" y="-1" z="7" spawntime="60" level="0"/>
+    <monster name="Ambipom" x="-1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3451" centery="1669" centerz="7" radius="1">
     <monster name="Stantler" x="1" y="1" z="7" spawntime="2700" level="0"/>
@@ -41782,7 +41785,7 @@
   </spawn>
   <spawn centerx="3617" centery="1676" centerz="7" radius="1">
     <monster name="Stantler" x="1" y="-1" z="7" spawntime="2700" level="0"/>
-    <monster name="Aipom" x="-1" y="1" z="7" spawntime="60" level="0"/>
+    <monster name="Ambipom" x="-1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3638" centery="1676" centerz="7" radius="1">
     <monster name="Snubbull" x="0" y="-1" z="7" spawntime="60" level="0"/>
@@ -41823,7 +41826,7 @@
     <monster name="Cascoon" x="-1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3401" centery="1679" centerz="7" radius="1">
-    <monster name="Aipom" x="-1" y="-1" z="7" spawntime="60" level="0"/>
+    <monster name="Ambipom" x="-1" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Hoothoot" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="671" centery="1680" centerz="7" radius="1">
@@ -41876,7 +41879,7 @@
     <monster name="Hoppip" x="1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3411" centery="1684" centerz="7" radius="1">
-    <monster name="Murkrow" x="0" y="-1" z="7" spawntime="60" level="0"/>
+    <monster name="Honchkrow" x="0" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3424" centery="1685" centerz="7" radius="1">
     <monster name="Murkrow" x="0" y="-1" z="7" spawntime="60" level="0"/>
@@ -43334,7 +43337,7 @@
     <monster name="Wurmple" x="-1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3567" centery="1885" centerz="7" radius="1">
-    <monster name="Aipom" x="0" y="1" z="7" spawntime="60" level="0"/>
+    <monster name="Ambipom" x="0" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3115" centery="1886" centerz="7" radius="1">
     <monster name="Venomoth" x="1" y="-1" z="7" spawntime="60" level="0"/>
@@ -43385,7 +43388,7 @@
     <monster name="Venomoth" x="1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3471" centery="1893" centerz="7" radius="1">
-    <monster name="Lickitung" x="1" y="1" z="7" spawntime="2700" level="0"/>
+    <monster name="Lickilicky" x="1" y="1" z="7" spawntime="2700" level="0"/>
   </spawn>
   <spawn centerx="3508" centery="1893" centerz="7" radius="1">
     <monster name="Sentret" x="1" y="1" z="7" spawntime="60" level="0"/>
@@ -43596,7 +43599,7 @@
     <npc name="Trace Kaden" x="-1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3577" centery="1926" centerz="7" radius="1">
-    <monster name="Aipom" x="1" y="1" z="7" spawntime="60" level="0"/>
+    <monster name="Ambipom" x="1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3586" centery="1926" centerz="7" radius="1">
     <monster name="Furret" x="0" y="1" z="7" spawntime="60" level="0"/>
@@ -43749,7 +43752,7 @@
     <monster name="Venonat" x="1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3662" centery="1944" centerz="7" radius="1">
-    <monster name="Magmar" x="-1" y="1" z="7" spawntime="60" level="100"/>
+    <monster name="Magmortar" x="-1" y="1" z="7" spawntime="60" level="100"/>
   </spawn>
   <spawn centerx="578" centery="1945" centerz="7" radius="1">
     <monster name="Wurmple" x="0" y="-1" z="7" spawntime="60" level="0"/>
@@ -43889,7 +43892,7 @@
     <monster name="Makuhita" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3633" centery="2006" centerz="7" radius="1">
-    <monster name="Sneasel" x="-1" y="1" z="7" spawntime="60" level="0"/>
+    <monster name="Weavile" x="-1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="354" centery="2007" centerz="7" radius="1">
     <monster name="Makuhita" x="1" y="1" z="7" spawntime="60" level="0"/>
@@ -43949,7 +43952,7 @@
     <monster name="Makuhita" x="-1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3659" centery="2025" centerz="7" radius="1">
-    <monster name="Sneasel" x="-1" y="-1" z="7" spawntime="60" level="0"/>
+    <monster name="Weavile" x="-1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="274" centery="2026" centerz="7" radius="1">
     <monster name="Hariyama" x="1" y="0" z="7" spawntime="60" level="0"/>
@@ -43980,7 +43983,7 @@
     <monster name="Makuhita" x="0" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3485" centery="2035" centerz="7" radius="1">
-    <monster name="Electabuzz" x="-1" y="-1" z="7" spawntime="60" level="100"/>
+    <monster name="Electivire" x="-1" y="-1" z="7" spawntime="60" level="100"/>
   </spawn>
   <spawn centerx="3661" centery="2036" centerz="7" radius="1">
     <monster name="Sneasel" x="0" y="-1" z="7" spawntime="60" level="0"/>
@@ -44014,7 +44017,7 @@
     <monster name="Makuhita" x="0" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3502" centery="2045" centerz="7" radius="1">
-    <monster name="Magneton" x="-1" y="1" z="7" spawntime="60" level="100"/>
+    <monster name="Magnezone" x="-1" y="1" z="7" spawntime="60" level="100"/>
   </spawn>
   <spawn centerx="472" centery="2046" centerz="7" radius="1">
     <monster name="Makuhita" x="1" y="-1" z="7" spawntime="60" level="0"/>
@@ -44119,11 +44122,11 @@
   </spawn>
   <spawn centerx="3505" centery="2063" centerz="7" radius="1">
     <monster name="Magnemite" x="1" y="-1" z="7" spawntime="60" level="0"/>
-    <monster name="Magneton" x="-1" y="0" z="7" spawntime="60" level="100"/>
+    <monster name="Magnezone" x="-1" y="0" z="7" spawntime="60" level="100"/>
     <monster name="Magneton" x="1" y="0" z="7" spawntime="60" level="100"/>
   </spawn>
   <spawn centerx="3652" centery="2063" centerz="7" radius="1">
-    <monster name="Sneasel" x="0" y="1" z="7" spawntime="60" level="0"/>
+    <monster name="Weavile" x="0" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="393" centery="2064" centerz="7" radius="1">
     <monster name="Meditite" x="1" y="-1" z="7" spawntime="60" level="0"/>
@@ -44142,7 +44145,7 @@
     <monster name="Magnemite" x="1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3473" centery="2068" centerz="7" radius="1">
-    <monster name="Magneton" x="0" y="1" z="7" spawntime="60" level="100"/>
+    <monster name="Magnezone" x="0" y="1" z="7" spawntime="60" level="100"/>
   </spawn>
   <spawn centerx="355" centery="2069" centerz="7" radius="1">
     <monster name="Medicham" x="0" y="1" z="7" spawntime="60" level="0"/>
@@ -44331,7 +44334,7 @@
     <monster name="Magnemite" x="-1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3017" centery="2174" centerz="7" radius="1">
-    <monster name="Magneton" x="0" y="-1" z="7" spawntime="60" level="0"/>
+    <monster name="Magnezone" x="0" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Electrode" x="-1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3036" centery="2174" centerz="7" radius="1">
@@ -45428,7 +45431,7 @@
     <monster name="Croconaw" x="1" y="0" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4292" centery="2499" centerz="7" radius="1">
-    <monster name="Tangela" x="1" y="-1" z="7" spawntime="60" level="0"/>
+    <monster name="Tangrowth" x="1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3482" centery="2500" centerz="7" radius="1">
     <monster name="Golem" x="-1" y="-1" z="7" spawntime="60" level="0"/>
@@ -45511,7 +45514,7 @@
     <monster name="Natu" x="-1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4333" centery="2511" centerz="7" radius="1">
-    <monster name="Tangela" x="0" y="1" z="7" spawntime="60" level="0"/>
+    <monster name="Tangrowth" x="0" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4169" centery="2512" centerz="7" radius="1">
     <monster name="Totodile" x="0" y="-1" z="7" spawntime="60" level="0"/>
@@ -45565,7 +45568,7 @@
     <npc name="Queenie Jerrie" x="-1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4327" centery="2518" centerz="7" radius="1">
-    <monster name="Tangela" x="0" y="-1" z="7" spawntime="60" level="0"/>
+    <monster name="Leafeon" x="0" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4343" centery="2518" centerz="7" radius="1">
     <monster name="Tangela" x="-1" y="-1" z="7" spawntime="60" level="0"/>
@@ -45723,7 +45726,7 @@
     <monster name="Heracross" x="0" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4358" centery="2538" centerz="7" radius="1">
-    <monster name="Tangela" x="-1" y="1" z="7" spawntime="60" level="0"/>
+    <monster name="Tangrowth" x="-1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2998" centery="2539" centerz="7" radius="1">
     <monster name="Ponyta" x="-1" y="-1" z="7" spawntime="60" level="0"/>
@@ -45767,10 +45770,10 @@
     <monster name="Natu" x="1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4346" centery="2551" centerz="7" radius="1">
-    <monster name="Tangela" x="-1" y="-1" z="7" spawntime="60" level="0"/>
+    <monster name="Leafeon" x="-1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4297" centery="2552" centerz="7" radius="1">
-    <monster name="Tangela" x="0" y="1" z="7" spawntime="60" level="0"/>
+    <monster name="Tangrowth" x="0" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2987" centery="2553" centerz="7" radius="1">
     <monster name="Quilava" x="1" y="0" z="7" spawntime="60" level="0"/>
@@ -46051,7 +46054,7 @@
   </spawn>
   <spawn centerx="3789" centery="2605" centerz="7" radius="1">
     <monster name="Ledyba" x="0" y="-1" z="7" spawntime="60" level="0"/>
-    <monster name="Murkrow" x="-1" y="1" z="7" spawntime="60" level="0"/>
+    <monster name="Honchkrow" x="-1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4364" centery="2605" centerz="7" radius="1">
     <monster name="Totodile" x="1" y="1" z="7" spawntime="60" level="0"/>
@@ -46113,7 +46116,7 @@
   </spawn>
   <spawn centerx="4237" centery="2614" centerz="7" radius="1">
     <monster name="Venonat" x="0" y="-1" z="7" spawntime="60" level="0"/>
-    <monster name="Yanma" x="-1" y="1" z="7" spawntime="60" level="0"/>
+    <monster name="Yanmega" x="-1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4245" centery="2614" centerz="7" radius="1">
     <monster name="Yanma" x="-1" y="1" z="7" spawntime="60" level="0"/>
@@ -46366,7 +46369,7 @@
     <monster name="Ledyba" x="0" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3806" centery="2668" centerz="7" radius="1">
-    <monster name="Murkrow" x="-1" y="-1" z="7" spawntime="60" level="0"/>
+    <monster name="Honchkrow" x="-1" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Pidgey" x="1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4348" centery="2668" centerz="7" radius="1">
@@ -47116,7 +47119,7 @@
     <monster name="Tangela" x="1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3930" centery="3081" centerz="7" radius="1">
-    <monster name="Tangela" x="-1" y="-1" z="7" spawntime="60" level="0"/>
+    <monster name="Tangrowth" x="-1" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Natu" x="1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3945" centery="3084" centerz="7" radius="1">
@@ -47938,7 +47941,7 @@
     <monster name="Bellsprout" x="0" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4091" centery="3424" centerz="7" radius="1">
-    <monster name="Tangela" x="0" y="1" z="7" spawntime="60" level="0"/>
+    <monster name="Tangrowth" x="0" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4063" centery="3429" centerz="7" radius="1">
     <monster name="Tangela" x="-1" y="-1" z="7" spawntime="60" level="0"/>
@@ -48006,7 +48009,7 @@
     <monster name="Slowpoke" x="1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4068" centery="3452" centerz="7" radius="1">
-    <monster name="Tangela" x="-1" y="-1" z="7" spawntime="60" level="0"/>
+    <monster name="Tangrowth" x="-1" y="-1" z="7" spawntime="60" level="0"/>
     <monster name="Weepinbell" x="1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4045" centery="3453" centerz="7" radius="1">
@@ -51472,7 +51475,7 @@
     <monster name="Snorunt" x="-1" y="-1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3465" centery="1381" centerz="8" radius="1">
-    <monster name="Magneton" x="0" y="-1" z="8" spawntime="60" level="0"/>
+    <monster name="Magnezone" x="0" y="-1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3477" centery="1382" centerz="8" radius="1">
     <monster name="Electrode" x="-1" y="-1" z="8" spawntime="60" level="0"/>
@@ -51702,7 +51705,7 @@
     <monster name="Dugtrio" x="-1" y="0" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3487" centery="1493" centerz="8" radius="1">
-    <monster name="Gligar" x="-1" y="1" z="8" spawntime="60" level="0"/>
+    <monster name="Gliscor" x="-1" y="1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3188" centery="1494" centerz="8" radius="1">
     <monster name="Squirtle" x="-1" y="-1" z="8" spawntime="60" level="0"/>
@@ -53143,7 +53146,7 @@
     <monster name="Grimer" x="-1" y="0" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2919" centery="1982" centerz="8" radius="1">
-    <monster name="Piloswine" x="1" y="-1" z="8" spawntime="60" level="0"/>
+    <monster name="Mamoswine" x="1" y="-1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="239" centery="1983" centerz="8" radius="1">
     <monster name="Sableye" x="-1" y="-1" z="8" spawntime="60" level="0"/>
@@ -53186,7 +53189,7 @@
     <monster name="Sableye" x="1" y="1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2869" centery="1992" centerz="8" radius="1">
-    <monster name="Sneasel" x="0" y="-1" z="8" spawntime="60" level="0"/>
+    <monster name="Weavile" x="0" y="-1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2876" centery="1992" centerz="8" radius="1">
     <monster name="Cloyster" x="1" y="-1" z="8" spawntime="60" level="0"/>
@@ -53223,7 +53226,7 @@
     <monster name="Aron" x="-1" y="0" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2912" centery="2002" centerz="8" radius="1">
-    <monster name="Piloswine" x="1" y="0" z="8" spawntime="60" level="0"/>
+    <monster name="Mamoswine" x="1" y="0" z="8" spawntime="60" level="0"/>
     <monster name="Swinub" x="-1" y="1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2888" centery="2004" centerz="8" radius="1">
@@ -53257,7 +53260,7 @@
   <spawn centerx="3487" centery="2040" centerz="8" radius="1">
     <monster name="Magnemite" x="-1" y="-1" z="8" spawntime="60" level="0"/>
     <monster name="Electabuzz" x="1" y="-1" z="8" spawntime="60" level="100"/>
-    <monster name="Magneton" x="1" y="1" z="8" spawntime="60" level="0"/>
+    <monster name="Magnezone" x="1" y="1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3510" centery="2044" centerz="8" radius="1">
     <monster name="Magnemite" x="1" y="0" z="8" spawntime="60" level="0"/>
@@ -53283,7 +53286,7 @@
   </spawn>
   <spawn centerx="3493" centery="2062" centerz="8" radius="1">
     <monster name="Electabuzz" x="0" y="-1" z="8" spawntime="60" level="100"/>
-    <monster name="Magneton" x="-1" y="0" z="8" spawntime="60" level="100"/>
+    <monster name="Magnezone" x="-1" y="0" z="8" spawntime="60" level="100"/>
   </spawn>
   <spawn centerx="3486" centery="2065" centerz="8" radius="1">
     <monster name="Magnemite" x="0" y="-1" z="8" spawntime="60" level="0"/>
@@ -53693,7 +53696,7 @@
     <monster name="Phanpy" x="0" y="-1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4104" centery="2328" centerz="8" radius="1">
-    <monster name="Gligar" x="1" y="-1" z="8" spawntime="60" level="0"/>
+    <monster name="Gliscor" x="1" y="-1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4156" centery="2328" centerz="8" radius="1">
     <monster name="Donphan" x="-1" y="-1" z="8" spawntime="60" level="0"/>
@@ -53745,7 +53748,7 @@
   </spawn>
   <spawn centerx="4143" centery="2348" centerz="8" radius="1">
     <monster name="Donphan" x="-1" y="0" z="8" spawntime="60" level="0"/>
-    <monster name="Gligar" x="1" y="0" z="8" spawntime="60" level="0"/>
+    <monster name="Gliscor" x="1" y="0" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4156" centery="2348" centerz="8" radius="1">
     <monster name="Donphan" x="-1" y="0" z="8" spawntime="60" level="0"/>
@@ -54096,7 +54099,7 @@
     <monster name="Furret" x="-1" y="-1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4138" centery="2962" centerz="8" radius="1">
-    <monster name="Misdreavus" x="-1" y="1" z="8" spawntime="60" level="0"/>
+    <monster name="Mismagius" x="-1" y="1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4147" centery="2962" centerz="8" radius="1">
     <monster name="Misdreavus" x="-1" y="-1" z="8" spawntime="60" level="0"/>
@@ -54149,7 +54152,7 @@
     <monster name="Haunter" x="-1" y="-1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4126" centery="3004" centerz="8" radius="1">
-    <monster name="Misdreavus" x="-1" y="-1" z="8" spawntime="60" level="0"/>
+    <monster name="Mismagius" x="-1" y="-1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3904" centery="3022" centerz="8" radius="1">
     <monster name="Abra" x="1" y="1" z="8" spawntime="60" level="0"/>
@@ -54243,7 +54246,7 @@
   </spawn>
   <spawn centerx="3933" centery="3111" centerz="8" radius="1">
     <monster name="Drowzee" x="1" y="-1" z="8" spawntime="60" level="0"/>
-    <monster name="Kadabra" x="-1" y="1" z="8" spawntime="60" level="0"/>
+    <monster name="Gallade" x="-1" y="1" z="8" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3948" centery="3111" centerz="8" radius="1">
     <monster name="Drowzee" x="0" y="-1" z="8" spawntime="60" level="0"/>
@@ -58019,7 +58022,7 @@
     <monster name="Pichu" x="1" y="1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3452" centery="1390" centerz="9" radius="1">
-    <monster name="Magneton" x="-1" y="-1" z="9" spawntime="60" level="0"/>
+    <monster name="Magnezone" x="-1" y="-1" z="9" spawntime="60" level="0"/>
     <monster name="Pichu" x="1" y="0" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3448" centery="1396" centerz="9" radius="1">
@@ -58075,7 +58078,7 @@
     <monster name="Sandslash" x="-1" y="1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3468" centery="1448" centerz="9" radius="1">
-    <monster name="Gligar" x="-1" y="0" z="9" spawntime="60" level="0"/>
+    <monster name="Gliscor" x="-1" y="0" z="9" spawntime="60" level="0"/>
     <monster name="Diglett" x="1" y="1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3510" centery="1450" centerz="9" radius="1">
@@ -58162,7 +58165,7 @@
     <monster name="Sandslash" x="1" y="1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3509" centery="1473" centerz="9" radius="1">
-    <monster name="Gligar" x="1" y="-1" z="9" spawntime="60" level="0"/>
+    <monster name="Gliscor" x="1" y="-1" z="9" spawntime="60" level="0"/>
     <monster name="Diglett" x="-1" y="1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="509" centery="1474" centerz="9" radius="1">
@@ -58656,7 +58659,7 @@
     <monster name="Phanpy" x="1" y="0" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4165" centery="2369" centerz="9" radius="1">
-    <monster name="Gligar" x="1" y="-1" z="9" spawntime="60" level="0"/>
+    <monster name="Gliscor" x="1" y="-1" z="9" spawntime="60" level="0"/>
     <monster name="Donphan" x="-1" y="0" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4160" centery="2370" centerz="9" radius="1">
@@ -58754,7 +58757,7 @@
     <monster name="Geodude" x="-1" y="0" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3062" centery="2509" centerz="9" radius="1">
-    <monster name="Golem" x="0" y="-1" z="9" spawntime="60" level="0"/>
+    <monster name="Probopass" x="0" y="-1" z="9" spawntime="60" level="0"/>
     <monster name="Graveler" x="1" y="1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3052" centery="2511" centerz="9" radius="1">
@@ -58956,7 +58959,7 @@
     <monster name="Gastly" x="0" y="-1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4106" centery="2979" centerz="9" radius="1">
-    <monster name="Gengar" x="-1" y="0" z="9" spawntime="60" level="0"/>
+    <monster name="Dusknoir" x="-1" y="0" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4134" centery="2982" centerz="9" radius="1">
     <monster name="Haunter" x="0" y="-1" z="9" spawntime="60" level="0"/>
@@ -59060,7 +59063,7 @@
   </spawn>
   <spawn centerx="3905" centery="3093" centerz="9" radius="1">
     <monster name="Drowzee" x="-1" y="0" z="9" spawntime="60" level="0"/>
-    <monster name="Kadabra" x="1" y="0" z="9" spawntime="60" level="0"/>
+    <monster name="Gallade" x="1" y="0" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3898" centery="3094" centerz="9" radius="1">
     <monster name="Drowzee" x="1" y="1" z="9" spawntime="60" level="0"/>
@@ -59231,7 +59234,7 @@
     <monster name="Golem" x="0" y="1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3514" centery="3278" centerz="9" radius="1">
-    <monster name="Rhydon" x="-1" y="-1" z="9" spawntime="60" level="0"/>
+    <monster name="Rhyperior" x="-1" y="-1" z="9" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3486" centery="3281" centerz="9" radius="1">
     <monster name="Geodude" x="0" y="-1" z="9" spawntime="60" level="0"/>
@@ -60090,7 +60093,7 @@
     <monster name="Porygon2" x="1" y="1" z="10" spawntime="2700" level="0"/>
   </spawn>
   <spawn centerx="3486" centery="1347" centerz="10" radius="1">
-    <monster name="Electabuzz" x="1" y="1" z="10" spawntime="60" level="0"/>
+    <monster name="Electivire" x="1" y="1" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3489" centery="1353" centerz="10" radius="1">
     <monster name="Magneton" x="1" y="0" z="10" spawntime="60" level="0"/>
@@ -60116,7 +60119,7 @@
     <monster name="Voltorb" x="0" y="-1" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3527" centery="1412" centerz="10" radius="1">
-    <monster name="Magneton" x="-1" y="0" z="10" spawntime="60" level="0"/>
+    <monster name="Magnezone" x="-1" y="0" z="10" spawntime="60" level="0"/>
     <monster name="Voltorb" x="1" y="1" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3531" centery="1416" centerz="10" radius="1">
@@ -60125,8 +60128,9 @@
   <spawn centerx="3543" centery="1417" centerz="10" radius="1">
     <monster name="Raichu" x="1" y="1" z="10" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3550" centery="1418" centerz="10" radius="1">
+  <spawn centerx="3550" centery="1418" centerz="10" radius="2">
     <monster name="Porygon2" x="1" y="1" z="10" spawntime="2700" level="0"/>
+    <monster name="Porygon-Z" x="1" y="2" z="10" spawntime="2700" level="0"/>
   </spawn>
   <spawn centerx="3521" centery="1421" centerz="10" radius="1">
     <monster name="Raichu" x="0" y="-1" z="10" spawntime="60" level="0"/>
@@ -60183,8 +60187,8 @@
     <monster name="Donphan" x="1" y="1" z="10" spawntime="60" level="99"/>
   </spawn>
   <spawn centerx="3666" centery="1665" centerz="10" radius="1">
-    <monster name="Piloswine" x="-1" y="-1" z="10" spawntime="60" level="93"/>
-    <monster name="Rhydon" x="1" y="1" z="10" spawntime="60" level="95"/>
+    <monster name="Mamoswine" x="-1" y="-1" z="10" spawntime="60" level="93"/>
+    <monster name="Rhyperior" x="1" y="1" z="10" spawntime="60" level="95"/>
   </spawn>
   <spawn centerx="3629" centery="1667" centerz="10" radius="1">
     <monster name="Piloswine" x="1" y="0" z="10" spawntime="60" level="98"/>
@@ -60347,7 +60351,7 @@
   </spawn>
   <spawn centerx="3532" centery="2455" centerz="10" radius="1">
     <monster name="Slugma" x="-1" y="-1" z="10" spawntime="60" level="0"/>
-    <monster name="Magmar" x="1" y="0" z="10" spawntime="60" level="0"/>
+    <monster name="Magmortar" x="1" y="0" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3473" centery="2458" centerz="10" radius="1">
     <monster name="Typhlosion" x="0" y="-1" z="10" spawntime="60" level="0"/>
@@ -60413,7 +60417,7 @@
     <monster name="Magcargo" x="0" y="1" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3025" centery="2497" centerz="10" radius="1">
-    <monster name="Rhydon" x="0" y="-1" z="10" spawntime="60" level="0"/>
+    <monster name="Rhyperior" x="0" y="-1" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3063" centery="2497" centerz="10" radius="1">
     <monster name="Rhydon" x="1" y="1" z="10" spawntime="60" level="0"/>
@@ -60547,7 +60551,7 @@
     <monster name="Misdreavus" x="1" y="0" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3832" centery="2646" centerz="10" radius="1">
-    <monster name="Misdreavus" x="1" y="-1" z="10" spawntime="60" level="0"/>
+    <monster name="Mismagius" x="1" y="-1" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3841" centery="2652" centerz="10" radius="1">
     <monster name="Crobat" x="1" y="0" z="10" spawntime="60" level="0"/>
@@ -60563,7 +60567,7 @@
     <monster name="Haunter" x="1" y="-1" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3817" centery="2700" centerz="10" radius="1">
-    <monster name="Misdreavus" x="1" y="-1" z="10" spawntime="60" level="0"/>
+    <monster name="Mismagius" x="1" y="-1" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3828" centery="2700" centerz="10" radius="1">
     <monster name="Gastly" x="0" y="-1" z="10" spawntime="60" level="0"/>
@@ -60599,8 +60603,9 @@
     <monster name="Qwilfish" x="1" y="1" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3625" centery="2756" centerz="10" radius="1"/>
-  <spawn centerx="3620" centery="2760" centerz="10" radius="1">
+  <spawn centerx="3620" centery="2760" centerz="10" radius="2">
     <monster name="Mantine" x="1" y="-1" z="10" spawntime="60" level="0"/>
+    <monster name="Mantyke" x="2" y="-2" z="10" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3584" centery="2762" centerz="10" radius="1">
     <monster name="Lanturn" x="1" y="1" z="10" spawntime="60" level="0"/>
@@ -60647,7 +60652,7 @@
   </spawn>
   <spawn centerx="3904" centery="2986" centerz="10" radius="1">
     <monster name="Alakazam" x="-1" y="-1" z="10" spawntime="60" level="0"/>
-    <monster name="Togetic" x="1" y="1" z="10" spawntime="2700" level="0"/>
+    <monster name="Togekiss" x="1" y="1" z="10" spawntime="2700" level="0"/>
   </spawn>
   <spawn centerx="3901" centery="2996" centerz="10" radius="1">
     <monster name="Alakazam" x="0" y="-1" z="10" spawntime="60" level="0"/>
@@ -61260,7 +61265,7 @@
   </spawn>
   <spawn centerx="3050" centery="2494" centerz="11" radius="1">
     <monster name="Rhyhorn" x="-1" y="-1" z="11" spawntime="60" level="0"/>
-    <monster name="Rhydon" x="1" y="-1" z="11" spawntime="60" level="0"/>
+    <monster name="Rhyperior" x="1" y="-1" z="11" spawntime="60" level="0"/>
     <monster name="Rhyhorn" x="1" y="0" z="11" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3038" centery="2498" centerz="11" radius="1">
@@ -61300,7 +61305,7 @@
     <monster name="Misdreavus" x="1" y="-1" z="11" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3837" centery="2688" centerz="11" radius="1">
-    <monster name="Misdreavus" x="-1" y="0" z="11" spawntime="60" level="0"/>
+    <monster name="Mismagius" x="-1" y="0" z="11" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3825" centery="2693" centerz="11" radius="1">
     <monster name="Haunter" x="-1" y="-1" z="11" spawntime="60" level="0"/>
@@ -61315,7 +61320,7 @@
     <monster name="Haunter" x="-1" y="-1" z="11" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3852" centery="2698" centerz="11" radius="1">
-    <monster name="Misdreavus" x="-1" y="-1" z="11" spawntime="60" level="0"/>
+    <monster name="Mismagius" x="-1" y="-1" z="11" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3819" centery="2700" centerz="11" radius="1">
     <monster name="Gastly" x="-1" y="1" z="11" spawntime="60" level="0"/>
@@ -61435,9 +61440,10 @@
   <spawn centerx="3631" centery="2772" centerz="11" radius="1">
     <monster name="Lanturn" x="-1" y="-1" z="11" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3621" centery="2774" centerz="11" radius="1">
+  <spawn centerx="3621" centery="2774" centerz="11" radius="2">
     <monster name="Horsea" x="-1" y="-1" z="11" spawntime="60" level="0"/>
     <monster name="Mantine" x="1" y="1" z="11" spawntime="60" level="0"/>
+    <monster name="Mantyke" x="2" y="1" z="11" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3599" centery="2776" centerz="11" radius="1">
     <monster name="Chinchou" x="-1" y="-1" z="11" spawntime="60" level="0"/>
@@ -61461,10 +61467,10 @@
     <monster name="Gastly" x="-1" y="1" z="11" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4125" centery="3006" centerz="11" radius="1">
-    <monster name="Misdreavus" x="1" y="0" z="11" spawntime="60" level="0"/>
+    <monster name="Mismagius" x="1" y="0" z="11" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4119" centery="3007" centerz="11" radius="1">
-    <monster name="Gengar" x="0" y="-1" z="11" spawntime="60" level="0"/>
+    <monster name="Dusknoir" x="0" y="-1" z="11" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="4112" centery="3008" centerz="11" radius="1">
     <monster name="Misdreavus" x="-1" y="-1" z="11" spawntime="60" level="0"/>
@@ -61500,7 +61506,7 @@
     <monster name="Sandslash" x="1" y="-1" z="12" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3060" centery="2496" centerz="12" radius="1">
-    <monster name="Golem" x="-1" y="0" z="12" spawntime="60" level="0"/>
+    <monster name="Probopass" x="-1" y="0" z="12" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3042" centery="2501" centerz="12" radius="1">
     <monster name="Rhydon" x="-1" y="0" z="12" spawntime="60" level="0"/>
@@ -61537,7 +61543,7 @@
     <monster name="Misdreavus" x="0" y="1" z="12" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3889" centery="2688" centerz="12" radius="1">
-    <monster name="Misdreavus" x="-1" y="0" z="12" spawntime="60" level="0"/>
+    <monster name="Mismagius" x="-1" y="0" z="12" spawntime="60" level="0"/>
     <monster name="Gastly" x="1" y="0" z="12" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3903" centery="2690" centerz="12" radius="1">
@@ -61639,8 +61645,9 @@
   <spawn centerx="3506" centery="2778" centerz="12" radius="1">
     <monster name="Gyarados" x="1" y="1" z="12" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3519" centery="2781" centerz="12" radius="1">
+  <spawn centerx="3519" centery="2781" centerz="12" radius="2">
     <monster name="Mantine" x="-1" y="-1" z="12" spawntime="60" level="0"/>
+    <monster name="Mantyke" x="-2" y="-1" z="12" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3611" centery="2781" centerz="12" radius="1">
     <monster name="Gyarados" x="-1" y="1" z="12" spawntime="60" level="0"/>
@@ -61656,8 +61663,9 @@
     <monster name="Horsea" x="-1" y="1" z="12" spawntime="60" level="0"/>
     <monster name="Octillery" x="1" y="1" z="12" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="3525" centery="2789" centerz="12" radius="1">
+  <spawn centerx="3525" centery="2789" centerz="12" radius="2">
     <monster name="Mantine" x="0" y="-1" z="12" spawntime="60" level="0"/>
+    <monster name="Mantyke" x="-1" y="-2" z="12" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="3560" centery="2789" centerz="12" radius="1">
     <monster name="Lanturn" x="1" y="-1" z="12" spawntime="60" level="0"/>
