@@ -9,7 +9,7 @@ below from how our Gen 1 to 3 Pokemon are set up. Only moves the server already 
 - **Evolution levels.** First evolution at 30, 35 or 40 by how late it is in the games (35 in three-stage lines), second at 50 (55 for the starters). Gible's line is like Larvitar's: 40 and 60. Babies evolve at 25. A new last form for a Pokemon that used to be final evolves at 40 after a one-stage Pokemon (Aipom, Gligar) and 60 after a middle one (Magneton, Rhydon). A new branch next to one we have uses the same level (Leafeon and Glaceon at 30 like Vaporeon, Gallade at 50 like Gardevoir).
 - **Evolution items.** Stone and held-item evolutions keep their item. Trades become a level plus the item they held. Evolutions by place use the stone newer games use (Magnezone and Probopass: Thunder Stone, Leafeon: Leaf Stone, Glaceon: Ice Stone). Friendship and "knows a move" evolutions are a level only. Burmy becomes Wormadam or Mothim at random, like Wurmple.
 - **Moves.** A new move every 5 levels from level 1, until the level it evolves at; an evolved form keeps every move of the one before and adds its own. Final forms reach level 70 (75 in three-stage lines), so most have 14 moves. One-stage Pokemon: 14 moves to level 65. Legendaries: 15 to level 70. Babies: 5 to level 20. First forms take their earliest official moves; evolved forms the ones learned after evolving. At most one move in four is a status move. When the official list runs short, TM and egg attacks of its own type fill in. Attacks get stronger with level.
-- **Catch chance** (higher is harder): 150 for first forms; 300 then 800 in three-stage lines; 500 for the second of two; 400 for one-stage Pokemon (700 with a base stat total of 500 or more); 150 for babies; Gible 500, 1200, 2000; 10000 for legendaries, 100000 for mythicals; new last forms of our Pokemon twice the one before (at least 800).
+- **Catch chance** (higher is harder): 150 for first forms; 300 then 800 in three-stage lines; 500 for the second of two; 400 for one-stage Pokemon (700 with a base stat total of 500 or more); 150 for babies; Gible 500, 1200, 2000; 10000 for legendaries, 25000 for Dialga, Palkia and Giratina, 100000 for mythicals; new last forms of our Pokemon twice the one before (at least 800).
 
 ## New evolution items
 
@@ -631,13 +631,13 @@ first: [move-audit.md](move-audit.md).
 
 ### Dialga
 
-**#483 Dialga** (Steel/Dragon). HP 100, Atk 120, Def 120, SpA 150, SpD 100, Spe 90. Catch 10000.
+**#483 Dialga** (Steel/Dragon). HP 100, Atk 120, Def 120, SpA 150, SpD 100, Spe 90. Catch 25000.
 
 1 Scary Face, 5 Metal Burst, 10 Heavy Slam, 15 Twister, 20 Metal Claw, 25 Dragon Breath, 30 Ancient Power, 35 Slash, 40 Flash Cannon, 45 Dragon Claw, 50 Aura Sphere, 55 Power Gem, 60 Earth Power, 65 Iron Tail, 70 Roar of Time
 
 ### Palkia
 
-**#484 Palkia** (Water/Dragon). HP 90, Atk 120, Def 100, SpA 150, SpD 120, Spe 100. Catch 10000.
+**#484 Palkia** (Water/Dragon). HP 90, Atk 120, Def 100, SpA 150, SpD 120, Spe 100. Catch 25000.
 
 1 Scary Face, 5 Whirlpool, 10 Twister, 15 Water Pulse, 20 Dragon Breath, 25 Ancient Power, 30 Aqua Ring, 35 Dragon Tail, 40 Slash, 45 Aura Sphere, 50 Power Gem, 55 Aqua Tail, 60 Earth Power, 65 Spacial Rend, 70 Hydro Pump
 
@@ -655,7 +655,7 @@ first: [move-audit.md](move-audit.md).
 
 ### Giratina
 
-**#487 Giratina** (Ghost/Dragon). HP 150, Atk 100, Def 120, SpA 100, SpD 120, Spe 90. Catch 10000.
+**#487 Giratina** (Ghost/Dragon). HP 150, Atk 100, Def 120, SpA 100, SpD 120, Spe 90. Catch 25000.
 
 1 Shadow Sneak, 5 Defog, 10 Twister, 15 Dragon Breath, 20 Ancient Power, 25 Ominous Wind, 30 Scary Face, 35 Hex, 40 Slash, 45 Shadow Claw, 50 Aura Sphere, 55 Dragon Claw, 60 Earth Power, 65 Shadow Force, 70 Destiny Bond
 
