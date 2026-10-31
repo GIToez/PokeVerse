@@ -4686,10 +4686,16 @@ local function testAnalyser(cid)
 
     check("Analyser: a quarter of the tries or less can't catch", getCatchRollMaxFor(10, false, 2, 0) == nil)
     local max = getCatchRollMaxFor(200, false, 90, 12)
-    check("Analyser: 90 tries of 200 with catching 12 rolls 1-199", max == 199, max)
-    check("Analyser: an ultra ball against 1-199 is 3/199", near(Analyser.throwChance(3, max, 0, 1), 3 / 199))
+    check("Analyser: 90 tries of 200 with catching 12 rolls 1-198 (1.2% off)", max == 198, max)
+    check("Analyser: an ultra ball against 1-198 is 3/198", near(Analyser.throwChance(3, max, 0, 1), 3 / 198))
     check("Analyser: the Catcher perk and the boost multiply the chance",
-        near(Analyser.throwChance(3, max, 0.5, 1.5), 3 / 199 * 1.5 * 1.5))
+        near(Analyser.throwChance(3, max, 0.5, 1.5), 3 / 198 * 1.5 * 1.5))
+    check("Catching: skill 150 takes 15% off the roll", getCatchRollMaxFor(10000, false, 5000, 150) == 8500,
+        getCatchRollMaxFor(10000, false, 5000, 150))
+    check("Catching: skill 250 takes 25% off the roll", getCatchRollMaxFor(10000, false, 5000, 250) == 7500,
+        getCatchRollMaxFor(10000, false, 5000, 250))
+    check("Catching: past skill 255 the roll stays 25.5% off", getCatchRollMaxFor(10000, false, 5000, 400) == 7450,
+        getCatchRollMaxFor(10000, false, 5000, 400))
     check("Analyser: a coloured ball rolls as 2", near(Analyser.throwChance(2.5, 100, 0, 1), 0.02))
     check("Analyser: species without the ball counter keep their chance", getCatchRollMaxFor(7.5, true, 0, 0) == 7.5)
 
@@ -4719,6 +4725,8 @@ local function testAnalyser(cid)
 
     local audit = Analyser.catchAudit(cid, "Pidgey", 5)
     local poke = audit.balls and audit.balls[1]
+    check("Analyser: the catching skill comes with its roll bonus in percent",
+        near(audit.skillBonus, math.min(audit.skill, PLAYER_SKILL_CATCHING_MAX) / 10), audit.skillBonus)
     check("Analyser: Pidgey lists the poke ball first", poke and poke.name == "poke" and poke.item == getItemInfo(balls["poke"].charged).clientId,
         poke and poke.name)
     local roll = getCatchRollMaxFor(getPlayerPokemonCatchChance(cid, "Pidgey"), getPokemonIgnoreBallCounter("Pidgey"),

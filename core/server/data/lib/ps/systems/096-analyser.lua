@@ -4,7 +4,7 @@
 --
 -- The client talks JSON on EXTENDED_IDS.ANALYSER:
 --   client -> server  {action = "get"} (at login and when the window opens)
---   server -> client  {type = "catch", kill, name, level, chance, tries, unlockAt, skill, catcher, boost, safari, balls =
+--   server -> client  {type = "catch", kill, name, level, chance, tries, unlockAt, skill, skillBonus, catcher, boost, safari, balls =
 --                       {{name, item, rate, roll, chance, expected, half, unlock, blocked}, ...}}
 --                     {type = "catch"} when there is no Pokemon to show
 --                     {type = "pokemon", name, level, exp, prev, next, max, capped, amount}
@@ -135,7 +135,7 @@ Analyser.catchAudit = function(cid, pokemonName, level)
     local catchChance = getPlayerPokemonCatchChance(cid, pokemonName)
     local ignoreBallCounter = getPokemonIgnoreBallCounter(pokemonName) and true or false
     local tries = getPlayerCatchTries(cid, getPokemonNumberByName(pokemonName))
-    local skill = math.min(getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING), PLAYER_SKILL_CATCHING_MAX)
+    local skill = getPlayerSkillLevel(cid, PLAYER_SKILL_CATCHING)
     local catcher = Vocations.perk(cid, "catcher", "catchChance") or 0
     local boost = DiscordBoostPerks.catchMultiplier() or 1
 
@@ -159,6 +159,7 @@ Analyser.catchAudit = function(cid, pokemonName, level)
 
     return { type = "catch", name = pokemonName, level = level, chance = round(catchChance, 2), tries = round(tries, 2),
              unlockAt = not ignoreBallCounter and round(catchChance * 0.25, 2) or nil, skill = skill,
+             skillBonus = round(math.min(skill, PLAYER_SKILL_CATCHING_MAX) * PLAYER_SKILL_CATCHING_BONUS_PER_LEVEL * 100, 1),
              catcher = catcher > 0 and round(catcher) or nil, boost = boost > 1 and round(boost) or nil, balls = rows }
 end
 

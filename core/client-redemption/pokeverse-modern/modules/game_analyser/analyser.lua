@@ -32,7 +32,7 @@ local HELP = {
             'Species chance: how hard the species is. Until your counter reaches it, each throw has the same odds.',
             'After that, every throw makes the next one better: at double the species chance the odds are at their best.',
             'Catchable after: below a quarter of the species chance a ball can not catch it at all.',
-            'Roll: a throw catches when a random number up to the second value is at most the first. Catching skill lowers the second value.',
+            'Roll: a throw catches when a random number up to the second value is at most the first. Each Catching skill level makes the second value 0.1% smaller, up to 25.5% at skill 255.',
             'The percent on each ball is the chance for your next throw. Hover a ball for more.',
         },
     },
@@ -302,7 +302,11 @@ local function refreshCatch()
     else
         setStat(board.throws, tr('Ball counter on this species'), tr('not used'))
     end
-    setStat(board.skill, tr('Catching skill'), tr('%d  -  lowers the roll', data.skill or 0))
+    if data.skillBonus then
+        setStat(board.skill, tr('Catching skill'), tr('%d  -  roll %s%% smaller', data.skill or 0, data.skillBonus))
+    else
+        setStat(board.skill, tr('Catching skill'), tr('%d  -  lowers the roll', data.skill or 0))
+    end
 
     board.balls:destroyChildren()
     local balls = data.balls or {}
