@@ -13825,9 +13825,6 @@
     <monster name="Lotad" x="-1" y="-1" z="5" spawntime="60" level="0"/>
     <monster name="Lombre" x="1" y="1" z="5" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="1263" centery="1290" centerz="5" radius="1">
-    <monster name="Togepi" x="1" y="1" z="5" spawntime="60" level="0"/>
-  </spawn>
   <spawn centerx="407" centery="1291" centerz="5" radius="1">
     <monster name="Zangoose" x="-1" y="-1" z="5" spawntime="60" level="0"/>
   </spawn>
@@ -13879,9 +13876,6 @@
   <spawn centerx="871" centery="1301" centerz="5" radius="1">
     <monster name="Vibrava" x="0" y="-1" z="5" spawntime="60" level="0"/>
   </spawn>
-  <spawn centerx="1268" centery="1301" centerz="5" radius="1">
-    <monster name="Togepi" x="-1" y="0" z="5" spawntime="60" level="0"/>
-  </spawn>
   <spawn centerx="347" centery="1302" centerz="5" radius="1">
     <monster name="Baltoy" x="1" y="1" z="5" spawntime="60" level="0"/>
   </spawn>
@@ -13921,12 +13915,6 @@
   <spawn centerx="1050" centery="1310" centerz="5" radius="1">
     <monster name="Lombre" x="1" y="-1" z="5" spawntime="60" level="0"/>
     <monster name="Lotad" x="-1" y="0" z="5" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="1250" centery="1310" centerz="5" radius="1">
-    <monster name="Togepi" x="1" y="-1" z="5" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="1261" centery="1310" centerz="5" radius="1">
-    <monster name="Togepi" x="1" y="-1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="590" centery="1312" centerz="5" radius="1">
     <npc name="Mart" x="-1" y="1" z="5" spawntime="60" level="0"/>
@@ -13971,9 +13959,6 @@
   </spawn>
   <spawn centerx="870" centery="1320" centerz="5" radius="1">
     <monster name="Vibrava" x="-1" y="-1" z="5" spawntime="60" level="0"/>
-  </spawn>
-  <spawn centerx="1252" centery="1320" centerz="5" radius="1">
-    <monster name="Togepi" x="0" y="1" z="5" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="1057" centery="1321" centerz="5" radius="1">
     <monster name="Lombre" x="-1" y="-1" z="5" spawntime="60" level="0"/>
@@ -64689,6 +64674,7 @@
   </spawn>
   <spawn centerx="2549" centery="642" centerz="7" radius="1">
     <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
+    <monster name="Togepi" x="-1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2562" centery="642" centerz="7" radius="1">
     <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
@@ -64779,6 +64765,7 @@
   </spawn>
   <spawn centerx="2517" centery="658" centerz="7" radius="1">
     <monster name="Rattata" x="0" y="0" z="7" spawntime="60" level="0"/>
+    <monster name="Togepi" x="-1" y="-1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2557" centery="658" centerz="7" radius="1">
     <monster name="Pidgey" x="0" y="0" z="7" spawntime="60" level="0"/>
@@ -65226,6 +65213,7 @@
   </spawn>
   <spawn centerx="2592" centery="699" centerz="7" radius="1">
     <monster name="Caterpie" x="0" y="0" z="7" spawntime="60" level="0"/>
+    <monster name="Togepi" x="-1" y="1" z="7" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2622" centery="699" centerz="7" radius="1">
     <monster name="Weedle" x="0" y="0" z="7" spawntime="60" level="0"/>
@@ -71064,6 +71052,7 @@
   </spawn>
   <spawn centerx="2593" centery="665" centerz="6" radius="1">
     <monster name="Beedrill" x="0" y="0" z="6" spawntime="60" level="0"/>
+    <monster name="Togepi" x="-1" y="-1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2204" centery="666" centerz="6" radius="1">
     <monster name="Nidorina" x="0" y="0" z="6" spawntime="60" level="0"/>
@@ -71970,6 +71959,7 @@
   </spawn>
   <spawn centerx="2584" centery="771" centerz="6" radius="1">
     <monster name="Ledyba" x="0" y="0" z="6" spawntime="60" level="0"/>
+    <monster name="Togepi" x="-1" y="1" z="6" spawntime="60" level="0"/>
   </spawn>
   <spawn centerx="2611" centery="771" centerz="6" radius="1">
     <monster name="Pidgeotto" x="0" y="0" z="6" spawntime="60" level="0"/>

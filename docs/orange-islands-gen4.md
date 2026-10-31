@@ -69,8 +69,9 @@ with the 45-minute spawn time of the rest of the Porygon line. That floor also h
 
 The Orange Islands are a high-level area, so they have no babies: all 57 baby spawns became the
 Pokémon of their line that spawns most in the same area, on the same tile and spawn time.
-Babies now come from Day Care eggs. The only wild babies left are 5 Togepi and 3 Wynaut in Hoenn;
-Kanto and Johto have none.
+Babies now come from Day Care eggs. The only wild babies left are 5 Togepi on Route 30 in Johto,
+where Mr. Pokémon gives you its egg in the original games (moved from Hoenn by
+`scripts/mapper/togepi-to-johto.py`), and 3 Wynaut in Hoenn, as on Mirage Island.
 
 | Baby | Became (island: area, count) |
 |---|---|
