@@ -1620,7 +1620,8 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
     - `/calendar add once 2026-11-06 18:00 2d exp=2 Double Friday`,
       `/calendar add weekend exp=1.5 Double Weekend`, `/calendar add weekend last loot=2 Loot Weekend`,
       `/calendar add yearly 12-24 18:00 1d shiny=2 Christmas Eve`.
-    - Bonuses: `exp`, `shiny`, `loot`, `breeding` (Day Care egg chance) and `fishing` (bites),
+    - Bonuses: `exp`, `shiny`, `loot`, `breeding` (how fast the Day Care egg wait runs), `hatching`
+      (incubator speed) and `fishing` (bites),
       above 1x and up to 10x each.
     - `/calendar holiday <id> on|off|auto` forces a holiday on or off, or back to its dates.
     - Changes take effect within a minute; starts and ends are broadcast.
@@ -1633,7 +1634,7 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
     |---|---|---|
     | New Year | Dec 31 to Jan 2 | 1.5x EXP, a gift on login ($10,000 and a rare candy) |
     | Lunar New Year | 3 days from the second new moon after the winter solstice (Feb 6) | 1.5x loot, a red envelope on login ($8,888) |
-    | Valentine's | Feb 13 to 15 | 2x Day Care egg chance, 1 in 4 fishing bites are Luvdisc, a rare candy |
+    | Valentine's | Feb 13 to 15 | Day Care eggs come twice as fast, 1 in 4 fishing bites are Luvdisc, a rare candy |
     | Pokémon Day | Feb 27, one day | 2x shiny, a rare candy |
     | Easter | Good Friday to Easter Monday (Mar 26 to 29) | the existing egg drops and Easter spawns (`030-easterEvent`) |
     | Summer Festival | July 1 to 31 | 1.5x fishing bites, the existing reward chests (`055-julyVacationEvent`) |
@@ -1839,8 +1840,8 @@ play data. Pokémon energy balance (see [energy](#pokémon-energy)) is still to 
   roll through `ShinyEvent.chance` (`data/lib/ps/systems/073-shinyEvent.lua`). Needs the
   new server build.
 - **Day Care events:** done. `/bonusdaycare 3x 2h` multiplies the training EXP Pokémon
-  get in the Day Care, and `/bonusbreeding 2x 1d` multiplies the daily early egg chance
-  (from day 7). Same arguments as `/doubleexp` (up to 100x, 1 minute to 7 days, `off`,
+  get in the Day Care, and `/bonusbreeding 2x 1d` makes the egg wait run twice as fast
+  (days 7 and 14 come sooner; only the time inside the event counts). Same arguments as `/doubleexp` (up to 100x, 1 minute to 7 days, `off`,
   `status`); `/expevent` lists them too. Training EXP only counts the minutes that
   overlap the event. Code: `data/lib/ps/systems/072-daycare.lua`,
   `talkactions/scripts/daycareevent.lua`.

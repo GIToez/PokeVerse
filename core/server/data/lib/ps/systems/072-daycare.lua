@@ -17,7 +17,7 @@
 -- Every action needs a daycare NPC near the trainer.
 --
 -- /bonusdaycare and /bonusbreeding start server events like /doubleexp: the first multiplies the training
--- EXP earned while it runs, the second the daily egg chance.
+-- EXP earned while it runs, the second how fast the wait for an egg runs (calendar "breeding" bonuses too).
 
 Daycare = {}
 
@@ -72,7 +72,7 @@ Daycare.EVENTS = {
     daycare = { multiplier = GLOBAL_STORAGES.DAYCARE_EVENT_MULTIPLIER, start = GLOBAL_STORAGES.DAYCARE_EVENT_START,
                 ends = GLOBAL_STORAGES.DAYCARE_EVENT_END, label = "Day Care training EXP" },
     breeding = { multiplier = GLOBAL_STORAGES.BREEDING_EVENT_MULTIPLIER, start = GLOBAL_STORAGES.BREEDING_EVENT_START,
-                 ends = GLOBAL_STORAGES.BREEDING_EVENT_END, label = "Day Care egg chance" },
+                 ends = GLOBAL_STORAGES.BREEDING_EVENT_END, label = "Day Care egg speed" },
 }
 
 local function storedNumber(key)
@@ -122,7 +122,7 @@ Daycare.startEvent = function(kind, multiplier, seconds)
     store(event.ends, now + seconds)
     doBroadcastMessage(string.format("%s %s %s for the next %s!",
         replaced and "The Day Care event changed:" or "Day Care event started:",
-        ServerExpEvent.formatMultiplier(multiplier), kind == "daycare" and "training EXP at the Day Care" or "egg chance at the Day Care",
+        ServerExpEvent.formatMultiplier(multiplier), kind == "daycare" and "training EXP at the Day Care" or "egg speed at the Day Care",
         ServerExpEvent.formatDuration(seconds)), MESSAGE_STATUS_WARNING)
 end
 
@@ -287,15 +287,41 @@ end
 
 Daycare.eggChance = function(cid)
     local chance = isPremium(cid) and Vocations.perk(cid, "breeder", "earlyEgg") or Daycare.EGG_EARLY_CHANCE
-    chance = chance + getPlayerExtraEggRateValue(cid) / 100
-    local multiplier = Daycare.getEvent("breeding")
-    return math.min(1, chance * (multiplier or 1) * EventCalendar.multiplier("breeding"))
+    return math.min(1, chance + getPlayerExtraEggRateValue(cid) / 100)
+end
+
+-- How fast the wait runs right now (the /bonusbreeding event and calendar breeding bonuses)
+Daycare.eggSpeed = function()
+    return (Daycare.getEvent("breeding") or 1) * EventCalendar.multiplier("breeding")
+end
+
+local function bonusSeconds(multiplier, startsAt, endsAt, from, to)
+    local overlap = math.min(to, endsAt) - math.max(from, startsAt)
+    return (overlap > 0 and multiplier > 1) and overlap * (multiplier - 1) or 0
+end
+
+-- Seconds waited for an egg since start: time under a breeding event counts that many times over.
+-- Only the time that really fell inside an event counts, so staying away until one starts gains nothing.
+Daycare.eggWaited = function(start, now)
+    now = now or os.time()
+    local waited = now - start
+    local from = math.max(start, now - Daycare.EGG_GUARANTEED_DAY * DAY)
+    local multiplier, startsAt, endsAt = lastRun("breeding")
+    if (multiplier) then
+        waited = waited + bonusSeconds(multiplier, startsAt, endsAt, from, now)
+    end
+    if (from < now) then
+        for _, event in ipairs(EventCalendar.getEvents(from, now)) do
+            waited = waited + bonusSeconds(event.bonuses.breeding or 1, event.startsAt, event.endsAt, from, now)
+        end
+    end
+    return waited
 end
 
 -- One roll for every day of the wait from day 7 that hasn't had one, or the egg from day 14
 local function rollEgg(cid)
     local start = Daycare.eggWaitStart(cid)
-    local day = math.floor((os.time() - start) / DAY)
+    local day = math.floor(Daycare.eggWaited(start) / DAY)
     if (day >= Daycare.EGG_GUARANTEED_DAY) then
         return true
     end
@@ -390,7 +416,7 @@ local function updateEgg(cid, rows, infos)
     if (status ~= "ok" or infos[1].trained < Daycare.TOGETHER_MINUTES or infos[2].trained < Daycare.TOGETHER_MINUTES) then
         return
     end
-    if (math.floor((os.time() - Daycare.eggWaitStart(cid)) / DAY) < Daycare.EGG_EARLY_FROM_DAY or not rollEgg(cid)) then
+    if (math.floor(Daycare.eggWaited(Daycare.eggWaitStart(cid)) / DAY) < Daycare.EGG_EARLY_FROM_DAY or not rollEgg(cid)) then
         return
     end
     if (species == "Nidorana" and (infos[1].ditto or infos[2].ditto)) then
@@ -414,10 +440,10 @@ local function eggInfo(cid, infos)
     local pending = getPendingEgg(cid)
     local status, species, blocked = Daycare.compatibility(infos[1], infos[2])
     local start = Daycare.eggWaitStart(cid)
-    local now = os.time()
+    local waited, speed = Daycare.eggWaited(start), Daycare.eggSpeed()
     local egg = { status = status, chance = math.floor(Daycare.eggChance(cid) * 1000 + 0.5) / 10,
                   fromDay = Daycare.EGG_EARLY_FROM_DAY, certainDay = Daycare.EGG_GUARANTEED_DAY,
-                  day = math.floor((now - start) / DAY) }
+                  day = math.floor(waited / DAY), speed = speed > 1 and speed or nil }
     if (species) then
         egg.species = eggSpeciesName(species)
         egg.number = getPokemonNumberByName(egg.species)
@@ -440,10 +466,10 @@ local function eggInfo(cid, infos)
             egg.left = (Daycare.TOGETHER_MINUTES - together) * 60
         elseif (egg.day < Daycare.EGG_EARLY_FROM_DAY) then
             egg.status = "waiting"
-            egg.left = start + Daycare.EGG_EARLY_FROM_DAY * DAY - now
+            egg.left = math.ceil((Daycare.EGG_EARLY_FROM_DAY * DAY - waited) / speed)
         else
             egg.status = "chance"
-            egg.left = start + Daycare.EGG_GUARANTEED_DAY * DAY - now
+            egg.left = math.ceil((Daycare.EGG_GUARANTEED_DAY * DAY - waited) / speed)
         end
     end
     return egg
@@ -573,6 +599,18 @@ Daycare.sendState = function(cid)
         local multiplier, endsAt = Daycare.getEvent(kind)
         if (multiplier) then
             events[kind] = { multiplier = multiplier, left = endsAt - os.time() }
+        end
+    end
+    -- calendar bonuses (the Breeding Weekend): shown with the staff event, until the first of them ends
+    for _, kind in ipairs({ "breeding", "hatching" }) do
+        for _, event in ipairs(EventCalendar.getActive()) do
+            local bonus = event.bonuses[kind]
+            if (bonus) then
+                local shown = events[kind] or { multiplier = 1, left = event.endsAt - os.time() }
+                shown.multiplier = shown.multiplier * bonus
+                shown.left = math.min(shown.left, event.endsAt - os.time())
+                events[kind] = shown
+            end
         end
     end
 
