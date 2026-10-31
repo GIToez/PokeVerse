@@ -1,0 +1,25 @@
+return function(t, H)
+  H.setup()
+  H.say('/itch gym', 500)
+  H.lights(false)
+  local function gym(name, stand, mon, rounds)
+    H.go(stand)
+    H.call(mon)
+    H.where(name)
+    H.rec(name)
+    H.npc({ 'hi', 'battle', 'yes' }, 1600)
+    H.wait(1200)
+    H.npcClose()
+    for i = 1, rounds do
+      H.attackNearest(200)
+      H.moves({ 'm1', 'm2', 'm3', 'm4' }, 700)
+    end
+    H.wait(3500)
+    H.stop()
+    H.stopFight()
+    H.npcClose()
+  end
+  gym('b_brock', '3309,283,10', 'Blastoise', 14)
+  gym('b_misty', '3915,289,10', 'Pikachu', 11)
+  gym('b_surge', '3926,669,5', 'Rhydon', 11)
+end
