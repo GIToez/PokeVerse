@@ -433,9 +433,10 @@ TraderWindow < UIWindow
 
     GtsScrollBar
       id: listScroll
-      anchors.top: list.top
+      anchors.top: held.bottom
       anchors.bottom: parent.bottom
       anchors.right: parent.right
+      margin-top: 8
 
     TraderMuted
       id: empty
