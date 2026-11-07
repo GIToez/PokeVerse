@@ -561,6 +561,11 @@ function onNotice(data)
                 category = 'Side quests' }
         quests[id] = row
         order[#order + 1] = id
+    elseif row.hidden or not row.name then
+        -- a ??? row (NPC not met when the log loaded) becomes a real quest once a notice names it
+        row.hidden = nil
+        row.name, row.step, row.npc = data.name, data.step, data.npc
+        row.objective = data.objective or row.objective
     end
     if data.kind == 'complete' then
         row.state = 'done'
@@ -594,7 +599,7 @@ function getTrackerLines()
             local ready = isReady(row)
             local key = 'quest_' .. id
             lines[#lines + 1] = { key = key, icon = IMAGES .. (ready and 'npc_quest_ready' or 'npc_quest_active'),
-                name = row.name:match(' %- (.+)$') or row.name,
+                name = (row.name or tr('Quest')):match(' %- (.+)$') or row.name or tr('Quest'),
                 count = row.need and string.format('%d / %d', math.min(row.have or 0, row.need), row.need) or '',
                 value = row.need and (row.have or 0) or 0, max = row.need or 1, done = ready,
                 claim = ready and tr('Go') or nil,
@@ -606,7 +611,7 @@ function getTrackerLines()
                         show(id)
                     end
                 end,
-                tooltip = (row.objective or row.name) .. (ready and ('\n' .. tr('Done! Go back to %s.', row.npc)) or ''),
+                tooltip = (row.objective or row.name or '') .. (ready and ('\n' .. tr('Done! Go back to %s.', row.npc)) or ''),
                 onClick = function() show(id) end,
                 onRemove = function()
                     tracked[id] = nil
