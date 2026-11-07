@@ -580,6 +580,18 @@ def lock_badge():
     return im
 
 
+def evolve_badge():
+    """Ready to evolve, on a Poke bar socket: a green up arrow on a dark round chip (game_pokebar).
+    The client fades it when only an item (or the time of day) is missing."""
+    im = canvas(16, 16)
+    d = ImageDraw.Draw(im)
+    green = (67, 194, 113)
+    d.ellipse((s(0.5), s(0.5), s(15.5), s(15.5)), fill=rgba(CHIP, 0.9), outline=rgba(green, 0.9), width=s(1.2))
+    d.polygon([(s(8), s(3.2)), (s(12.6), s(8.2)), (s(9.8), s(8.2)), (s(9.8), s(12.6)),
+               (s(6.2), s(12.6)), (s(6.2), s(8.2)), (s(3.4), s(8.2))], fill=rgba(green))
+    return im
+
+
 def underline():
     im = canvas(22, 2)
     ImageDraw.Draw(im).rounded_rectangle((0, 0, im.width - 1, im.height - 1), s(1), fill=rgba(GOLD))
@@ -616,6 +628,7 @@ def main():
     save(move_slot(EDGE), kit / 'move-empty.png')
     save(cooldown_wedges(), kit / 'cooldown.png')
     save(lock_badge(), kit / 'lock.png')
+    save(evolve_badge(), kit / 'evolve.png')
     # the NPC shop's offer boxes (game_npctrade), image-border 6
     save(well(24, 24, 6, SLOT, 0.8, 0.6), kit / 'offer.png')
     save(well(24, 24, 6, HOVER, 0.9, 0), kit / 'offer-hover.png')

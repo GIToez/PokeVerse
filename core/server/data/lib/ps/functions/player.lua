@@ -582,6 +582,7 @@ function doPlayerPokemonAddExperience(player, pokemon, expAmount, multiplier, re
                     doSendMagicEffect(pokemonPosition, EFFECT_LEVEL_UP)
 
                     setBallPokemonLevel(ball.uid, newLevel)
+                    EvolutionBadge.soon(player) -- a level reached: the Poke bar's ready-to-evolve badge
                     setBallPokemonMaxEnergy(ball.uid, maxEnergy + POKEMON_GAIN_ENERGY * gainLevel)
                     setBallPokemonExtraPoints(ball.uid, pokemonExtraPoints)
 

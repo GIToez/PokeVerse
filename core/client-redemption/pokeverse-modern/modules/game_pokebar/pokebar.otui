@@ -49,6 +49,19 @@ QuickCallSlot < UIWidget
     margin-top: -2
     margin-right: -2
 
+  // ready to evolve (game_pokebar showHeld): full when it can evolve now, faded when only an item or the
+  // time of day is missing; image: scripts/art/ui_kit.py evolve_badge
+  UIWidget
+    id: evolve
+    size: 16 16
+    phantom: true
+    visible: false
+    image-source: /images/pokeverse-ui/evolve
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    margin-bottom: -2
+    margin-right: -2
+
   // only "FNT" shows; the ring is the health
   Label
     id: health
