@@ -101,9 +101,10 @@ function questTitle(row)
 end
 
 local function placeText(row)
-    local place = row.place
-    if place and place.town and place.town ~= '' then
-        return tr('%s, near %s', row.npc, place.town)
+    -- the NPC's town (npcTown), not the one of the step Go there leads to
+    local town = row.npcTown or (row.place and row.place.town)
+    if town and town ~= '' then
+        return tr('%s, near %s', row.npc, town)
     end
     return row.npc or ''
 end
@@ -226,7 +227,7 @@ local function drawDetails()
     details.actions.goThere.onClick = function()
         local pokepedia = modules.game_pokepedia
         if pokepedia and pokepedia.Navigation and row.place then
-            pokepedia.Navigation.goTo({ x = row.place.x, y = row.place.y, z = row.place.z }, row.npc)
+            pokepedia.Navigation.goTo({ x = row.place.x, y = row.place.y, z = row.place.z }, row.place.label or row.npc)
             hide()
         end
     end
@@ -237,7 +238,7 @@ local function drawDetails()
         tr('Nowhere to go for this one.'))
     details.actions.viewMap.onClick = function()
         if canMap then
-            pokepedia.MapTab.showPosition({ x = row.place.x, y = row.place.y, z = row.place.z }, row.npc)
+            pokepedia.MapTab.showPosition({ x = row.place.x, y = row.place.y, z = row.place.z }, row.place.label or row.npc)
             hide()
         end
     end
@@ -558,7 +559,7 @@ function onNotice(data)
     local row = quests[id]
     if not row then
         row = { id = id, name = data.name, step = data.step, npc = data.npc, objective = data.objective,
-                category = 'Side quests' }
+                category = 'Side quests', place = data.place }
         quests[id] = row
         order[#order + 1] = id
     elseif row.hidden or not row.name then
@@ -566,6 +567,11 @@ function onNotice(data)
         row.hidden = nil
         row.name, row.step, row.npc = data.name, data.step, data.npc
         row.objective = data.objective or row.objective
+    end
+    if data.place then
+        -- the quest moved on: Go there leads to its next step, or where it is handed in
+        row.place = data.place
+        row.npcTown = data.npcTown or row.npcTown
     end
     if data.kind == 'complete' then
         row.state = 'done'
@@ -606,7 +612,7 @@ function getTrackerLines()
                 onClaim = function()
                     local pokepedia = modules.game_pokepedia
                     if pokepedia and pokepedia.Navigation and row.place then
-                        pokepedia.Navigation.goTo({ x = row.place.x, y = row.place.y, z = row.place.z }, row.npc)
+                        pokepedia.Navigation.goTo({ x = row.place.x, y = row.place.y, z = row.place.z }, row.place.label or row.npc)
                     else
                         show(id)
                     end

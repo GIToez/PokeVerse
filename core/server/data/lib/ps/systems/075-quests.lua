@@ -260,6 +260,14 @@ Quests.progress = function(cid, quest)
     local request = quest.questRequest
     if (quest.progress) then
         return quest.progress(cid)
+    elseif (quest.steps) then -- the quest's own steps (not the found ones: those only lead the way)
+        local done = 0
+        for _, step in ipairs(quest.steps) do
+            if (tonumber(getCreatureStorage(cid, step.storage)) == QUEST_STATUS.FINISHED) then
+                done = done + 1
+            end
+        end
+        return done, #quest.steps
     elseif (quest.questType == BRING_ITEMS) then
         local have, need = 0, 0
         for i = 1, #request, 2 do
@@ -373,6 +381,175 @@ Quests.stateOf = function(cid, quest, current)
     return "available"
 end
 
+---------------------------------------------------------------------------------------------------
+-- Go there: the quest's next step
+---------------------------------------------------------------------------------------------------
+
+local function distance(a, b)
+    -- another floor counts as far: stairs are seldom right there
+    return math.max(math.abs(a.x - b.x), math.abs(a.y - b.y)) + math.abs(a.z - b.z) * 50
+end
+
+local function nearest(list, from)
+    local best, bestDistance
+    for _, pos in ipairs(list) do
+        local d = from and distance(pos, from) or 0
+        if (not best or d < bestDistance) then
+            best, bestDistance = pos, d
+        end
+    end
+    return best
+end
+
+local function placeAt(pos, label)
+    return { x = pos.x, y = pos.y, z = pos.z, town = nearestTown(pos.x, pos.y), label = label }
+end
+
+-- POKEPEDIA_SPAWNS areas { x, y, z, points } of a species, the closest one
+local function spawnPlace(species, from, label)
+    local areas = {}
+    for _, area in ipairs(POKEPEDIA_SPAWNS and POKEPEDIA_SPAWNS[species] or {}) do
+        areas[#areas + 1] = { x = area[1], y = area[2], z = area[3] }
+    end
+    local pos = nearest(areas, from)
+    return pos and placeAt(pos, label)
+end
+
+-- item id -> { { species, chance }, ... }: the wild Pokemon that drop it (built on first use)
+local droppedBy
+local function dropPlace(item, from)
+    if (not droppedBy) then
+        droppedBy = {}
+        for species in pairs(POKEPEDIA_SPAWNS or {}) do
+            -- wild Pokemon only: not the cloned, ancient or boss monsters of dungeons and events
+            local info = getPokemonNumberByName(species) and getMonsterInfo(species)
+            for _, loot in ipairs(info and info.loot or {}) do
+                for _, id in ipairs(loot.ids or { loot.id }) do
+                    droppedBy[id] = droppedBy[id] or {}
+                    table.insert(droppedBy[id], { species = species, chance = loot.chance or 0 })
+                end
+            end
+        end
+    end
+    -- the least effort: how far away times how many to defeat (a 22% drop next door beats a 92% one
+    -- far away), among the species that drop it at least a tenth as often as the best one
+    local list, best = droppedBy[item] or {}, 0
+    for _, drop in ipairs(list) do
+        best = math.max(best, drop.chance)
+    end
+    local place, placeCost
+    for _, drop in ipairs(list) do
+        if (drop.chance > 0 and drop.chance * 10 >= best) then
+            local p = spawnPlace(drop.species, from, string.format("Defeat %s for the %s", drop.species,
+                    getItemNameById(item) or "item"))
+            local cost = p and ((from and distance(p, from) or 0) + 10) * best / drop.chance
+            if (p and (not place or cost < placeCost)) then
+                place, placeCost = p, cost
+            end
+        end
+    end
+    return place
+end
+
+local function itemPlace(item, from)
+    local sources = QUEST_ITEM_SOURCES and QUEST_ITEM_SOURCES[item]
+    if (sources) then
+        local pos = nearest(sources, from)
+        return placeAt(pos, pos.label)
+    end
+    return dropPlace(item, from)
+end
+
+local function stepDone(cid, step)
+    if (step.storage) then
+        local value = tonumber(getCreatureStorage(cid, step.storage)) or -1
+        if (step.atLeast) then
+            return value >= step.atLeast
+        end
+        return value == QUEST_STATUS.FINISHED
+    elseif (step.battle) then
+        return (tonumber(getCreatureStorage(cid, step.battle)) or -1) > 1 -- getPlayerDefeatedNPC
+    elseif (step.item) then
+        return getPlayerItemCount(cid, step.item) >= (step.count or 1)
+    end
+    return true
+end
+
+-- the steps a quest leads through: its own (quest.steps in 003-quest.lua) or the ones
+-- scripts/make-quest-steps.py found (QUEST_STEPS in questSteps.lua)
+local function stepsOf(quest)
+    return quest.steps or (QUEST_STEPS and QUEST_STEPS[quest.storage])
+end
+
+-- where the quest under way leads next, before going back to the NPC; nil when it's time to go back
+local function nextStep(cid, quest)
+    local from = isPlayer(cid) and getCreaturePosition(cid) or nil
+    local steps = stepsOf(quest)
+    if (steps) then
+        for _, step in ipairs(steps) do
+            if (not stepDone(cid, step)) then
+                if (step.pos) then
+                    return placeAt(step.pos, step.label)
+                elseif (step.places) then
+                    local pos = nearest(step.places, from)
+                    return placeAt(pos, pos.label)
+                elseif (step.item) then
+                    return itemPlace(step.item, from)
+                end
+            end
+        end
+        return nil
+    end
+    local request = quest.questRequest
+    if (quest.questType == CATCH_POKEMON or quest.questType == DEFEAT_POKEMON) then
+        local have, need = Quests.progress(cid, quest)
+        if (have and need and have < need) then
+            local verb = quest.questType == CATCH_POKEMON and "Catch" or "Defeat"
+            return spawnPlace(request[1], from, string.format("%s %s", verb, request[1]))
+        end
+    elseif (quest.questType == BRING_POKEMON) then
+        local have, need = Quests.progress(cid, quest)
+        if (have and need and have < need) then
+            return spawnPlace(request, from, string.format("Catch %s", request))
+        end
+    elseif (quest.questType == BRING_ITEMS) then
+        for i = 1, #request, 2 do
+            if (getPlayerItemCount(cid, request[i]) < request[i + 1]) then
+                local place = itemPlace(request[i], from)
+                if (place) then
+                    return place
+                end
+            end
+        end
+    end
+    return nil
+end
+
+-- Where the trainer goes for a quest. Under way: its next step (above), then back to the NPC.
+-- An NPC can stand in several places (Gary Oak is in Viridian, Pewter, Mt. Moon...), and a quest
+-- only starts at its startPosition and is handed in at its finishPosition, so those come first: the
+-- hand-in spot once it is under way, the start spot before. Without them, wherever the NPC is.
+Quests.questPlace = function(entry, state, cid)
+    if (state == "active" and cid) then
+        local step = nextStep(cid, entry.quest)
+        if (step) then
+            return step
+        end
+    end
+    return Quests.npcPlace(entry, state)
+end
+
+-- the NPC's own spot for this quest: where it starts, or where it is handed in once under way
+Quests.npcPlace = function(entry, state)
+    local quest = entry.quest
+    local npcPlace = Quests.placeOf(entry.npc)
+    local pos = (state == "active" and quest.finishPosition) or quest.startPosition or quest.finishPosition
+    if (not pos) then
+        return npcPlace
+    end
+    return { x = pos.x, y = pos.y, z = pos.z, town = nearestTown(pos.x, pos.y), look = npcPlace and npcPlace.look }
+end
+
 local function row(cid, entry, state)
     local quest = entry.quest
     local data = { id = entry.id, name = entry.name, step = entry.step, group = entry.group, category = entry.category,
@@ -383,7 +560,10 @@ local function row(cid, entry, state)
         data.have, data.need = Quests.progress(cid, quest)
     end
     if (state ~= "done") then
-        data.place = Quests.placeOf(entry.npc)
+        data.place = Quests.questPlace(entry, state, cid)
+        -- "Given by Gary Oak, near Viridian" names the NPC's town even while Go there leads elsewhere
+        local npcPlace = Quests.npcPlace(entry, state)
+        data.npcTown = npcPlace and npcPlace.town
     end
     return data
 end
@@ -431,7 +611,7 @@ Quests.onMeet = function(cid, npcName)
 end
 
 local function hiddenRow(entry, state)
-    local place = Quests.placeOf(entry.npc)
+    local place = Quests.questPlace(entry, state)
     return { id = entry.id, hidden = true, state = state, category = entry.category, level = entry.quest.requiredLevel,
              daily = entry.quest.daily and true or nil, place = place and { town = place.town } or nil }
 end
@@ -500,6 +680,12 @@ local function notice(cid, kind, quest, extra)
     local data = { type = "notice", kind = kind, id = quest.storage, name = entry and entry.name or "Quest",
                    step = entry and entry.step, npc = entry and entry.npc, objective = Quests.objective(quest) or
                    (entry and entry.text) }
+    -- under way, the quest log's Go there leads to the next step or where it is handed in
+    if (entry and kind ~= "complete") then
+        data.place = Quests.questPlace(entry, "active", cid)
+        local npcPlace = Quests.npcPlace(entry, "active")
+        data.npcTown = npcPlace and npcPlace.town
+    end
     for key, value in pairs(extra or {}) do
         data[key] = value
     end
@@ -538,6 +724,53 @@ Quests.onProgress = function(cid, quest, count, need)
     return true
 end
 
+-- one of the quest's steps is done (quest.steps): the quest log's Go there moves on to the next
+Quests.onStep = function(cid, quest)
+    if (not Quests.isClient(cid) or Quests.isRetired(quest)) then
+        return
+    end
+    local have, need = Quests.progress(cid, quest)
+    if (have and need and have >= need) then
+        notice(cid, "ready", quest, { have = have, need = need })
+        Quests.sendMarks(cid)
+    else
+        notice(cid, "progress", quest, { have = have, need = need })
+    end
+end
+
+-- storage -> { { quest, step }, ... } for every step done by a storage or an NPC battle (built on first use)
+local stepIndex
+local function stepsByStorage()
+    if (not stepIndex) then
+        stepIndex = {} -- built once: a failure leaves it empty instead of retrying on every storage
+        local index = {}
+        for _, entry in ipairs(getCatalog()) do
+            for _, step in ipairs(stepsOf(entry.quest) or {}) do
+                local key = step.storage or step.battle
+                if (key) then
+                    index[key] = index[key] or {}
+                    table.insert(index[key], { quest = entry.quest, step = step })
+                end
+            end
+        end
+        stepIndex = index
+    end
+    return stepIndex
+end
+
+-- a script set a storage: when that finished a step of a quest under way, Go there moves on
+Quests.onStorage = function(cid, key)
+    local list = stepsByStorage()[key]
+    if (not list or not isPlayer(cid)) then
+        return
+    end
+    for _, item in ipairs(list) do
+        if (tonumber(getCreatureStorage(cid, item.quest.storage)) == QUEST_STATUS.STARTED and stepDone(cid, item.step)) then
+            Quests.onStep(cid, item.quest)
+        end
+    end
+end
+
 Quests.onFinish = function(cid, quest)
     if (not Quests.isClient(cid) or Quests.isRetired(quest)) then
         return
@@ -570,3 +803,21 @@ Quests.onClientMessage = function(cid, buffer)
         Quests.sendMarks(cid)
     end
 end
+
+-- Every storage a script sets goes past Quests.onStorage, so Go there moves on as soon as a step is done,
+-- whichever script did it (a magnifier, a step on a tile, a talk, a battle). A quest log error never
+-- stops the storage itself from being set.
+if (not rawDoCreatureSetStorage) then
+    rawDoCreatureSetStorage = doCreatureSetStorage
+end
+function doCreatureSetStorage(cid, key, ...)
+    local result = rawDoCreatureSetStorage(cid, key, ...)
+    local ok, err = pcall(Quests.onStorage, cid, key)
+    if (not ok) then
+        log(LOG_TYPES.ERROR, "Quests.onStorage", key, err)
+    end
+    return result
+end
+-- 100-compat.lua's aliases were taken before this
+doPlayerSetStorageValue = doCreatureSetStorage
+setPlayerStorageValue = doCreatureSetStorage
