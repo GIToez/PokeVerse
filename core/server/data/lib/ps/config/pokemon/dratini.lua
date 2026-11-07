@@ -11,7 +11,7 @@ POKEMON["Dratini"] = {
     dexPortrait = 13648,
     fastcallPortrait = 10781,
     catchStorage = 16147,
-    evolutions = { { name = "Dragonair", requiredLevel = 35 } },
+    evolutions = { { name = "Dragonair", requiredLevel = 30 } },
     description = "Even the young can exceed 6.5 feet in length. It grows larger by repeatedly shedding skin.",
     skills = { "Tackle", 1, "Slam", 5, "Twister", 10, "Aqua Tail", 15, "Thunder Wave", 20, "Dragon Tail", 25, "Agility", 30 },
     abilities = { POKEMON_ABILITIES.WATERFALL, "Headbutt" },

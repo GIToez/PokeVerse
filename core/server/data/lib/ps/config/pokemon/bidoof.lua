@@ -11,7 +11,7 @@ POKEMON["Bidoof"] = {
     dexPortrait = 0,
     fastcallPortrait = 29018,
     catchStorage = -1,
-    evolutions = { { name = "Bibarel", requiredLevel = 30 } },
+    evolutions = { { name = "Bibarel", requiredLevel = 15 } },
     description = "A comparison revealed that BIDOOF’s front teeth grow at the same rate as RATTATA’s.",
     skills = { "Tackle", 1, "Growl", 5, "Rollout", 10, "Headbutt", 15, "Hyper Fang", 20, "Crunch", 25 },
     abilities = { "Cut", "Rock Smash", "Headbutt", POKEMON_ABILITIES.DIG },

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <monster name="Magcargo" nameDescription="a Magcargo" race="blood" experience="12" speed="230" manacost="0" minLevel="40" maxLevel="50">
-	<health now="50" max="50"/>
+	<health now="60" max="60"/>
 	<look type="1045" head="0" body="0" legs="0" feet="0" corpse="17608"/>
 	<targetchange interval="5000" chance="8"/>
 	<strategy attack="100" defense="0"/>

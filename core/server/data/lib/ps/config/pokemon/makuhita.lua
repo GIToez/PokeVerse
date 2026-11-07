@@ -11,7 +11,7 @@ POKEMON["Makuhita"] = {
     dexPortrait = -1,
     fastcallPortrait = 27289,
     catchStorage = -1,
-    evolutions = { { name = "Hariyama", requiredLevel = 40 } },
+    evolutions = { { name = "Hariyama", requiredLevel = 24 } },
     description = "It toughens up by slamming into thick trees over and over. It gains a sturdy body and dauntless spirit.",
     skills = { "Tackle", 1, "Arm Thrust", 5, "Force Palm", 10, "Fake Out", 15, "Vital Throw", 20, "Knock Off", 25, "Smelling Salts", 30, "Sand-Attack", 35 },
     abilities = { "Surf", "Strength", "Rock Smash" },

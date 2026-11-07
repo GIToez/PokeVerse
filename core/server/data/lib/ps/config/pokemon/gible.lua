@@ -11,7 +11,7 @@ POKEMON["Gible"] = {
     dexPortrait = 0,
     fastcallPortrait = 29062,
     catchStorage = -1,
-    evolutions = { { name = "Gabite", requiredLevel = 40 } },
+    evolutions = { { name = "Gabite", requiredLevel = 24 } },
     description = "It attacks using its huge mouth. While its attacks are powerful, it hurts itself out of clumsiness, too.",
     skills = { "Tackle", 1, "Sand-Attack", 5, "Sand Tomb", 10, "Dragon Breath", 15, "Bulldoze", 20, "Bite", 25, "Slash", 30, "Dragon Claw", 35 },
     abilities = { "Cut", "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },

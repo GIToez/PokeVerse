@@ -11,7 +11,7 @@ POKEMON["Turtwig"] = {
     dexPortrait = 0,
     fastcallPortrait = 29006,
     catchStorage = -1,
-    evolutions = { { name = "Grotle", requiredLevel = 35 } },
+    evolutions = { { name = "Grotle", requiredLevel = 18 } },
     description = "The shell on its back is made of soil. On a very healthy TURTWIG, the shell should feel moist.",
     skills = { "Tackle", 1, "Curse", 5, "Absorb", 10, "Mega Drain", 15, "Razor Leaf", 20, "Bite", 25, "Crunch", 30 },
     abilities = { "Cut", "Rock Smash", "Headbutt", "Flash", POKEMON_ABILITIES.STRENGTH },

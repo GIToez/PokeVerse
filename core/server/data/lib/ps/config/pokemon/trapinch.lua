@@ -11,7 +11,7 @@ POKEMON["Trapinch"] = {
     dexPortrait = -1,
     fastcallPortrait = 27321,
     catchStorage = -1,
-    evolutions = { { name = "Vibrava", requiredLevel = 30 } },
+    evolutions = { { name = "Vibrava", requiredLevel = 35 } },
     description = "It lives in arid deserts. It makes a sloping pit trap in sand where it patiently awaits prey.",
     skills = { "Tackle", 1, "Bite", 5, "Faint Attack", 10, "Rock Slide", 15, "Sand-Attack", 20, "Earth Power", 25 },
     abilities = { "Strenght", "Rock Slide" },

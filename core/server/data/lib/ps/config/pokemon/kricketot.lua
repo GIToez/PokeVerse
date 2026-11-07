@@ -11,7 +11,7 @@ POKEMON["Kricketot"] = {
     dexPortrait = 0,
     fastcallPortrait = 29020,
     catchStorage = -1,
-    evolutions = { { name = "Kricketune", requiredLevel = 30 } },
+    evolutions = { { name = "Kricketune", requiredLevel = 10 } },
     description = "Its legs are short. Whenever it stumbles, its stiff antennae clack with a xylophone-like sound.",
     skills = { "Tackle", 1, "Growl", 5, "Bide", 10, "Struggle Bug", 15, "Bug Bite", 20, "Lunge", 25 },
     abilities = {},

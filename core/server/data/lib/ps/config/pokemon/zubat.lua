@@ -11,7 +11,7 @@ POKEMON["Zubat"] = {
     dexPortrait = 13542,
     fastcallPortrait = 10675,
     catchStorage = 16041,
-    evolutions = { { name = "Golbat", requiredLevel = 35 } },
+    evolutions = { { name = "Golbat", requiredLevel = 22 } },
     description = "It has no eyes. Instead, it relies on its ultrasonic cries for echo location to flit about in darkness.",
     skills = { "Tackle", 1, "Leech Life", 5, "Bite", 10, "Swift", 15, "Wing Attack", 20, "Supersonic", 25, "Poison Fang", 30 },
     abilities = { "Find" },

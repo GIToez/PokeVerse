@@ -11,7 +11,7 @@ POKEMON["Prinplup"] = {
     dexPortrait = 0,
     fastcallPortrait = 29013,
     catchStorage = -1,
-    evolutions = { { name = "Empoleon", requiredLevel = 55 } },
+    evolutions = { { name = "Empoleon", requiredLevel = 36 } },
     description = "Because every PRINPLUP considers itself to be the most important, they can never form a group.",
     skills = { "Pound", 1, "Growl", 5, "Fury Attack", 10, "Peck", 15, "Water Gun", 20, "Bubblebeam", 25, "Brine", 30, "Whirlpool", 40, "Mist", 45, "Metal Claw", 50 },
     abilities = { "Cut", "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },

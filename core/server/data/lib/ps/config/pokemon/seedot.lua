@@ -11,7 +11,7 @@ POKEMON["Seedot"] = {
     dexPortrait = -1,
     fastcallPortrait = 27266,
     catchStorage = -1,
-    evolutions = { { name = "Nuzleaf", requiredLevel = 15 } },
+    evolutions = { { name = "Nuzleaf", requiredLevel = 14 } },
     description = "It attaches itself to a tree branch using the top of its head. Strong winds can sometimes make it fall.",
     skills = { "Tackle", 1, "Razor Leaf", 5, "Pound", 7, "Fake Out", 10 },
     abilities = { "Flash", "Rock Smash" },

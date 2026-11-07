@@ -11,7 +11,7 @@ POKEMON["Sealeo"] = {
     dexPortrait = -1,
     fastcallPortrait = 27357,
     catchStorage = -1,
-    evolutions = { { name = "Walrein", requiredLevel = 50 } },
+    evolutions = { { name = "Walrein", requiredLevel = 44 } },
     description = "It has a very sensitive nose. It touches new things with its nose to examine them.",
     skills = { "Tackle", 1, "Powder Snow", 5, "Ice Ball", 10, "Water Gun", 15, "Rollout", 20, "Defense Curl", 25, "Rest", 35, "Aurora Beam", 40, "Body Slam", 45 },
     abilities = { "Strength", "Surf", "Rock Smash", "Waterfall", "Dive" },

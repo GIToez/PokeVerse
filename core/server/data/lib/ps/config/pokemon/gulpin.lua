@@ -11,7 +11,7 @@ POKEMON["Gulpin"] = {
     dexPortrait = -1,
     fastcallPortrait = 27310,
     catchStorage = -1,
-    evolutions = { { name = "Swalot", requiredLevel = 30 } },
+    evolutions = { { name = "Swalot", requiredLevel = 26 } },
     description = "It has a small heart and brain. Its stomach comprises most of its body, with enzymes to dissolve anything.",
     skills = { "Tackle", 1, "Acid Spray", 5, "Sludge", 10, "Poison Gas", 15, "Wring Out", 20, "Yawn", 25 },
     abilities = { "Strength", "Rock Smash" },

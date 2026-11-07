@@ -11,7 +11,7 @@ POKEMON["Charmander"] = {
     dexPortrait = 13505,
     fastcallPortrait = 10638,
     catchStorage = 16004,
-    evolutions = { { name = "Charmeleon", requiredLevel = 35 } },
+    evolutions = { { name = "Charmeleon", requiredLevel = 16 } },
     description = "From the time it is born, a flame burns at the tip of its tail. Its life would end if the flame were to go out.",
     skills = { "Tackle", 1, "Scratch", 5, "Ember", 10, "Slash", 15, "Fire Fang", 20, "Fire Spin", 25, "Flamethrower", 30 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Cut", "Rock Smash", "Headbutt" },

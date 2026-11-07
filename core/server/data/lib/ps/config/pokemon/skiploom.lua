@@ -11,7 +11,7 @@ POKEMON["Skiploom"] = {
     dexPortrait = 15835,
     fastcallPortrait = 16035,
     catchStorage = 16188,
-    evolutions = { { name = "Jumpluff", requiredLevel = 50 } },
+    evolutions = { { name = "Jumpluff", requiredLevel = 27 } },
     description = "It spreads its petals to absorb sunlight. It also floats in the air to get closer to the sun.",
     skills = { "Tackle", 1, "Leech Seed", 5, "Bullet Seed", 10, "Mega Drain", 15, "Poison Powder", 20, "Fairy Wind", 25, "Synthesis", 30, "Giga Drain", 40, "Stun Spore", 45 },
     abilities = { "Flash", "Headbutt" },

@@ -11,7 +11,7 @@ POKEMON["Spearow"] = {
     dexPortrait = 13522,
     fastcallPortrait = 10655,
     catchStorage = 16021,
-    evolutions = { { name = "Fearow", requiredLevel = 35 } },
+    evolutions = { { name = "Fearow", requiredLevel = 20 } },
     description = "It busily flits around here and there. Even if it is frail, it can be a tough foe that uses MIRROR MOVE.",
     skills = { "Tackle", 1, "Peck", 5, "Fury Attack", 10, "Gust", 15, "Pursuit", 20, "Drill Peck", 25, "Agility", 30 },
     abilities = { "Find" },

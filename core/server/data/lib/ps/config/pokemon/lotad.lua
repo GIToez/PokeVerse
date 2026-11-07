@@ -11,7 +11,7 @@ POKEMON["Lotad"] = {
     dexPortrait = -1,
     fastcallPortrait = 27262,
     catchStorage = -1,
-    evolutions = { { name = "Lombre", requiredLevel = 30 } },
+    evolutions = { { name = "Lombre", requiredLevel = 14 } },
     description = "It looks like an aquatic plant and serves as a ferry to Pokemon that can't swim.",
     skills = { "Tackle", 1, "Absorb", 5, "Bubble", 10, "Bubblebeam", 15, "Mist", 20, "Mega Drain", 25 },
     abilities = { "Surf", "Flash" },

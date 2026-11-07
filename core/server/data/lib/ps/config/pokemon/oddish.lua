@@ -11,7 +11,7 @@ POKEMON["Oddish"] = {
     dexPortrait = 13544,
     fastcallPortrait = 10677,
     catchStorage = 16043,
-    evolutions = { { name = "Gloom", requiredLevel = 30 } },
+    evolutions = { { name = "Gloom", requiredLevel = 21 } },
     description = "Its scientific name is 'Oddium Wanderus.' At night, it is said to walk nearly 1,000 feet on its two roots.",
     skills = { "Tackle", 1, "Absorb", 5, "Acid", 10, "Poison Powder", 15, "Stun Spore", 20, "Mega Drain", 25 },
     abilities = { "Cut" },

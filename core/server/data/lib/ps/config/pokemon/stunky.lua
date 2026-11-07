@@ -11,7 +11,7 @@ POKEMON["Stunky"] = {
     dexPortrait = 0,
     fastcallPortrait = 29053,
     catchStorage = -1,
-    evolutions = { { name = "Skuntank", requiredLevel = 35 } },
+    evolutions = { { name = "Skuntank", requiredLevel = 34 } },
     description = "It sprays a foul fluid from its rear. Its stench spreads over a mile radius, driving POKEMON away.",
     skills = { "Scratch", 1, "Poison Gas", 5, "Fury Swipes", 10, "Feint", 15, "Acid Spray", 20, "Bite", 25, "Venoshock", 30 },
     abilities = { "Cut", "Rock Smash", "Headbutt", POKEMON_ABILITIES.DIG },

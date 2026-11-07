@@ -1,8 +1,8 @@
 POKEMON["Minun"] = {
     pTypes = { ELEMENT_ELECTRIC },
     dexStorage = 10312,
-    atk = 50,
-    def = 40,
+    atk = 40,
+    def = 50,
     spAtk = 75,
     spDef = 85,
     energy = 100,

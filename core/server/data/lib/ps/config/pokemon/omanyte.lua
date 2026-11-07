@@ -11,7 +11,7 @@ POKEMON["Omanyte"] = {
     dexPortrait = 13639,
     fastcallPortrait = 10772,
     catchStorage = 16138,
-    evolutions = { { name = "Omastar", requiredLevel = 35 } },
+    evolutions = { { name = "Omastar", requiredLevel = 40 } },
     description = "A prehistoric POKEMON that lived in the primordial sea, it swims by twisting its 10 tentacles about.",
     skills = { "Tackle", 1, "Bite", 5, "Water Gun", 10, "Mud Shot", 15, "Protect", 20, "Ancient Power", 25, "Scald", 30 },
     abilities = { POKEMON_ABILITIES.WATERFALL, "Headbutt" },

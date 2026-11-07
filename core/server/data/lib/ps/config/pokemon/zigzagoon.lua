@@ -11,7 +11,7 @@ POKEMON["Zigzagoon"] = {
     dexPortrait = -1,
     fastcallPortrait = 27255,
     catchStorage = 16263,
-    evolutions = { { name = "Linoone", requiredLevel = 35 } },
+    evolutions = { { name = "Linoone", requiredLevel = 20 } },
     description = "It walks in zigzag fashion. It's good at finding items in the grass and even in the ground.",
     skills = { "Tackle", 1, "Headbutt", 5, "Fury Swipes", 10, "Covet", 15, "Facade", 20, "Rest", 25, "Take Down", 30 },
     abilities = { "Cut", "Surf", "Rock Smash", POKEMON_ABILITIES.FIND, POKEMON_ABILITIES.HEADBUTT },

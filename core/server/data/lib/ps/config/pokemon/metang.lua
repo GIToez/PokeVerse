@@ -11,7 +11,7 @@ POKEMON["Metang"] = {
     dexPortrait = -1,
     fastcallPortrait = 27368,
     catchStorage = -1,
-    evolutions = { { name = "Metagross", requiredLevel = 50 } },
+    evolutions = { { name = "Metagross", requiredLevel = 45 } },
     description = "It is formed by two Beldum joining together. Its steel body won't be scratched if it collides with a jet.",
     skills = { "Tackle", 1, "Confusion", 5, "Metal Claw", 10, "Take Down", 15, "Pursuit", 20, "Iron Defense", 25, "Psychic", 35, "Zen Headbutt", 40, "Bullet Punch", 45 },
     abilities = { "Cut", "Strenght", "Flash", "Rock Smash", POKEMON_ABILITIES.BLINK, POKEMON_ABILITIES.TELEPORT },

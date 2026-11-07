@@ -11,7 +11,7 @@ POKEMON["Pidgey"] = {
     dexPortrait = 13517,
     fastcallPortrait = 10650,
     catchStorage = 16016,
-    evolutions = { { name = "Pidgeotto", requiredLevel = 30 } },
+    evolutions = { { name = "Pidgeotto", requiredLevel = 18 } },
     description = "Does not like to fight. It hides in tall grass and so on, foraging for food such as small bugs.",
     skills = { "Tackle", 1, "Gust", 5, "Quick Attack", 10, "Sand-Attack", 15, "Drill Peck", 20, "Wing Attack", 25 },
     abilities = { "Find" },

@@ -11,7 +11,7 @@ POKEMON["Tentacool"] = {
     dexPortrait = 13573,
     fastcallPortrait = 10706,
     catchStorage = 16072,
-    evolutions = { { name = "Tentacruel", requiredLevel = 35 } },
+    evolutions = { { name = "Tentacruel", requiredLevel = 30 } },
     description = "Its eyes are as transparent as crystals. From them, it shoots mysterious beams of light.",
     skills = { "Tackle", 1, "Poison Sting", 5, "Acid", 10, "Supersonic", 15, "Bubblebeam", 20, "Water Pulse", 25, "Wrap", 30 },
     abilities = { POKEMON_ABILITIES.WATERFALL, "Surf", "Dive", "Cut" },

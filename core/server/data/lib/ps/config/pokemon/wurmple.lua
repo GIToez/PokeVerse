@@ -12,8 +12,8 @@ POKEMON["Wurmple"] = {
     fastcallPortrait = 27257,
     catchStorage = -1,
     evolutions = {
-        { name = "Silcoon", requiredLevel = 15, random = true },
-        { name = "Cascoon", requiredLevel = 15, random = true },
+        { name = "Silcoon", requiredLevel = 7, random = true },
+        { name = "Cascoon", requiredLevel = 7, random = true },
     },
     description = "It loves to eat leaves. If it is attacked by a Starly, it will defend itself with its spiked rear.",
     skills = { "Tackle", 1, "Poison Sting", 5, "String Shot", 7, "Bug Bite", 10 },

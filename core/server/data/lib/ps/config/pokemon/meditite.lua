@@ -11,7 +11,7 @@ POKEMON["Meditite"] = {
     dexPortrait = -1,
     fastcallPortrait = 27301,
     catchStorage = -1,
-    evolutions = { { name = "Medicham", requiredLevel = 40 } },
+    evolutions = { { name = "Medicham", requiredLevel = 37 } },
     description = "It always trains deep in mountains. It levitates when it heightens its spiritual power through meditation.",
     skills = { "Tackle", 1, "Confusion", 5, "Force Palm", 10, "Drain Punch", 15, "Hidden Power", 20, "Psyshock", 25, "Reversal", 30, "Bide", 35 },
     abilities = { "Strenght", "Flash", "Rock Smash", POKEMON_ABILITIES.BLINK, POKEMON_ABILITIES.TELEPORT },

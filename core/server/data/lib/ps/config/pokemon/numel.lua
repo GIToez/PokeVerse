@@ -1,5 +1,5 @@
 POKEMON["Numel"] = {
-    pTypes = { ELEMENT_FIRE },
+    pTypes = { ELEMENT_FIRE, ELEMENT_GROUND },
     dexStorage = 10322,
     atk = 60,
     def = 40,
@@ -11,7 +11,7 @@ POKEMON["Numel"] = {
     dexPortrait = -1,
     fastcallPortrait = 27316,
     catchStorage = -1,
-    evolutions = { { name = "Camerupt", requiredLevel = 30 } },
+    evolutions = { { name = "Camerupt", requiredLevel = 33 } },
     description = "Its humped back stores intensely hot magma. In rain, the magma cools, slowing its movement.",
     skills = { "Tackle", 1, "Ember", 5, "Magnitude", 10, "Flame Burst", 15, "Flamethrower", 20, "Amnesia", 25 },
     abilities = { "Strenght", "Rock Smash" },

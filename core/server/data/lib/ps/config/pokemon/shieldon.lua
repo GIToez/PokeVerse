@@ -11,7 +11,7 @@ POKEMON["Shieldon"] = {
     dexPortrait = 0,
     fastcallPortrait = 29029,
     catchStorage = -1,
-    evolutions = { { name = "Bastiodon", requiredLevel = 35 } },
+    evolutions = { { name = "Bastiodon", requiredLevel = 30 } },
     description = "It is outstandingly armored. As a result, it can eat grass and berries without having to fight.",
     skills = { "Tackle", 1, "Protect", 5, "Metal Burst", 10, "Heavy Slam", 15, "Ancient Power", 20, "Iron Head", 25, "Take Down", 30 },
     abilities = { "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },

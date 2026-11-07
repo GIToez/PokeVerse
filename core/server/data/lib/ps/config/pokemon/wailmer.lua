@@ -11,7 +11,7 @@ POKEMON["Wailmer"] = {
     dexPortrait = -1,
     fastcallPortrait = 27314,
     catchStorage = -1,
-    evolutions = { { name = "Wailord", requiredLevel = 30 } },
+    evolutions = { { name = "Wailord", requiredLevel = 40 } },
     description = "It bounces playfully like a ball. The more seawater it swallows, the higher it bounces.",
     skills = { "Tackle", 1, "Water Gun", 5, "Whirlpool", 10, "Rollout", 15, "Astonish", 20, "Dive", 25 },
     abilities = { "Surf", "Dive", "Waterfall", "Strenght", "Rock Smash" },

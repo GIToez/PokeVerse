@@ -11,7 +11,7 @@ POKEMON["Cacnea"] = {
     dexPortrait = -1,
     fastcallPortrait = 27324,
     catchStorage = -1,
-    evolutions = { { name = "Cacturne", requiredLevel = 30 } },
+    evolutions = { { name = "Cacturne", requiredLevel = 32 } },
     description = "It lives in arid locations. Its yellow flowers bloom once a year.",
     skills = { "Tackle", 1, "Absorb", 5, "Poison Sting", 10, "Poison Jab", 15, "Needle Arm", 20, "Ingrain", 25 },
     abilities = { "Flash", "Cut" },

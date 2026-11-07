@@ -11,7 +11,7 @@ POKEMON["Slakoth"] = {
     dexPortrait = -1,
     fastcallPortrait = 27280,
     catchStorage = -1,
-    evolutions = { { name = "Vigoroth", requiredLevel = 30 } },
+    evolutions = { { name = "Vigoroth", requiredLevel = 18 } },
     description = "The way Slakoth lolls around makes anyone who watches it feel like doing the same.",
     skills = { "Tackle", 1, "Scratch", 5, "Faint Attack", 10, "Covet", 15, "Chip Away", 20, "Yawn", 25 },
     abilities = { "Cut", "Strenght", "Rock Smash" },

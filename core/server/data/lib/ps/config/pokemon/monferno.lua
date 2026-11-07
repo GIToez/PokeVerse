@@ -11,7 +11,7 @@ POKEMON["Monferno"] = {
     dexPortrait = 0,
     fastcallPortrait = 29010,
     catchStorage = -1,
-    evolutions = { { name = "Infernape", requiredLevel = 55 } },
+    evolutions = { { name = "Infernape", requiredLevel = 36 } },
     description = "It skillfully controls the intensity of the fire on its tail to keep its foes at an ideal distance.",
     skills = { "Scratch", 1, "Fury Swipes", 5, "Nasty Plot", 10, "Fire Spin", 15, "Ember", 20, "Flame Wheel", 25, "Facade", 30, "Feint", 40, "Mach Punch", 45, "Close Combat", 50 },
     abilities = { "Cut", "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },

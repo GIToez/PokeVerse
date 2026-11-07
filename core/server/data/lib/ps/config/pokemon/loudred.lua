@@ -11,7 +11,7 @@ POKEMON["Loudred"] = {
     dexPortrait = -1,
     fastcallPortrait = 27287,
     catchStorage = -1,
-    evolutions = { { name = "Exploud", requiredLevel = 50 } },
+    evolutions = { { name = "Exploud", requiredLevel = 40 } },
     description = "It shouts loudly by inhaling air, and then uses its well-developed stomach muscles to exhale.",
     skills = { "Tackle", 1, "Pound", 5, "Echoed Voice", 10, "Astonish", 15, "Stomp", 20, "Uproar", 25, "Sleep Talk", 30, "Rest", 35, "Bite", 40, "Synchronoise", 45 },
     abilities = {  },

@@ -11,7 +11,7 @@ POKEMON["Wynaut"] = {
     dexPortrait = -1,
     fastcallPortrait = 27353,
     catchStorage = -1,
-    evolutions = { { name = "Wobbuffet", requiredLevel = 25 } },
+    evolutions = { { name = "Wobbuffet", requiredLevel = 15 } },
     description = "It tends to move in a pack with others. They cluster in a tight group to sleep in a cave.",
     skills = { "Tackle", 1, "Splash", 5, "Encore", 10, "Mirror Coat", 15, "Counter", 20, },
     abilities = { POKEMON_ABILITIES.BLINK, POKEMON_ABILITIES.TELEPORT },

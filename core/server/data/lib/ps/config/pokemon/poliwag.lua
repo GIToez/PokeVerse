@@ -11,7 +11,7 @@ POKEMON["Poliwag"] = {
     dexPortrait = 13561,
     fastcallPortrait = 10694,
     catchStorage = 16060,
-    evolutions = { { name = "Poliwhirl", requiredLevel = 30 } },
+    evolutions = { { name = "Poliwhirl", requiredLevel = 25 } },
     description = "Its slick black skin is thin and damp. A part of its internal organs can be seen through the skin as a spiral pattern.",
     skills = { "Tackle", 1, "Bubble", 5, "Water Gun", 10, "Double Slap", 15, "Bubblebeam", 20, "Hypnosis", 25 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.WATERFALL, "Surf", "Dive", "Headbutt" },

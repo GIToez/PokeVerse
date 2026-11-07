@@ -11,7 +11,7 @@ POKEMON["Sentret"] = {
     dexPortrait = 15808,
     fastcallPortrait = 16008,
     catchStorage = 16161,
-    evolutions = { { name = "Furret", requiredLevel = 30 } },
+    evolutions = { { name = "Furret", requiredLevel = 15 } },
     description = "It stands on its tail so it can see a long way. If it spots an enemy, it cries loudly to warn its kind.",
     skills = { "Tackle", 1, "Scratch", 5, "Quick Attack", 10, "Fury Swipes", 15, "Slam", 20, "Defense Curl", 25 },
     abilities = { POKEMON_ABILITIES.DIG, "Find", "Cut", "Headbutt" },

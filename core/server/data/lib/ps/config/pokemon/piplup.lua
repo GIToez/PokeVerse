@@ -11,7 +11,7 @@ POKEMON["Piplup"] = {
     dexPortrait = 0,
     fastcallPortrait = 29012,
     catchStorage = -1,
-    evolutions = { { name = "Prinplup", requiredLevel = 35 } },
+    evolutions = { { name = "Prinplup", requiredLevel = 16 } },
     description = "A poor walker, it often falls down. However, its strong pride makes it puff up its chest without a care.",
     skills = { "Pound", 1, "Growl", 5, "Fury Attack", 10, "Peck", 15, "Water Gun", 20, "Bubblebeam", 25, "Brine", 30 },
     abilities = { "Cut", "Headbutt", POKEMON_ABILITIES.DIG },

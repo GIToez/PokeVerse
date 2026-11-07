@@ -11,7 +11,7 @@ POKEMON["Luxio"] = {
     dexPortrait = 0,
     fastcallPortrait = 29023,
     catchStorage = -1,
-    evolutions = { { name = "Luxray", requiredLevel = 50 } },
+    evolutions = { { name = "Luxray", requiredLevel = 30 } },
     description = "Strong electricity courses through the tips of its sharp claws. A light scratch causes fainting in foes.",
     skills = { "Tackle", 1, "Charge", 5, "Thunder Shock", 10, "Bite", 15, "Spark", 20, "Volt Switch", 25, "Crunch", 30, "Discharge", 40, "Roar", 45 },
     abilities = { "Headbutt", "Flash", POKEMON_ABILITIES.STRENGTH },

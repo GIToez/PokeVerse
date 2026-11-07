@@ -11,7 +11,7 @@ POKEMON["Lileep"] = {
     dexPortrait = -1,
     fastcallPortrait = 27338,
     catchStorage = -1,
-    evolutions = { { name = "Cradily", requiredLevel = 30 } },
+    evolutions = { { name = "Cradily", requiredLevel = 40 } },
     description = "It disguises its tentacles as flowers to attract and catch prey. It became extinct in ancient times.",
     skills = { "Tackle", 1, "Acid", 5, "Energy Ball", 10, "Wring Out", 15, "Brine", 20, "Ingrain", 25 },
     abilities = {  },

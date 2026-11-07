@@ -11,7 +11,7 @@ POKEMON["Hoothoot"] = {
     dexPortrait = 15810,
     fastcallPortrait = 16010,
     catchStorage = 16163,
-    evolutions = { { name = "Noctowl", requiredLevel = 40 } },
+    evolutions = { { name = "Noctowl", requiredLevel = 20 } },
     description = "It has a perfect sense of time. Whatever happens, it keeps rhythm by precisely tilting its head in time.",
     skills = { "Tackle", 1, "Peck", 5, "Confusion", 10, "Drill Peck", 15, "Air Slash", 20, "Roost", 25, "Hypnosis", 30, "Zen Headbutt", 35 },
     abilities = { "Find", "Headbutt" },

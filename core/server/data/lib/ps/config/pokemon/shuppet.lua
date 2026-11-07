@@ -11,7 +11,7 @@ POKEMON["Shuppet"] = {
     dexPortrait = -1,
     fastcallPortrait = 27346,
     catchStorage = -1,
-    evolutions = { { name = "Banette", requiredLevel = 30 } },
+    evolutions = { { name = "Banette", requiredLevel = 37 } },
     description = "It uses its horn to feed on envy and malice--or so it's said. It's very active at night.",
     skills = { "Tackle", 1, "Knock Off", 5, "Night Shade", 10, "Shadow Ball", 15, "Hex", 20, "Curse", 25 },
     abilities = { "Flash" },

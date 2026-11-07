@@ -11,7 +11,7 @@ POKEMON["Drowzee"] = {
     dexPortrait = 13597,
     fastcallPortrait = 10730,
     catchStorage = 16096,
-    evolutions = { { name = "Hypno", requiredLevel = 40 } },
+    evolutions = { { name = "Hypno", requiredLevel = 26 } },
     description = "A descendent of the legendary animal baku, which is said to eat dreams. It is skilled at hypnotism.",
     skills = { "Tackle", 1, "Pound", 5, "Confusion", 10, "Headbutt", 15, "Hypnosis", 20, "Poison Gas", 25, "Psybeam", 30, "Disable", 35 },
     abilities = { "Blink", "Headbutt", "Teleport", "Flash" },

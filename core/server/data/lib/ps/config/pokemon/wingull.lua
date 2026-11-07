@@ -11,7 +11,7 @@ POKEMON["Wingull"] = {
     dexPortrait = -1,
     fastcallPortrait = 27271,
     catchStorage = -1,
-    evolutions = { { name = "Pelipper", requiredLevel = 35 } },
+    evolutions = { { name = "Pelipper", requiredLevel = 25 } },
     description = "Catching sea winds with its long wings, it soars as if it were a glider. It folds its wings to rest.",
     skills = { "Tackle", 1, "Water Gun", 5, "Water Pulse", 10, "Wing Attack", 15, "Air Cutter", 20, "Supersonic", 25, "Aerial Ace", 30 },
     abilities = { "Fly", POKEMON_ABILITIES.FIND },

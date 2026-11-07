@@ -11,7 +11,7 @@ POKEMON["Diglett"] = {
     dexPortrait = 13551,
     fastcallPortrait = 10684,
     catchStorage = 16050,
-    evolutions = { { name = "Dugtrio", requiredLevel = 30 } },
+    evolutions = { { name = "Dugtrio", requiredLevel = 26 } },
     description = "It burrows through the ground at a shallow depth. It leaves raised earth in its wake, making it easy to spot.",
     skills = { "Tackle", 1, "Scratch", 5, "Sand-Attack", 10, "Magnitude", 15, "Mud Bomb", 20, "Slash", 25 },
     abilities = { POKEMON_ABILITIES.DIG, "Cut" },

@@ -11,7 +11,7 @@ POKEMON["Chimchar"] = {
     dexPortrait = 0,
     fastcallPortrait = 29009,
     catchStorage = -1,
-    evolutions = { { name = "Monferno", requiredLevel = 35 } },
+    evolutions = { { name = "Monferno", requiredLevel = 14 } },
     description = "It is very agile. Before going to sleep, it extinguishes the flame on its tail to prevent fires.",
     skills = { "Scratch", 1, "Fury Swipes", 5, "Nasty Plot", 10, "Fire Spin", 15, "Ember", 20, "Flame Wheel", 25, "Facade", 30 },
     abilities = { "Cut", "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },

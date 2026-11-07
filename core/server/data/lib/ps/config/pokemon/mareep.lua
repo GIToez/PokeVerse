@@ -11,7 +11,7 @@ POKEMON["Mareep"] = {
     dexPortrait = 15826,
     fastcallPortrait = 16026,
     catchStorage = 16179,
-    evolutions = { { name = "Flaaffy", requiredLevel = 35 } },
+    evolutions = { { name = "Flaaffy", requiredLevel = 15 } },
     description = "Its fleece grows continually. In the summer, the fleece is fully shed, but it grows back in a week.",
     skills = { "Tackle", 1, "Thunder Shock", 5, "Take Down", 10, "Agility", 15, "Discharge", 20, "Charge", 25, "Electro Ball", 30 },
     abilities = { "Flash", "Ride", "Headbutt" },

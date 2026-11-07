@@ -11,7 +11,7 @@ POKEMON["Poochyena"] = {
     dexPortrait = -1,
     fastcallPortrait = 27253,
     catchStorage = 16261,
-    evolutions = { { name = "Mightyena", requiredLevel = 35 } },
+    evolutions = { { name = "Mightyena", requiredLevel = 18 } },
     description = "A Pokemon with a persistent nature, it chases its chosen prey until the prey becomes exhausted.",
     skills = { "Tackle", 1, "Bite", 5, "Assurance", 10, "Take Down", 15, "Sand-Attack", 20, "Crunch", 25, "Yawn", 30 },
     abilities = { "Rock Smash", POKEMON_ABILITIES.FIND },
