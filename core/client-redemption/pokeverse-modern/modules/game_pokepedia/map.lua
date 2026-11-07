@@ -1,6 +1,8 @@
 -- The Map tab: the world map centred on the player with floors, zoom and a way back to the player,
 -- and a side column with Places (towns and guide marks), Waypoints and the Route. Left-click on the
--- map walks there; right-click adds waypoints and stops. Marks only show on their own floor.
+-- map walks there; right-click adds waypoints and stops. Marks only show on their own floor, except the
+-- quest marks the server puts on the map (game_minimap's QuestMarks): those show on every floor, faded on
+-- the others.
 -- The map is the real one, drawn from the game's sprites (the minimap's satellite mode, with the
 -- chunks from scripts/mapper/render_pokepedia.py), with a button to switch to the minimap.
 MapTab = {}
@@ -14,6 +16,7 @@ local playerMark
 local pointer, pointerEvent
 local showPointer
 local waypointMarks, stopMarks, dots, shownMarks = {}, {}, {}, {}
+local questMarkWidgets = {}
 local dialog
 local placesEvent
 
@@ -131,12 +134,29 @@ local function drawLabels()
     refreshLabels()
 end
 
+-- a quest mark on another floor is drawn faded at its spot on the floor in view
+local function placeQuestMark(widget)
+    local mark, z = widget.questMark, camera().z
+    widget.pos = { x = mark.x, y = mark.y, z = z }
+    minimap:centerInPosition(widget, widget.pos)
+    widget:setVisible(true)
+    widget:setOpacity(mark.z == z and 1 or 0.5)
+    local text = tostring(mark.description or '')
+    if mark.z ~= z then
+        text = text .. '\n' .. (mark.z < z and tr('On a floor above') or tr('On a floor below'))
+    end
+    widget:setTooltip(text .. '\n' .. tr('Click to walk there, right-click for more'))
+end
+
 local function refreshVisibility()
     local z = camera().z
     for _, list in ipairs({ waypointMarks, stopMarks, dots, shownMarks }) do
         for _, mark in ipairs(list) do
             mark:setVisible(mark.pos.z == z)
         end
+    end
+    for _, widget in ipairs(questMarkWidgets) do
+        placeQuestMark(widget)
     end
     if pointer and pointer.pos then
         pointer:setVisible(pointer.pos.z == z)
@@ -842,9 +862,52 @@ local function mapMenu(pos, mousePos)
     menu:display(mousePos)
 end
 
+local function questMarks()
+    return modules.game_minimap and modules.game_minimap.QuestMarks
+end
+
+local listeningToMarks = false
+local function drawQuestMarks()
+    clearList(questMarkWidgets)
+    local marks = questMarks()
+    if not minimap or not marks then
+        return
+    end
+    if not listeningToMarks then
+        -- redraw when the server adds a mark while the map is open (game_minimap may load after this module)
+        listeningToMarks = true
+        marks.listen(drawQuestMarks)
+    end
+    for _, mark in ipairs(marks.list()) do
+        local pos = { x = tonumber(mark.x) or 0, y = tonumber(mark.y) or 0, z = tonumber(mark.z) or 7 }
+        local name = tostring(mark.description or '')
+        local widget = newMark(iconPath(mark.icon), iconSize(mark.icon, 16))
+        widget.questMark = { x = pos.x, y = pos.y, z = pos.z, description = name }
+        widget.onMouseRelease = function(w, mousePos, mouseButton)
+            if mouseButton == MouseLeftButton then
+                Navigation.goTo(pos, name)
+            elseif mouseButton == MouseRightButton then
+                local menu = g_ui.createWidget('PopupMenu')
+                menu:setGameMenu(true)
+                menu:addOption(tr('Walk here'), function() Navigation.goTo(pos, name) end)
+                menu:addOption(tr('Add to route'), function() MapTab.addStop(pos, name) end)
+                menu:addSeparator()
+                menu:addOption(tr('Remove this mark'), function() marks.remove(pos) end)
+                menu:display(mousePos)
+            end
+            return true
+        end
+        placeQuestMark(widget)
+        questMarkWidgets[#questMarkWidgets + 1] = widget
+    end
+end
+
 local function setupMinimap()
     minimap = page.mapFrame.minimap
     minimap:setZoom(1)
+    -- the server's marks come from game_minimap's QuestMarks (all of them, also those from before this map
+    -- existed), not from this minimap's own automap handlers, which would draw them a second time
+    disconnect(g_game, { onAddAutomapFlag = minimap.onAddAutomapFlag, onRemoveAutomapFlag = minimap.onRemoveAutomapFlag })
     playerMark = newMark('/images/game/minimap/cross', 16, true)
 
     minimap.onMousePress = function(widget, mousePos, mouseButton)
@@ -1046,6 +1109,7 @@ function MapTab.onShow()
     updatePlayerMark()
     drawWaypoints()
     drawRoute()
+    drawQuestMarks()
     local player = g_game.getLocalPlayer()
     page.mapFrame.coords:setText(player and Pp.formatPosition(player:getPosition()) or '')
 end
@@ -1060,6 +1124,7 @@ end
 
 function MapTab.onGameEnd()
     clearList(shownMarks)
+    clearList(questMarkWidgets)
     clearPointer()
     if dialog then
         dialog:destroy()
