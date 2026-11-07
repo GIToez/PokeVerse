@@ -26,6 +26,11 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
     doSendMagicEffect(getCreaturePosition(cid), EFFECT_EMOTION_QUESTION)
     doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "Something happened here.")
     doCreatureSetStorage(cid, ITEMEX_IDS[itemEx.itemid], QUEST_STATUS.FINISHED)
+    -- the quest log's Go there moves on to the other spot, or back to Gary
+    local quest = Quests and Quests.getEntry(QUEST_STORAGE)
+    if (quest) then
+        Quests.onStep(cid, quest.quest)
+    end
 
     return true
 end

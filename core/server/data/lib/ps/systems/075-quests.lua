@@ -260,6 +260,14 @@ Quests.progress = function(cid, quest)
     local request = quest.questRequest
     if (quest.progress) then
         return quest.progress(cid)
+    elseif (quest.steps) then
+        local done = 0
+        for _, step in ipairs(quest.steps) do
+            if (tonumber(getCreatureStorage(cid, step.storage)) == QUEST_STATUS.FINISHED) then
+                done = done + 1
+            end
+        end
+        return done, #quest.steps
     elseif (quest.questType == BRING_ITEMS) then
         local have, need = 0, 0
         for i = 1, #request, 2 do
@@ -373,12 +381,21 @@ Quests.stateOf = function(cid, quest, current)
     return "available"
 end
 
--- Where the trainer goes for a quest. An NPC can stand in several places (Gary Oak is in Viridian,
--- Pewter, Mt. Moon...), and a quest only starts at its startPosition and is handed in at its
--- finishPosition, so those come first: the hand-in spot once it is under way, the start spot before.
--- Without them, wherever the NPC is.
-Quests.questPlace = function(entry, state)
+-- Where the trainer goes for a quest. A quest with steps ({ storage, pos, label }, see Gary Oak #01
+-- in 003-quest.lua) leads to its first step not done yet while under way. After that: an NPC can
+-- stand in several places (Gary Oak is in Viridian, Pewter, Mt. Moon...), and a quest only starts at
+-- its startPosition and is handed in at its finishPosition, so those come first: the hand-in spot
+-- once it is under way, the start spot before. Without them, wherever the NPC is.
+Quests.questPlace = function(entry, state, cid)
     local quest = entry.quest
+    if (state == "active" and cid and quest.steps) then
+        for _, step in ipairs(quest.steps) do
+            if (tonumber(getCreatureStorage(cid, step.storage)) ~= QUEST_STATUS.FINISHED) then
+                local pos = step.pos
+                return { x = pos.x, y = pos.y, z = pos.z, town = nearestTown(pos.x, pos.y), label = step.label }
+            end
+        end
+    end
     local npcPlace = Quests.placeOf(entry.npc)
     local pos = (state == "active" and quest.finishPosition) or quest.startPosition or quest.finishPosition
     if (not pos) then
@@ -397,7 +414,7 @@ local function row(cid, entry, state)
         data.have, data.need = Quests.progress(cid, quest)
     end
     if (state ~= "done") then
-        data.place = Quests.questPlace(entry, state)
+        data.place = Quests.questPlace(entry, state, cid)
     end
     return data
 end
@@ -514,9 +531,9 @@ local function notice(cid, kind, quest, extra)
     local data = { type = "notice", kind = kind, id = quest.storage, name = entry and entry.name or "Quest",
                    step = entry and entry.step, npc = entry and entry.npc, objective = Quests.objective(quest) or
                    (entry and entry.text) }
-    -- under way, the quest log's Go there leads to where it is handed in
+    -- under way, the quest log's Go there leads to the next step or where it is handed in
     if (entry and kind ~= "complete") then
-        data.place = Quests.questPlace(entry, "active")
+        data.place = Quests.questPlace(entry, "active", cid)
     end
     for key, value in pairs(extra or {}) do
         data[key] = value
@@ -554,6 +571,20 @@ Quests.onProgress = function(cid, quest, count, need)
         notice(cid, "progress", quest, { have = count, need = need })
     end
     return true
+end
+
+-- one of the quest's steps is done (quest.steps): the quest log's Go there moves on to the next
+Quests.onStep = function(cid, quest)
+    if (not Quests.isClient(cid) or Quests.isRetired(quest)) then
+        return
+    end
+    local have, need = Quests.progress(cid, quest)
+    if (have and need and have >= need) then
+        notice(cid, "ready", quest, { have = have, need = need })
+        Quests.sendMarks(cid)
+    else
+        notice(cid, "progress", quest, { have = have, need = need })
+    end
 end
 
 Quests.onFinish = function(cid, quest)

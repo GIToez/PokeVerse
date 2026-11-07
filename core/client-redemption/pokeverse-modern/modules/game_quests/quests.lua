@@ -226,7 +226,7 @@ local function drawDetails()
     details.actions.goThere.onClick = function()
         local pokepedia = modules.game_pokepedia
         if pokepedia and pokepedia.Navigation and row.place then
-            pokepedia.Navigation.goTo({ x = row.place.x, y = row.place.y, z = row.place.z }, row.npc)
+            pokepedia.Navigation.goTo({ x = row.place.x, y = row.place.y, z = row.place.z }, row.place.label or row.npc)
             hide()
         end
     end
@@ -237,7 +237,7 @@ local function drawDetails()
         tr('Nowhere to go for this one.'))
     details.actions.viewMap.onClick = function()
         if canMap then
-            pokepedia.MapTab.showPosition({ x = row.place.x, y = row.place.y, z = row.place.z }, row.npc)
+            pokepedia.MapTab.showPosition({ x = row.place.x, y = row.place.y, z = row.place.z }, row.place.label or row.npc)
             hide()
         end
     end
@@ -610,7 +610,7 @@ function getTrackerLines()
                 onClaim = function()
                     local pokepedia = modules.game_pokepedia
                     if pokepedia and pokepedia.Navigation and row.place then
-                        pokepedia.Navigation.goTo({ x = row.place.x, y = row.place.y, z = row.place.z }, row.npc)
+                        pokepedia.Navigation.goTo({ x = row.place.x, y = row.place.y, z = row.place.z }, row.place.label or row.npc)
                     else
                         show(id)
                     end

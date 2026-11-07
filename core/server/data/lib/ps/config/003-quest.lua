@@ -5559,6 +5559,11 @@ QUESTS_CONFIG = {
             end,
             questStartItems = { 23533, 1 }, -- gary oak's magnifier
             onEnd = function(cid) doPlayerRemoveItem(cid, 23533, getPlayerItemCount(cid, 23533)) end, -- remove gary oak's magnifier
+            -- the quest log's Go there leads to each spot in turn (garyOakMagnifier.lua), then back to Gary
+            steps = {
+                { storage = 8415, pos = { x = 3275, y = 610, z = 7 }, label = "Suspicious spot (use the magnifier)" },
+                { storage = 8416, pos = { x = 3277, y = 608, z = 7 }, label = "Suspicious spot (use the magnifier)" },
+            },
             startPosition = { x = 3304, y = 603, z = 7 },
             finishPosition = { x = 3304, y = 603, z = 7 }
         },
