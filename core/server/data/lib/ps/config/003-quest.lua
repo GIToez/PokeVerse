@@ -331,7 +331,7 @@ QUESTS_CONFIG = {
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid) return getCreatureStorage(cid, 8368) == QUEST_STATUS.FINISHED end,
             rewardItems = {
-                { type = REWARD_TYPE.ITEM, id = 17377, count = 1, unique = true }, -- TM 41 - Rest
+                { type = REWARD_TYPE.ITEM, id = 17377, count = 1 }, -- TM 41 - Rest
                 { type = REWARD_TYPE.ADDON, female = { looktype = 2543, addons = 0 }, male = { looktype = 2544, addons = 0 } },
             },
             rewardExp = 0,
@@ -557,7 +557,7 @@ QUESTS_CONFIG = {
             talk_questDone = "Thanks, but I have no more missions for now.",
             questType = QUEST_TYPE.BRING_ITEMS,
             questRequest = { 13972, 1 },
-            rewardItems = { { type = REWARD_TYPE.ITEM, id = 17374, count = 1, unique = true } }, -- TM 38 (Move Softboiled)
+            rewardItems = { { type = REWARD_TYPE.ITEM, id = 17374, count = 1 } }, -- TM 38 (Move Softboiled)
             rewardExp = 0,
             requiredLevel = 30,
             onEnd = function(cid) doCreatureSetStorage(cid, 8665, QUEST_STATUS.FINISHED) end -- New players doesnt need the next quest, cuz this exists only to make old-players take the new reward
@@ -572,7 +572,7 @@ QUESTS_CONFIG = {
             talk_questDone = "Thanks, but I have no more missions for now.",
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid) return true end,
-            rewardItems = { { type = REWARD_TYPE.ITEM, id = 17374, count = 1, unique = true } }, -- TM 38 (Move Softboiled)
+            rewardItems = { { type = REWARD_TYPE.ITEM, id = 17374, count = 1 } }, -- TM 38 (Move Softboiled)
             rewardExp = 0,
             requiredLevel = 30,
         }
@@ -5019,7 +5019,7 @@ QUESTS_CONFIG = {
             talk_questDone = "Thanks but I have no more tasks for now.",
             questType = QUEST_TYPE.BRING_ITEMS,
             questRequest = { 18718, 1 },
-            rewardItems = { { type = REWARD_TYPE.ITEM, id = 12157, count = 10, unique = true } },
+            rewardItems = { { type = REWARD_TYPE.ITEM, id = 12157, count = 10 } },
             rewardExp = 225,
             requiredLevel = 0,
             onStart = function(cid) doCreatureSetStorage(cid, 8367, QUEST_STATUS.STARTED) end -- Start PokeMart also to get directly into the finishing question
@@ -5064,7 +5064,7 @@ QUESTS_CONFIG = {
             talk_questDone = "Thanks but I have no more tasks for now.",
             questType = QUEST_TYPE.DEX_POKEMONS,
             questRequest = 3,
-            rewardItems = { { type = REWARD_TYPE.ITEM, id = 12244, count = 10, unique = true } },
+            rewardItems = { { type = REWARD_TYPE.ITEM, id = 12244, count = 10 } },
             rewardExp = 500,
             requiredLevel = 0
         },
@@ -5497,7 +5497,7 @@ QUESTS_CONFIG = {
             talk_questFinishFail = "No!",
             talk_questDone = "",
             rewardItems = {
-                { type = REWARD_TYPE.ITEM, id = 12244, count = 15, unique = true }, -- potions
+                { type = REWARD_TYPE.ITEM, id = 12244, count = 15 }, -- potions
                 { type = REWARD_TYPE.ITEM, id = 2152, count = 5 }, -- 500 dollars
             },
             rewardExp = 500,
@@ -5617,8 +5617,8 @@ QUESTS_CONFIG = {
             talk_questFinishFail = "Looks like you didn't.",
             talk_questDone = "",
             rewardItems = {
-                { type = REWARD_TYPE.ITEM, id = 12245, count = 10, unique = true }, -- pokemon great health potion
-                { type = REWARD_TYPE.ITEM, id = 13653, count = 15, unique = true }, -- pokemon energy potion
+                { type = REWARD_TYPE.ITEM, id = 12245, count = 10 }, -- pokemon great health potion
+                { type = REWARD_TYPE.ITEM, id = 13653, count = 15 }, -- pokemon energy potion
             },
             rewardExp = 500,
             requiredLevel = 10,
@@ -5879,7 +5879,7 @@ QUESTS_CONFIG = {
             talk_questFinished = "Great, now with the Master Ball we have a chance. I found out where the island Dr. Fuji mentioned is: it's southwest of Kanto. According to him, the laboratory there was destroyed. Go there and look for more clues about Mewtwo.",
             talk_questFinishFail = "Looks like you didn't.",
             talk_questDone = "",
-            rewardItems = { { type = REWARD_TYPE.ITEM, id = 17364, count = 1, unique = true }, { type = REWARD_TYPE.ITEM, id = 27774, count = 1, unique = true } }, -- TM 28 (Move Mimic), Small Asteroid Fragment
+            rewardItems = { { type = REWARD_TYPE.ITEM, id = 17364, count = 1 }, { type = REWARD_TYPE.ITEM, id = 27774, count = 1, unique = true } }, -- TM 28 (Move Mimic), Small Asteroid Fragment
             rewardExp = 0,
             requiredLevel = 50,
             questType = QUEST_TYPE.BRING_ITEMS,
@@ -5898,7 +5898,7 @@ QUESTS_CONFIG = {
             talk_questFinishFail = "Looks like you didn't.",
             talk_questDone = "",
             rewardItems = {
-                { type = REWARD_TYPE.ITEM, id = 18931, count = 1, unique = true }, -- TM 67 (Move Nightmare)
+                { type = REWARD_TYPE.ITEM, id = 18931, count = 1 }, -- TM 67 (Move Nightmare)
                 { type = REWARD_TYPE.ITEM, id = 27773, count = 1, unique = true }, -- Big Asteroid Fragment
                 { type = REWARD_TYPE.ADDON, female = { looktype = 1703, addons = 0 }, male = { looktype = 1704, addons = 0 } }
             },
@@ -6998,7 +6998,7 @@ QUESTS_CONFIG = {
             questType = QUEST_TYPE.DEFEAT_POKEMON,
             questRequest = { "Caterpie", 1 },
             canStart = function(cid) return getCreatureStorage(cid, 8501) == QUEST_STATUS.FINISHED end,
-            rewardItems = { { type = REWARD_TYPE.ITEM, id = 12244, count = 10, unique = true } }, -- pokemon health potion
+            rewardItems = { { type = REWARD_TYPE.ITEM, id = 12244, count = 10 } }, -- pokemon health potion
             onStart = function(cid)
                 local ball = doCreatePokemonBall(cid, "poke", "Caterpie", 10, nil, "Jofrey's Caterpie", 0, cid, false,
                     nil, nil, nil, nil, nil, nil, nil, nil, false)
@@ -7053,7 +7053,7 @@ QUESTS_CONFIG = {
                 return false
             end,
             canStart = function(cid) return getCreatureStorage(cid, 8502) == QUEST_STATUS.FINISHED end,
-            rewardItems = { { type = REWARD_TYPE.ITEM, id = 12157, count = 50, unique = true } }, -- empty poke ball
+            rewardItems = { { type = REWARD_TYPE.ITEM, id = 12157, count = 50 } }, -- empty poke ball
             questStartItems = { 17436, 1 }, -- burst seal
             canFinish = function(cid)
                 if (isPokemonOnline(cid)) then -- Try to call Pokemon back
@@ -7169,7 +7169,7 @@ QUESTS_CONFIG = {
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid) return getCreatureStorage(cid, 8547) == QUEST_STATUS.FINISHED end, -- todo
             canStart = function(cid) return getCreatureStorage(cid, 8545) == QUEST_STATUS.FINISHED end,
-            rewardItems = { { type = REWARD_TYPE.ITEM, id = 17367, count = 1, unique = true } },
+            rewardItems = { { type = REWARD_TYPE.ITEM, id = 17367, count = 1 } },
             onEnd = function(cid)
                 doTeleportThing(cid, { x = 5082, y = 603, z = 9 })
             end
@@ -7213,7 +7213,7 @@ QUESTS_CONFIG = {
             requiredLevel = 50,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid) return getCreatureStorage(cid, 8547) == QUEST_STATUS.FINISHED end,
-            rewardItems = { { type = REWARD_TYPE.ITEM, id = 25191, count = 1, unique = true }, { type = REWARD_TYPE.ITEM, id = 17353, count = 1, unique = true } },
+            rewardItems = { { type = REWARD_TYPE.ITEM, id = 25191, count = 1, unique = true }, { type = REWARD_TYPE.ITEM, id = 17353, count = 1 } },
             blockStart = true
         }
     },
@@ -7414,7 +7414,7 @@ QUESTS_CONFIG = {
                 doPlayerAchievementCheck(cid, ACHIEVEMENT_IDS.GRINCH_XMAS_QUEST)
             end,
             rewardItems = {
-                { type = REWARD_TYPE.ITEM, id = 25279, count = 3, unique = true },
+                { type = REWARD_TYPE.ITEM, id = 25279, count = 3 },
                 { type = REWARD_TYPE.ADDON, female = { looktype = 1404, addons = 3 }, male = { looktype = 1404, addons = 3 } }
             },
             canStart = function(cid)
