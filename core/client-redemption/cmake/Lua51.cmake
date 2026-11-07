@@ -7,8 +7,13 @@ set(LUA51_EXTRACT_OPTIONS "")
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
   set(LUA51_EXTRACT_OPTIONS DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
 endif()
+# lua.org alone failed three client builds on Nov 7, 2026 (connection timed out), so the same tarball
+# also comes from Debian's archive (lua5.1_5.1.5.orig.tar.gz is lua.org's file, renamed) and OpenMW's
+# copy. CMake tries them in order; the SHA256 below is lua.org's, so a copy that differs is refused.
 FetchContent_Declare(lua51
-  URL https://www.lua.org/ftp/lua-5.1.5.tar.gz
+  URL https://deb.debian.org/debian/pool/main/l/lua5.1/lua5.1_5.1.5.orig.tar.gz
+      https://www.lua.org/ftp/lua-5.1.5.tar.gz
+      https://gitlab.com/OpenMW/openmw-deps/-/raw/main/lua/lua-5.1.5.tar.gz
   URL_HASH SHA256=2640fc56a795f29d28ef15e13c34a47e223960b0240e8cb0a82d9b0738695333
   ${LUA51_EXTRACT_OPTIONS}
 )
