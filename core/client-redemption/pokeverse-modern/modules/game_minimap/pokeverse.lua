@@ -394,6 +394,148 @@ local function createCoordsLabel(minimap)
     end
 end
 
+-- Quest marks: the marks the server puts on the map (doPlayerAddMapMark: Gary Oak's search spot, Officer
+-- Jenny's posters, the Nest Trees...). The minimap gets them as ordinary flags; they are also kept here, per
+-- character, for the Pokepedia's world map (QuestMarks.list) and so the minimap can show the ones on other
+-- floors: faded, at their spot on the floor in view, with an arrow up or down.
+QuestMarks = {}
+local questMarkListeners = {}
+local floorGhosts = {}
+local ghostFloor
+
+local function questMarksKey()
+    return ((g_game.getCharacterName() or ''):gsub('[^%w]', '_'))
+end
+
+function QuestMarks.list()
+    local node = g_settings.getNode('QuestMarks') or {}
+    local mine = node[questMarksKey()]
+    return type(mine) == 'table' and mine or {}
+end
+
+local function saveQuestMarks(list)
+    local node = g_settings.getNode('QuestMarks') or {}
+    node[questMarksKey()] = list
+    g_settings.setNode('QuestMarks', node)
+end
+
+local function questMarksChanged()
+    for _, listener in ipairs(questMarkListeners) do
+        pcall(listener)
+    end
+end
+
+-- fn() runs whenever a quest mark comes or goes (the world map redraws its layer)
+function QuestMarks.listen(fn)
+    table.insert(questMarkListeners, fn)
+end
+
+function QuestMarks.unlisten(fn)
+    table.removevalue(questMarkListeners, fn)
+end
+
+local function samePos(a, b)
+    return a.x == b.x and a.y == b.y and a.z == b.z
+end
+
+function QuestMarks.remove(pos)
+    local list, kept = QuestMarks.list(), {}
+    for _, mark in ipairs(list) do
+        if not samePos(mark, pos) then
+            kept[#kept + 1] = mark
+        end
+    end
+    saveQuestMarks(kept)
+    local minimap = getMiniMapUi()
+    if minimap then
+        minimap:removeFlag(pos)
+    end
+    QuestMarks.refreshFloors(true)
+    questMarksChanged()
+end
+
+local function onServerMark(pos, icon, description)
+    if not pos or not g_game.isOnline() then
+        return
+    end
+    local list = QuestMarks.list()
+    for i, mark in ipairs(list) do
+        if samePos(mark, pos) then
+            table.remove(list, i)
+            break
+        end
+    end
+    list[#list + 1] = { x = pos.x, y = pos.y, z = pos.z, icon = icon, description = description or '' }
+    saveQuestMarks(list)
+    QuestMarks.refreshFloors(true)
+    questMarksChanged()
+end
+
+local function onServerMarkRemoved(pos)
+    if pos then
+        QuestMarks.remove(pos)
+    end
+end
+
+-- the quest marks on other floors, drawn faded on the floor in view with an arrow towards theirs
+function QuestMarks.refreshFloors(force)
+    local minimap = getMiniMapUi()
+    if not minimap or minimap:isDestroyed() then
+        return
+    end
+    local camera = minimap:getCameraPosition()
+    if not camera or (camera.z == ghostFloor and not force) then
+        return
+    end
+    ghostFloor = camera.z
+    for _, ghost in ipairs(floorGhosts) do
+        if not ghost:isDestroyed() then
+            ghost:destroy()
+        end
+    end
+    floorGhosts = {}
+    for _, mark in ipairs(QuestMarks.list()) do
+        if mark.z ~= camera.z then
+            local up = mark.z < camera.z -- a smaller z is a floor higher up
+            local ghost = g_ui.createWidget('MinimapFlag')
+            minimap:insertChild(1, ghost)
+            ghost.pos = { x = mark.x, y = mark.y, z = camera.z }
+            ghost.questMark = true
+            if type(tonumber(mark.icon)) == 'number' then
+                ghost:setIcon('/images/game/minimap/flag' .. mark.icon)
+            else
+                ghost:setIcon(resolvepath(mark.icon, 1))
+            end
+            ghost:setOpacity(0.5)
+            ghost:setTooltip(string.format('%s\n%s', mark.description or '',
+                up and tr('On a floor above') or tr('On a floor below')))
+            local arrow = g_ui.createWidget('UIWidget', ghost)
+            arrow:setImageSource('/modules/game_pokepedia/images/' .. (up and 'icon_floor_up' or 'icon_floor_down'))
+            arrow:setSize({ width = 9, height = 9 })
+            arrow:setPhantom(true)
+            arrow:addAnchor(AnchorLeft, 'parent', AnchorRight)
+            arrow:addAnchor(AnchorBottom, 'parent', AnchorTop)
+            arrow:setMarginLeft(-3)
+            arrow:setMarginBottom(-3)
+            minimap:centerInPosition(ghost, ghost.pos)
+            floorGhosts[#floorGhosts + 1] = ghost
+        end
+    end
+end
+
+local questMarksAttached
+local function attachQuestMarks(minimap)
+    if not questMarksAttached then
+        questMarksAttached = true
+        connect(g_game, { onAddAutomapFlag = onServerMark, onRemoveAutomapFlag = onServerMarkRemoved })
+    end
+    if minimap and not minimap.questMarksHooked then
+        minimap.questMarksHooked = true
+        connect(minimap, { onCameraPositionChange = function() QuestMarks.refreshFloors() end })
+    end
+    QuestMarks.refreshFloors(true)
+end
+
 PokeverseMap = {}
 
 function PokeverseMap.load(minimap)
@@ -432,6 +574,7 @@ function PokeverseMap.load(minimap)
     if guidesEnabled then
         addGuides(minimap)
     end
+    attachQuestMarks(minimap)
 end
 
 -- the region a position is in: MAP_REGIONS' boxes in order, the rest is Kanto
