@@ -558,7 +558,7 @@ function onNotice(data)
     local row = quests[id]
     if not row then
         row = { id = id, name = data.name, step = data.step, npc = data.npc, objective = data.objective,
-                category = 'Side quests' }
+                category = 'Side quests', place = data.place }
         quests[id] = row
         order[#order + 1] = id
     elseif row.hidden or not row.name then
@@ -566,6 +566,10 @@ function onNotice(data)
         row.hidden = nil
         row.name, row.step, row.npc = data.name, data.step, data.npc
         row.objective = data.objective or row.objective
+    end
+    if data.place then
+        -- the quest moved on: Go there leads to where it is handed in now
+        row.place = data.place
     end
     if data.kind == 'complete' then
         row.state = 'done'

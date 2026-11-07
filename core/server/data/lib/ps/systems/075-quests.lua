@@ -373,6 +373,20 @@ Quests.stateOf = function(cid, quest, current)
     return "available"
 end
 
+-- Where the trainer goes for a quest. An NPC can stand in several places (Gary Oak is in Viridian,
+-- Pewter, Mt. Moon...), and a quest only starts at its startPosition and is handed in at its
+-- finishPosition, so those come first: the hand-in spot once it is under way, the start spot before.
+-- Without them, wherever the NPC is.
+Quests.questPlace = function(entry, state)
+    local quest = entry.quest
+    local npcPlace = Quests.placeOf(entry.npc)
+    local pos = (state == "active" and quest.finishPosition) or quest.startPosition or quest.finishPosition
+    if (not pos) then
+        return npcPlace
+    end
+    return { x = pos.x, y = pos.y, z = pos.z, town = nearestTown(pos.x, pos.y), look = npcPlace and npcPlace.look }
+end
+
 local function row(cid, entry, state)
     local quest = entry.quest
     local data = { id = entry.id, name = entry.name, step = entry.step, group = entry.group, category = entry.category,
@@ -383,7 +397,7 @@ local function row(cid, entry, state)
         data.have, data.need = Quests.progress(cid, quest)
     end
     if (state ~= "done") then
-        data.place = Quests.placeOf(entry.npc)
+        data.place = Quests.questPlace(entry, state)
     end
     return data
 end
@@ -431,7 +445,7 @@ Quests.onMeet = function(cid, npcName)
 end
 
 local function hiddenRow(entry, state)
-    local place = Quests.placeOf(entry.npc)
+    local place = Quests.questPlace(entry, state)
     return { id = entry.id, hidden = true, state = state, category = entry.category, level = entry.quest.requiredLevel,
              daily = entry.quest.daily and true or nil, place = place and { town = place.town } or nil }
 end
@@ -500,6 +514,10 @@ local function notice(cid, kind, quest, extra)
     local data = { type = "notice", kind = kind, id = quest.storage, name = entry and entry.name or "Quest",
                    step = entry and entry.step, npc = entry and entry.npc, objective = Quests.objective(quest) or
                    (entry and entry.text) }
+    -- under way, the quest log's Go there leads to where it is handed in
+    if (entry and kind ~= "complete") then
+        data.place = Quests.questPlace(entry, "active")
+    end
     for key, value in pairs(extra or {}) do
         data[key] = value
     end
