@@ -5561,8 +5561,8 @@ QUESTS_CONFIG = {
             onEnd = function(cid) doPlayerRemoveItem(cid, 23533, getPlayerItemCount(cid, 23533)) end, -- remove gary oak's magnifier
             -- the quest log's Go there leads to each spot in turn (garyOakMagnifier.lua), then back to Gary
             steps = {
-                { storage = 8415, pos = { x = 3275, y = 610, z = 7 }, label = "Suspicious spot (use the magnifier)" },
-                { storage = 8416, pos = { x = 3277, y = 608, z = 7 }, label = "Suspicious spot (use the magnifier)" },
+                { storage = 8415, pos = { x = 3275, y = 610, z = 7 }, label = "Use the magnifier on the shrapnel" },
+                { storage = 8416, pos = { x = 3277, y = 608, z = 7 }, label = "Use the magnifier on the branch" },
             },
             startPosition = { x = 3304, y = 603, z = 7 },
             finishPosition = { x = 3304, y = 603, z = 7 }
@@ -5609,6 +5609,11 @@ QUESTS_CONFIG = {
             onStart = function(cid)
                 doPlayerAddMapMark(cid, { x = 3546, y = 300, z = 5 }, MAPMARK_EXCLAMATION, "Ash Ketchum search location.")
             end,
+            -- the magnifier on the bush Gary marked opens the way in (garyOakMagnifier.lua); the
+            -- tile past it (activationTile.lua 107) finishes the step, then back to Gary at Mt. Moon
+            steps = {
+                { storage = 8509, pos = { x = 3554, y = 298, z = 5 }, label = "Use the magnifier on the bush Gary marked" },
+            },
             startPosition = { x = 3304, y = 603, z = 7 },
             finishPosition = { x = 3450, y = 245, z = 7 }
         },

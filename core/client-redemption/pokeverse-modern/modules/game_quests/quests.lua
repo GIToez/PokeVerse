@@ -101,9 +101,10 @@ function questTitle(row)
 end
 
 local function placeText(row)
-    local place = row.place
-    if place and place.town and place.town ~= '' then
-        return tr('%s, near %s', row.npc, place.town)
+    -- the NPC's town (npcTown), not the one of the step Go there leads to
+    local town = row.npcTown or (row.place and row.place.town)
+    if town and town ~= '' then
+        return tr('%s, near %s', row.npc, town)
     end
     return row.npc or ''
 end
@@ -568,8 +569,9 @@ function onNotice(data)
         row.objective = data.objective or row.objective
     end
     if data.place then
-        -- the quest moved on: Go there leads to where it is handed in now
+        -- the quest moved on: Go there leads to its next step, or where it is handed in
         row.place = data.place
+        row.npcTown = data.npcTown or row.npcTown
     end
     if data.kind == 'complete' then
         row.state = 'done'
