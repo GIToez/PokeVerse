@@ -11,7 +11,7 @@ POKEMON["Marill"] = {
     dexPortrait = 15830,
     fastcallPortrait = 16030,
     catchStorage = 16183,
-    evolutions = { { name = "Azumarill", requiredLevel = 35 } },
+    evolutions = { { name = "Azumarill", requiredLevel = 18 } },
     description = "The end of its tail serves as a buoy that keeps it from drowning, even in a vicious current.",
     skills = { "Tackle", 1, "Bubble", 5, "Water Gun", 10, "Aqua Tail", 15, "Defense Curl", 20, "Double-Edge", 25, "Aqua Ring", 30 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.WATERFALL, "Rock Smash", "Surf", "Dive", "Headbutt" },

@@ -11,7 +11,7 @@ POKEMON["Spinarak"] = {
     dexPortrait = 15814,
     fastcallPortrait = 16014,
     catchStorage = 16167,
-    evolutions = { { name = "Ariados", requiredLevel = 40 } },
+    evolutions = { { name = "Ariados", requiredLevel = 22 } },
     description = "It spins a web using fine--but durable--thread. It then waits patiently for prey to be trapped.",
     skills = { "Tackle", 1, "Poison Sting", 5, "Bug Bite", 10, "Leech Life", 15, "Shadow Sneak", 20, "Psychic", 25, "Fury Swipes", 30, "Spider Web", 35 },
     abilities = { POKEMON_ABILITIES.DIG, "Find", "Flash" },

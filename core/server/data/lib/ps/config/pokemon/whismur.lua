@@ -11,7 +11,7 @@ POKEMON["Whismur"] = {
     dexPortrait = -1,
     fastcallPortrait = 27286,
     catchStorage = -1,
-    evolutions = { { name = "Loudred", requiredLevel = 30 } },
+    evolutions = { { name = "Loudred", requiredLevel = 20 } },
     description = "It usually murmurs but starts crying loudly if it senses danger. It stops when its ear covers are shut.",
     skills = { "Tackle", 1, "Pound", 5, "Echoed Voice", 10, "Astonish", 15, "Stomp", 20, "Uproar", 25, "Sleep Talk", 30 },
     abilities = {  },

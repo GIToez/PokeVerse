@@ -1,7 +1,7 @@
 POKEMON["Farfetchd"] = {
     pTypes = { ELEMENT_NORMAL, ELEMENT_FLYING },
     dexStorage = 10083,
-    atk = 65,
+    atk = 90,
     def = 55,
     spAtk = 58,
     spDef = 62,

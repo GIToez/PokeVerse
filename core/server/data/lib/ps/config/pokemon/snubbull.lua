@@ -11,7 +11,7 @@ POKEMON["Snubbull"] = {
     dexPortrait = 15856,
     fastcallPortrait = 16056,
     catchStorage = 16209,
-    evolutions = { { name = "Granbull", requiredLevel = 40 } },
+    evolutions = { { name = "Granbull", requiredLevel = 23 } },
     description = "It has an active, playful nature. Many women like to frolic with it because of its affectionate ways.",
     skills = { "Tackle", 1, "Ice Fang", 5, "Fire Fang", 5, "Thunder Fang", 5, "Lick", 20, "Charm", 25, "Bite", 30, "Scary Face", 35 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Find", "Rock Smash", "Headbutt" },

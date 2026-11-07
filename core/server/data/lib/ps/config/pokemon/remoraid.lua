@@ -11,7 +11,7 @@ POKEMON["Remoraid"] = {
     dexPortrait = 15870,
     fastcallPortrait = 16070,
     catchStorage = 16223,
-    evolutions = { { name = "Octillery", requiredLevel = 40 } },
+    evolutions = { { name = "Octillery", requiredLevel = 25 } },
     description = "Using its dorsal fin as a suction pad, it clings to a MANTINE's underside to scavenge for leftovers.",
     skills = { "Tackle", 1, "Water Gun", 5, "Psybeam", 10, "Aurora Beam", 15, "Bubblebeam", 20, "Gunk Shot", 25, "Rock Blast", 30, "Hydro Pump", 35 },
     abilities = { POKEMON_ABILITIES.WATERFALL },

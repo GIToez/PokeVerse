@@ -12,7 +12,7 @@ POKEMON["Nincada"] = {
     fastcallPortrait = 27283,
     catchStorage = -1,
     evolutions = {
-        { name = "Ninjask", requiredLevel = 35 },
+        { name = "Ninjask", requiredLevel = 20 },
         { name = "Shedinja", requiredLevel = 35, extraPokemon = true },
     },
     description = "Because it lived almost entirely underground, it is nearly blind. It uses its antennae instead.",

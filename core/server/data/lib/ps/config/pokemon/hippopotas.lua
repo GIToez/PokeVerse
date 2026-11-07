@@ -11,7 +11,7 @@ POKEMON["Hippopotas"] = {
     dexPortrait = 0,
     fastcallPortrait = 29068,
     catchStorage = -1,
-    evolutions = { { name = "Hippowdon", requiredLevel = 35 } },
+    evolutions = { { name = "Hippowdon", requiredLevel = 34 } },
     description = "It shuts its nostrils tight then travels through sand as if walking. They form colonies of around ten.",
     skills = { "Sand-Attack", 1, "Sand Tomb", 5, "Tackle", 10, "Bite", 15, "Dig", 20, "Crunch", 25, "Take Down", 30 },
     abilities = { "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },

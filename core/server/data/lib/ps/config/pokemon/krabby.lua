@@ -11,7 +11,7 @@ POKEMON["Krabby"] = {
     dexPortrait = 13599,
     fastcallPortrait = 10732,
     catchStorage = 16098,
-    evolutions = { { name = "Kingler", requiredLevel = 35 } },
+    evolutions = { { name = "Kingler", requiredLevel = 28 } },
     description = "It can be found near the sea. The large pincers grow back if they are torn out of their sockets.",
     skills = { "Tackle", 1, "Bubble", 5, "Mud Shot", 10, "Stomp", 15, "Brine", 20, "Harden", 25, "Crabhammer", 30 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt", "Cut" },

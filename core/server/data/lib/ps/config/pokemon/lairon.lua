@@ -11,7 +11,7 @@ POKEMON["Lairon"] = {
     dexPortrait = -1,
     fastcallPortrait = 27298,
     catchStorage = -1,
-    evolutions = { { name = "Aggron", requiredLevel = 50 } },
+    evolutions = { { name = "Aggron", requiredLevel = 42 } },
     description = "It loves iron ore. Groups of them fight for territory by bashing one another with their steel bodies.",
     skills = { "Tackle", 1, "Headbutt", 5, "Mud-Slap", 10, "Metal Claw", 15, "Rock Tomb", 20, "Rock Slide", 25, "Protect", 35, "Take Down", 40, "Iron Head", 45 },
     abilities = { "Cut", "Strenght", "Rock Smash", "Ride", POKEMON_ABILITIES.HEADBUTT },

@@ -11,7 +11,7 @@ POKEMON["Torchic"] = {
     dexPortrait = -1,
     fastcallPortrait = 27247,
     catchStorage = 16255,
-    evolutions = { { name = "Combusken", requiredLevel = 35 } },
+    evolutions = { { name = "Combusken", requiredLevel = 16 } },
     description = "It has a flame sac inside its belly that perpetually burns. It feels warm if it is hugged.",
     skills = { "Tackle", 1, "Ember", 5, "Slash", 10, "Peck", 15, "Sand-Attack", 20, "Flame Burst", 25, "Flamethrower", 30 },
     abilities = { "Cut", "Strenght", "Rock Smash" },

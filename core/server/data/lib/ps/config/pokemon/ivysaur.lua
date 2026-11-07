@@ -11,7 +11,7 @@ POKEMON["Ivysaur"] = {
     dexPortrait = 13503,
     fastcallPortrait = 10636,
     catchStorage = 16002,
-    evolutions = { { name = "Venusaur", requiredLevel = 55 } },
+    evolutions = { { name = "Venusaur", requiredLevel = 32 } },
     description = "There is a plant bulb on its back. When it absorbs nutrients, the bulb is said to blossom into a large flower.",
     skills = { "Tackle", 1, "Headbutt", 5, "Razor Leaf", 10, "Vine Whip", 15, "Leech Seed", 20, "Poison Powder", 25, "Sleep Powder", 30, "Synthesis", 40, "Solar Beam", 45, "Sludge Bomb", 50 },
     abilities = { POKEMON_ABILITIES.STRENGTH, "Cut", "Headbutt" },

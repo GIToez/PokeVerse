@@ -11,7 +11,7 @@ POKEMON["Ekans"] = {
     dexPortrait = 13524,
     fastcallPortrait = 10657,
     catchStorage = 16023,
-    evolutions = { { name = "Arbok", requiredLevel = 35 } },
+    evolutions = { { name = "Arbok", requiredLevel = 22 } },
     description = "A very common sight in grassland, etc. It flicks its tongue in and out to sense danger in its surroundings.",
     skills = { "Tackle", 1, "Bite", 5, "Poison Sting", 10, "Glare", 15, "Acid", 20, "Acid Spray", 25, "Mud Bomb", 30 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },

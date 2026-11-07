@@ -11,7 +11,7 @@ POKEMON["Ledyba"] = {
     dexPortrait = 15812,
     fastcallPortrait = 16012,
     catchStorage = 16165,
-    evolutions = { { name = "Ledian", requiredLevel = 40 } },
+    evolutions = { { name = "Ledian", requiredLevel = 18 } },
     description = "When the weather turns cold, lots of LEDYBA gather from everywhere to cluster and keep each other warm.",
     skills = { "Tackle", 1, "Comet Punch", 5, "Swift", 10, "Mach Punch", 15, "Silver Wind", 20, "Roost", 25, "Bug Buzz", 30, "Supersonic", 35 },
     abilities = { POKEMON_ABILITIES.DIG, "Find", "Flash", "Headbutt" },

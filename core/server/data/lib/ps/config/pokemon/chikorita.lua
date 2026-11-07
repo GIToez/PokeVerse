@@ -11,7 +11,7 @@ POKEMON["Chikorita"] = {
     dexPortrait = 15799,
     fastcallPortrait = 15999,
     catchStorage = 16152,
-    evolutions = { { name = "Bayleef", requiredLevel = 35 } },
+    evolutions = { { name = "Bayleef", requiredLevel = 16 } },
     description = "Its pleasantly aromatic leaves have the ability to check the humidity and temperature.",
     skills = { "Tackle", 1, "Razor Leaf", 5, "Leech Seed", 10, "Magical Leaf", 15, "Body Slam", 20, "Poison Powder", 25, "Grass Whistle", 30 },
     abilities = { "Cut", "Flash", "Headbutt" },

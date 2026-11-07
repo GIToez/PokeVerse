@@ -11,7 +11,7 @@ POKEMON["Larvitar"] = {
     dexPortrait = 15893,
     fastcallPortrait = 16093,
     catchStorage = 16246,
-    evolutions = { { name = "Pupitar", requiredLevel = 40 } },
+    evolutions = { { name = "Pupitar", requiredLevel = 30 } },
     description = "It is born deep underground. It can't emerge until it has entirely consumed the soil around it.",
     skills = { "Tackle", 1, "Bite", 5, "Rock Slide", 10, "Scary Face", 15, "Thrash", 20, "Dark Pulse", 25, "Payback", 30, "Crunch", 35 },
     abilities = { POKEMON_ABILITIES.DIG, "Find", "Headbutt" },

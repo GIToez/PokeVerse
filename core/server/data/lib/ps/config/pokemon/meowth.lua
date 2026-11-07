@@ -11,7 +11,7 @@ POKEMON["Meowth"] = {
     dexPortrait = 13553,
     fastcallPortrait = 10686,
     catchStorage = 16052,
-    evolutions = { { name = "Persian", requiredLevel = 40 } },
+    evolutions = { { name = "Persian", requiredLevel = 28 } },
     description = "All it does is sleep during the daytime. At night, it patrols its territory with its eyes aglow.",
     skills = { "Tackle", 1, "Scratch", 5, "Bite", 10, "Fury Swipes", 15, "Slash", 20, "Captivate", 25, "Night Slash", 30, "Iron Tail", 35 },
     abilities = { POKEMON_ABILITIES.DIG, "Headbutt" },

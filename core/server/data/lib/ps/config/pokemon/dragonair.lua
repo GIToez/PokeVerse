@@ -11,7 +11,7 @@ POKEMON["Dragonair"] = {
     dexPortrait = 13649,
     fastcallPortrait = 10782,
     catchStorage = 16148,
-    evolutions = { { name = "Dragonite", requiredLevel = 50 } },
+    evolutions = { { name = "Dragonite", requiredLevel = 55 } },
     description = "It is said to live in seas and lakes. Even though it has no wings, it has been seen flying occasionally.",
     skills = { "Tackle", 1, "Slam", 5, "Twister", 10, "Aqua Tail", 15, "Thunder Wave", 20, "Dragon Tail", 25, "Agility", 30, "Outrage", 40, "Hyper Beam", 45 },
     abilities = { POKEMON_ABILITIES.WATERFALL, "Fly", "Headbutt" },

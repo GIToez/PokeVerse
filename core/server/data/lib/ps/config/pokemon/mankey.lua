@@ -11,7 +11,7 @@ POKEMON["Mankey"] = {
     dexPortrait = 13557,
     fastcallPortrait = 10690,
     catchStorage = 16056,
-    evolutions = { { name = "Primeape", requiredLevel = 35 } },
+    evolutions = { { name = "Primeape", requiredLevel = 28 } },
     description = "Light and agile on its feet, and ferocious in temperament. When angered, it flies into an uncontrollable frenzy.",
     skills = { "Tackle", 1, "Scratch", 5, "Low Kick", 10, "Focus Energy", 15, "Fury Swipes", 20, "Karate Chop", 25, "Seismic Toss", 30 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },

@@ -11,7 +11,7 @@ POKEMON["Spheal"] = {
     dexPortrait = -1,
     fastcallPortrait = 27356,
     catchStorage = -1,
-    evolutions = { { name = "Sealeo", requiredLevel = 30 } },
+    evolutions = { { name = "Sealeo", requiredLevel = 32 } },
     description = "They can't swim well yet, and they move much faster by rolling. When they're happy, they clap fins.",
     skills = { "Tackle", 1, "Powder Snow", 5, "Ice Ball", 10, "Water Gun", 15, "Rollout", 20, "Defense Curl", 25 },
     abilities = { "Strength", "Surf", "Rock Smash", "Waterfall", "Dive" },

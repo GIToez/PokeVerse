@@ -11,7 +11,7 @@ POKEMON["Rhyhorn"] = {
     dexPortrait = 13612,
     fastcallPortrait = 10745,
     catchStorage = 16111,
-    evolutions = { { name = "Rhydon", requiredLevel = 40 } },
+    evolutions = { { name = "Rhydon", requiredLevel = 42 } },
     description = "Strong, but not too bright, this POKEMON can shatter even a skyscraper with its charging TACKLES.",
     skills = { "Tackle", 1, "Horn Attack", 5, "Stomp", 10, "Rock Throw", 15, "Take Down", 20, "Rock Blast", 25, "Scary Face", 30, "Drill Run", 35 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Ride", "Headbutt" },

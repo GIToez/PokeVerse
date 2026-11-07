@@ -11,7 +11,7 @@ POKEMON["Ralts"] = {
     dexPortrait = -1,
     fastcallPortrait = 27273,
     catchStorage = -1,
-    evolutions = { { name = "Kirlia", requiredLevel = 30 } },
+    evolutions = { { name = "Kirlia", requiredLevel = 20 } },
     description = "If its horns capture the warm feelings of people or Pokemon, its body warms up slightly.",
     skills = { "Tackle", 1, "Confusion", 5, "Magical Leaf", 10, "Draining Kiss", 15, "Disarming Voice", 20, "Hypnosis", 25 },
     abilities = {POKEMON_ABILITIES.BLINK, POKEMON_ABILITIES.TELEPORT, POKEMON_ABILITIES.FIND},

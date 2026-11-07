@@ -11,7 +11,7 @@ POKEMON["Psyduck"] = {
     dexPortrait = 13555,
     fastcallPortrait = 10688,
     catchStorage = 16054,
-    evolutions = { { name = "Golduck", requiredLevel = 35 } },
+    evolutions = { { name = "Golduck", requiredLevel = 33 } },
     description = "It is constantly wracked by a headache. When the headache turns intense, it begins using mysterious powers.",
     skills = { "Tackle", 1, "Scratch", 5, "Water Gun", 10, "Confusion", 15, "Water Pulse", 20, "Fury Swipes", 25, "Disable", 30 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.WATERFALL, "Rock Smash", "Headbutt" },

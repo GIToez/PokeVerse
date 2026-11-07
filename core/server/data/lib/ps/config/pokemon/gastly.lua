@@ -11,7 +11,7 @@ POKEMON["Gastly"] = {
     dexPortrait = 13593,
     fastcallPortrait = 10726,
     catchStorage = 16092,
-    evolutions = { { name = "Haunter", requiredLevel = 35 } },
+    evolutions = { { name = "Haunter", requiredLevel = 25 } },
     description = "A being that exists as a thin gas. It can topple an Indian elephant by enveloping the prey in two seconds.",
     skills = { "Tackle", 1, "Lick", 5, "Night Shade", 10, "Hypnosis", 15, "Dream Eater", 20, "Curse", 25, "Spite", 30 },
     abilities = {},

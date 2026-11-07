@@ -11,7 +11,7 @@ POKEMON["Quilava"] = {
     dexPortrait = 15803,
     fastcallPortrait = 16003,
     catchStorage = 16156,
-    evolutions = { { name = "Typhlosion", requiredLevel = 55 } },
+    evolutions = { { name = "Typhlosion", requiredLevel = 36 } },
     description = "This POKEMON is fully covered by nonflammable fur. It can withstand any kind of fire attack.",
     skills = { "Tackle", 1, "Ember", 5, "Quick Attack", 10, "Flame Wheel", 15, "Smoke Screen", 20, "Swift", 25, "Flamethrower", 30, "Lava Plume", 40, "Flame Charge", 45, "Defense Curl", 50 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Cut", "Rock Smash", "Headbutt" },

@@ -11,7 +11,7 @@ POKEMON["Starly"] = {
     dexPortrait = 0,
     fastcallPortrait = 29015,
     catchStorage = -1,
-    evolutions = { { name = "Staravia", requiredLevel = 35 } },
+    evolutions = { { name = "Staravia", requiredLevel = 14 } },
     description = "Because they are weak individually, they form groups. However, they bicker if the group grows too big.",
     skills = { "Tackle", 1, "Growl", 5, "Endeavor", 10, "Quick Attack", 15, "Wing Attack", 20, "Aerial Ace", 25, "Take Down", 30 },
     abilities = {},

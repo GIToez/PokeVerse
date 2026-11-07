@@ -11,7 +11,7 @@ POKEMON["Taillow"] = {
     dexPortrait = -1,
     fastcallPortrait = 27269,
     catchStorage = -1,
-    evolutions = { { name = "Swellow", requiredLevel = 35 } },
+    evolutions = { { name = "Swellow", requiredLevel = 22 } },
     description = "It has a gutsy spirit that makes it bravely take on tough foes. It flies in search of warm climates.",
     skills = { "Tackle", 1, "Peck", 5, "Quick Attack", 10, "Wing Attack", 15, "Aerial Ace", 20, "Air Slash", 25, "Double Team", 30 },
     abilities = { POKEMON_ABILITIES.FLY, POKEMON_ABILITIES.FIND },

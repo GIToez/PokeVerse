@@ -11,7 +11,7 @@ POKEMON["Treecko"] = {
     dexPortrait = -1,
     fastcallPortrait = 27244,
     catchStorage = 16252,
-    evolutions = { { name = "Grovyle", requiredLevel = 35 } },
+    evolutions = { { name = "Grovyle", requiredLevel = 16 } },
     description = "It quickly scales even vertical walls. It senses humidity with its tail to predict the next day's weather.",
     skills = { "Tackle", 1, "Absorb", 5, "Quick Attack", 10, "Slam", 15, "Agility", 20, "Mega Drain", 25, "Energy Ball", 30 },
     abilities = { "Cut", "Strenght", "Flash", "Rock Smash" },

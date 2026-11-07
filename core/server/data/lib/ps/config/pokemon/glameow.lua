@@ -11,7 +11,7 @@ POKEMON["Glameow"] = {
     dexPortrait = 0,
     fastcallPortrait = 29050,
     catchStorage = -1,
-    evolutions = { { name = "Purugly", requiredLevel = 40 } },
+    evolutions = { { name = "Purugly", requiredLevel = 38 } },
     description = "It hides its spiteful tendency of hooking its claws into the nose of its Trainer if it isn’t fed.",
     skills = { "Fake Out", 1, "Hypnosis", 5, "Growl", 10, "Fury Swipes", 15, "Scratch", 20, "Slash", 25, "Sucker Punch", 30, "Play Rough", 35 },
     abilities = { "Cut", "Headbutt", "Flash", POKEMON_ABILITIES.DIG },

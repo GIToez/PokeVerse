@@ -11,7 +11,7 @@ POKEMON["Bellsprout"] = {
     dexPortrait = 13570,
     fastcallPortrait = 10703,
     catchStorage = 16069,
-    evolutions = { { name = "Weepinbell", requiredLevel = 35 } },
+    evolutions = { { name = "Weepinbell", requiredLevel = 21 } },
     description = "Its bud looks like a human face. Because of the bud, it is rumored to be a type of legendary mandrake plant.",
     skills = { "Tackle", 1, "Vine Whip", 5, "Poison Powder", 10, "Razor Leaf", 15, "Stun Spore", 20, "Acid", 25, "Slam", 30 },
     abilities = { "Cut" },

@@ -11,7 +11,7 @@ POKEMON["Totodile"] = {
     dexPortrait = 15805,
     fastcallPortrait = 16005,
     catchStorage = 16158,
-    evolutions = { { name = "Croconaw", requiredLevel = 35 } },
+    evolutions = { { name = "Croconaw", requiredLevel = 18 } },
     description = "It is small but rough and tough. It won't hesitate to take a bite out of anything that moves.",
     skills = { "Tackle", 1, "Scratch", 5, "Water Pulse", 10, "Bite", 15, "Aqua Tail", 20, "Ice Fang", 25, "Scary Face", 30 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.WATERFALL, "Cut", "Surf", "Dive", "Headbutt" },

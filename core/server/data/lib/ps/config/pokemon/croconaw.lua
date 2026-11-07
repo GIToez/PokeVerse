@@ -11,7 +11,7 @@ POKEMON["Croconaw"] = {
     dexPortrait = 15806,
     fastcallPortrait = 16006,
     catchStorage = 16159,
-    evolutions = { { name = "Feraligatr", requiredLevel = 55 } },
+    evolutions = { { name = "Feraligatr", requiredLevel = 30 } },
     description = "It opens its huge jaws wide when attacking. If it loses any fangs while biting, they grow back in.",
     skills = { "Tackle", 1, "Scratch", 5, "Water Pulse", 10, "Bite", 15, "Aqua Tail", 20, "Ice Fang", 25, "Scary Face", 30, "Rage", 40, "Crunch", 45, "Thrash", 50 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.WATERFALL, "Cut", "Rock Smash", "Surf", "Dive", "Headbutt" },

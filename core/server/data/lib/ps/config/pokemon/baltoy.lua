@@ -11,7 +11,7 @@ POKEMON["Baltoy"] = {
     dexPortrait = -1,
     fastcallPortrait = 27336,
     catchStorage = -1,
-    evolutions = { { name = "Claydol", requiredLevel = 30 } },
+    evolutions = { { name = "Claydol", requiredLevel = 36 } },
     description = "It moves while spinning around on its single foot. Some Baltoy have been seen spinning on their heads.",
     skills = { "Tackle", 1, "Rapid Spin", 5, "Mud-Slap", 10, "Confusion", 15, "Psybeam", 20, "Earth Power", 25 },
     abilities = { "Flash", POKEMON_ABILITIES.BLINK, POKEMON_ABILITIES.TELEPORT },

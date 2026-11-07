@@ -11,7 +11,7 @@ POKEMON["Shellos"] = {
     dexPortrait = 0,
     fastcallPortrait = 29041,
     catchStorage = -1,
-    evolutions = { { name = "Gastrodon", requiredLevel = 35 } },
+    evolutions = { { name = "Gastrodon", requiredLevel = 30 } },
     description = "Beware of pushing strongly on its squishy body, as it makes a mysterious purple fluid ooze out.",
     skills = { "Water Gun", 1, "Harden", 5, "Mud-Slap", 10, "Water Pulse", 15, "Ancient Power", 20, "Body Slam", 25, "Muddy Water", 30 },
     abilities = { "Headbutt" },

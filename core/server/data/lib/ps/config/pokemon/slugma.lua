@@ -11,7 +11,7 @@ POKEMON["Slugma"] = {
     dexPortrait = 15865,
     fastcallPortrait = 16065,
     catchStorage = 16218,
-    evolutions = { { name = "Magcargo", requiredLevel = 40 } },
+    evolutions = { { name = "Magcargo", requiredLevel = 38 } },
     description = "A common sight in volcanic areas, it slowly slithers around in a constant search for warm places.",
     skills = { "Tackle", 1, "Ember", 5, "Rock Throw", 10, "Harden", 15, "Recover", 20, "Flame Burst", 25, "Ancient Power", 30, "Flamethrower", 35 },
     abilities = {},

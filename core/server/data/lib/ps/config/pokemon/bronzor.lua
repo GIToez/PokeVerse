@@ -11,7 +11,7 @@ POKEMON["Bronzor"] = {
     dexPortrait = 0,
     fastcallPortrait = 29055,
     catchStorage = -1,
-    evolutions = { { name = "Bronzong", requiredLevel = 35 } },
+    evolutions = { { name = "Bronzong", requiredLevel = 33 } },
     description = "There are researchers who believe this POKEMON reflected like a mirror in the distant past.",
     skills = { "Tackle", 1, "Confuse Ray", 5, "Gyro Ball", 10, "Heavy Slam", 15, "Confusion", 20, "Payback", 25, "Extrasensory", 30 },
     abilities = { "Flash" },

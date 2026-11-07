@@ -11,7 +11,7 @@ POKEMON["Pineco"] = {
     dexPortrait = 15851,
     fastcallPortrait = 16051,
     catchStorage = 16204,
-    evolutions = { { name = "Forretress", requiredLevel = 35 } },
+    evolutions = { { name = "Forretress", requiredLevel = 31 } },
     description = "It hangs and waits for flying insect prey to come near. It does not move about much on its own.",
     skills = { "Tackle", 1, "Bug Bite", 5, "Protect", 10, "Toxic Spikes", 15, "Take Down", 20, "Selfdestruct", 25, "Struggle Bug", 30 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },

@@ -1,7 +1,7 @@
 POKEMON["Dugtrio"] = {
     pTypes = { ELEMENT_GROUND },
     dexStorage = 10051,
-    atk = 80,
+    atk = 100,
     def = 50,
     spAtk = 50,
     spDef = 70,

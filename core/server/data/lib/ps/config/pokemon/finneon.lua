@@ -11,7 +11,7 @@ POKEMON["Finneon"] = {
     dexPortrait = 0,
     fastcallPortrait = 29075,
     catchStorage = -1,
-    evolutions = { { name = "Lumineon", requiredLevel = 35 } },
+    evolutions = { { name = "Lumineon", requiredLevel = 31 } },
     description = "The line running down its side can store sunlight. It shines vividly at night.",
     skills = { "Pound", 1, "Rain Dance", 5, "Whirlpool", 10, "Water Gun", 15, "Gust", 20, "Water Pulse", 25, "U-turn", 30 },
     abilities = { "Flash" },

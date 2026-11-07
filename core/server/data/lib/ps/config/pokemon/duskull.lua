@@ -11,7 +11,7 @@ POKEMON["Duskull"] = {
     dexPortrait = -1,
     fastcallPortrait = 27348,
     catchStorage = -1,
-    evolutions = { { name = "Dusclops", requiredLevel = 30 } },
+    evolutions = { { name = "Dusclops", requiredLevel = 37 } },
     description = "It doggedly pursues its prey wherever it goes. However, the chase is abandoned at sunrise.",
     skills = { "Tackle", 1, "Astonish", 5, "Shadow Sneak", 10, "Shadow Ball", 15, "Confuse Ray", 20, "Curse", 25 },
     abilities = { "Flash" },

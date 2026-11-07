@@ -11,7 +11,7 @@ POKEMON["Shroomish"] = {
     dexPortrait = -1,
     fastcallPortrait = 27278,
     catchStorage = -1,
-    evolutions = { { name = "Breloom", requiredLevel = 35 } },
+    evolutions = { { name = "Breloom", requiredLevel = 23 } },
     description = "Shroomish live in damp soil in the dark depths of forests. They are often found keeping still under fallen leaves. This Pokemon feeds on compost that is made up of fallen, rotted leaves.",
     skills = { "Tackle", 1, "Absorb", 5, "Headbutt", 10, "Leech Seed", 15, "Seed Bomb", 20, "Toxic", 25, "Mega Drain", 30 },
     abilities = { "Flash", POKEMON_ABILITIES.HEADBUTT },

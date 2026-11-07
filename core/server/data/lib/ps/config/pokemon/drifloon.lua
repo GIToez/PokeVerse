@@ -11,7 +11,7 @@ POKEMON["Drifloon"] = {
     dexPortrait = 0,
     fastcallPortrait = 29044,
     catchStorage = -1,
-    evolutions = { { name = "Drifblim", requiredLevel = 35 } },
+    evolutions = { { name = "Drifblim", requiredLevel = 28 } },
     description = "Because of the way it floats aimlessly, an old folktale calls it a “Signpost for Wandering Spirits.”",
     skills = { "Astonish", 1, "Focus Energy", 5, "Spit Up", 10, "Gust", 15, "Payback", 20, "Hex", 25, "Shadow Ball", 30 },
     abilities = { "Cut", "Flash" },

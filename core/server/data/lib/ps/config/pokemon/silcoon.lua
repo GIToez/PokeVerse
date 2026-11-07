@@ -11,7 +11,7 @@ POKEMON["Silcoon"] = {
     dexPortrait = -1,
     fastcallPortrait = 27258,
     catchStorage = -1,
-    evolutions = { { name = "Beautifly", requiredLevel = 25 } },
+    evolutions = { { name = "Beautifly", requiredLevel = 10 } },
     description = "It wraps silk around the branches of a tree. It drinks rainwater on its silk while awaiting evolution.",
     skills = { "Tackle", 1, "Poison Sting", 5, "String Shot", 7, "Bug Bite", 10, "Harden", 20 },
     abilities = {  },

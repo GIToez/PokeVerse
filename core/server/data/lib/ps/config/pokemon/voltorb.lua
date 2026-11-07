@@ -11,7 +11,7 @@ POKEMON["Voltorb"] = {
     dexPortrait = 13601,
     fastcallPortrait = 10734,
     catchStorage = 16100,
-    evolutions = { { name = "Electrode", requiredLevel = 35 } },
+    evolutions = { { name = "Electrode", requiredLevel = 30 } },
     description = "A life-form whose identity is unknown. It is said to SCREECH or suddenly SELFDESTRUCT.",
     skills = { "Tackle", 1, "Thunder Shock", 5, "Rollout", 10, "Spark", 15, "Swift", 20, "Secret Power", 25, "Selfdestruct", 30 },
     abilities = { "Flash", "Headbutt" },

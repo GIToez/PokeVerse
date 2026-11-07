@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<monster name="Dodrio" nameDescription="a Dodrio" shiny="Shiny Dodrio" race="blood" experience="12" speed="300" manacost="0" minLevel="45" maxLevel="55">
+<monster name="Dodrio" nameDescription="a Dodrio" shiny="Shiny Dodrio" race="blood" experience="12" speed="310" manacost="0" minLevel="45" maxLevel="55">
 	<health now="60" max="60"/>
 	<look type="436" head="0" body="0" legs="0" feet="0" corpse="11473"/>
 	<targetchange interval="5000" chance="8"/>

@@ -11,7 +11,7 @@ POKEMON["Grovyle"] = {
     dexPortrait = -1,
     fastcallPortrait = 27245,
     catchStorage = 16253,
-    evolutions = { { name = "Sceptile", requiredLevel = 55 } },
+    evolutions = { { name = "Sceptile", requiredLevel = 36 } },
     description = "Its strongly developed thigh muscles give it astounding agility and jumping performance.",
     skills = { "Tackle", 1, "Absorb", 5, "Quick Attack", 10, "Slam", 15, "Agility", 20, "Mega Drain", 25, "Energy Ball", 30, "Leaf Blade", 40, "X-Scissor", 45, "Leaf Storm", 50 },
     abilities = { "Cut", "Strenght", "Flash", "Rock Smash" },

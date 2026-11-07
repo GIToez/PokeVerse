@@ -11,7 +11,7 @@ POKEMON["Grimer"] = {
     dexPortrait = 13589,
     fastcallPortrait = 10722,
     catchStorage = 16088,
-    evolutions = { { name = "Muk", requiredLevel = 35 } },
+    evolutions = { { name = "Muk", requiredLevel = 38 } },
     description = "Sludge exposed to X rays from the moon transformed into GRIMER. It loves feeding on filthy things.",
     skills = { "Tackle", 1, "Pound", 5, "Sludge", 10, "Acid Armor", 15, "Poison Gas", 20, "Mud Bomb", 25, "Sludge Bomb", 30 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH },

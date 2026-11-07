@@ -11,7 +11,7 @@ POKEMON["Combee"] = {
     dexPortrait = 0,
     fastcallPortrait = 29034,
     catchStorage = -1,
-    evolutions = { { name = "Vespiquen", requiredLevel = 30 } },
+    evolutions = { { name = "Vespiquen", requiredLevel = 21 } },
     description = "The trio is together from birth. It constantly gathers honey from flowers to please VESPIQUEN.",
     skills = { "Gust", 1, "Struggle Bug", 5, "Bug Bite", 10, "Air Cutter", 15, "Lunge", 20, "Bug Buzz", 25 },
     abilities = {},

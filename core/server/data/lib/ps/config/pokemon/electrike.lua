@@ -11,7 +11,7 @@ POKEMON["Electrike"] = {
     dexPortrait = -1,
     fastcallPortrait = 27303,
     catchStorage = -1,
-    evolutions = { { name = "Manectric", requiredLevel = 30 } },
+    evolutions = { { name = "Manectric", requiredLevel = 26 } },
     description = "Using electricity stored in its fur, it stimulates its muscles to heighten its reaction speed.",
     skills = { "Tackle", 1, "Spark", 5, "Thunder Fang", 10, "Quick Attack", 15, "Wild Charge", 20, "Discharge", 25 },
     abilities = { "Strenght", "Flash", POKEMON_ABILITIES.FIND, POKEMON_ABILITIES.HEADBUTT },
