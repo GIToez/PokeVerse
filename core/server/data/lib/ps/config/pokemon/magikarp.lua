@@ -11,7 +11,7 @@ POKEMON["Magikarp"] = {
     dexPortrait = 13630,
     fastcallPortrait = 10763,
     catchStorage = 16129,
-    evolutions = { { name = "Gyarados", requiredLevel = 35, requiredItems = { ITEMS.WATER_STONE } } },
+    evolutions = { { name = "Gyarados", requiredLevel = 20 } },
     description = "It is virtually worthless in terms of both power and speed. It is the most weak and pathetic POKEMON in the world.",
     skills = { "Tackle", 1, "Splash", 5 },
     abilities = {},

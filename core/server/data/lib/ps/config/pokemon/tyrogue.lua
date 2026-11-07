@@ -11,7 +11,7 @@ POKEMON["Tyrogue"] = {
     dexPortrait = 15883,
     fastcallPortrait = 16083,
     catchStorage = 16236,
-    evolutions = { { name = "Hitmonlee", requiredLevel = 30, requiredItems = { ITEMS.KICK_MACHINE } }, { name = "Hitmonchan", requiredLevel = 30, requiredItems = { ITEMS.PUNCH_MACHINE } }, { name = "Hitmontop", requiredLevel = 30, requiredItems = { ITEMS.SPIN_MACHINE } } },
+    evolutions = { { name = "Hitmonlee", requiredLevel = 20, requiredItems = { ITEMS.KICK_MACHINE } }, { name = "Hitmonchan", requiredLevel = 20, requiredItems = { ITEMS.PUNCH_MACHINE } }, { name = "Hitmontop", requiredLevel = 20, requiredItems = { ITEMS.SPIN_MACHINE } } },
     description = "Even though it is small, it can't be ignored because it will slug any handy target without warning.",
     skills = { "Tackle", 1, "Bullet Punch", 5, "Pursuit", 10, "Low Kick", 15, "Hi Jump Kick", 20, "Counter", 25 },
     abilities = { POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },
