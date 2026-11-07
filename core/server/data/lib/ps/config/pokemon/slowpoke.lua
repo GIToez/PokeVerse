@@ -12,7 +12,7 @@ POKEMON["Slowpoke"] = {
     fastcallPortrait = 10713,
     catchStorage = 16079,
     evolutions = {
-        { name = "Slowbro", requiredLevel = 35, requiredItems = { ITEMS.WATER_STONE } },
+        { name = "Slowbro", requiredLevel = 37 },
         { name = "Slowking", requiredLevel = 35, requiredItems = { ITEMS.KINGS_ROCK } }
     },
     description = "It is always vacantly lost in thought, but no one knows what it is thinking about. It is good at fishing with its tail.",
