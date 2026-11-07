@@ -309,9 +309,16 @@ jobs:
   package:
     name: Packages and updater site
     needs: [linux, windows, android]
-    # a failed Linux build (its toolchain PPA goes down) does not hold back Windows and Android:
-    # the Linux package then keeps the engine of the last published release, with the new files
-    if: always() && needs.windows.result == 'success' && needs.android.result == 'success' && contains(fromJSON('["success", "failure"]'), needs.linux.result)
+    # a failed build (a download that times out, a toolchain PPA that goes down) does not hold back
+    # the others: as long as one platform built, the release goes out, and a platform whose build
+    # failed keeps the engine of the last published release (Windows exe, Linux binary, Android APK)
+    # with this release's files. Only engine (C++) changes wait for that platform's next good build.
+    if: >-
+      always() &&
+      contains(fromJSON('["success", "failure"]'), needs.linux.result) &&
+      contains(fromJSON('["success", "failure"]'), needs.windows.result) &&
+      contains(fromJSON('["success", "failure"]'), needs.android.result) &&
+      (needs.linux.result == 'success' || needs.windows.result == 'success' || needs.android.result == 'success')
     runs-on: ubuntu-24.04
     env:
       LIVE_HOST: ${{ vars.LIVE_SERVER_HOST || vars.OVH_HOST || '40.160.145.24' }}
@@ -340,14 +347,37 @@ jobs:
           echo "The Linux build failed: the Linux package keeps the engine of the last release, with this release's files" >> "$GITHUB_STEP_SUMMARY"
 
       - uses: actions/download-artifact@v4
+        if: needs.windows.result == 'success'
         with:
           name: redemption-windows-bin
           path: bin-windows
 
+      - name: Previous Windows engine
+        if: needs.windows.result != 'success'
+        run: |
+          mkdir -p bin-windows
+          curl -fsSL --retry 5 -o "$RUNNER_TEMP/windows-prev.zip" \
+            "https://github.com/$CLIENTS_REPO/releases/latest/download/PokeVerse-Windows.zip"
+          # the exe and its DLLs from the package's top folder (-W: * stays inside one folder)
+          unzip -q -W -j "$RUNNER_TEMP/windows-prev.zip" 'PokeVerse/*.exe' 'PokeVerse/*.dll' -d bin-windows || [ $? -eq 11 ]
+          [ -f bin-windows/PokeVerse.exe ] || { echo "::error::The last release has no PokeVerse.exe"; exit 1; }
+          echo "::warning::The Windows build failed, so the Windows package keeps the engine of the last release"
+          echo "The Windows build failed: the Windows package keeps the engine of the last release, with this release's files" >> "$GITHUB_STEP_SUMMARY"
+
       - uses: actions/download-artifact@v4
+        if: needs.android.result == 'success'
         with:
           name: redemption-android-apk
           path: bin-android
+
+      - name: Previous Android APK
+        if: needs.android.result != 'success'
+        run: |
+          mkdir -p bin-android
+          curl -fsSL --retry 5 -o bin-android/PokeVerse-Android.apk \
+            "https://github.com/$CLIENTS_REPO/releases/latest/download/PokeVerse-Android.apk"
+          echo "::warning::The Android build failed, so the Android package keeps the APK of the last release"
+          echo "The Android build failed: Android keeps the APK of the last release; phones still get this release's files from the updater" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Version
         id: version

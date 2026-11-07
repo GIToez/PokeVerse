@@ -62,6 +62,12 @@ the test builds never update.
    `gh-pages` branch and waits until it is served.
    Players get the update the next time they start the client.
 
+If one platform's build fails (a download that times out, a toolchain that goes down), the release
+still goes out as long as one platform built: the failed platform keeps the engine of the last
+published release (the Windows exe, the Linux binary, the Android APK) with this release's files,
+and the run summary says so. Engine (C++) changes for that platform wait for its next good build,
+so rerun the failed job or publish again once it builds.
+
 Pull requests that touch the client run the same build and packaging without publishing, so a broken
 package shows up before anyone publishes it. They also check that the manifests
 point at the PokeVerse-Clients site and releases, and that `PV_REPOS_TOKEN` can push to PokeVerse-Clients.
