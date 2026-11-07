@@ -2,6 +2,24 @@
 
 Project rules for agents working on PokeVerse (moved from `.cursor/rules/`).
 
+## Before changing anything
+
+- `references/` is read-only. Source in `core/`, compiled output in `builds/`, never mixed.
+- Merging to `main` changes nothing live. Shipping is manual: **Live server** → `deploy`, and
+  **Client release** → Publish (see README "Shipping to live"). Never run either without the owner's go-ahead.
+  The exception: pushes to `main` touching `website/` publish the website.
+- Most client work goes in `core/client-redemption/pokeverse-modern/` (modules, data, `patches/`).
+  Engine (C++) changes must be listed in `docs/engine-changes.md` in the same commit, and on
+  Android they only reach players with a new APK: don't make Lua depend on a new engine binding
+  without saying so.
+- Never change the login RSA key (`scripts/live/rsa-public.txt` / `POKEVERSE_RSA` in `compat.lua`)
+  or the Android signing key: every client would need reinstalling.
+- Keep database schemas and the client-server protocol compatible.
+- The repo is public: never commit secrets.
+- Tests: `scripts/test-server-linux.sh`, the in-game suite `scripts/testing/vocation-test-talkaction.lua`,
+  and the PR workflows (Live server rehearsal, Client release build).
+- Commit messages say what changed in plain words: "Area: what changed".
+
 
 ## Client modules: Redemption first
 
