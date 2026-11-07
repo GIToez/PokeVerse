@@ -12,11 +12,23 @@ on:
     paths:
       - website/**
       - core/client-redemption/pokeverse-modern/modules/game_minimap/map_labels.lua
+      # the Pokedex pages come from the game data (website/build.py): stats, evolutions, moves, wild levels
+      - core/server/data/lib/ps/config/**
+      - core/server/data/monster/Pokemons/**
+      - core/server/data/monster/Mega/**
+      - core/server/data/lib/ps/systems/097-megaEvolution.lua
+      - core/server/data/items/items.xml
       - .github/workflows/website.yml
   pull_request:
     paths:
       - website/**
       - core/client-redemption/pokeverse-modern/modules/game_minimap/map_labels.lua
+      # the Pokedex pages come from the game data (website/build.py): stats, evolutions, moves, wild levels
+      - core/server/data/lib/ps/config/**
+      - core/server/data/monster/Pokemons/**
+      - core/server/data/monster/Mega/**
+      - core/server/data/lib/ps/systems/097-megaEvolution.lua
+      - core/server/data/items/items.xml
       - .github/workflows/website.yml
   workflow_dispatch:
 
