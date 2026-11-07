@@ -11,7 +11,7 @@ POKEMON["Hoppip"] = {
     dexPortrait = 15834,
     fastcallPortrait = 16034,
     catchStorage = 16187,
-    evolutions = { { name = "Skiploom", requiredLevel = 35 } },
+    evolutions = { { name = "Skiploom", requiredLevel = 18 } },
     description = "Its body is so light, it must grip the ground firmly with its feet to keep from being blown away.",
     skills = { "Tackle", 1, "Leech Seed", 5, "Bullet Seed", 10, "Mega Drain", 15, "Poison Powder", 20, "Fairy Wind", 25, "Synthesis", 30 },
     abilities = { "Flash", "Headbutt" },

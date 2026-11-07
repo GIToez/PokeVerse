@@ -56,6 +56,9 @@ function doFastcallLink(playerUid, ballUid)
 	doItemSetAttribute(ballUid, 1000, newFastcallNumber)
 	doPlayerSendPokemonWindowAddPokemonIcon(playerUid, getPokemonFastcallPortraitId(pokemonName), newFastcallNumber,
         textColor, pokemonCurrentHpPercent)
+    if (EvolutionBadge) then -- 006 loads before 107; called at run time
+        EvolutionBadge.soon(playerUid) -- a ball joined the bar (or evolved): its ready-to-evolve badge
+    end
 end
 
 function getFastcallNumber(itemUid)

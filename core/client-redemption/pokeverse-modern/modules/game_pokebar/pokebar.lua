@@ -217,6 +217,7 @@ end
 -- held items (server PokemonHeldItem.onClientMessage): drop one on a Pokemon to give it, Alt+click
 -- or the menu to take it back; the icon in the corner shows what it holds
 local heldByNumber = {}
+local evolveByNumber = {} -- swap bar number -> { state = "ready"|"almost", to, need } (systems/107-evolutionBadge.lua)
 local refreshEvent
 
 local function sendHeld(data)
@@ -238,6 +239,20 @@ local function showHeld(slot)
     if held then
         tooltip = tooltip .. '\n\n' .. tr('Holding %s', held.text or held.name) .. '\n' .. tr('Alt+click to take it back')
     end
+    -- the ready-to-evolve badge: full when it can evolve now, faded when it still needs an item or the time of day
+    local evolve = evolveByNumber[slot.number]
+    if evolve and slot.evolve then
+        slot.evolve:setOpacity(evolve.state == 'ready' and 1 or 0.4)
+        slot.evolve:show()
+        if evolve.state == 'ready' then
+            tooltip = tooltip .. '\n\n' .. tr('Ready to evolve into %s!', evolve.to or '?') .. '\n' ..
+                tr('Call it out and use the evolve button.')
+        else
+            tooltip = tooltip .. '\n\n' .. tr('Level reached to evolve. Still needs:') .. '\n' .. (evolve.need or '')
+        end
+    elseif slot.evolve then
+        slot.evolve:hide()
+    end
     slot:setTooltip(tooltip)
 end
 
@@ -251,12 +266,21 @@ end
 
 local function onHeldMessage(protocol, opcode, buffer)
     local ok, data = pcall(json.decode, buffer)
-    if not ok or type(data) ~= 'table' or data.type ~= 'bar' then
+    if not ok or type(data) ~= 'table' then
         return
     end
-    heldByNumber = {}
-    for _, held in ipairs(data.items or {}) do
-        heldByNumber[tonumber(held.number)] = held
+    if data.type == 'evolve' then
+        evolveByNumber = {}
+        for _, evolve in ipairs(data.items or {}) do
+            evolveByNumber[tonumber(evolve.number)] = evolve
+        end
+    elseif data.type == 'bar' then
+        heldByNumber = {}
+        for _, held in ipairs(data.items or {}) do
+            heldByNumber[tonumber(held.number)] = held
+        end
+    else
+        return
     end
     for _, slot in ipairs(slots()) do
         showHeld(slot)
@@ -510,6 +534,7 @@ end
 
 function onOnline()
     heldByNumber = {}
+    evolveByNumber = {}
     order = nil
     hide()
     reset()

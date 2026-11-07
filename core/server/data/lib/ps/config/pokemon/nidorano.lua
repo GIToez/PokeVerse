@@ -11,7 +11,7 @@ POKEMON["Nidorano"] = {
     dexPortrait = 13533,
     fastcallPortrait = 10666,
     catchStorage = 16032,
-    evolutions = { { name = "Nidorino", requiredLevel = 30 } },
+    evolutions = { { name = "Nidorino", requiredLevel = 16 } },
     description = "Its large ears are flapped like wings when it is listening to distant sounds. It extends toxic barbs when angered.",
     skills = { "Tackle", 1, "Double Kick", 5, "Poison Sting", 10, "Fury Attack", 15, "Poison Jab", 20, "Acid", 25 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Headbutt" },

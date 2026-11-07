@@ -11,7 +11,7 @@ POKEMON["Shinx"] = {
     dexPortrait = 0,
     fastcallPortrait = 29022,
     catchStorage = -1,
-    evolutions = { { name = "Luxio", requiredLevel = 35 } },
+    evolutions = { { name = "Luxio", requiredLevel = 15 } },
     description = "The extension and contraction of its muscles generates electricity. It glows when in trouble.",
     skills = { "Tackle", 1, "Charge", 5, "Thunder Shock", 10, "Bite", 15, "Spark", 20, "Volt Switch", 25, "Crunch", 30 },
     abilities = { "Headbutt", "Flash", POKEMON_ABILITIES.STRENGTH },

@@ -11,7 +11,7 @@ POKEMON["Cherubi"] = {
     dexPortrait = 0,
     fastcallPortrait = 29039,
     catchStorage = -1,
-    evolutions = { { name = "Cherrim", requiredLevel = 35 } },
+    evolutions = { { name = "Cherrim", requiredLevel = 25 } },
     description = "The small ball is not only filled with nutrients, it is also tasty. STARLY try to peck it off.",
     skills = { "Tackle", 1, "Grass Knot", 5, "Leech Seed", 10, "Magical Leaf", 15, "Take Down", 20, "Petal Blizzard", 25, "Solar Beam", 30 },
     abilities = { "Flash" },

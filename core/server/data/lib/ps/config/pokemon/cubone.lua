@@ -11,7 +11,7 @@ POKEMON["Cubone"] = {
     dexPortrait = 13605,
     fastcallPortrait = 10738,
     catchStorage = 16104,
-    evolutions = { { name = "Marowak", requiredLevel = 35 } },
+    evolutions = { { name = "Marowak", requiredLevel = 28 } },
     description = "It wears the skull of its dead mother on its head. When it becomes lonesome, it is said to cry loudly.",
     skills = { "Tackle", 1, "Bone Club", 5, "Headbutt", 10, "Bonemerang", 15, "Rage", 20, "Bone Rush", 25, "Focus Energy", 30 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Headbutt", "Rock Smash" },

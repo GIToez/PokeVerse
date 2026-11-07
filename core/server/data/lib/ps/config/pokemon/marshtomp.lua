@@ -1,7 +1,7 @@
 POKEMON["Marshtomp"] = {
     pTypes = { ELEMENT_WATER, ELEMENT_GROUND },
     dexStorage = 10259,
-    atk = 80,
+    atk = 85,
     def = 70,
     spAtk = 60,
     spDef = 70,
@@ -11,7 +11,7 @@ POKEMON["Marshtomp"] = {
     dexPortrait = -1,
     fastcallPortrait = 27251,
     catchStorage = 16259,
-    evolutions = { { name = "Swampert", requiredLevel = 55 } },
+    evolutions = { { name = "Swampert", requiredLevel = 36 } },
     description = "Its sturdy legs give it sure footing, even in mud. It burrows into dirt to sleep.",
     skills = { "Tackle", 1, "Water Gun", 5, "Mud-Slap", 10, "Rock Throw", 15, "Take Down", 20, "Mud Shot", 25, "Waterfall", 30, "Muddy Water", 40, "Rock Slide", 45, "Earthquake", 50 },
     abilities = { "Surf", "Strenght", "Rock Smash", "Waterfall", "Dive" },

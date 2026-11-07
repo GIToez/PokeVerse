@@ -77,6 +77,7 @@ local ballsAttributes = {
     pokemonNature = base + 76,
     cardTag = base + 77, -- the Trainer Card favorite's tag, so it follows the ball through level-ups and evolutions
     timesCalled = base + 78, -- how often the Pokemon was sent out; the Trainer Card's default favorite is the most called
+    evolveAnnounced = base + 79, -- the evolution the trainer was last told about (systems/107-evolutionBadge.lua)
 }
 
 local SKETCH_MOVES_DELIMITER = ";"
@@ -1951,6 +1952,18 @@ end
 
 function getBallTimesCalled(uid)
     return math.max(0, tonumber(getItemAttribute(uid, ballsAttributes.timesCalled)) or 0)
+end
+
+function getBallEvolveAnnounced(uid)
+    return getItemAttribute(uid, ballsAttributes.evolveAnnounced)
+end
+
+function setBallEvolveAnnounced(uid, name)
+    if (name) then
+        doItemSetAttribute(uid, ballsAttributes.evolveAnnounced, name)
+    else
+        doItemEraseAttribute(uid, ballsAttributes.evolveAnnounced)
+    end
 end
 
 function addBallTimesCalled(uid)

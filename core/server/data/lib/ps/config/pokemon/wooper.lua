@@ -11,7 +11,7 @@ POKEMON["Wooper"] = {
     dexPortrait = 15841,
     fastcallPortrait = 16041,
     catchStorage = 16194,
-    evolutions = { { name = "Quagsire", requiredLevel = 35 } },
+    evolutions = { { name = "Quagsire", requiredLevel = 20 } },
     description = "When it walks around on the ground, it coats its body with a slimy, poisonous film.",
     skills = { "Tackle", 1, "Water Gun", 5, "Mud Shot", 10, "Slam", 15, "Mud Bomb", 20, "Amnesia", 25, "Earth Power", 30 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.WATERFALL, "Flash", "Surf", "Dive", "Headbutt" },

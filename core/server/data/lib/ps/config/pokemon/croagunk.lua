@@ -11,7 +11,7 @@ POKEMON["Croagunk"] = {
     dexPortrait = 0,
     fastcallPortrait = 29072,
     catchStorage = -1,
-    evolutions = { { name = "Toxicroak", requiredLevel = 40 } },
+    evolutions = { { name = "Toxicroak", requiredLevel = 37 } },
     description = "It rarely fights fairly, but that is strictly to ensure survival. It is popular as a mascot.",
     skills = { "Poison Sting", 1, "Flatter", 5, "Low Kick", 10, "Mud-Slap", 15, "Astonish", 20, "Venoshock", 25, "Sucker Punch", 30, "Poison Jab", 35 },
     abilities = { "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },

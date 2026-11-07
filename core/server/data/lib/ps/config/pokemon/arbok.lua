@@ -1,7 +1,7 @@
 POKEMON["Arbok"] = {
     pTypes = { ELEMENT_POISON },
     dexStorage = 10024,
-    atk = 85,
+    atk = 95,
     def = 69,
     spAtk = 65,
     spDef = 79,

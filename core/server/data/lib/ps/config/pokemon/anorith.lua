@@ -11,7 +11,7 @@ POKEMON["Anorith"] = {
     dexPortrait = -1,
     fastcallPortrait = 27340,
     catchStorage = -1,
-    evolutions = { { name = "Armaldo", requiredLevel = 30 } },
+    evolutions = { { name = "Armaldo", requiredLevel = 40 } },
     description = "It is a kind of Pokemon progenitor. It uses its extending claws to catch prey hiding among rocks on the seafloor.",
     skills = { "Tackle", 1, "Water Gun", 5, "Smack Down", 10, "Metal Claw", 15, "Ancient Power", 20, "Harden", 25 },
     abilities = { "Cut", "Rock Smash" },

@@ -11,7 +11,7 @@ POKEMON["Flaaffy"] = {
     dexPortrait = 15827,
     fastcallPortrait = 16027,
     catchStorage = 16180,
-    evolutions = { { name = "Ampharos", requiredLevel = 50 } },
+    evolutions = { { name = "Ampharos", requiredLevel = 30 } },
     description = "Its fluffy fleece easily stores electricity. Its rubbery hide keeps it from being electrocuted.",
     skills = { "Tackle", 1, "Thunder Shock", 5, "Take Down", 10, "Agility", 15, "Discharge", 20, "Charge", 25, "Electro Ball", 30, "Thunder Wave", 40, "Iron Tail", 45 },
     abilities = { POKEMON_ABILITIES.STRENGTH, "Flash", "Rock Smash", "Headbutt" },

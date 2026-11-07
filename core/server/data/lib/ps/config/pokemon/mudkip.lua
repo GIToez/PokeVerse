@@ -11,7 +11,7 @@ POKEMON["Mudkip"] = {
     dexPortrait = -1,
     fastcallPortrait = 27250,
     catchStorage = 16258,
-    evolutions = { { name = "Marshtomp", requiredLevel = 35 } },
+    evolutions = { { name = "Marshtomp", requiredLevel = 16 } },
     description = "Its large tail fin propels it through water with powerful acceleration. It is strong in spite of its size.",
     skills = { "Tackle", 1, "Water Gun", 5, "Mud-Slap", 10, "Rock Throw", 15, "Take Down", 20, "Mud Shot", 25, "Waterfall", 30 },
     abilities = { "Surf", "Strenght", "Rock Smash", "Waterfall", "Dive" },

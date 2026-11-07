@@ -11,7 +11,7 @@ POKEMON["Teddiursa"] = {
     dexPortrait = 15863,
     fastcallPortrait = 16063,
     catchStorage = 16216,
-    evolutions = { { name = "Ursaring", requiredLevel = 45 } },
+    evolutions = { { name = "Ursaring", requiredLevel = 30 } },
     description = "Before food becomes scarce in wintertime, its habit is to hoard food in many hidden locations.",
     skills = { "Tackle", 1, "Scratch", 5, "Lick", 10, "Fury Swipes", 15, "Slash", 20, "Charm", 25, "Rest", 30, "Metal Claw", 35, "Thrash", 40 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Find", "Cut", "Rock Smash", "Headbutt" },

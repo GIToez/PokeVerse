@@ -11,7 +11,7 @@ POKEMON["Doduo"] = {
     dexPortrait = 13585,
     fastcallPortrait = 10718,
     catchStorage = 16084,
-    evolutions = { { name = "Dodrio", requiredLevel = 40 } },
+    evolutions = { { name = "Dodrio", requiredLevel = 31 } },
     description = "A two-headed POKEMON that was discovered as a sudden mutation. It runs at a pace of over 60 miles per hour.",
     skills = { "Tackle", 1, "Peck", 5, "Quick Attack", 10, "Drill Peck", 15, "Fury Attack", 20, "Pursuit", 25, "Agility", 30, "Endeavor", 35 },
     abilities = { "Ride" },

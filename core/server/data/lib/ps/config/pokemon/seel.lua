@@ -11,7 +11,7 @@ POKEMON["Seel"] = {
     dexPortrait = 13587,
     fastcallPortrait = 10720,
     catchStorage = 16086,
-    evolutions = { { name = "Dewgong", requiredLevel = 40 } },
+    evolutions = { { name = "Dewgong", requiredLevel = 34 } },
     description = "Covered with light blue fur, its hide is thick and tough. It is active in bitter cold of minus 40 degrees Fahrenheit.",
     skills = { "Tackle", 1, "Headbutt", 5, "Icy Wind", 10, "Water Pulse", 15, "Rest", 20, "Aurora Beam", 25, "Ice Shard", 30, "Aqua Tail", 35 },
     abilities = { POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.WATERFALL, "Headbutt", "Rock Smash" },

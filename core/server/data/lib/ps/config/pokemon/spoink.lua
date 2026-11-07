@@ -11,7 +11,7 @@ POKEMON["Spoink"] = {
     dexPortrait = -1,
     fastcallPortrait = 27319,
     catchStorage = -1,
-    evolutions = { { name = "Grumpig", requiredLevel = 30 } },
+    evolutions = { { name = "Grumpig", requiredLevel = 32 } },
     description = "It bounces constantly, using its tail like a spring. The shock of bouncing keeps its heart beating.",
     skills = { "Tackle", 1, "Psywave", 5, "Psybeam", 10, "Zen Headbutt", 15, "Confuse Ray", 20, "Power Gem", 25 },
     abilities = { "Flash", POKEMON_ABILITIES.BLINK, POKEMON_ABILITIES.TELEPORT },

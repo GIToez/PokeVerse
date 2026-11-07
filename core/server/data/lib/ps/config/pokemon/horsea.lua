@@ -11,7 +11,7 @@ POKEMON["Horsea"] = {
     dexPortrait = 13617,
     fastcallPortrait = 10750,
     catchStorage = 16116,
-    evolutions = { { name = "Seadra", requiredLevel = 35 } },
+    evolutions = { { name = "Seadra", requiredLevel = 32 } },
     description = "It maintains balance using its tail, which is wound up like a coil. It may spray ink from its mouth.",
     skills = { "Tackle", 1, "Bubble", 5, "Water Gun", 10, "Bubblebeam", 15, "Smoke Screen", 20, "Twister", 25, "Agility", 30 },
     abilities = { POKEMON_ABILITIES.WATERFALL, "Headbutt" },

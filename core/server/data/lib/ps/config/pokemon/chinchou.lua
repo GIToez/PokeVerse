@@ -11,7 +11,7 @@ POKEMON["Chinchou"] = {
     dexPortrait = 15817,
     fastcallPortrait = 16017,
     catchStorage = 16170,
-    evolutions = { { name = "Lanturn", requiredLevel = 40 } },
+    evolutions = { { name = "Lanturn", requiredLevel = 27 } },
     description = "On the dark ocean floor, its only means of communication is its constantly flashing lights.",
     skills = { "Tackle", 1, "Bubble", 5, "Supersonic", 10, "Water Gun", 15, "Spark", 20, "Bubblebeam", 25, "Charge", 30, "Discharge", 35 },
     abilities = { POKEMON_ABILITIES.WATERFALL, "Flash" },

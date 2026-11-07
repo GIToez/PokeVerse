@@ -11,7 +11,7 @@ POKEMON["Venonat"] = {
     dexPortrait = 13549,
     fastcallPortrait = 10682,
     catchStorage = 16048,
-    evolutions = { { name = "Venomoth", requiredLevel = 40 } },
+    evolutions = { { name = "Venomoth", requiredLevel = 31 } },
     description = "Its eyes act as radar, enabling it to be active in darkness. The eyes can also shoot powerful beams.",
     skills = { "Tackle", 1, "Bug Bite", 5, "Confusion", 10, "Poison Powder", 15, "Leech Life", 20, "Poison Fang", 25, "Stun Spore", 30, "Sleep Powder", 35 },
     abilities = { "Find", "Flash" },

@@ -11,7 +11,7 @@ POKEMON["Squirtle"] = {
     dexPortrait = 13508,
     fastcallPortrait = 10641,
     catchStorage = 16007,
-    evolutions = { { name = "Wartortle", requiredLevel = 35 } },
+    evolutions = { { name = "Wartortle", requiredLevel = 16 } },
     description = "When it retracts its long neck into its shell, it squirts out water with vigorous force.",
     skills = { "Tackle", 1, "Bite", 5, "Bubble", 10, "Water Gun", 15, "Protect", 20, "Bubblebeam", 25, "Water Pulse", 30 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.WATERFALL, "Surf", "Dive", "Rock Smash", "Headbutt" },

@@ -11,7 +11,7 @@ POKEMON["Natu"] = {
     dexPortrait = 15824,
     fastcallPortrait = 16024,
     catchStorage = 16177,
-    evolutions = { { name = "Xatu", requiredLevel = 35 } },
+    evolutions = { { name = "Xatu", requiredLevel = 25 } },
     description = "It usually forages for food on the ground but may, on rare occasions, hop onto branches to peck at shoots.",
     skills = { "Tackle", 1, "Peck", 5, "Confuse Ray", 10, "Drill Peck", 15, "Ominous Wind", 20, "Psychic", 25, "Psycho Shift", 30 },
     abilities = { "Find", "Flash", "Blink", "Teleport" },

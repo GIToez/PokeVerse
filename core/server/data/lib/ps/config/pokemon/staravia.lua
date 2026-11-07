@@ -11,7 +11,7 @@ POKEMON["Staravia"] = {
     dexPortrait = 0,
     fastcallPortrait = 29016,
     catchStorage = -1,
-    evolutions = { { name = "Staraptor", requiredLevel = 50 } },
+    evolutions = { { name = "Staraptor", requiredLevel = 34 } },
     description = "Recognizing their own weakness, they always live in a group. When alone, a STARAVIA cries noisily.",
     skills = { "Tackle", 1, "Growl", 5, "Endeavor", 10, "Quick Attack", 15, "Wing Attack", 20, "Aerial Ace", 25, "Take Down", 30, "Brave Bird", 40, "Agility", 45 },
     abilities = {},

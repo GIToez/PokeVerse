@@ -11,7 +11,7 @@ POKEMON["Wartortle"] = {
     dexPortrait = 13509,
     fastcallPortrait = 10642,
     catchStorage = 16008,
-    evolutions = { { name = "Blastoise", requiredLevel = 55 } },
+    evolutions = { { name = "Blastoise", requiredLevel = 36 } },
     description = "This POKEMON is very popular as a pet. Its fur-covered tail is a symbol of its longevity.",
     skills = { "Tackle", 1, "Bite", 5, "Bubble", 10, "Water Gun", 15, "Protect", 20, "Bubblebeam", 25, "Water Pulse", 30, "Rapid Spin", 40, "Aqua Tail", 45, "Hydro Pump", 50 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.WATERFALL, "Surf", "Dive", "Rock Smash", "Headbutt" },

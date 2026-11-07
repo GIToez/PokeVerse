@@ -11,7 +11,7 @@ POKEMON["Swablu"] = {
     dexPortrait = -1,
     fastcallPortrait = 27326,
     catchStorage = -1,
-    evolutions = { { name = "Altaria", requiredLevel = 30 } },
+    evolutions = { { name = "Altaria", requiredLevel = 35 } },
     description = "For some reason, it likes to land on people's heads softly and act like it's a hat.",
     skills = { "Tackle", 1, "Peck", 5, "Astonish", 10, "Disarming Voice", 15, "Sing", 20, "Dragon Pulse", 25 },
     abilities = { "Fly" },

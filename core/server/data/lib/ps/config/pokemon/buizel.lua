@@ -11,7 +11,7 @@ POKEMON["Buizel"] = {
     dexPortrait = 0,
     fastcallPortrait = 29037,
     catchStorage = -1,
-    evolutions = { { name = "Floatzel", requiredLevel = 35 } },
+    evolutions = { { name = "Floatzel", requiredLevel = 26 } },
     description = "It spins its two tails like a screw to propel itself through water. The tails also slice clinging seaweed.",
     skills = { "Tackle", 1, "Growl", 5, "Quick Attack", 10, "Water Gun", 15, "Aqua Jet", 20, "Bite", 25, "Swift", 30 },
     abilities = { "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },

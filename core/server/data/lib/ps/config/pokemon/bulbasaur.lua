@@ -11,7 +11,7 @@ POKEMON["Bulbasaur"] = {
     dexPortrait = 13502,
     fastcallPortrait = 10635,
     catchStorage = 16001,
-    evolutions = { { name = "Ivysaur", requiredLevel = 35 } },
+    evolutions = { { name = "Ivysaur", requiredLevel = 16 } },
     description = "There is a plant seed on its back right from the day this POKEMON is born. The seed slowly grows larger.",
     skills = { "Tackle", 1, "Headbutt", 5, "Razor Leaf", 10, "Vine Whip", 15, "Leech Seed", 20, "Poison Powder", 25, "Sleep Powder", 30 },
     abilities = { POKEMON_ABILITIES.STRENGTH, "Cut", "Headbutt" },

@@ -11,7 +11,7 @@ POKEMON["Grotle"] = {
     dexPortrait = 0,
     fastcallPortrait = 29007,
     catchStorage = -1,
-    evolutions = { { name = "Torterra", requiredLevel = 55 } },
+    evolutions = { { name = "Torterra", requiredLevel = 32 } },
     description = "It knows where pure water wells up. It carries fellow POKEMON there on its back.",
     skills = { "Tackle", 1, "Curse", 5, "Absorb", 10, "Mega Drain", 15, "Razor Leaf", 20, "Bite", 25, "Crunch", 30, "Giga Drain", 40, "Leech Seed", 45, "Leaf Storm", 50 },
     abilities = { "Cut", "Rock Smash", "Headbutt", "Flash", POKEMON_ABILITIES.STRENGTH },

@@ -11,7 +11,7 @@ POKEMON["Machop"] = {
     dexPortrait = 13567,
     fastcallPortrait = 10700,
     catchStorage = 16066,
-    evolutions = { { name = "Machoke", requiredLevel = 30 } },
+    evolutions = { { name = "Machoke", requiredLevel = 28 } },
     description = "Its whole body is composed of muscles. Even though it's the size of a human child, it can hurl 100 grown-ups.",
     skills = { "Tackle", 1, "Low Kick", 5, "Karate Chop", 10, "Seismic Toss", 15, "Cross Chop", 20, "Scary Face", 25 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },

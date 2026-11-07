@@ -1,7 +1,7 @@
 POKEMON["Swampert"] = {
     pTypes = { ELEMENT_WATER, ELEMENT_GROUND },
     dexStorage = 10260,
-    atk = 100,
+    atk = 110,
     def = 90,
     spAtk = 85,
     spDef = 90,

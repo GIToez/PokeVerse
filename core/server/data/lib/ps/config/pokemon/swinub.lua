@@ -11,7 +11,7 @@ POKEMON["Swinub"] = {
     dexPortrait = 15867,
     fastcallPortrait = 16067,
     catchStorage = 16220,
-    evolutions = { { name = "Piloswine", requiredLevel = 40 } },
+    evolutions = { { name = "Piloswine", requiredLevel = 33 } },
     description = "If it smells something enticing, it dashes headlong off to find the source of the aroma.",
     skills = { "Tackle", 1, "Mud-Slap", 5, "Ice Shard", 10, "Powder Snow", 15, "Mud Bomb", 20, "Icy Wind", 25, "Take Down", 30, "Earthquake", 35 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },

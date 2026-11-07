@@ -11,7 +11,7 @@ POKEMON["Geodude"] = {
     dexPortrait = 13575,
     fastcallPortrait = 10708,
     catchStorage = 16074,
-    evolutions = { { name = "Graveler", requiredLevel = 30 } },
+    evolutions = { { name = "Graveler", requiredLevel = 25 } },
     description = "Its round form makes it easy to pick up. Some people have used them to hurl at each other in a snowball fight.",
     skills = { "Tackle", 1, "Rock Throw", 5, "Defense Curl", 10, "Magnitude", 15, "Rock Blast", 20, "Selfdestruct", 25 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },

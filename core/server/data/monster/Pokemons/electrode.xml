@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<monster name="Electrode" nameDescription="an Electrode" shiny="Shiny Electrode" race="blood" experience="12" speed="340" manacost="0" minLevel="40" maxLevel="50" sex="2">
+<monster name="Electrode" nameDescription="an Electrode" shiny="Shiny Electrode" race="blood" experience="12" speed="350" manacost="0" minLevel="40" maxLevel="50" sex="2">
 	<health now="60" max="60"/>
 	<look type="452" head="0" body="0" legs="0" feet="0" corpse="11489"/>
 	<targetchange interval="5000" chance="8"/>

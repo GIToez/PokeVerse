@@ -208,6 +208,7 @@ function onLogin(cid)
 		TrainerCard.onLogin(cid)
 		Admin.onLogin(cid)
 		Quests.onLogin(cid)
+		EvolutionBadge.onLogin(cid)
 		addEvent(GTS.onLogin, 3000, cid)
 
 	elseif(accountManager == MANAGER_NAMELOCK) then

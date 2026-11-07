@@ -11,7 +11,7 @@ POKEMON["Vigoroth"] = {
     dexPortrait = -1,
     fastcallPortrait = 27281,
     catchStorage = -1,
-    evolutions = { { name = "Slaking", requiredLevel = 50 } },
+    evolutions = { { name = "Slaking", requiredLevel = 36 } },
     description = "Its heartbeat is fast and its blood so agitated that it can't sit still for one second.",
     skills = { "Tackle", 1, "Scratch", 5, "Faint Attack", 10, "Covet", 15, "Chip Away", 20, "Yawn", 25, "Play Rough", 35, "Slash", 40, "Focus Punch", 45 },
     abilities = { "Cut", "Strenght", "Rock Smash" },

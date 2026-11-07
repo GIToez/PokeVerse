@@ -11,7 +11,7 @@ POKEMON["Ponyta"] = {
     dexPortrait = 13578,
     fastcallPortrait = 10711,
     catchStorage = 16077,
-    evolutions = { { name = "Rapidash", requiredLevel = 35 } },
+    evolutions = { { name = "Rapidash", requiredLevel = 40 } },
     description = "Its body is light, and its legs are incredibly powerful. It can clear Ayers Rock in one leap.",
     skills = { "Tackle", 1, "Ember", 5, "Flame Wheel", 10, "Stomp", 15, "Fire Spin", 20, "Take Down", 25, "Agility", 30 },
     abilities = { POKEMON_ABILITIES.STRENGTH, "Ride", "Headbutt" },

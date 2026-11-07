@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <monster name="Azurill" nameDescription="an Azurill" race="blood" experience="5" speed="220" manacost="0" minLevel="1" maxLevel="10">
-	<health now="30" max="30"/>
+	<health now="50" max="50"/>
 	<look type="1477" corpse="28781"/>
 	<targetchange interval="5000" chance="8"/>
 	<strategy attack="100" defense="0"/>

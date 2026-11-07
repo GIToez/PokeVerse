@@ -11,7 +11,7 @@ POKEMON["Cyndaquil"] = {
     dexPortrait = 15802,
     fastcallPortrait = 16002,
     catchStorage = 16155,
-    evolutions = { { name = "Quilava", requiredLevel = 35 } },
+    evolutions = { { name = "Quilava", requiredLevel = 14 } },
     description = "It usually stays hunched over. If it is angry or surprised, it shoots flames out of its back.",
     skills = { "Tackle", 1, "Ember", 5, "Quick Attack", 10, "Flame Wheel", 15, "Smoke Screen", 20, "Swift", 25, "Flamethrower", 30 },
     abilities = { POKEMON_ABILITIES.DIG, "Cut", "Headbutt" },

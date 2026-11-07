@@ -11,7 +11,7 @@ POKEMON["Cranidos"] = {
     dexPortrait = 0,
     fastcallPortrait = 29027,
     catchStorage = -1,
-    evolutions = { { name = "Rampardos", requiredLevel = 35 } },
+    evolutions = { { name = "Rampardos", requiredLevel = 30 } },
     description = "A lifelong jungle dweller from 100 million years ago, it would snap obstructing trees with head butts.",
     skills = { "Headbutt", 1, "Focus Energy", 5, "Assurance", 10, "Ancient Power", 15, "Slam", 20, "Zen Headbutt", 25, "Take Down", 30 },
     abilities = { "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },

@@ -11,7 +11,7 @@ POKEMON["Gabite"] = {
     dexPortrait = 0,
     fastcallPortrait = 29063,
     catchStorage = -1,
-    evolutions = { { name = "Garchomp", requiredLevel = 60 } },
+    evolutions = { { name = "Garchomp", requiredLevel = 48 } },
     description = "It loves sparkly things. It seeks treasures in caves and hoards the loot in its nest.",
     skills = { "Tackle", 1, "Sand-Attack", 5, "Sand Tomb", 10, "Dragon Breath", 15, "Bulldoze", 20, "Bite", 25, "Slash", 30, "Dragon Claw", 35, "Dig", 45, "Take Down", 50, "Sandstorm", 55 },
     abilities = { "Cut", "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },

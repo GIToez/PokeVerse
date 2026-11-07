@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <monster name="Slakoth" nameDescription="a Slakoth" race="blood" experience="5" speed="230" manacost="0" minLevel="20" maxLevel="30">
-	<health now="30" max="30"/>
+	<health now="60" max="60"/>
 	<look type="1466" corpse="28770"/>
 	<targetchange interval="5000" chance="8"/>
 	<strategy attack="100" defense="0"/>

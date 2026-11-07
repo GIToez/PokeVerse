@@ -11,7 +11,7 @@ POKEMON["Cascoon"] = {
     dexPortrait = -1,
     fastcallPortrait = 27260,
     catchStorage = -1,
-    evolutions = { { name = "Dustox", requiredLevel = 25 } },
+    evolutions = { { name = "Dustox", requiredLevel = 10 } },
     description = "Its body, which is made of soft silk, hardens over time. When cracks appear, evolution is near.",
     skills = { "Tackle", 1, "Poison Sting", 5, "String Shot", 7, "Bug Bite", 10, "Harden", 20 },
     abilities = {  },

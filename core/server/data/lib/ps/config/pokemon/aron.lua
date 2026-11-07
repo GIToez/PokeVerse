@@ -11,7 +11,7 @@ POKEMON["Aron"] = {
     dexPortrait = -1,
     fastcallPortrait = 27297,
     catchStorage = -1,
-    evolutions = { { name = "Lairon", requiredLevel = 30 } },
+    evolutions = { { name = "Lairon", requiredLevel = 32 } },
     description = "It usually lives deep in mountains. However, hunger may drive it to eat railroad tracks and cars.",
     skills = { "Tackle", 1, "Headbutt", 5, "Mud-Slap", 10, "Metal Claw", 15, "Rock Tomb", 20, "Rock Slide", 25 },
     abilities = { "Cut", "Strenght", "Rock Smash", POKEMON_ABILITIES.HEADBUTT },
