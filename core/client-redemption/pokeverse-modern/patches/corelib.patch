@@ -467,7 +467,7 @@ diff -ruN pristine/modules/corelib/keyboard.lua modules/corelib/keyboard.lua
 diff -ruN pristine/modules/corelib/ui/tooltip.lua modules/corelib/ui/tooltip.lua
 --- a/modules/corelib/ui/tooltip.lua
 +++ b/modules/corelib/ui/tooltip.lua
-@@ -4,6 +4,13 @@
+@@ -4,16 +4,27 @@
  -- private variables
  local toolTipLabel
  local SpecialToolTipLabel
@@ -481,7 +481,13 @@ diff -ruN pristine/modules/corelib/ui/tooltip.lua modules/corelib/ui/tooltip.lua
  local currentHoveredWidget
  
  -- private functions
-@@ -13,7 +20,7 @@
+ local function moveToolTip(first)
++    -- PokeVerse: the label is gone once the client closes; a mouse move then still came here
++    if not toolTipLabel or toolTipLabel:isDestroyed() then
++        return
++    end
+     if not first and (not toolTipLabel:isVisible() or toolTipLabel:getOpacity() < 0.1) then
+         return
      end
  
      local pos = g_window.getMousePosition()
@@ -490,7 +496,15 @@ diff -ruN pristine/modules/corelib/ui/tooltip.lua modules/corelib/ui/tooltip.lua
      local labelSize = toolTipLabel:getSize()
  
      pos.x = pos.x + 1
-@@ -39,7 +46,7 @@
+@@ -34,12 +45,15 @@
+     toolTipLabel:setPosition(pos)
+ end
+ local function moveSpecialToolTip(first)
++    if not SpecialToolTipLabel or SpecialToolTipLabel:isDestroyed() then
++        return
++    end
+     if not first and (not SpecialToolTipLabel:isVisible() or SpecialToolTipLabel:getOpacity() < 0.1) then
+         return
      end
  
      local pos = g_window.getMousePosition()
@@ -499,7 +513,7 @@ diff -ruN pristine/modules/corelib/ui/tooltip.lua modules/corelib/ui/tooltip.lua
      local labelSize = SpecialToolTipLabel:getSize()
  
      pos.x = pos.x + 1
-@@ -72,7 +79,69 @@
+@@ -72,7 +86,69 @@
      end
  end
  
@@ -569,7 +583,7 @@ diff -ruN pristine/modules/corelib/ui/tooltip.lua modules/corelib/ui/tooltip.lua
      if hovered then
          if widget.tooltip and not g_mouse.isPressed() then
              g_tooltip.display(widget.tooltip)
-@@ -142,23 +211,24 @@
+@@ -142,23 +218,24 @@
      addEvent(function()
          toolTipLabel = g_ui.createWidget('UILabel', rootWidget)
          toolTipLabel:setId('toolTip')
@@ -601,7 +615,27 @@ diff -ruN pristine/modules/corelib/ui/tooltip.lua modules/corelib/ui/tooltip.lua
          SpecialToolTipLabel:hide()
          SpecialToolTipLabel:setPhantom(true)
      end)
-@@ -198,7 +268,7 @@
+@@ -171,9 +248,17 @@
+         onDestroy = onWidgetDestroy
+     })
+ 
++    -- PokeVerse: a tooltip up while the client closes left these following the mouse into a destroyed label
++    disconnect(rootWidget, { onMouseMove = moveToolTip })
++    disconnect(rootWidget, { onMouseMove = moveSpecialToolTip })
++    removeEvent(touchEvent)
++    touchEvent = nil
++
+     currentHoveredWidget = nil
+-    toolTipLabel:destroy()
+-    toolTipLabel = nil
++    if toolTipLabel then
++        toolTipLabel:destroy()
++        toolTipLabel = nil
++    end
+ 
+     g_tooltip = nil
+ end
+@@ -198,7 +283,7 @@
  
      toolTipLabel:setText(text)
      toolTipLabel:resizeToText()
@@ -610,7 +644,7 @@ diff -ruN pristine/modules/corelib/ui/tooltip.lua modules/corelib/ui/tooltip.lua
      toolTipLabel:show()
      toolTipLabel:raise()
      toolTipLabel:enable()
-@@ -220,7 +290,7 @@
+@@ -220,7 +305,7 @@
  
      toolTipLabel:parseColoredText(text)
      toolTipLabel:resizeToText()
@@ -619,7 +653,7 @@ diff -ruN pristine/modules/corelib/ui/tooltip.lua modules/corelib/ui/tooltip.lua
      toolTipLabel:show()
      toolTipLabel:raise()
      toolTipLabel:enable()
-@@ -237,8 +307,8 @@
+@@ -237,8 +322,8 @@
          return
      end
  
@@ -630,7 +664,7 @@ diff -ruN pristine/modules/corelib/ui/tooltip.lua modules/corelib/ui/tooltip.lua
      SpecialToolTipLabel:destroyChildren()
      for index, data in ipairs(special) do
          local headerW = 0
-@@ -253,9 +323,9 @@
+@@ -253,9 +338,9 @@
              header:addAnchor(AnchorLeft, 'parent', AnchorLeft)
              header:setText(data.header)
              header:setTextAlign(AlignLeft)
@@ -643,7 +677,7 @@ diff -ruN pristine/modules/corelib/ui/tooltip.lua modules/corelib/ui/tooltip.lua
              header:resizeToText()
              header:resize(header:getWidth(), header:getHeight())
              headerW = header:getWidth()
-@@ -271,8 +341,8 @@
+@@ -271,8 +356,8 @@
          info:addAnchor(AnchorLeft, 'parent', AnchorLeft)
          info:setText(data.info:wrap(445))
          info:setTextAlign(AlignLeft)
