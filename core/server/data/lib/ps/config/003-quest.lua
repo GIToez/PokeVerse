@@ -5052,7 +5052,7 @@ QUESTS_CONFIG = {
             rewardItems = { { type = REWARD_TYPE.POKEMON, name = "Bellsprout", level = 10, unique = true } },
             rewardExp = 0,
             requiredLevel = 0,
-            onStart = function(cid) doPlayerSafeAddItem(cid, 12157, 10, true, true) end
+            onStart = function(cid) doPlayerSafeAddItem(cid, 12157, 10, true) end
         },
         {
             storage = 8362,
@@ -6956,7 +6956,7 @@ QUESTS_CONFIG = {
             questType = QUEST_TYPE.DEFEAT_POKEMON,
             questRequest = { "Magikarp", 5 },
             canStart = function(cid) return getCreatureStorage(cid, 8498) == QUEST_STATUS.FINISHED end,
-            rewardItems = { { type = REWARD_TYPE.ITEM, id = 2687, count = 50, unique = true } }, -- cookie
+            rewardItems = { { type = REWARD_TYPE.ITEM, id = 2687, count = 50 } }, -- cookie
             onStart = function(cid)
                 local ball = doCreatePokemonBall(cid, "poke", "Oddish", 10, nil, "Jofrey's Oddish", 0, cid, false,
                     nil, nil, nil, nil, nil, nil, nil, nil, false)
