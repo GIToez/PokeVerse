@@ -1523,7 +1523,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.CATERPIE] = {
         experience = 0,
         points = 1,
         items = {
-            {itemid = 12244, count = 10, unique = true} -- pokemon health potion
+            {itemid = 12244, count = 10, unique = nil} -- pokemon health potion
         }
     }
 }
@@ -1540,7 +1540,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.RATTATA] = {
         experience = 0,
         points = 1,
         items = {
-            {itemid = 12157, count = 15, unique = true} -- empty poke ball
+            {itemid = 12157, count = 15, unique = nil} -- empty poke ball
         }
     }
 }
@@ -1557,7 +1557,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.EKANS] = {
         experience = 0,
         points = 2,
         items = {
-            {itemid = 12161, count = 15, unique = true} -- empty great ball
+            {itemid = 12161, count = 15, unique = nil} -- empty great ball
         }
     }
 }
@@ -1574,7 +1574,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.PIDGEY] = {
         experience = 0,
         points = 2,
         items = {
-            {itemid = 12244, count = 15, unique = true} -- pokemon health potion
+            {itemid = 12244, count = 15, unique = nil} -- pokemon health potion
         }
     }
 }
@@ -1591,8 +1591,8 @@ RangerClub.TASKS[RangerClub.TASK_IDS.SANDSHREW] = {
         experience = 0,
         points = 2,
         items = {
-            {itemid = 2687, count = 30, unique = true}, -- cookie
-            {itemid = 12249, count = 5, unique = true}, -- pokemon antidote
+            {itemid = 2687, count = 30, unique = nil}, -- cookie
+            {itemid = 12249, count = 5, unique = nil}, -- pokemon antidote
         }
     }
 }
@@ -1609,7 +1609,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.CLEFAIRY] = {
         experience = 0,
         points = 3,
         items = {
-            {itemid = 12157, count = 20, unique = true} -- empty poke ball
+            {itemid = 12157, count = 20, unique = nil} -- empty poke ball
         }
     }
 }
@@ -1626,7 +1626,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.MEOWTH] = {
         experience = 0,
         points = 3,
         items = {
-            {itemid = 12161, count = 10, unique = true} -- empty great ball
+            {itemid = 12161, count = 10, unique = nil} -- empty great ball
         }
     }
 }
@@ -1660,7 +1660,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.PONYTA] = {
         experience = 0,
         points = 3,
         items = {
-            {itemid = 12244, count = 10, unique = true} -- pokemon health potion
+            {itemid = 12244, count = 10, unique = nil} -- pokemon health potion
         }
     }
 }
@@ -1678,7 +1678,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.CUBONE] = {
         points = 4,
         items = {
             {itemid = 2152, count = 3, unique = nil}, -- note of hundred dollars
-            {itemid = 2687, count = 20, unique = true}, -- cookie
+            {itemid = 2687, count = 20, unique = nil}, -- cookie
         }
     }
 }
@@ -1746,7 +1746,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.SEEL] = {
         experience = 0,
         points = 5,
         items = {
-            {itemid = 12161, count = 10, unique = true} -- empty great ball
+            {itemid = 12161, count = 10, unique = nil} -- empty great ball
         }
     }
 }
@@ -1780,7 +1780,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.GROWLITHE] = {
         experience = 0,
         points = 15,
         items = {
-            {itemid = 12161, count = 20, unique = true}, -- empty great ball
+            {itemid = 12161, count = 20, unique = nil}, -- empty great ball
         }
     }
 }
@@ -1797,7 +1797,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.BEEDRILL] = {
         experience = 0,
         points = 15,
         items = {
-            {itemid = 13653, count = 10, unique = true}, -- energy potion
+            {itemid = 13653, count = 10, unique = nil}, -- energy potion
         }
     }
 }
@@ -1814,7 +1814,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.BUTTERFREE] = {
         experience = 0,
         points = 15,
         items = {
-            {itemid = 13182, count = 5, unique = true}, -- cheri berry
+            {itemid = 13182, count = 5, unique = nil}, -- cheri berry
         }
     }
 }
@@ -1831,7 +1831,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.ARBOK] = {
         experience = 0,
         points = 16,
         items = {
-            {itemid = 12165, count = 10, unique = true}, -- empty ultra ball
+            {itemid = 12165, count = 10, unique = nil}, -- empty ultra ball
         }
     }
 }
@@ -1848,7 +1848,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.CLEFABLE] = {
         experience = 0,
         points = 16,
         items = {
-            {itemid = 12165, count = 10, unique = true}, -- empty ultra ball
+            {itemid = 12165, count = 10, unique = nil}, -- empty ultra ball
         }
     }
 }
@@ -1865,7 +1865,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.GOLBAT] = {
         experience = 0,
         points = 16,
         items = {
-            {itemid = 2675, count = 10, unique = true}, -- orange
+            {itemid = 2675, count = 10, unique = nil}, -- orange
         }
     }
 }
@@ -1882,7 +1882,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.WEEPINBELL] = {
         experience = 0,
         points = 16,
         items = {
-            {itemid = 13183, count = 5, unique = true}, -- chesto berry
+            {itemid = 13183, count = 5, unique = nil}, -- chesto berry
         }
     }
 }
@@ -1899,7 +1899,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.GRAVELER] = {
         experience = 0,
         points = 17,
         items = {
-            {itemid = 12248, count = 5, unique = true}, -- pokemon revive
+            {itemid = 12248, count = 5, unique = nil}, -- pokemon revive
         }
     }
 }
@@ -1916,7 +1916,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.MAGNETON] = {
         experience = 0,
         points = 17,
         items = {
-            {itemid = 12161, count = 30, unique = true}, -- empty great ball
+            {itemid = 12161, count = 30, unique = nil}, -- empty great ball
         }
     }
 }
@@ -1933,7 +1933,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.HAUNTER] = {
         experience = 0,
         points = 17,
         items = {
-            {itemid = 13184, count = 10, unique = true}, -- pecha berry
+            {itemid = 13184, count = 10, unique = nil}, -- pecha berry
         }
     }
 }
@@ -1950,7 +1950,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.WEEZING] = {
         experience = 0,
         points = 17,
         items = {
-            {itemid = 13653, count = 10, unique = true}, -- energy potion
+            {itemid = 13653, count = 10, unique = nil}, -- energy potion
         }
     }
 }
@@ -1967,7 +1967,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.TANGELA] = {
         experience = 0,
         points = 18,
         items = {
-            {itemid = 13186, count = 5, unique = true}, -- leppa berry
+            {itemid = 13186, count = 5, unique = nil}, -- leppa berry
         }
     }
 }
@@ -1984,7 +1984,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.RHYHORN] = {
         experience = 0,
         points = 18,
         items = {
-            {itemid = 12165, count = 10, unique = true}, -- empty ultra ball
+            {itemid = 12165, count = 10, unique = nil}, -- empty ultra ball
         }
     }
 }
@@ -2001,7 +2001,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.SEADRA] = {
         experience = 0,
         points = 18,
         items = {
-            {itemid = 14766, count = 5, unique = true}, -- aspear berry
+            {itemid = 14766, count = 5, unique = nil}, -- aspear berry
         }
     }
 }
@@ -2018,7 +2018,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.WIGGLYTUFF] = {
         experience = 0,
         points = 18,
         items = {
-            {itemid = 14767, count = 5, unique = true}, -- oran berry
+            {itemid = 14767, count = 5, unique = nil}, -- oran berry
         }
     }
 }
@@ -2051,7 +2051,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.FEAROW] = {
         experience = 0,
         points = 30,
         items = {
-            {itemid = 12165, count = 20, unique = true}, -- empty ultra ball
+            {itemid = 12165, count = 20, unique = nil}, -- empty ultra ball
         }
     }
 }
@@ -2084,7 +2084,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.SANDSLASH] = {
         experience = 0,
         points = 30,
         items = {
-            {itemid = 2675, count = 20, unique = true}, -- orange
+            {itemid = 2675, count = 20, unique = nil}, -- orange
         }
     }
 }
@@ -2149,7 +2149,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.GOLDUCK] = {
         experience = 0,
         points = 30,
         items = {
-            {itemid = 12248, count = 5, unique = true}, -- pokemon revive
+            {itemid = 12248, count = 5, unique = nil}, -- pokemon revive
         }
     }
 }
@@ -2182,7 +2182,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.GOLEM] = {
         experience = 0,
         points = 30,
         items = {
-            {itemid = 18628, count = 10, unique = true}, -- empty coloured ball
+            {itemid = 18628, count = 10, unique = nil}, -- empty coloured ball
         }
     }
 }
@@ -2247,7 +2247,7 @@ RangerClub.TASKS[RangerClub.TASK_IDS.RAPIDASH] = {
         experience = 0,
         points = 30,
         items = {
-            {itemid = 13305, count = 15, unique = true}, -- lava cookie
+            {itemid = 13305, count = 15, unique = nil}, -- lava cookie
         }
     }
 }
