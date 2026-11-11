@@ -13,7 +13,7 @@ POKEMON["Chansey"] = {
     catchStorage = 16113,
     evolutions = { { name = "Blissey", requiredLevel = 50, requiredItems = { ITEMS.SOOTHE_BELL } } },
     description = "It lays several eggs a day. The eggs are apparently rich in nutrients and extremely delicious.",
-    skills = { "Tackle", 1, "Double-Edge", 1, "Defense Curl", 1, "Pound", 1, "Growl", 1, "Refresh", 9, "Double Slap", 12, "Softboiled", 16, "Take Down", 27, "Sing", 31, "Heal Pulse", 39, "Egg Bomb", 44, "Light Screen", 50, "Healing Wish", 57 },
+    skills = { "Tackle", 1, "Double-Edge", 1, "Defense Curl", 1, "Charm", 1, "Pound", 1, "Growl", 1, "Copycat", 5, "Refresh", 9, "Double Slap", 12, "Sweet Kiss", 12, "Softboiled", 16, "Take Down", 27, "Sing", 31, "Heal Pulse", 39, "Egg Bomb", 44, "Light Screen", 50, "Healing Wish", 57 },
     abilities = { POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Flash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FAIRY },
     eggId = 30962,

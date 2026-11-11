@@ -13,7 +13,7 @@ POKEMON["Pikachu"] = {
     catchStorage = 16025,
     evolutions = { { name = "Raichu", requiredLevel = 35, requiredItems = { ITEMS.THUNDERSTONE } } },
     description = "It has small electric sacs on both its cheeks. If threatened, it looses electric charges from the sacs.",
-    skills = { "Tackle", 1, "Thunder Shock", 1, "Growl", 5, "Quick Attack", 10, "Electro Ball", 13, "Thunder Wave", 18, "Feint", 21, "Double Team", 23, "Spark", 26, "Nuzzle", 29, "Discharge", 34, "Slam", 37, "Thunderbolt", 42, "Agility", 45, "Wild Charge", 50, "Light Screen", 53, "Thunder", 58 },
+    skills = { "Tackle", 1, "Thunder Shock", 1, "Charm", 1, "Growl", 5, "Quick Attack", 10, "Sweet Kiss", 10, "Electro Ball", 13, "Nasty Plot", 13, "Thunder Wave", 18, "Feint", 21, "Double Team", 23, "Spark", 26, "Nuzzle", 29, "Discharge", 34, "Slam", 37, "Thunderbolt", 42, "Agility", 45, "Wild Charge", 50, "Light Screen", 53, "Thunder", 58 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Flash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD, POKEMON_EGG_GROUP_FAIRY },
     eggId = 13987,

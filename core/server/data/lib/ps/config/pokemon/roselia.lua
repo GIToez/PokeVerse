@@ -13,7 +13,7 @@ POKEMON["Roselia"] = {
     catchStorage = -1,
     evolutions = { { name = "Roserade", requiredLevel = 60, requiredItems = { ITEMS.SHINY_STONE } } },
     description = "It uses the different poisons in each hand separately when it attacks. The stronger its aroma, the healthier it is.",
-    skills = { "Tackle", 1, "Absorb", 1, "Poison Sting", 7, "Stun Spore", 10, "Mega Drain", 13, "Leech Seed", 16, "Magical Leaf", 19, "Grass Whistle", 22, "Giga Drain", 25, "Toxic Spikes", 28, "Ingrain", 34, "Petal Blizzard", 37, "Toxic", 40, "Aromatherapy", 43, "Synthesis", 46, "Petal Dance", 50 },
+    skills = { "Tackle", 1, "Absorb", 1, "Poison Sting", 7, "Water Sport", 7, "Stun Spore", 10, "Mega Drain", 13, "Leech Seed", 16, "Worry Seed", 16, "Magical Leaf", 19, "Grass Whistle", 22, "Giga Drain", 25, "Toxic Spikes", 28, "Ingrain", 34, "Petal Blizzard", 37, "Toxic", 40, "Aromatherapy", 43, "Synthesis", 46, "Petal Dance", 50 },
     abilities = { "Cut", "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_FAIRY, POKEMON_EGG_GROUP_GRASS },
     eggId = 30945,

@@ -13,7 +13,7 @@ POKEMON["Vigoroth"] = {
     catchStorage = -1,
     evolutions = { { name = "Slaking", requiredLevel = 36 } },
     description = "Its heartbeat is fast and its blood so agitated that it can't sit still for one second.",
-    skills = { "Tackle", 1, "Reversal", 1, "Scratch", 1, "Focus Energy", 1, "Encore", 1, "Uproar", 1, "Fury Swipes", 14, "Endure", 17, "Slash", 23, "Chip Away", 27, "Counter", 33, "Focus Punch", 37 },
+    skills = { "Tackle", 1, "Reversal", 1, "Scratch", 1, "Yawn", 1, "Focus Energy", 1, "Encore", 1, "Uproar", 1, "Fury Swipes", 14, "Faint Attack", 14, "Endure", 17, "Amnesia", 17, "Covet", 22, "Slash", 23, "Chip Away", 27, "Counter", 33, "Flail", 33, "Focus Punch", 37, "Play Rough", 38 },
     abilities = { "Cut", "Strenght", "Rock Smash" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 28577,

@@ -13,7 +13,7 @@ POKEMON["Monferno"] = {
     catchStorage = -1,
     evolutions = { { name = "Infernape", requiredLevel = 36 } },
     description = "It skillfully controls the intensity of the fire on its tail to keep its foes at an ideal distance.",
-    skills = { "Tackle", 1, "Mach Punch", 1, "Scratch", 1, "Ember", 1, "Fury Swipes", 16, "Flame Wheel", 19, "Feint", 26, "Close Combat", 36, "Fire Spin", 39, "Acrobatics", 46, "Flare Blitz", 56 },
+    skills = { "Tackle", 1, "Mach Punch", 1, "Scratch", 1, "Ember", 1, "Fury Swipes", 16, "Flame Wheel", 19, "Nasty Plot", 23, "Feint", 26, "Facade", 31, "Close Combat", 36, "Fire Spin", 39, "Acrobatics", 46, "Flamethrower", 47, "Flare Blitz", 56 },
     abilities = { "Cut", "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },
     eggGroup = { POKEMON_EGG_GROUP_FIELD, POKEMON_EGG_GROUP_HUMAN_LIKE },
     eggId = 30939,

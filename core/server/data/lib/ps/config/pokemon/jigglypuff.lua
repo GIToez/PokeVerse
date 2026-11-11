@@ -13,7 +13,7 @@ POKEMON["Jigglypuff"] = {
     catchStorage = 16039,
     evolutions = { { name = "Wigglytuff", requiredLevel = 35, requiredItems = { ITEMS.MOON_STONE } } },
     description = "It captivates foes with its huge, round eyes, then lulls them to sleep by singing a soothing melody.",
-    skills = { "Tackle", 1, "Sing", 1, "Defense Curl", 3, "Pound", 5, "Disarming Voice", 11, "Disable", 14, "Double Slap", 17, "Rollout", 20, "Stockpile", 25, "Swallow", 25, "Spit Up", 25, "Wake-Up Slap", 27, "Rest", 30, "Body Slam", 32, "Gyro Ball", 35, "Mimic", 38, "Hyper Voice", 41, "Double-Edge", 45 },
+    skills = { "Tackle", 1, "Sing", 1, "Charm", 1, "Defense Curl", 3, "Pound", 5, "Sweet Kiss", 9, "Disarming Voice", 11, "Copycat", 11, "Disable", 14, "Double Slap", 17, "Rollout", 20, "Stockpile", 25, "Swallow", 25, "Spit Up", 25, "Wake-Up Slap", 27, "Rest", 30, "Body Slam", 32, "Gyro Ball", 35, "Mimic", 38, "Hyper Voice", 41, "Double-Edge", 45 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Flash", "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FAIRY },
     eggId = 13993,

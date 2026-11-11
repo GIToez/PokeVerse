@@ -13,7 +13,7 @@ POKEMON["Kakuna"] = {
     catchStorage = 16014,
     evolutions = { { name = "Beedrill", requiredLevel = 10 } },
     description = "This POKEMON is in a temporary stage while making its body. It is almost completely unable to move on its own.",
-    skills = { "Tackle", 1, "Harden", 1 },
+    skills = { "Tackle", 1, "Harden", 1, "Poison Sting", 1, "String Shot", 1, "Bug Bite", 9 },
     abilities = {},
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 13982,

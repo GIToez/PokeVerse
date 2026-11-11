@@ -13,7 +13,7 @@ POKEMON["Combusken"] = {
     catchStorage = 16256,
     evolutions = { { name = "Blaziken", requiredLevel = 36 } },
     description = "Its kicking mastery lets it loose 10 kicks per second. It emits sharp cries to intimidate foes.",
-    skills = { "Tackle", 1, "Double Kick", 1, "Scratch", 1, "Growl", 1, "Ember", 1, "Sand-Attack", 1, "Peck", 14, "Flame Charge", 20, "Quick Attack", 25, "Bulk Up", 31, "Focus Energy", 36, "Slash", 42, "Mirror Move", 47, "Sky Uppercut", 53, "Flare Blitz", 58 },
+    skills = { "Tackle", 1, "Double Kick", 1, "Scratch", 1, "Growl", 1, "Ember", 1, "Sand-Attack", 1, "Peck", 14, "Fire Spin", 19, "Flame Charge", 20, "Quick Attack", 25, "Flame Burst", 28, "Bulk Up", 31, "Focus Energy", 36, "Slash", 42, "Flamethrower", 46, "Mirror Move", 47, "Sky Uppercut", 53, "Flare Blitz", 58 },
     abilities = { "Cut", "Strenght", "Rock Smash" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 28586,

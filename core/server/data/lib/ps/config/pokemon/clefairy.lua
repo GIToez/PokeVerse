@@ -13,7 +13,7 @@ POKEMON["Clefairy"] = {
     catchStorage = 16035,
     evolutions = { { name = "Clefable", requiredLevel = 35, requiredItems = { ITEMS.MOON_STONE } } },
     description = "Its adorable appearance makes it popular as a pet. However, it is rare and difficult to find.",
-    skills = { "Tackle", 1, "Disarming Voice", 1, "Pound", 1, "Growl", 1, "Encore", 1, "Sing", 7, "Double Slap", 10, "Defense Curl", 13, "Wake-Up Slap", 22, "Stored Power", 28, "Metronome", 31, "Cosmic Power", 34, "Body Slam", 40, "Moonlight", 43, "Moonblast", 46, "Meteor Mash", 50, "Healing Wish", 55 },
+    skills = { "Tackle", 1, "Disarming Voice", 1, "Charm", 1, "Pound", 1, "Growl", 1, "Encore", 1, "Sing", 7, "Double Slap", 10, "Sweet Kiss", 10, "Defense Curl", 13, "Copycat", 13, "Magical Leaf", 16, "Wake-Up Slap", 22, "Stored Power", 28, "Metronome", 31, "Cosmic Power", 34, "Body Slam", 40, "Moonlight", 43, "Moonblast", 46, "Meteor Mash", 50, "Healing Wish", 55 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Flash", "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FAIRY },
     eggId = 13991,

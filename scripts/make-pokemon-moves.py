@@ -9,6 +9,11 @@ official ones: the Ultra Sun / Ultra Moon level-up list from PokeAPI, at the off
 - Only moves the game has (lib/ps/config/moves/*.lua) are given; the official moves it lacks are
   listed in docs/missing-moves.md. Run this again after adding one of them.
 - Moves a Pokemon knows on evolving (level 0 in the data) are level 1 here.
+- A Pokemon keeps the moves of the Pokemon it evolved from: an evolved species also gets the
+  level-up moves of every earlier stage that it doesn't learn itself, at the level that stage
+  learns them. (Officially Raichu learns four moves, because it kept Pikachu's; here a Pokemon's
+  moves are its species' list, so the list has to hold them.) The moves bar has 24 slots: a list
+  longer than that (Flygon, Gallade, Vibrava) drops the earliest kept moves until it fits.
 - Species 1-493 only, by their own name; Smeargle (Sketch slots) and Ditto (Transform) keep their
   special lists, and custom Pokemon (Chartle, Mega and Boss forms...) are not touched. Shiny and
   event versions copy their species.
@@ -27,6 +32,7 @@ GAME_NAMES = {29: "Nidorana", 32: "Nidorano", 83: "Farfetchd"}  # where the game
 SPELLINGS = {"feintattack": "faintattack", "highjumpkick": "hijumpkick", "visegrip": "vicegrip"}  # official -> game
 SKIP = {"Smeargle", "Ditto"}
 FIRST = "Tackle"
+SLOTS = 24  # the moves bar: two rows of 12
 
 
 def norm(name):
@@ -65,6 +71,20 @@ def main():
         if move not in learn[number] or key < learn[number][move]:
             learn[number][move] = key
 
+    # earlier stages' moves the species doesn't learn itself, at their level
+    parent = {int(r["id"]): int(r["evolves_from_species_id"]) for r in rows("pokemon_species.csv")
+              if r["evolves_from_species_id"] and int(r["id"]) <= 493}
+    own = {number: dict(moves) for number, moves in learn.items()}
+    kept = collections.defaultdict(set)
+    for number in range(1, 494):
+        stage = parent.get(number)
+        while stage:
+            for move, key in own.get(stage, {}).items():
+                if move not in own.get(number, {}) and (move not in learn[number] or key < learn[number][move]):
+                    learn[number][move] = key
+                    kept[number].add(move)
+            stage = parent.get(stage)
+
     files = {}
     for name in sorted(os.listdir(os.path.join(CONFIG, "pokemon"))):
         if name.endswith(".lua"):
@@ -74,6 +94,7 @@ def main():
                 files[m.group(1)] = path
 
     missing = collections.defaultdict(list)
+    trimmed = []
     changed = 0
     for number in range(1, 494):
         name = species[number]
@@ -89,6 +110,13 @@ def main():
                 missing[move].append(name)
             elif game_moves[key] != FIRST:
                 skills.append((game_moves[key], level))
+        while len(skills) > SLOTS:  # the earliest move kept from an earlier stage goes first
+            drop = next((s for s in skills[1:] if any(norm(m) in (norm(s[0]), ) or SPELLINGS.get(norm(m)) == norm(s[0])
+                                                        for m in kept[number])), None)
+            if not drop:
+                sys.exit("%s has more than %d moves of its own" % (name, SLOTS))
+            skills.remove(drop)
+            trimmed.append("%s: %s" % (name, drop[0]))
         line = "skills = { %s }," % ", ".join('"%s", %d' % skill for skill in skills)
         text = read(files[name])
         start = re.search(r'^POKEMON\["%s"\]\s*=\s*\{' % re.escape(name), text, re.M).end()
@@ -111,6 +139,8 @@ def main():
         out.append("| %s | %d | %s |" % (move, len(names), shown))
     with open(os.path.join(ROOT, "docs/missing-moves.md"), "w") as f:
         f.write("\n".join(out) + "\n")
+    if trimmed:
+        print("dropped to fit %d slots: %s" % (SLOTS, ", ".join(trimmed)))
     print("%d species changed; %d official moves missing (%d entries) -> docs/missing-moves.md"
           % (changed, len(missing), sum(len(v) for v in missing.values())))
 

@@ -13,7 +13,7 @@ POKEMON["Piloswine"] = {
     catchStorage = 16221,
     evolutions = { { name = "Mamoswine", requiredLevel = 60 } },
     description = "If it charges at an enemy, the hairs on its back stand up straight. It is very sensitive to sound.",
-    skills = { "Tackle", 1, "Fury Attack", 1, "Ancient Power", 1, "Peck", 1, "Mud Sport", 1, "Powder Snow", 1, "Mud-Slap", 11, "Endure", 14, "Mud Bomb", 18, "Icy Wind", 21, "Ice Fang", 24, "Take Down", 28, "Mist", 37, "Thrash", 41, "Earthquake", 46, "Blizzard", 52, "Amnesia", 58 },
+    skills = { "Tackle", 1, "Fury Attack", 1, "Ancient Power", 1, "Peck", 1, "Mud Sport", 1, "Powder Snow", 1, "Mud-Slap", 11, "Endure", 14, "Mud Bomb", 18, "Icy Wind", 21, "Ice Fang", 24, "Ice Shard", 24, "Take Down", 28, "Mist", 37, "Flail", 40, "Thrash", 41, "Earthquake", 46, "Blizzard", 52, "Amnesia", 58 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Ride", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 17773,

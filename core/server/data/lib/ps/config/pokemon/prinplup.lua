@@ -13,7 +13,7 @@ POKEMON["Prinplup"] = {
     catchStorage = -1,
     evolutions = { { name = "Empoleon", requiredLevel = 36 } },
     description = "Because every PRINPLUP considers itself to be the most important, they can never form a group.",
-    skills = { "Tackle", 1, "Metal Claw", 1, "Growl", 1, "Bubble", 1, "Water Sport", 11, "Peck", 15, "Bubblebeam", 19, "Bide", 24, "Fury Attack", 28, "Brine", 33, "Whirlpool", 37, "Mist", 42, "Drill Peck", 46, "Hydro Pump", 50 },
+    skills = { "Tackle", 1, "Metal Claw", 1, "Pound", 1, "Growl", 1, "Bubble", 1, "Water Sport", 11, "Peck", 15, "Bubblebeam", 19, "Bide", 24, "Fury Attack", 28, "Brine", 33, "Whirlpool", 37, "Mist", 42, "Drill Peck", 46, "Hydro Pump", 50 },
     abilities = { "Cut", "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1, POKEMON_EGG_GROUP_FIELD },
     eggId = 30940,
