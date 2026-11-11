@@ -13,7 +13,7 @@ POKEMON["Baltoy"] = {
     catchStorage = -1,
     evolutions = { { name = "Claydol", requiredLevel = 36 } },
     description = "It moves while spinning around on its single foot. Some Baltoy have been seen spinning on their heads.",
-    skills = { "Tackle", 1, "Rapid Spin", 5, "Mud-Slap", 10, "Confusion", 15, "Psybeam", 20, "Earth Power", 25 },
+    skills = { "Tackle", 1, "Harden", 1, "Confusion", 1, "Rapid Spin", 4, "Mud-Slap", 7, "Heal Block", 10, "Rock Tomb", 13, "Psybeam", 16, "Ancient Power", 19, "Cosmic Power", 22, "Selfdestruct", 28, "Extrasensory", 31, "Earth Power", 37, "Sandstorm", 40, "Explosion", 46 },
     abilities = { "Flash", POKEMON_ABILITIES.BLINK, POKEMON_ABILITIES.TELEPORT },
     eggGroup = { POKEMON_EGG_GROUP_MINERAL },
     eggId = 28540,

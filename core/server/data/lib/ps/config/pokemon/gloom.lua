@@ -13,7 +13,7 @@ POKEMON["Gloom"] = {
     catchStorage = 16044,
     evolutions = { { name = "Vileplume", requiredLevel = 50, requiredItems = { ITEMS.LEAF_STONE } }, { name = "Bellossom", requiredLevel = 50, requiredItems = { ITEMS.SUN_STONE } } },
     description = "Its pistils exude an incredibly foul odor. The horrid stench can cause fainting at a distance of 1.25 miles.",
-    skills = { "Tackle", 1, "Absorb", 5, "Acid", 10, "Poison Powder", 15, "Stun Spore", 20, "Mega Drain", 25, "Acid Spray", 35, "Moonlight", 40, "Sleep Powder", 45 },
+    skills = { "Tackle", 1, "Absorb", 1, "Acid", 1, "Poison Powder", 13, "Stun Spore", 14, "Sleep Powder", 15, "Mega Drain", 19, "Moonlight", 29, "Giga Drain", 34, "Toxic", 39, "Moonblast", 43, "Petal Blizzard", 49, "Grassy Terrain", 54, "Petal Dance", 59 },
     abilities = { "Cut" },
     eggGroup = { POKEMON_EGG_GROUP_GRASS },
     eggId = 13995,

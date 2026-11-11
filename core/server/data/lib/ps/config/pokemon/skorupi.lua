@@ -13,7 +13,7 @@ POKEMON["Skorupi"] = {
     catchStorage = -1,
     evolutions = { { name = "Drapion", requiredLevel = 40 } },
     description = "As soon as the tail claws close, its needle tips secrete poison. It can survive a year without food.",
-    skills = { "Poison Sting", 1, "Hone Claws", 5, "Toxic Spikes", 10, "Fell Stinger", 15, "Poison Fang", 20, "Bite", 25, "Bug Bite", 30, "Venoshock", 35 },
+    skills = { "Tackle", 1, "Bite", 1, "Poison Sting", 1, "Knock Off", 5, "Pin Missile", 9, "Pursuit", 16, "Bug Bite", 20, "Poison Fang", 23, "Venoshock", 27, "Hone Claws", 30, "Toxic Spikes", 34, "Night Slash", 38, "Scary Face", 41, "Crunch", 45, "Fell Stinger", 47, "Cross Poison", 49 },
     abilities = { "Cut", "Rock Smash", "Headbutt", "Flash", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },
     eggGroup = { POKEMON_EGG_GROUP_BUG, POKEMON_EGG_GROUP_WATER_3 },
     eggId = 30969,

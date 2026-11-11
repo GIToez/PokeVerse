@@ -13,7 +13,7 @@ POKEMON["Anorith"] = {
     catchStorage = -1,
     evolutions = { { name = "Armaldo", requiredLevel = 40 } },
     description = "It is a kind of Pokemon progenitor. It uses its extending claws to catch prey hiding among rocks on the seafloor.",
-    skills = { "Tackle", 1, "Water Gun", 5, "Smack Down", 10, "Metal Claw", 15, "Ancient Power", 20, "Harden", 25 },
+    skills = { "Tackle", 1, "Scratch", 1, "Harden", 1, "Mud Sport", 4, "Water Gun", 7, "Fury Cutter", 10, "Smack Down", 13, "Metal Claw", 17, "Ancient Power", 21, "Bug Bite", 25, "Brine", 29, "Slash", 34, "Crush Claw", 39, "X-Scissor", 44, "Protect", 49, "Rock Blast", 55 },
     abilities = { "Cut", "Rock Smash" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_3 },
     eggId = 28537,

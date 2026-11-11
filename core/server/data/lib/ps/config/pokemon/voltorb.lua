@@ -13,7 +13,7 @@ POKEMON["Voltorb"] = {
     catchStorage = 16100,
     evolutions = { { name = "Electrode", requiredLevel = 30 } },
     description = "A life-form whose identity is unknown. It is said to SCREECH or suddenly SELFDESTRUCT.",
-    skills = { "Tackle", 1, "Thunder Shock", 5, "Rollout", 10, "Spark", 15, "Swift", 20, "Secret Power", 25, "Selfdestruct", 30 },
+    skills = { "Tackle", 1, "Charge", 1, "Sonic Boom", 4, "Eerie Impulse", 6, "Spark", 9, "Rollout", 11, "Screech", 13, "Charge Beam", 16, "Swift", 20, "Electro Ball", 22, "Selfdestruct", 26, "Light Screen", 29, "Magnet Rise", 34, "Discharge", 37, "Explosion", 41, "Gyro Ball", 46, "Mirror Coat", 48 },
     abilities = { "Flash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MINERAL },
     eggId = 14021,

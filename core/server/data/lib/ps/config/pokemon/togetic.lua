@@ -13,7 +13,7 @@ POKEMON["Togetic"] = {
     catchStorage = 16176,
     evolutions = { { name = "Togekiss", requiredLevel = 60, requiredItems = { ITEMS.SHINY_STONE } } },
     description = "It grows dispirited if it is not with kind people. It can float in midair without moving its wings.",
-    skills = { "Tackle", 1, "Fairy Wind", 5, "Ancient Power", 10, "Metronome", 15, "Covet", 20, "Wish", 25, "Magical Leaf", 35, "Sweet Kiss", 40, "Mirror Move", 45, "Double-Edge", 50, "Magic Coat", 55, "Future Sight", 60, "Yawn", 65, "Last Resort", 70 },
+    skills = { "Tackle", 1, "Magical Leaf", 1, "Growl", 1, "Charm", 1, "Metronome", 1, "Sweet Kiss", 1, "Yawn", 13, "Fairy Wind", 14, "Encore", 17, "Wish", 29, "Ancient Power", 33, "Safeguard", 37, "Double-Edge", 45, "Last Resort", 49 },
     abilities = { "Flash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FLYING, POKEMON_EGG_GROUP_FAIRY },
     eggId = 17749,

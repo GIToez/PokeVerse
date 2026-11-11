@@ -21,7 +21,7 @@ POKEMON["Eevee"] = {
         { name = "Glaceon", requiredLevel = 30, requiredItems = { ITEMS.ICE_STONE } }
     },
     description = "An extremely rare POKEMON that may evolve in a number of different ways depending on stimuli.",
-    skills = { "Tackle", 1, "Quick Attack", 5, "Sand-Attack", 10, "Bite", 15, "Headbutt", 20, "Agility", 25 },
+    skills = { "Tackle", 1, "Covet", 1, "Growl", 1, "Sand-Attack", 5, "Quick Attack", 13, "Bite", 17, "Swift", 17, "Refresh", 20, "Take Down", 25, "Charm", 29, "Double-Edge", 37, "Last Resort", 41 },
     abilities = { POKEMON_ABILITIES.DIG, "Headbutt", "Find" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 14044,

@@ -16,7 +16,7 @@ POKEMON["Nincada"] = {
         { name = "Shedinja", requiredLevel = 35, extraPokemon = true },
     },
     description = "Because it lived almost entirely underground, it is nearly blind. It uses its antennae instead.",
-    skills = { "Tackle", 1, "Scratch", 5, "Absorb", 10, "Fury Swipes", 15, "Mud-Slap", 20, "Harden", 25, "Dig", 30 },
+    skills = { "Tackle", 1, "Scratch", 1, "Harden", 1, "Absorb", 5, "Sand-Attack", 9, "Fury Swipes", 13, "Mud-Slap", 17, "Metal Claw", 21, "Mind Reader", 25, "Bide", 29, "Dig", 37 },
     abilities = { "Cut", "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 28563,

@@ -13,7 +13,7 @@ POKEMON["Meowth"] = {
     catchStorage = 16052,
     evolutions = { { name = "Persian", requiredLevel = 28 } },
     description = "All it does is sleep during the daytime. At night, it patrols its territory with its eyes aglow.",
-    skills = { "Tackle", 1, "Scratch", 5, "Bite", 10, "Fury Swipes", 15, "Slash", 20, "Captivate", 25, "Night Slash", 30, "Iron Tail", 35 },
+    skills = { "Tackle", 1, "Scratch", 1, "Growl", 1, "Bite", 6, "Fake Out", 9, "Fury Swipes", 14, "Screech", 17, "Faint Attack", 22, "Slash", 33, "Nasty Plot", 38, "Assurance", 41, "Captivate", 46, "Night Slash", 49, "Feint", 50 },
     abilities = { POKEMON_ABILITIES.DIG, "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 13999,

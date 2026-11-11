@@ -13,7 +13,7 @@ POKEMON["Buizel"] = {
     catchStorage = -1,
     evolutions = { { name = "Floatzel", requiredLevel = 26 } },
     description = "It spins its two tails like a screw to propel itself through water. The tails also slice clinging seaweed.",
-    skills = { "Tackle", 1, "Growl", 5, "Quick Attack", 10, "Water Gun", 15, "Aqua Jet", 20, "Bite", 25, "Swift", 30 },
+    skills = { "Tackle", 1, "Sonic Boom", 1, "Growl", 4, "Water Sport", 7, "Quick Attack", 11, "Water Gun", 15, "Pursuit", 18, "Swift", 21, "Aqua Jet", 24, "Double Hit", 27, "Whirlpool", 31, "Razor Wind", 35, "Aqua Tail", 38, "Agility", 41, "Hydro Pump", 45 },
     abilities = { "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1, POKEMON_EGG_GROUP_FIELD },
     eggId = 30951,

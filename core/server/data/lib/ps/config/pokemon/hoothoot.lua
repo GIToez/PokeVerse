@@ -13,7 +13,7 @@ POKEMON["Hoothoot"] = {
     catchStorage = 16163,
     evolutions = { { name = "Noctowl", requiredLevel = 20 } },
     description = "It has a perfect sense of time. Whatever happens, it keeps rhythm by precisely tilting its head in time.",
-    skills = { "Tackle", 1, "Peck", 5, "Confusion", 10, "Drill Peck", 15, "Air Slash", 20, "Roost", 25, "Hypnosis", 30, "Zen Headbutt", 35 },
+    skills = { "Tackle", 1, "Growl", 1, "Foresight", 1, "Hypnosis", 4, "Peck", 7, "Confusion", 10, "Echoed Voice", 13, "Zen Headbutt", 16, "Psycho Shift", 19, "Extrasensory", 22, "Take Down", 25, "Reflect", 28, "Air Slash", 31, "Uproar", 34, "Roost", 37, "Moonblast", 40, "Synchronoise", 43, "Dream Eater", 46 },
     abilities = { "Find", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FLYING },
     eggId = 17745,

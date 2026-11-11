@@ -13,7 +13,7 @@ POKEMON["Duskull"] = {
     catchStorage = -1,
     evolutions = { { name = "Dusclops", requiredLevel = 37 } },
     description = "It doggedly pursues its prey wherever it goes. However, the chase is abandoned at sunrise.",
-    skills = { "Tackle", 1, "Astonish", 5, "Shadow Sneak", 10, "Shadow Ball", 15, "Confuse Ray", 20, "Curse", 25 },
+    skills = { "Tackle", 1, "Night Shade", 1, "Disable", 6, "Astonish", 9, "Foresight", 14, "Shadow Sneak", 17, "Pursuit", 22, "Will-O-Wisp", 25, "Confuse Ray", 30, "Curse", 33, "Hex", 38, "Shadow Ball", 41, "Payback", 49, "Future Sight", 54 },
     abilities = { "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_AMORPHOUS },
     eggId = 28549,

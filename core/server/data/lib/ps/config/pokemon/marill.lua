@@ -13,7 +13,7 @@ POKEMON["Marill"] = {
     catchStorage = 16183,
     evolutions = { { name = "Azumarill", requiredLevel = 18 } },
     description = "The end of its tail serves as a buoy that keeps it from drowning, even in a vicious current.",
-    skills = { "Tackle", 1, "Bubble", 5, "Water Gun", 10, "Aqua Tail", 15, "Defense Curl", 20, "Double-Edge", 25, "Aqua Ring", 30 },
+    skills = { "Tackle", 1, "Splash", 1, "Water Gun", 1, "Water Sport", 5, "Bubble", 7, "Charm", 10, "Defense Curl", 10, "Rollout", 10, "Bubblebeam", 13, "Aqua Tail", 20, "Slam", 20, "Play Rough", 23, "Bounce", 23, "Aqua Ring", 28, "Rain Dance", 31, "Double-Edge", 37, "Superpower", 40, "Hydro Pump", 47 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.WATERFALL, "Rock Smash", "Surf", "Dive", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1, POKEMON_EGG_GROUP_FAIRY },
     eggId = 17752,

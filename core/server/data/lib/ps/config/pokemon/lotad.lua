@@ -13,7 +13,7 @@ POKEMON["Lotad"] = {
     catchStorage = -1,
     evolutions = { { name = "Lombre", requiredLevel = 14 } },
     description = "It looks like an aquatic plant and serves as a ferry to Pokemon that can't swim.",
-    skills = { "Tackle", 1, "Absorb", 5, "Bubble", 10, "Bubblebeam", 15, "Mist", 20, "Mega Drain", 25 },
+    skills = { "Tackle", 1, "Astonish", 1, "Growl", 3, "Absorb", 6, "Bubble", 9, "Mist", 15, "Mega Drain", 18, "Bubblebeam", 21, "Nature Power", 24, "Rain Dance", 27, "Giga Drain", 30, "Zen Headbutt", 33, "Energy Ball", 36 },
     abilities = { "Surf", "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_GRASS, POKEMON_EGG_GROUP_WATER_1 },
     eggId = 28555,

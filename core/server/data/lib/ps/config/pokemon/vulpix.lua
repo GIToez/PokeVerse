@@ -13,7 +13,7 @@ POKEMON["Vulpix"] = {
     catchStorage = 16037,
     evolutions = { { name = "Ninetales", requiredLevel = 35, requiredItems = { ITEMS.FIRE_STONE } } },
     description = "While young, it has six gorgeous tails. When it grows, several new tails are sprouted.",
-    skills = { "Tackle", 1, "Ember", 5, "Quick Attack", 10, "Fire Spin", 15, "Flame Burst", 20, "Flamethrower", 25, "Safeguard", 30 },
+    skills = { "Tackle", 1, "Ember", 1, "Roar", 7, "Quick Attack", 10, "Confuse Ray", 12, "Fire Spin", 15, "Payback", 18, "Will-O-Wisp", 20, "Faint Attack", 23, "Hex", 26, "Flame Burst", 28, "Extrasensory", 31, "Safeguard", 34, "Flamethrower", 36, "Fire Blast", 42, "Captivate", 47, "Inferno", 50 },
     abilities = { POKEMON_ABILITIES.DIG, "Find", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 13992,

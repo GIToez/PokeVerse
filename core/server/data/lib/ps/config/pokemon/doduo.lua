@@ -13,7 +13,7 @@ POKEMON["Doduo"] = {
     catchStorage = 16084,
     evolutions = { { name = "Dodrio", requiredLevel = 31 } },
     description = "A two-headed POKEMON that was discovered as a sudden mutation. It runs at a pace of over 60 miles per hour.",
-    skills = { "Tackle", 1, "Peck", 5, "Quick Attack", 10, "Drill Peck", 15, "Fury Attack", 20, "Pursuit", 25, "Agility", 30, "Endeavor", 35 },
+    skills = { "Tackle", 1, "Peck", 1, "Growl", 1, "Quick Attack", 5, "Rage", 8, "Fury Attack", 12, "Pursuit", 15, "Pluck", 19, "Double Hit", 22, "Agility", 26, "Uproar", 29, "Swords Dance", 36, "Jump Kick", 40, "Drill Peck", 43, "Endeavor", 47, "Thrash", 50 },
     abilities = { "Ride" },
     eggGroup = { POKEMON_EGG_GROUP_FLYING },
     eggId = 14013,

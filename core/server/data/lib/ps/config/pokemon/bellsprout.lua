@@ -13,7 +13,7 @@ POKEMON["Bellsprout"] = {
     catchStorage = 16069,
     evolutions = { { name = "Weepinbell", requiredLevel = 21 } },
     description = "Its bud looks like a human face. Because of the bud, it is rumored to be a type of legendary mandrake plant.",
-    skills = { "Tackle", 1, "Vine Whip", 5, "Poison Powder", 10, "Razor Leaf", 15, "Stun Spore", 20, "Acid", 25, "Slam", 30 },
+    skills = { "Tackle", 1, "Vine Whip", 1, "Wrap", 11, "Sleep Powder", 13, "Poison Powder", 15, "Stun Spore", 17, "Acid", 23, "Knock Off", 27, "Gastro Acid", 35, "Razor Leaf", 39, "Poison Jab", 41, "Slam", 47, "Wring Out", 50 },
     abilities = { "Cut" },
     eggGroup = { POKEMON_EGG_GROUP_GRASS },
     eggId = 14006,

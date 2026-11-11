@@ -13,7 +13,7 @@ POKEMON["Magnemite"] = {
     catchStorage = 16081,
     evolutions = { { name = "Magneton", requiredLevel = 30 } },
     description = "It moves while constantly hovering. It discharges THUNDER WAVE and so on from the units at its sides.",
-    skills = { "Tackle", 1, "Thunder Shock", 5, "Supersonic", 10, "Sonic Boom", 15, "Thunder Wave", 20, "Electro Ball", 25 },
+    skills = { "Tackle", 1, "Supersonic", 1, "Thunder Shock", 5, "Thunder Wave", 7, "Magnet Bomb", 11, "Light Screen", 13, "Sonic Boom", 17, "Spark", 19, "Mirror Shot", 23, "Metal Sound", 25, "Electro Ball", 29, "Flash Cannon", 31, "Screech", 35, "Discharge", 37, "Magnet Rise", 43, "Gyro Ball", 47, "Zap Cannon", 49 },
     abilities = { "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_MINERAL },
     eggId = 14011,

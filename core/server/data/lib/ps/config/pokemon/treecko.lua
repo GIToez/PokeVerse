@@ -13,7 +13,7 @@ POKEMON["Treecko"] = {
     catchStorage = 16252,
     evolutions = { { name = "Grovyle", requiredLevel = 16 } },
     description = "It quickly scales even vertical walls. It senses humidity with its tail to predict the next day's weather.",
-    skills = { "Tackle", 1, "Absorb", 5, "Quick Attack", 10, "Slam", 15, "Agility", 20, "Mega Drain", 25, "Energy Ball", 30 },
+    skills = { "Tackle", 1, "Pound", 1, "Absorb", 5, "Quick Attack", 9, "Mega Drain", 13, "Pursuit", 17, "Giga Drain", 21, "Agility", 25, "Slam", 29, "Detect", 33, "Energy Ball", 37, "Quick Guard", 41, "Endeavor", 45, "Screech", 49 },
     abilities = { "Cut", "Strenght", "Flash", "Rock Smash" },
     eggGroup = { POKEMON_EGG_GROUP_DRAGON, POKEMON_EGG_GROUP_MONSTER },
     eggId = 28589,

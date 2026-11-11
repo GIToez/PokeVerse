@@ -13,7 +13,7 @@ POKEMON["Cleffa"] = {
     catchStorage = 16173,
     evolutions = { { name = "Clefairy", requiredLevel = 25 --[[, requiredItems = {ITEMS.SOOTHE_BELL}]] } },
     description = "When numerous meteors illuminate the night sky, sightings of CLEFFA strangely increase.",
-    skills = { "Tackle", 1, "Pound", 5, "Sing", 10, "Sweet Kiss", 15, "Magical Leaf", 20 },
+    skills = { "Tackle", 1, "Pound", 1, "Charm", 1, "Encore", 4, "Sing", 7, "Sweet Kiss", 10, "Copycat", 13, "Magical Leaf", 16 },
     abilities = { POKEMON_ABILITIES.DIG, "Flash", "Headbutt" },
     eggGroup = {},
     eggId = 13991,

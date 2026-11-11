@@ -13,7 +13,7 @@ POKEMON["Buneary"] = {
     catchStorage = -1,
     evolutions = { { name = "Lopunny", requiredLevel = 35 } },
     description = "Its ears are always rolled up. They can be forcefully extended to shatter even a large boulder.",
-    skills = { "Pound", 1, "Splash", 5, "Flail", 10, "Double Kick", 15, "Quick Attack", 20, "Headbutt", 25, "Bounce", 30 },
+    skills = { "Tackle", 1, "Defense Curl", 1, "Splash", 1, "Pound", 1, "Foresight", 1, "Endure", 6, "Quick Attack", 16, "Jump Kick", 23, "Agility", 33, "Dizzy Punch", 36, "Charm", 46, "Bounce", 56, "Healing Wish", 63 },
     abilities = { "Cut", "Rock Smash", "Headbutt", POKEMON_ABILITIES.DIG },
     eggGroup = { POKEMON_EGG_GROUP_FIELD, POKEMON_EGG_GROUP_HUMAN_LIKE },
     eggId = 30955,

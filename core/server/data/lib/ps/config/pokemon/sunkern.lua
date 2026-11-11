@@ -13,7 +13,7 @@ POKEMON["Sunkern"] = {
     catchStorage = 16191,
     evolutions = { { name = "Sunflora", requiredLevel = 25, requiredItems = { ITEMS.SUN_STONE } } },
     description = "It lives by drinking only dewdrops from under the leaves of plants. It is said that it eats nothing else.",
-    skills = { "Tackle", 1, "Absorb", 5, "Leech Seed", 10, "Razor Leaf", 15, "Grass Whistle", 20 },
+    skills = { "Tackle", 1, "Absorb", 1, "Ingrain", 4, "Grass Whistle", 7, "Mega Drain", 10, "Leech Seed", 13, "Razor Leaf", 16, "Worry Seed", 19, "Giga Drain", 22, "Endeavor", 25, "Synthesis", 28, "Solar Beam", 34, "Double-Edge", 37, "Sunny Day", 40, "Seed Bomb", 43 },
     abilities = { "Flash", "Cut" },
     eggGroup = { POKEMON_EGG_GROUP_GRASS },
     eggId = 17756,

@@ -16,7 +16,7 @@ POKEMON["Poliwhirl"] = {
         { name = "Politoed", requiredLevel = 50, requiredItems = { ITEMS.KINGS_ROCK } }
     },
     description = "Its two legs are well developed. Even though it can live on the ground, it prefers living in water.",
-    skills = { "Tackle", 1, "Bubble", 5, "Water Gun", 10, "Double Slap", 15, "Bubblebeam", 20, "Hypnosis", 25, "Body Slam", 35, "Mud Shot", 40, "Wake-Up Slap", 45 },
+    skills = { "Tackle", 1, "Water Sport", 1, "Water Gun", 1, "Hypnosis", 1, "Bubble", 11, "Double Slap", 15, "Rain Dance", 18, "Body Slam", 21, "Bubblebeam", 27, "Mud Shot", 32, "Belly Drum", 37, "Wake-Up Slap", 43, "Hydro Pump", 48, "Mud Bomb", 53 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.WATERFALL, "Surf", "Dive", "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1 },
     eggId = 14003,

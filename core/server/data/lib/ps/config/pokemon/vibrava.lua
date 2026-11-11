@@ -13,7 +13,7 @@ POKEMON["Vibrava"] = {
     catchStorage = -1,
     evolutions = { { name = "Flygon", requiredLevel = 45 } },
     description = "The ultrasonic waves it generates by rubbing its two wings together cause severe headaches.",
-    skills = { "Tackle", 1, "Bite", 5, "Faint Attack", 10, "Rock Slide", 15, "Sand-Attack", 20, "Earth Power", 25, "Dragon Breath", 35, "Earthquake", 40, "Bug Buzz", 45 },
+    skills = { "Tackle", 1, "Dragon Breath", 1, "Sand-Attack", 1, "Sonic Boom", 1, "Faint Attack", 1, "Bide", 1, "Mud-Slap", 5, "Bulldoze", 8, "Sand Tomb", 12, "Rock Slide", 15, "Supersonic", 19, "Dig", 19, "Screech", 22, "Crunch", 22, "Earth Power", 26, "Bug Buzz", 29, "Feint", 29, "Earthquake", 33, "Sandstorm", 36, "Uproar", 40, "Superpower", 40, "Hyper Beam", 43, "Boomburst", 47, "Fissure", 47 },
     abilities = { "Strenght", "Rock Slide", "Fly", POKEMON_ABILITIES.FIND },
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 28588,

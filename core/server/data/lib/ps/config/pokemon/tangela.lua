@@ -13,7 +13,7 @@ POKEMON["Tangela"] = {
     catchStorage = 16114,
     evolutions = { { name = "Tangrowth", requiredLevel = 40 } },
     description = "Blue plant vines cloak the POKEMON's identity in a tangled mass. It entangles anything that gets close.",
-    skills = { "Tackle", 1, "Absorb", 5, "Vine Whip", 10, "Seed Bomb", 15, "Mega Drain", 20, "Poison Powder", 25, "Ingrain", 30, "Ancient Power", 35, "Stun Spore", 40, "Sleep Powder", 45, "Leaf Storm", 50, "Wring Out", 55, "Grass Knot", 60, "Power Whip", 65 },
+    skills = { "Tackle", 1, "Ingrain", 1, "Constrict", 1, "Sleep Powder", 4, "Vine Whip", 7, "Absorb", 10, "Poison Powder", 14, "Mega Drain", 23, "Knock Off", 27, "Stun Spore", 30, "Giga Drain", 36, "Ancient Power", 38, "Slam", 41, "Tickle", 44, "Wring Out", 46, "Grassy Terrain", 48, "Power Whip", 50 },
     abilities = { "Cut", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_GRASS },
     eggId = 14030,

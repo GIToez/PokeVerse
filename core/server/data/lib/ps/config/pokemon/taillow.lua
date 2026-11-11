@@ -13,7 +13,7 @@ POKEMON["Taillow"] = {
     catchStorage = -1,
     evolutions = { { name = "Swellow", requiredLevel = 22 } },
     description = "It has a gutsy spirit that makes it bravely take on tough foes. It flies in search of warm climates.",
-    skills = { "Tackle", 1, "Peck", 5, "Quick Attack", 10, "Wing Attack", 15, "Aerial Ace", 20, "Air Slash", 25, "Double Team", 30 },
+    skills = { "Tackle", 1, "Peck", 1, "Growl", 1, "Focus Energy", 5, "Quick Attack", 9, "Wing Attack", 13, "Double Team", 17, "Aerial Ace", 21, "Quick Guard", 25, "Agility", 29, "Air Slash", 33, "Endeavor", 37, "Brave Bird", 41, "Reversal", 45 },
     abilities = { POKEMON_ABILITIES.FLY, POKEMON_ABILITIES.FIND },
     eggGroup = { POKEMON_EGG_GROUP_FLYING },
     eggId = 28585,

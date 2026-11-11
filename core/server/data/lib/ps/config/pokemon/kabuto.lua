@@ -13,7 +13,7 @@ POKEMON["Kabuto"] = {
     catchStorage = 16140,
     evolutions = { { name = "Kabutops", requiredLevel = 40 } },
     description = "This POKEMON was regenerated from the fossil of an ancient creature. It protects itself with a hard shell.",
-    skills = { "Tackle", 1, "Absorb", 5, "Scratch", 10, "Bubblebeam", 15, "Harden", 20, "Mud Shot", 25, "Mega Drain", 30, "Ancient Power", 35 },
+    skills = { "Tackle", 1, "Scratch", 1, "Harden", 1, "Absorb", 6, "Mud Shot", 16, "Sand-Attack", 21, "Endure", 26, "Aqua Jet", 31, "Mega Drain", 36, "Metal Sound", 41, "Ancient Power", 46, "Wring Out", 50 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.WATERFALL },
     eggGroup = {--[[POKEMON_EGG_GROUP_WATER_1, POKEMON_EGG_GROUP_WATER_3]] },
     eggId = 14365,

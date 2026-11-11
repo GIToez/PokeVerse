@@ -13,7 +13,7 @@ POKEMON["Luxio"] = {
     catchStorage = -1,
     evolutions = { { name = "Luxray", requiredLevel = 30 } },
     description = "Strong electricity courses through the tips of its sharp claws. A light scratch causes fainting in foes.",
-    skills = { "Tackle", 1, "Charge", 5, "Thunder Shock", 10, "Bite", 15, "Spark", 20, "Volt Switch", 25, "Crunch", 30, "Discharge", 40, "Roar", 45 },
+    skills = { "Tackle", 1, "Charge", 9, "Spark", 13, "Bite", 18, "Roar", 23, "Thunder Fang", 33, "Crunch", 38, "Scary Face", 43, "Discharge", 48, "Wild Charge", 53 },
     abilities = { "Headbutt", "Flash", POKEMON_ABILITIES.STRENGTH },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 30944,

@@ -13,9 +13,7 @@ POKEMON["Fearow"] = {
     catchStorage = 16022,
     evolutions = {},
     description = "Its huge and magnificent wings can keep it aloft in the sky. It can remain flying a whole day without landing.",
-    skills = {
-        "Tackle", 1, "Peck", 5, "Fury Attack", 10, "Gust", 15, "Pursuit", 20, "Drill Peck", 25, "Agility", 30, "Roost", 40, "Pluck", 45, "Aerial Ace", 50, "Hurricane", 55, "Drill Run", 60, "Sky Attack", 65, "Mirror Move", 70
-    },
+    skills = { "Tackle", 1, "Drill Run", 1, "Pluck", 1, "Peck", 1, "Growl", 1, "Pursuit", 1, "Fury Attack", 11, "Aerial Ace", 15, "Mirror Move", 18, "Assurance", 23, "Agility", 27, "Focus Energy", 32, "Roost", 36, "Drill Peck", 41 },
     abilities = { "Find", "Fly" },
     eggGroup = { POKEMON_EGG_GROUP_FLYING },
     eggId = 13985,

@@ -13,7 +13,7 @@ POKEMON["Burmy"] = {
     catchStorage = -1,
     evolutions = { { name = "Wormadam", requiredLevel = 20, random = true }, { name = "Mothim", requiredLevel = 20, random = true } },
     description = "Even if it is born where there are no cocooning materials, it somehow always ends up with a cloak.",
-    skills = { "Protect", 1, "Tackle", 5, "Struggle Bug", 10, "Snore", 15, "Bug Bite", 20, "Hidden Power", 25 },
+    skills = { "Tackle", 1, "Protect", 1, "Bug Bite", 15, "Hidden Power", 20 },
     abilities = {},
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 30948,

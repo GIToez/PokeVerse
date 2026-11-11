@@ -13,7 +13,7 @@ POKEMON["Porygon2"] = {
     catchStorage = 16233,
     evolutions = { { name = "Porygon-Z", requiredLevel = 60, requiredItems = { ITEMS.DUBIOUS_DISC } } },
     description = "Further research enhanced its abilities. Sometimes, it may exhibit motions that were not programmed.",
-    skills = { "Tackle", 1, "Psybeam", 5, "Confusion", 10, "Discharge", 15, "Recover", 20, "Signal Beam", 25, "Agility", 30, "Tri Attack", 35, "Psychic", 40, "Magic Coat", 45, "Zap Cannon", 50, "Defense Curl", 60, "Electroweb", 65, "Hyper Beam", 70, "Conversion2", 75 },
+    skills = { "Tackle", 1, "Zap Cannon", 1, "Magic Coat", 1, "Conversion2", 1, "Defense Curl", 1, "Psybeam", 7, "Agility", 12, "Recover", 18, "Magnet Rise", 23, "Signal Beam", 29, "Discharge", 40, "Tri Attack", 50, "Hyper Beam", 67 },
     abilities = { "Flash", "Fly", "Blink", "Teleport" },
     eggGroup = {--[[]POKEMON_EGG_GROUP_MINERAL]] },
     eggId = 14045,

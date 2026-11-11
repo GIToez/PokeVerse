@@ -13,7 +13,7 @@ POKEMON["Numel"] = {
     catchStorage = -1,
     evolutions = { { name = "Camerupt", requiredLevel = 33 } },
     description = "Its humped back stores intensely hot magma. In rain, the magma cools, slowing its movement.",
-    skills = { "Tackle", 1, "Ember", 5, "Magnitude", 10, "Flame Burst", 15, "Flamethrower", 20, "Amnesia", 25 },
+    skills = { "Tackle", 1, "Growl", 1, "Ember", 5, "Focus Energy", 8, "Magnitude", 12, "Flame Burst", 15, "Amnesia", 19, "Lava Plume", 22, "Earth Power", 26, "Curse", 29, "Take Down", 31, "Yawn", 36, "Earthquake", 40, "Flamethrower", 43, "Double-Edge", 47 },
     abilities = { "Strenght", "Rock Smash" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 28565,

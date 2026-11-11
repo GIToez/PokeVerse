@@ -13,7 +13,7 @@ POKEMON["Metapod"] = {
     catchStorage = 16011,
     evolutions = { { name = "Butterfree", requiredLevel = 10 } },
     description = "Even though it is encased in a sturdy shell, the body inside is tender. It can't withstand a harsh attack.",
-    skills = { "Tackle", 1, "Bug Bite", 5, "String Shot", 7, "Headbutt", 10, "Harden", 20 },
+    skills = { "Tackle", 1, "Harden", 1, "String Shot", 1, "Bug Bite", 9 },
     abilities = { "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 13981,

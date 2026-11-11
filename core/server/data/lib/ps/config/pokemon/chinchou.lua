@@ -13,7 +13,7 @@ POKEMON["Chinchou"] = {
     catchStorage = 16170,
     evolutions = { { name = "Lanturn", requiredLevel = 27 } },
     description = "On the dark ocean floor, its only means of communication is its constantly flashing lights.",
-    skills = { "Tackle", 1, "Bubble", 5, "Supersonic", 10, "Water Gun", 15, "Spark", 20, "Bubblebeam", 25, "Charge", 30, "Discharge", 35 },
+    skills = { "Tackle", 1, "Bubble", 1, "Supersonic", 1, "Thunder Wave", 6, "Electro Ball", 9, "Water Gun", 12, "Confuse Ray", 17, "Bubblebeam", 20, "Spark", 23, "Signal Beam", 28, "Flail", 31, "Discharge", 34, "Take Down", 39, "Aqua Ring", 42, "Hydro Pump", 45, "Charge", 50 },
     abilities = { POKEMON_ABILITIES.WATERFALL, "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_2 },
     eggId = 17748,

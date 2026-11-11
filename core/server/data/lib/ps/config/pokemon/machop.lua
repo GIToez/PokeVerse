@@ -13,7 +13,7 @@ POKEMON["Machop"] = {
     catchStorage = 16066,
     evolutions = { { name = "Machoke", requiredLevel = 28 } },
     description = "Its whole body is composed of muscles. Even though it's the size of a human child, it can hurl 100 grown-ups.",
-    skills = { "Tackle", 1, "Low Kick", 5, "Karate Chop", 10, "Seismic Toss", 15, "Cross Chop", 20, "Scary Face", 25 },
+    skills = { "Tackle", 1, "Low Kick", 1, "Focus Energy", 3, "Karate Chop", 7, "Foresight", 9, "Low Sweep", 13, "Seismic Toss", 15, "Revenge", 19, "Knock Off", 21, "Vital Throw", 25, "Wake-Up Slap", 27, "Submission", 33, "Bulk Up", 37, "Cross Chop", 39, "Scary Face", 43, "Dynamic Punch", 45 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_HUMAN_LIKE },
     eggId = 14005,

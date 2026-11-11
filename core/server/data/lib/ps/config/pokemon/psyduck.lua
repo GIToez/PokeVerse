@@ -13,7 +13,7 @@ POKEMON["Psyduck"] = {
     catchStorage = 16054,
     evolutions = { { name = "Golduck", requiredLevel = 33 } },
     description = "It is constantly wracked by a headache. When the headache turns intense, it begins using mysterious powers.",
-    skills = { "Tackle", 1, "Scratch", 5, "Water Gun", 10, "Confusion", 15, "Water Pulse", 20, "Fury Swipes", 25, "Disable", 30 },
+    skills = { "Tackle", 1, "Water Sport", 1, "Scratch", 1, "Water Gun", 7, "Confusion", 10, "Fury Swipes", 13, "Water Pulse", 16, "Disable", 19, "Screech", 22, "Zen Headbutt", 25, "Aqua Tail", 28, "Amnesia", 37, "Hydro Pump", 40 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.WATERFALL, "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1, POKEMON_EGG_GROUP_FIELD },
     eggId = 14000,

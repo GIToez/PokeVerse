@@ -13,7 +13,7 @@ POKEMON["Aron"] = {
     catchStorage = -1,
     evolutions = { { name = "Lairon", requiredLevel = 32 } },
     description = "It usually lives deep in mountains. However, hunger may drive it to eat railroad tracks and cars.",
-    skills = { "Tackle", 1, "Headbutt", 5, "Mud-Slap", 10, "Metal Claw", 15, "Rock Tomb", 20, "Rock Slide", 25 },
+    skills = { "Tackle", 1, "Harden", 1, "Mud-Slap", 4, "Headbutt", 7, "Metal Claw", 10, "Rock Tomb", 13, "Protect", 16, "Roar", 19, "Iron Head", 22, "Rock Slide", 25, "Take Down", 28, "Metal Sound", 31, "Iron Tail", 34, "Iron Defense", 37, "Double-Edge", 40, "Heavy Slam", 46, "Metal Burst", 49 },
     abilities = { "Cut", "Strenght", "Rock Smash", POKEMON_ABILITIES.HEADBUTT },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER },
     eggId = 28538,

@@ -13,7 +13,7 @@ POKEMON["Turtwig"] = {
     catchStorage = -1,
     evolutions = { { name = "Grotle", requiredLevel = 18 } },
     description = "The shell on its back is made of soil. On a very healthy TURTWIG, the shell should feel moist.",
-    skills = { "Tackle", 1, "Curse", 5, "Absorb", 10, "Mega Drain", 15, "Razor Leaf", 20, "Bite", 25, "Crunch", 30 },
+    skills = { "Tackle", 1, "Absorb", 9, "Razor Leaf", 13, "Curse", 17, "Bite", 21, "Mega Drain", 25, "Leech Seed", 29, "Synthesis", 33, "Crunch", 37, "Giga Drain", 41, "Leaf Storm", 45 },
     abilities = { "Cut", "Rock Smash", "Headbutt", "Flash", POKEMON_ABILITIES.STRENGTH },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_GRASS },
     eggId = 30938,

@@ -13,7 +13,7 @@ POKEMON["Sneasel"] = {
     catchStorage = 16215,
     evolutions = { { name = "Weavile", requiredLevel = 40, requiredItems = { ITEMS.RAZOR_CLAW }, requiredTime = WORLD_LIGHT_STATE_NIGHT } },
     description = "Vicious in nature, it drives PIDGEY from their nests and feasts on the eggs that are left behind.",
-    skills = { "Tackle", 1, "Bite", 5, "Quick Attack", 10, "Icy Wind", 15, "Ice Shard", 20, "Metal Claw", 25, "Agility", 30, "Knock Off", 35, "Slash", 40, "Punishment", 45, "Foul Play", 50, "Dark Pulse", 55, "Iron Tail", 60, "Ice Beam", 65 },
+    skills = { "Tackle", 1, "Scratch", 1, "Quick Attack", 8, "Faint Attack", 10, "Icy Wind", 14, "Fury Swipes", 16, "Agility", 20, "Metal Claw", 22, "Hone Claws", 25, "Screech", 32, "Slash", 35, "Punishment", 44, "Ice Shard", 47 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Find", "Cut", "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 17770,

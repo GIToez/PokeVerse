@@ -13,7 +13,7 @@ POKEMON["Gible"] = {
     catchStorage = -1,
     evolutions = { { name = "Gabite", requiredLevel = 24 } },
     description = "It attacks using its huge mouth. While its attacks are powerful, it hurts itself out of clumsiness, too.",
-    skills = { "Tackle", 1, "Sand-Attack", 5, "Sand Tomb", 10, "Dragon Breath", 15, "Bulldoze", 20, "Bite", 25, "Slash", 30, "Dragon Claw", 35 },
+    skills = { "Tackle", 1, "Sand-Attack", 3, "Dragon Rage", 7, "Sandstorm", 13, "Take Down", 15, "Sand Tomb", 19, "Slash", 25, "Dragon Claw", 27, "Dig", 31, "Dragon Rush", 37 },
     abilities = { "Cut", "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_DRAGON },
     eggId = 30965,

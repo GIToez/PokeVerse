@@ -13,7 +13,7 @@ POKEMON["Shellder"] = {
     catchStorage = 16090,
     evolutions = { { name = "Cloyster", requiredLevel = 35, requiredItems = { ITEMS.WATER_STONE } } },
     description = "It is encased in a shell that is harder than diamond. Inside, however, it is surprisingly tender.",
-    skills = { "Tackle", 1, "Headbutt", 5, "Supersonic", 10, "Icicle Spear", 15, "Razor Shell", 20, "Icy Wind", 25, "Protect", 30 },
+    skills = { "Tackle", 1, "Water Gun", 1, "Supersonic", 8, "Icicle Spear", 13, "Protect", 16, "Clamp", 25, "Ice Shard", 28, "Razor Shell", 32, "Aurora Beam", 37, "Whirlpool", 40, "Brine", 44, "Iron Defense", 49, "Ice Beam", 52, "Shell Smash", 56, "Hydro Pump", 61 },
     abilities = { "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_3 },
     eggId = 14016,

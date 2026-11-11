@@ -13,7 +13,7 @@ POKEMON["Igglybuff"] = {
     catchStorage = 16174,
     evolutions = { { name = "Jigglypuff", requiredLevel = 25 --[[, requiredItems = {ITEMS.SOOTHE_BELL}]] } },
     description = "Its extremely flexible and elastic body makes it bounce continuously--anytime, anywhere.",
-    skills = { "Tackle", 1, "Pound", 5, "Sing", 10, "Defense Curl", 15, "Sweet Kiss", 20 },
+    skills = { "Tackle", 1, "Sing", 1, "Charm", 1, "Defense Curl", 3, "Pound", 5, "Sweet Kiss", 9, "Copycat", 11 },
     abilities = { POKEMON_ABILITIES.DIG, "Flash", "Headbutt" },
     eggGroup = {},
     eggId = 13993,

@@ -13,7 +13,7 @@ POKEMON["Gastly"] = {
     catchStorage = 16092,
     evolutions = { { name = "Haunter", requiredLevel = 25 } },
     description = "A being that exists as a thin gas. It can topple an Indian elephant by enveloping the prey in two seconds.",
-    skills = { "Tackle", 1, "Lick", 5, "Night Shade", 10, "Hypnosis", 15, "Dream Eater", 20, "Curse", 25, "Spite", 30 },
+    skills = { "Tackle", 1, "Hypnosis", 1, "Lick", 1, "Spite", 5, "Curse", 12, "Night Shade", 15, "Confuse Ray", 19, "Sucker Punch", 22, "Payback", 26, "Shadow Ball", 29, "Dream Eater", 33, "Dark Pulse", 36, "Destiny Bond", 40, "Hex", 43, "Nightmare", 47 },
     abilities = {},
     eggGroup = { POKEMON_EGG_GROUP_AMORPHOUS },
     eggId = 14017,

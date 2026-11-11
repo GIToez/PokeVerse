@@ -13,7 +13,7 @@ POKEMON["Spearow"] = {
     catchStorage = 16021,
     evolutions = { { name = "Fearow", requiredLevel = 20 } },
     description = "It busily flits around here and there. Even if it is frail, it can be a tough foe that uses MIRROR MOVE.",
-    skills = { "Tackle", 1, "Peck", 5, "Fury Attack", 10, "Gust", 15, "Pursuit", 20, "Drill Peck", 25, "Agility", 30 },
+    skills = { "Tackle", 1, "Peck", 1, "Growl", 1, "Pursuit", 8, "Fury Attack", 11, "Aerial Ace", 15, "Mirror Move", 18, "Assurance", 22, "Agility", 25, "Focus Energy", 29, "Roost", 32, "Drill Peck", 36 },
     abilities = { "Find" },
     eggGroup = { POKEMON_EGG_GROUP_FLYING },
     eggId = 13985,

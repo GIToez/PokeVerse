@@ -13,7 +13,7 @@ POKEMON["Shellos"] = {
     catchStorage = -1,
     evolutions = { { name = "Gastrodon", requiredLevel = 30 } },
     description = "Beware of pushing strongly on its squishy body, as it makes a mysterious purple fluid ooze out.",
-    skills = { "Water Gun", 1, "Harden", 5, "Mud-Slap", 10, "Water Pulse", 15, "Ancient Power", 20, "Body Slam", 25, "Muddy Water", 30 },
+    skills = { "Tackle", 1, "Mud-Slap", 1, "Mud Sport", 2, "Harden", 4, "Water Pulse", 7, "Mud Bomb", 11, "Hidden Power", 16, "Rain Dance", 22, "Body Slam", 29, "Muddy Water", 37, "Recover", 46 },
     abilities = { "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1, POKEMON_EGG_GROUP_AMORPHOUS },
     eggId = 30953,

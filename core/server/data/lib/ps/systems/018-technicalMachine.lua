@@ -858,7 +858,9 @@ local function checkTm(cid, ballUid, number, balls)
                 end
             end
 
-            if (hasHeal and not getPokemonSkillMakeHeal(defaultMoves[getBallTmSlot(ballUid, number)])) then
+            -- (a slot past the end of the list replaces no natural move: see getPokemonSkills)
+            local replaced = defaultMoves[getBallTmSlot(ballUid, number)]
+            if (hasHeal and not (replaced and getPokemonSkillMakeHeal(replaced))) then
                 setBallTm(ballUid, number, nil, TM_IDS.NONE)
                 setBallUniqueFromTmSlot(ballUid, number, false)
                 doBallUpdateDescription(ballUid)

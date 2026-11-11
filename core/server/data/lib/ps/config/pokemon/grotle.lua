@@ -13,7 +13,7 @@ POKEMON["Grotle"] = {
     catchStorage = -1,
     evolutions = { { name = "Torterra", requiredLevel = 32 } },
     description = "It knows where pure water wells up. It carries fellow POKEMON there on its back.",
-    skills = { "Tackle", 1, "Curse", 5, "Absorb", 10, "Mega Drain", 15, "Razor Leaf", 20, "Bite", 25, "Crunch", 30, "Giga Drain", 40, "Leech Seed", 45, "Leaf Storm", 50 },
+    skills = { "Tackle", 1, "Absorb", 1, "Razor Leaf", 13, "Curse", 17, "Bite", 22, "Mega Drain", 27, "Leech Seed", 32, "Synthesis", 37, "Crunch", 42, "Giga Drain", 47, "Leaf Storm", 52 },
     abilities = { "Cut", "Rock Smash", "Headbutt", "Flash", POKEMON_ABILITIES.STRENGTH },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_GRASS },
     eggId = 30938,

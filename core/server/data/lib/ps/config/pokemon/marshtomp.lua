@@ -13,7 +13,7 @@ POKEMON["Marshtomp"] = {
     catchStorage = 16259,
     evolutions = { { name = "Swampert", requiredLevel = 36 } },
     description = "Its sturdy legs give it sure footing, even in mud. It burrows into dirt to sleep.",
-    skills = { "Tackle", 1, "Water Gun", 5, "Mud-Slap", 10, "Rock Throw", 15, "Take Down", 20, "Mud Shot", 25, "Waterfall", 30, "Muddy Water", 40, "Rock Slide", 45, "Earthquake", 50 },
+    skills = { "Tackle", 1, "Mud Shot", 1, "Growl", 1, "Water Gun", 1, "Mud-Slap", 1, "Foresight", 12, "Bide", 18, "Mud Sport", 20, "Mud Bomb", 22, "Rock Throw", 25, "Rock Slide", 28, "Protect", 32, "Whirlpool", 33, "Muddy Water", 38, "Hydro Pump", 41, "Take Down", 42, "Earthquake", 48, "Endeavor", 52 },
     abilities = { "Surf", "Strenght", "Rock Smash", "Waterfall", "Dive" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_WATER_1 },
     eggId = 28562,

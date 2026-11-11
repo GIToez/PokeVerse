@@ -13,7 +13,7 @@ POKEMON["Machoke"] = {
     catchStorage = 16067,
     evolutions = { { name = "Machamp", requiredLevel = 50 } },
     description = "Its formidable body never gets tired. It helps people by doing work such as the moving of heavy goods.",
-    skills = { "Tackle", 1, "Low Kick", 5, "Karate Chop", 10, "Seismic Toss", 15, "Cross Chop", 20, "Scary Face", 25, "Focus Energy", 35, "Wake-Up Slap", 40, "Dynamic Punch", 45 },
+    skills = { "Tackle", 1, "Low Kick", 1, "Focus Energy", 1, "Karate Chop", 1, "Foresight", 9, "Low Sweep", 13, "Seismic Toss", 15, "Revenge", 19, "Knock Off", 21, "Vital Throw", 25, "Wake-Up Slap", 27, "Submission", 37, "Bulk Up", 43, "Cross Chop", 47, "Scary Face", 53, "Dynamic Punch", 57 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_HUMAN_LIKE },
     eggId = 14005,

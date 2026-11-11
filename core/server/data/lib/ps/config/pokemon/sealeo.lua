@@ -13,7 +13,7 @@ POKEMON["Sealeo"] = {
     catchStorage = -1,
     evolutions = { { name = "Walrein", requiredLevel = 44 } },
     description = "It has a very sensitive nose. It touches new things with its nose to examine them.",
-    skills = { "Tackle", 1, "Powder Snow", 5, "Ice Ball", 10, "Water Gun", 15, "Rollout", 20, "Defense Curl", 25, "Rest", 35, "Aurora Beam", 40, "Body Slam", 45 },
+    skills = { "Tackle", 1, "Defense Curl", 1, "Powder Snow", 1, "Growl", 1, "Water Gun", 1, "Rollout", 5, "Encore", 9, "Ice Ball", 13, "Brine", 17, "Aurora Beam", 21, "Body Slam", 26, "Rest", 31, "Snore", 31, "Hail", 38, "Blizzard", 45, "Sheer Cold", 52 },
     abilities = { "Strength", "Surf", "Rock Smash", "Waterfall", "Dive" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD, POKEMON_EGG_GROUP_WATER_1 },
     eggId = 28580,

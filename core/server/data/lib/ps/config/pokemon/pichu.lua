@@ -13,7 +13,7 @@ POKEMON["Pichu"] = {
     catchStorage = 16172,
     evolutions = { { name = "Pikachu", requiredLevel = 25 --[[, requiredItems = {ITEMS.SOOTHE_BELL}]] } },
     description = "Despite its small size, it can zap even adult humans. However, if it does so, it also surprises itself.",
-    skills = { "Tackle", 1, "Thunder Shock", 5, "Charm", 10, "Sweet Kiss", 15, "Nasty Plot", 20 },
+    skills = { "Tackle", 1, "Thunder Shock", 1, "Charm", 1, "Sweet Kiss", 10, "Nasty Plot", 13, "Thunder Wave", 18 },
     abilities = { "Flash", "Headbutt" },
     eggGroup = {},
     eggId = 13987,

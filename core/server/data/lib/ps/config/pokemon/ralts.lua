@@ -13,7 +13,7 @@ POKEMON["Ralts"] = {
     catchStorage = -1,
     evolutions = { { name = "Kirlia", requiredLevel = 20 } },
     description = "If its horns capture the warm feelings of people or Pokemon, its body warms up slightly.",
-    skills = { "Tackle", 1, "Confusion", 5, "Magical Leaf", 10, "Draining Kiss", 15, "Disarming Voice", 20, "Hypnosis", 25 },
+    skills = { "Tackle", 1, "Growl", 1, "Confusion", 4, "Double Team", 6, "Disarming Voice", 11, "Magical Leaf", 17, "Heal Pulse", 19, "Draining Kiss", 22, "Calm Mind", 24, "Psychic", 27, "Future Sight", 32, "Charm", 34, "Hypnosis", 37, "Dream Eater", 39, "Stored Power", 42 },
     abilities = {POKEMON_ABILITIES.BLINK, POKEMON_ABILITIES.TELEPORT, POKEMON_ABILITIES.FIND},
     eggGroup = { POKEMON_EGG_GROUP_AMORPHOUS },
     eggId = 28568,

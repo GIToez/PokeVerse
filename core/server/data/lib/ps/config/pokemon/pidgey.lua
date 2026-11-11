@@ -13,7 +13,7 @@ POKEMON["Pidgey"] = {
     catchStorage = 16016,
     evolutions = { { name = "Pidgeotto", requiredLevel = 18 } },
     description = "Does not like to fight. It hides in tall grass and so on, foraging for food such as small bugs.",
-    skills = { "Tackle", 1, "Gust", 5, "Quick Attack", 10, "Sand-Attack", 15, "Drill Peck", 20, "Wing Attack", 25 },
+    skills = { "Tackle", 1, "Sand-Attack", 5, "Gust", 9, "Quick Attack", 13, "Whirlwind", 17, "Twister", 21, "Feather Dance", 25, "Agility", 29, "Wing Attack", 33, "Roost", 37, "Tailwind", 41, "Mirror Move", 45, "Air Slash", 49, "Hurricane", 53 },
     abilities = { "Find" },
     eggGroup = { POKEMON_EGG_GROUP_FLYING },
     eggId = 13983,

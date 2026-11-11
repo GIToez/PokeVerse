@@ -13,7 +13,7 @@ POKEMON["Swablu"] = {
     catchStorage = -1,
     evolutions = { { name = "Altaria", requiredLevel = 35 } },
     description = "For some reason, it likes to land on people's heads softly and act like it's a hat.",
-    skills = { "Tackle", 1, "Peck", 5, "Astonish", 10, "Disarming Voice", 15, "Sing", 20, "Dragon Pulse", 25 },
+    skills = { "Tackle", 1, "Peck", 1, "Growl", 1, "Astonish", 3, "Sing", 5, "Fury Attack", 7, "Safeguard", 9, "Disarming Voice", 11, "Mist", 14, "Take Down", 23, "Refresh", 26, "Mirror Move", 30, "Cotton Guard", 34, "Dragon Pulse", 38, "Moonblast", 46 },
     abilities = { "Fly" },
     eggGroup = { POKEMON_EGG_GROUP_DRAGON, POKEMON_EGG_GROUP_FLYING },
     eggId = 28584,

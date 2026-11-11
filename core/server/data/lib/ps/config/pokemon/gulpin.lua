@@ -13,7 +13,7 @@ POKEMON["Gulpin"] = {
     catchStorage = -1,
     evolutions = { { name = "Swalot", requiredLevel = 26 } },
     description = "It has a small heart and brain. Its stomach comprises most of its body, with enzymes to dissolve anything.",
-    skills = { "Tackle", 1, "Acid Spray", 5, "Sludge", 10, "Poison Gas", 15, "Wring Out", 20, "Yawn", 25 },
+    skills = { "Tackle", 1, "Pound", 1, "Yawn", 5, "Poison Gas", 8, "Sludge", 10, "Amnesia", 12, "Acid Spray", 17, "Encore", 20, "Toxic", 25, "Stockpile", 28, "Spit Up", 28, "Swallow", 28, "Sludge Bomb", 33, "Gastro Acid", 36, "Belch", 41, "Wring Out", 44, "Gunk Shot", 49 },
     abilities = { "Strength", "Rock Smash" },
     eggGroup = { POKEMON_EGG_GROUP_AMORPHOUS },
     eggId = 28552,

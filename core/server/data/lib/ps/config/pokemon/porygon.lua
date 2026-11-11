@@ -13,7 +13,7 @@ POKEMON["Porygon"] = {
     catchStorage = 16137,
     evolutions = { { name = "Porygon2", requiredLevel = 55, requiredItems = { ITEMS.UPGRADE } } },
     description = "Using the most advanced technologies, scientists finally succeeded in making the first artificial POKEMON.",
-    skills = { "Tackle", 1, "Psybeam", 5, "Confusion", 10, "Discharge", 15, "Recover", 20, "Signal Beam", 25, "Agility", 30, "Tri Attack", 35, "Psychic", 40, "Magic Coat", 45, "Zap Cannon", 50 },
+    skills = { "Tackle", 1, "Conversion2", 1, "Psybeam", 7, "Agility", 12, "Recover", 18, "Magnet Rise", 23, "Signal Beam", 29, "Discharge", 40, "Tri Attack", 50, "Magic Coat", 56, "Zap Cannon", 62 },
     abilities = { "Fly", "Blink", "Teleport", "Flash" },
     eggGroup = {--[[POKEMON_EGG_GROUP_MINERAL]] },
     eggId = 14045,

@@ -13,7 +13,7 @@ POKEMON["Magneton"] = {
     catchStorage = 16082,
     evolutions = { { name = "Magnezone", requiredLevel = 60, requiredItems = { ITEMS.THUNDERSTONE } } },
     description = "A linked cluster formed of several MAGNEMITE. It discharges powerful magnetic waves at high voltage.",
-    skills = { "Tackle", 1, "Thunder Shock", 5, "Supersonic", 10, "Sonic Boom", 15, "Thunder Wave", 20, "Electro Ball", 25, "Thunderbolt", 35, "Magnet Bomb", 40, "Discharge", 45, "Mirror Shot", 50, "Flash Cannon", 55, "Metal Sound", 60, "Zap Cannon", 65 },
+    skills = { "Tackle", 1, "Tri Attack", 1, "Zap Cannon", 1, "Supersonic", 1, "Thunder Shock", 1, "Thunder Wave", 1, "Magnet Bomb", 11, "Light Screen", 13, "Sonic Boom", 17, "Spark", 19, "Mirror Shot", 23, "Metal Sound", 25, "Electro Ball", 29, "Flash Cannon", 33, "Screech", 39, "Discharge", 43, "Magnet Rise", 53, "Gyro Ball", 59 },
     abilities = { "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_MINERAL },
     eggId = 14011,

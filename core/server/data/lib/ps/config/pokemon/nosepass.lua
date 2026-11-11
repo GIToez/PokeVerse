@@ -13,7 +13,7 @@ POKEMON["Nosepass"] = {
     catchStorage = -1,
     evolutions = { { name = "Probopass", requiredLevel = 40, requiredItems = { ITEMS.THUNDERSTONE } } },
     description = "Its magnetic nose always faces north and draws iron objects to its body to protect itself better.",
-    skills = { "Tackle", 1, "Rock Throw", 5, "Rock Slide", 10, "Rock Blast", 15, "Harden", 20, "Spark", 25, "Discharge", 30, "Rest", 35, "Thunder Wave", 40, "Earth Power", 45, "Power Gem", 50, "Sandstorm", 55, "Zap Cannon", 60, "Stone Edge", 65, "Explosion", 70 },
+    skills = { "Tackle", 1, "Harden", 4, "Rock Throw", 10, "Thunder Wave", 13, "Rest", 16, "Spark", 19, "Rock Slide", 22, "Power Gem", 25, "Rock Blast", 28, "Discharge", 31, "Sandstorm", 34, "Earth Power", 37, "Stone Edge", 40, "Zap Cannon", 43 },
     abilities = { "Strenght", "Rock Smash" },
     eggGroup = { POKEMON_EGG_GROUP_MINERAL },
     eggId = 28564,

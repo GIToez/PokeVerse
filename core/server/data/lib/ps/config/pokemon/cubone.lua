@@ -13,7 +13,7 @@ POKEMON["Cubone"] = {
     catchStorage = 16104,
     evolutions = { { name = "Marowak", requiredLevel = 28 } },
     description = "It wears the skull of its dead mother on its head. When it becomes lonesome, it is said to cry loudly.",
-    skills = { "Tackle", 1, "Bone Club", 5, "Headbutt", 10, "Bonemerang", 15, "Rage", 20, "Bone Rush", 25, "Focus Energy", 30 },
+    skills = { "Tackle", 1, "Growl", 1, "Bone Club", 7, "Headbutt", 11, "Focus Energy", 17, "Bonemerang", 21, "Rage", 23, "Thrash", 31, "Endeavor", 41, "Double-Edge", 43, "Bone Rush", 51 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Headbutt", "Rock Smash" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER },
     eggId = 14023,

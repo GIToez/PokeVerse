@@ -13,7 +13,7 @@ POKEMON["Meditite"] = {
     catchStorage = -1,
     evolutions = { { name = "Medicham", requiredLevel = 37 } },
     description = "It always trains deep in mountains. It levitates when it heightens its spiritual power through meditation.",
-    skills = { "Tackle", 1, "Confusion", 5, "Force Palm", 10, "Drain Punch", 15, "Hidden Power", 20, "Psyshock", 25, "Reversal", 30, "Bide", 35 },
+    skills = { "Tackle", 1, "Bide", 1, "Meditate", 4, "Confusion", 7, "Detect", 9, "Endure", 12, "Feint", 15, "Force Palm", 17, "Hidden Power", 20, "Calm Mind", 23, "Mind Reader", 25, "Hi Jump Kick", 28, "Reversal", 39, "Recover", 41, "Counter", 44 },
     abilities = { "Strenght", "Flash", "Rock Smash", POKEMON_ABILITIES.BLINK, POKEMON_ABILITIES.TELEPORT },
     eggGroup = { POKEMON_EGG_GROUP_HUMAN_LIKE },
     eggId = 28560,

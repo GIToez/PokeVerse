@@ -13,7 +13,7 @@ POKEMON["Drowzee"] = {
     catchStorage = 16096,
     evolutions = { { name = "Hypno", requiredLevel = 26 } },
     description = "A descendent of the legendary animal baku, which is said to eat dreams. It is skilled at hypnotism.",
-    skills = { "Tackle", 1, "Pound", 5, "Confusion", 10, "Headbutt", 15, "Hypnosis", 20, "Poison Gas", 25, "Psybeam", 30, "Disable", 35 },
+    skills = { "Tackle", 1, "Pound", 1, "Hypnosis", 1, "Disable", 5, "Confusion", 9, "Headbutt", 13, "Poison Gas", 17, "Meditate", 21, "Psybeam", 25, "Wake-Up Slap", 29, "Synchronoise", 37, "Zen Headbutt", 41, "Psychic", 49, "Nasty Plot", 53, "Psyshock", 57, "Future Sight", 61 },
     abilities = { "Blink", "Headbutt", "Teleport", "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_HUMAN_LIKE },
     eggId = 14019,

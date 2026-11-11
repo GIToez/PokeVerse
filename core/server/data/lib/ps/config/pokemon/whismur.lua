@@ -13,7 +13,7 @@ POKEMON["Whismur"] = {
     catchStorage = -1,
     evolutions = { { name = "Loudred", requiredLevel = 20 } },
     description = "It usually murmurs but starts crying loudly if it senses danger. It stops when its ear covers are shut.",
-    skills = { "Tackle", 1, "Pound", 5, "Echoed Voice", 10, "Astonish", 15, "Stomp", 20, "Uproar", 25, "Sleep Talk", 30 },
+    skills = { "Tackle", 1, "Pound", 1, "Echoed Voice", 4, "Astonish", 8, "Screech", 15, "Supersonic", 18, "Stomp", 22, "Uproar", 25, "Roar", 29, "Rest", 32, "Sleep Talk", 36, "Hyper Voice", 39, "Synchronoise", 43 },
     abilities = {  },
     eggGroup = { POKEMON_EGG_GROUP_FIELD, POKEMON_EGG_GROUP_MONSTER },
     eggId = 28593,

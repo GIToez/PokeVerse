@@ -13,7 +13,7 @@ POKEMON["Onix"] = {
     catchStorage = 16095,
     evolutions = { { name = "Steelix", requiredLevel = 55, requiredItems = { ITEMS.METAL_COAT } } },
     description = "It usually lives underground. It searches for food while boring its way through the ground at 50 miles per hour.",
-    skills = { "Tackle", 1, "Rock Throw", 5, "Slam", 10, "Rage", 15, "Rock Blast", 20, "Harden", 25, "Smack Down", 30, "Stealth Rock", 35, "Iron Tail", 40, "Sand Tomb", 45, "Earthquake", 50 },
+    skills = { "Tackle", 1, "Mud Sport", 1, "Harden", 1, "Curse", 4, "Rock Throw", 7, "Rock Tomb", 10, "Rage", 13, "Stealth Rock", 16, "Gyro Ball", 20, "Smack Down", 22, "Dragon Breath", 25, "Slam", 28, "Screech", 31, "Rock Slide", 34, "Sand Tomb", 37, "Iron Tail", 40, "Dig", 43, "Stone Edge", 46, "Double-Edge", 49, "Sandstorm", 52 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Ride", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MINERAL },
     eggId = 14018,

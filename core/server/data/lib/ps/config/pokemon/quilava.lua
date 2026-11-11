@@ -13,7 +13,7 @@ POKEMON["Quilava"] = {
     catchStorage = 16156,
     evolutions = { { name = "Typhlosion", requiredLevel = 36 } },
     description = "This POKEMON is fully covered by nonflammable fur. It can withstand any kind of fire attack.",
-    skills = { "Tackle", 1, "Ember", 5, "Quick Attack", 10, "Flame Wheel", 15, "Smoke Screen", 20, "Swift", 25, "Flamethrower", 30, "Lava Plume", 40, "Flame Charge", 45, "Defense Curl", 50 },
+    skills = { "Tackle", 1, "Smoke Screen", 1, "Ember", 10, "Quick Attack", 13, "Flame Wheel", 20, "Defense Curl", 24, "Swift", 31, "Flame Charge", 35, "Lava Plume", 42, "Flamethrower", 46, "Inferno", 53, "Rollout", 57, "Double-Edge", 64, "Eruption", 75 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Cut", "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 17742,

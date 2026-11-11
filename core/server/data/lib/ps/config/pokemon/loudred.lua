@@ -13,7 +13,7 @@ POKEMON["Loudred"] = {
     catchStorage = -1,
     evolutions = { { name = "Exploud", requiredLevel = 40 } },
     description = "It shouts loudly by inhaling air, and then uses its well-developed stomach muscles to exhale.",
-    skills = { "Tackle", 1, "Pound", 5, "Echoed Voice", 10, "Astonish", 15, "Stomp", 20, "Uproar", 25, "Sleep Talk", 30, "Rest", 35, "Bite", 40, "Synchronoise", 45 },
+    skills = { "Tackle", 1, "Bite", 1, "Pound", 1, "Echoed Voice", 1, "Astonish", 1, "Screech", 15, "Supersonic", 18, "Stomp", 23, "Uproar", 27, "Roar", 32, "Rest", 36, "Sleep Talk", 41, "Hyper Voice", 45, "Synchronoise", 50 },
     abilities = {  },
     eggGroup = { POKEMON_EGG_GROUP_FIELD, POKEMON_EGG_GROUP_MONSTER },
     eggId = 28593,

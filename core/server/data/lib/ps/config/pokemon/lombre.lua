@@ -13,7 +13,7 @@ POKEMON["Lombre"] = {
     catchStorage = -1,
     evolutions = { { name = "Ludicolo", requiredLevel = 55, requiredItems = { ITEMS.WATER_STONE } } },
     description = "It lives at the water's edge where it is sunny. It sleeps on a bed of water-grass by day and becomes active at night.",
-    skills = { "Tackle", 1, "Absorb", 5, "Bubble", 10, "Bubblebeam", 15, "Mist", 20, "Mega Drain", 25, "Energy Ball", 35, "Zen Headbutt", 40, "Razor Leaf", 45, "Hydro Pump", 50 },
+    skills = { "Tackle", 1, "Astonish", 1, "Growl", 3, "Absorb", 6, "Bubble", 9, "Fury Swipes", 12, "Mist", 15, "Fake Out", 16, "Mega Drain", 18, "Water Sport", 20, "Bubblebeam", 24, "Rain Dance", 27, "Nature Power", 28, "Giga Drain", 30, "Uproar", 32, "Knock Off", 36, "Energy Ball", 36, "Zen Headbutt", 40, "Hydro Pump", 44 },
     abilities = { "Surf", "Flash", "Strength", "Rock Smash", "Waterfall", "Dive" },
     eggGroup = { POKEMON_EGG_GROUP_GRASS, POKEMON_EGG_GROUP_WATER_1 },
     eggId = 28555,

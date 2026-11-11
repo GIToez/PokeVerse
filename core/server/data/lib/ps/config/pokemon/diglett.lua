@@ -13,7 +13,7 @@ POKEMON["Diglett"] = {
     catchStorage = 16050,
     evolutions = { { name = "Dugtrio", requiredLevel = 26 } },
     description = "It burrows through the ground at a shallow depth. It leaves raised earth in its wake, making it easy to spot.",
-    skills = { "Tackle", 1, "Scratch", 5, "Sand-Attack", 10, "Magnitude", 15, "Mud Bomb", 20, "Slash", 25 },
+    skills = { "Tackle", 1, "Sand-Attack", 1, "Scratch", 1, "Growl", 4, "Astonish", 7, "Mud-Slap", 10, "Magnitude", 14, "Bulldoze", 18, "Sucker Punch", 22, "Mud Bomb", 25, "Earth Power", 28, "Dig", 31, "Slash", 35, "Earthquake", 39, "Fissure", 43 },
     abilities = { POKEMON_ABILITIES.DIG, "Cut" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 13998,

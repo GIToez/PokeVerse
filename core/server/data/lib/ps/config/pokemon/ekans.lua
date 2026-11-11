@@ -13,7 +13,7 @@ POKEMON["Ekans"] = {
     catchStorage = 16023,
     evolutions = { { name = "Arbok", requiredLevel = 22 } },
     description = "A very common sight in grassland, etc. It flicks its tongue in and out to sense danger in its surroundings.",
-    skills = { "Tackle", 1, "Bite", 5, "Poison Sting", 10, "Glare", 15, "Acid", 20, "Acid Spray", 25, "Mud Bomb", 30 },
+    skills = { "Tackle", 1, "Wrap", 1, "Poison Sting", 4, "Bite", 9, "Glare", 12, "Screech", 17, "Acid", 20, "Stockpile", 25, "Swallow", 25, "Spit Up", 25, "Acid Spray", 28, "Mud Bomb", 33, "Gastro Acid", 36, "Belch", 38, "Haze", 41, "Coil", 44, "Gunk Shot", 49 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD, POKEMON_EGG_GROUP_DRAGON },
     eggId = 13986,

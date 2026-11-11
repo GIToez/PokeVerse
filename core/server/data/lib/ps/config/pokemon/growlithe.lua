@@ -13,7 +13,7 @@ POKEMON["Growlithe"] = {
     catchStorage = 16058,
     evolutions = { { name = "Arcanine", requiredLevel = 35, requiredItems = { ITEMS.FIRE_STONE } } },
     description = "Very friendly and faithful to people. It will try to repel enemies by barking and biting.",
-    skills = { "Tackle", 1, "Bite", 5, "Ember", 10, "Flame Wheel", 15, "Fire Fang", 20, "Flamethrower", 25, "Agility", 30 },
+    skills = { "Tackle", 1, "Bite", 1, "Roar", 1, "Ember", 6, "Flame Wheel", 17, "Reversal", 19, "Fire Fang", 21, "Take Down", 23, "Flame Burst", 28, "Agility", 30, "Flamethrower", 34, "Crunch", 39, "Heat Wave", 41, "Outrage", 43, "Flare Blitz", 45 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Find", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 14002,

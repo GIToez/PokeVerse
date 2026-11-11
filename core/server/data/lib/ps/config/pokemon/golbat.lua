@@ -13,7 +13,7 @@ POKEMON["Golbat"] = {
     catchStorage = 16042,
     evolutions = { { name = "Crobat", requiredLevel = 50, requiredItems = { ITEMS.SOOTHE_BELL } } },
     description = "It clamps down on its prey with needle-sharp fangs and drains over 10 ounces of blood in one gulp.",
-    skills = { "Tackle", 1, "Leech Life", 5, "Bite", 10, "Swift", 15, "Wing Attack", 20, "Supersonic", 25, "Poison Fang", 30, "Air Cutter", 40, "Air Slash", 45 },
+    skills = { "Tackle", 1, "Screech", 1, "Absorb", 1, "Supersonic", 1, "Astonish", 1, "Bite", 1, "Wing Attack", 13, "Confuse Ray", 17, "Air Cutter", 19, "Swift", 24, "Poison Fang", 27, "Leech Life", 35, "Haze", 40, "Venoshock", 43, "Air Slash", 48, "Quick Guard", 51 },
     abilities = { "Find" },
     eggGroup = { POKEMON_EGG_GROUP_FLYING },
     eggId = 13994,

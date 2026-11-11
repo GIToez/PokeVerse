@@ -19,6 +19,10 @@ Project rules for agents working on PokeVerse (moved from `.cursor/rules/`).
 - Tests: `scripts/test-server-linux.sh`, the in-game suite `scripts/testing/vocation-test-talkaction.lua`,
   and the PR workflows (Live server rehearsal, Client release build).
 - Commit messages say what changed in plain words: "Area: what changed".
+- Pokemon follow the official games (PokeAPI, Gen 7): stats, evolution levels and level-up moves.
+  Level-up moves (`skills`) are written by `scripts/make-pokemon-moves.py`; keep each list in level
+  order with Tackle first (the moves bar and TM/egg slots go by position). `docs/missing-moves.md`
+  lists the official moves the game doesn't have yet.
 
 
 ## Client modules: Redemption first

@@ -13,7 +13,7 @@ POKEMON["Geodude"] = {
     catchStorage = 16074,
     evolutions = { { name = "Graveler", requiredLevel = 25 } },
     description = "Its round form makes it easy to pick up. Some people have used them to hurl at each other in a snowball fight.",
-    skills = { "Tackle", 1, "Rock Throw", 5, "Defense Curl", 10, "Magnitude", 15, "Rock Blast", 20, "Selfdestruct", 25 },
+    skills = { "Tackle", 1, "Defense Curl", 1, "Mud Sport", 4, "Rollout", 10, "Magnitude", 12, "Rock Throw", 16, "Smack Down", 18, "Bulldoze", 22, "Selfdestruct", 24, "Stealth Rock", 28, "Rock Blast", 30, "Earthquake", 34, "Explosion", 36, "Double-Edge", 40, "Stone Edge", 42 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MINERAL },
     eggId = 14008,

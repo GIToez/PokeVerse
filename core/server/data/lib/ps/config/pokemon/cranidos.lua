@@ -13,7 +13,7 @@ POKEMON["Cranidos"] = {
     catchStorage = -1,
     evolutions = { { name = "Rampardos", requiredLevel = 30 } },
     description = "A lifelong jungle dweller from 100 million years ago, it would snap obstructing trees with head butts.",
-    skills = { "Headbutt", 1, "Focus Energy", 5, "Assurance", 10, "Ancient Power", 15, "Slam", 20, "Zen Headbutt", 25, "Take Down", 30 },
+    skills = { "Tackle", 1, "Headbutt", 1, "Focus Energy", 6, "Pursuit", 10, "Take Down", 15, "Scary Face", 19, "Assurance", 24, "Chip Away", 28, "Ancient Power", 33, "Zen Headbutt", 37, "Screech", 42, "Head Smash", 46 },
     abilities = { "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER },
     eggId = 30946,

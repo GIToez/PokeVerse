@@ -16,7 +16,7 @@ POKEMON["Slowpoke"] = {
         { name = "Slowking", requiredLevel = 35, requiredItems = { ITEMS.KINGS_ROCK } }
     },
     description = "It is always vacantly lost in thought, but no one knows what it is thinking about. It is good at fishing with its tail.",
-    skills = { "Tackle", 1, "Water Gun", 5, "Confusion", 10, "Disable", 15, "Headbutt", 20, "Water Pulse", 25, "Amnesia", 30 },
+    skills = { "Tackle", 1, "Curse", 1, "Yawn", 1, "Growl", 5, "Water Gun", 9, "Confusion", 14, "Disable", 19, "Headbutt", 23, "Water Pulse", 28, "Zen Headbutt", 32, "Amnesia", 41, "Psychic", 45, "Rain Dance", 49, "Heal Pulse", 58 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Headbutt", "Rock Smash", "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_WATER_1 },
     eggId = 14010,

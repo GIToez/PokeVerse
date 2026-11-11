@@ -13,7 +13,7 @@ POKEMON["Yanma"] = {
     catchStorage = 16193,
     evolutions = { { name = "Yanmega", requiredLevel = 40 } },
     description = "Its large eyes can scan 360 degrees. It looks in all directions to seek out insects as its prey.",
-    skills = { "Tackle", 1, "Quick Attack", 5, "Sonic Boom", 10, "U-turn", 15, "Bug Buzz", 20, "Aerial Ace", 25, "Air Slash", 30, "Hypnosis", 35, "Wing Attack", 40, "Pursuit", 45, "Double-Edge", 50, "Ancient Power", 55, "Screech", 60, "Uproar", 65 },
+    skills = { "Tackle", 1, "Foresight", 1, "Quick Attack", 6, "Double Team", 11, "Sonic Boom", 14, "Detect", 17, "Supersonic", 22, "Uproar", 27, "Pursuit", 30, "Ancient Power", 33, "Hypnosis", 38, "Wing Attack", 43, "Screech", 46, "U-turn", 49, "Air Slash", 54, "Bug Buzz", 57 },
     abilities = { "Find", "Flash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 17757,

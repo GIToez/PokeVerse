@@ -13,7 +13,7 @@ POKEMON["Lickitung"] = {
     catchStorage = 16108,
     evolutions = { { name = "Lickilicky", requiredLevel = 40 } },
     description = "Its tongue is twice the length of its body. It can be moved like an arm for grabbing food and attacking.",
-    skills = { "Tackle", 1, "Lick", 5, "Stomp", 10, "Slam", 15, "Rollout", 20, "Defense Curl", 25, "Knock Off", 30, "Chip Away", 35, "Iron Tail", 40, "Zen Headbutt", 45, "Disable", 50, "Power Whip", 55, "Giga Impact", 60, "Focus Punch", 65 },
+    skills = { "Tackle", 1, "Lick", 1, "Supersonic", 5, "Defense Curl", 9, "Knock Off", 13, "Wrap", 17, "Stomp", 21, "Disable", 25, "Slam", 29, "Rollout", 33, "Chip Away", 37, "Refresh", 45, "Screech", 49, "Power Whip", 53, "Wring Out", 57 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER },
     eggId = 14026,

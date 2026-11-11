@@ -13,7 +13,7 @@ POKEMON["Venonat"] = {
     catchStorage = 16048,
     evolutions = { { name = "Venomoth", requiredLevel = 31 } },
     description = "Its eyes act as radar, enabling it to be active in darkness. The eyes can also shoot powerful beams.",
-    skills = { "Tackle", 1, "Bug Bite", 5, "Confusion", 10, "Poison Powder", 15, "Leech Life", 20, "Poison Fang", 25, "Stun Spore", 30, "Sleep Powder", 35 },
+    skills = { "Tackle", 1, "Disable", 1, "Foresight", 1, "Supersonic", 5, "Confusion", 11, "Poison Powder", 13, "Psybeam", 17, "Stun Spore", 23, "Signal Beam", 25, "Sleep Powder", 29, "Leech Life", 35, "Zen Headbutt", 37, "Poison Fang", 41, "Psychic", 47 },
     abilities = { "Find", "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 13997,

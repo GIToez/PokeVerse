@@ -13,7 +13,7 @@ POKEMON["Seedot"] = {
     catchStorage = -1,
     evolutions = { { name = "Nuzleaf", requiredLevel = 14 } },
     description = "It attaches itself to a tree branch using the top of its head. Strong winds can sometimes make it fall.",
-    skills = { "Tackle", 1, "Razor Leaf", 5, "Pound", 7, "Fake Out", 10 },
+    skills = { "Tackle", 1, "Bide", 1, "Harden", 3, "Nature Power", 15, "Synthesis", 21, "Sunny Day", 27, "Explosion", 33 },
     abilities = { "Flash", "Rock Smash" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD, POKEMON_EGG_GROUP_GRASS },
     eggId = 28572,

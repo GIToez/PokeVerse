@@ -13,7 +13,7 @@ POKEMON["Squirtle"] = {
     catchStorage = 16007,
     evolutions = { { name = "Wartortle", requiredLevel = 16 } },
     description = "When it retracts its long neck into its shell, it squirts out water with vigorous force.",
-    skills = { "Tackle", 1, "Bite", 5, "Bubble", 10, "Water Gun", 15, "Protect", 20, "Bubblebeam", 25, "Water Pulse", 30 },
+    skills = { "Tackle", 1, "Water Gun", 7, "Bubble", 13, "Bite", 16, "Rapid Spin", 19, "Protect", 22, "Water Pulse", 25, "Aqua Tail", 28, "Skull Bash", 31, "Iron Defense", 34, "Rain Dance", 37, "Hydro Pump", 40 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.WATERFALL, "Surf", "Dive", "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_WATER_1 },
     eggId = 13980,

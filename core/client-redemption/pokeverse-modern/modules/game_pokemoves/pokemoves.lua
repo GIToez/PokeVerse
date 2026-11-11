@@ -1,5 +1,6 @@
 -- Moves bar: the legacy game_pokemoves in the PokeVerse HUD style.
--- Same server commands (m1..m12 to use a move); movable, horizontal or vertical. Each move shows how it
+-- Same server commands (m1..m24 to use a move); movable, horizontal or vertical, in rows of 12: a Pokemon
+-- with more than 12 moves gets a second row (a second column when vertical). Each move shows how it
 -- does against the attacked Pokemon (an arrow badge), and Shift+click opens its card with the boosted
 -- power (ExtendedIds.MoveInfo; the server works the numbers out).
 pokemonMovesWindow = nil
@@ -24,7 +25,8 @@ local CATEGORIES = { [0] = 'Physical', 'Special', 'Status' }
 local KIT = '/images/pokeverse-ui/'
 local COOLDOWN_FRAMES = 24 -- cooldown.png, 40x40 each
 
-local MOVE_COUNT = 12
+local MOVE_COUNT = 24
+local ROW = 12 -- moves per row; the second row's keys are the first row's with Shift
 local KEYBIND_CATEGORY = 'Pokemon'
 local ORDER_ACTION = 'Order'
 local DEX_ACTION = 'Use Pokedex on target'
@@ -45,8 +47,12 @@ end
 local MOVE_KEYS = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=' }
 
 -- The number row: plain with the chat off (WASD), with Ctrl while typing; F1-F6 call Pokemon (game_pokebar).
+-- Moves 13-24 (the second row) are the same keys with Shift: Shift+1 is move 13.
 local function moveKeys(index)
-    local key = MOVE_KEYS[index]
+    local key = MOVE_KEYS[(index - 1) % ROW + 1]
+    if index > ROW then
+        return { [CHAT_MODE.ON] = 'Ctrl+Shift+' .. key, [CHAT_MODE.OFF] = 'Shift+' .. key }, ''
+    end
     return { [CHAT_MODE.ON] = 'Ctrl+' .. key, [CHAT_MODE.OFF] = key }, ''
 end
 
@@ -97,23 +103,32 @@ local function updateKeyLabels()
 end
 
 local function applyOrientation()
-    local layout
-    if orientation == HORIZONTAL then
-        layout = UIHorizontalLayout.create(pokemonMovesWindow)
-    else
-        layout = UIVerticalLayout.create(pokemonMovesWindow)
+    -- rows of 12 placed by hand: move 13 starts the second row (the second column when vertical)
+    pokemonMovesWindow:setLayout(UIAnchorLayout.create(pokemonMovesWindow))
+    local count = 0
+    for _, slot in ipairs(slots()) do
+        local index = tonumber(slot:getId():match('%d+')) or 1
+        count = math.max(count, index)
+        local along, across = (index - 1) % ROW, math.floor((index - 1) / ROW)
+        local x, y = along, across
+        if orientation ~= HORIZONTAL then
+            x, y = across, along
+        end
+        slot:breakAnchors()
+        slot:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+        slot:addAnchor(AnchorTop, 'parent', AnchorTop)
+        slot:setMarginLeft(x * (SLOT_SIZE + SPACING))
+        slot:setMarginTop(y * (SLOT_SIZE + SPACING))
     end
-    layout:setSpacing(SPACING)
-    layout:setFitChildren(true)
-    pokemonMovesWindow:setLayout(layout)
-
-    local count = math.max(#slots(), 1)
+    count = math.max(count, 1)
+    local longSide, shortSide = math.min(count, ROW), math.ceil(count / ROW)
     local padding = pokemonMovesWindow:getPaddingLeft() + pokemonMovesWindow:getPaddingRight()
-    local length = padding + count * SLOT_SIZE + (count - 1) * SPACING
+    local length = padding + longSide * SLOT_SIZE + (longSide - 1) * SPACING
+    local breadth = padding + shortSide * SLOT_SIZE + (shortSide - 1) * SPACING
     if orientation == HORIZONTAL then
-        pokemonMovesWindow:setSize({ width = length, height = padding + SLOT_SIZE })
+        pokemonMovesWindow:setSize({ width = length, height = breadth })
     else
-        pokemonMovesWindow:setSize({ width = padding + SLOT_SIZE, height = length })
+        pokemonMovesWindow:setSize({ width = breadth, height = length })
     end
     pokemonMovesWindow:bindRectToParent()
 end

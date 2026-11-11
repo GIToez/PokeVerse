@@ -13,7 +13,7 @@ POKEMON["Smoochum"] = {
     catchStorage = 16238,
     evolutions = { { name = "Jynx", requiredLevel = 30 } },
     description = "It always rocks its head slowly backwards and forwards as if it is trying to kiss someone.",
-    skills = { "Tackle", 1, "Pound", 5, "Lick", 10, "Powder Snow", 15, "Sweet Kiss", 20, "Confusion", 25 },
+    skills = { "Tackle", 1, "Pound", 1, "Lick", 5, "Sweet Kiss", 8, "Powder Snow", 11, "Confusion", 15, "Sing", 18, "Heart Stamp", 21, "Fake Tears", 28, "Avalanche", 35, "Psychic", 38, "Copycat", 41, "Blizzard", 48 },
     abilities = { "Flash" },
     eggGroup = {},
     eggId = 14037,

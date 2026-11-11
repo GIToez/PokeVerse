@@ -13,7 +13,7 @@ POKEMON["Barboach"] = {
     catchStorage = -1,
     evolutions = { { name = "Whiscash", requiredLevel = 30 } },
     description = "It coats its entire body with a slimy fluid so it can squirm and slip away if grabbed.",
-    skills = { "Tackle", 1, "Mud-Slap", 5, "Mud Bomb", 10, "Water Gun", 15, "Water Pulse", 20, "Aqua Tail", 25 },
+    skills = { "Tackle", 1, "Mud-Slap", 1, "Mud Sport", 6, "Water Sport", 6, "Water Gun", 9, "Mud Bomb", 13, "Amnesia", 15, "Water Pulse", 17, "Magnitude", 20, "Rest", 25, "Snore", 25, "Aqua Tail", 28, "Earthquake", 32, "Muddy Water", 35, "Future Sight", 39, "Fissure", 44 },
     abilities = { "Surf", "Dive", "Waterfall" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_2 },
     eggId = 28541,

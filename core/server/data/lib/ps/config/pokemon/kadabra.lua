@@ -13,7 +13,7 @@ POKEMON["Kadabra"] = {
     catchStorage = 16064,
     evolutions = { { name = "Alakazam", requiredLevel = 50 } },
     description = "It happened one morning - a boy with extrasensory powers awoke in bed transformed into KADABRA.",
-    skills = { "Tackle", 1, "Confusion", 5, "Mist Ball", 10, "Calm Mind", 15, "Recover", 20, "Reflect", 25, "Psybeam", 35, "Psycho Cut", 40, "Psychic", 45 },
+    skills = { "Tackle", 1, "Confusion", 1, "Disable", 18, "Psybeam", 21, "Miracle Eye", 23, "Reflect", 26, "Psycho Cut", 28, "Recover", 31, "Ally Switch", 36, "Psychic", 38, "Role Play", 41, "Future Sight", 43 },
     abilities = { POKEMON_ABILITIES.DIG, "Blink", "Flash", "Teleport", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_HUMAN_LIKE },
     eggId = 14004,

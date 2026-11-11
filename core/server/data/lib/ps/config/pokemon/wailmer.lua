@@ -13,7 +13,7 @@ POKEMON["Wailmer"] = {
     catchStorage = -1,
     evolutions = { { name = "Wailord", requiredLevel = 40 } },
     description = "It bounces playfully like a ball. The more seawater it swallows, the higher it bounces.",
-    skills = { "Tackle", 1, "Water Gun", 5, "Whirlpool", 10, "Rollout", 15, "Astonish", 20, "Dive", 25 },
+    skills = { "Tackle", 1, "Splash", 1, "Growl", 4, "Water Gun", 7, "Rollout", 10, "Whirlpool", 13, "Astonish", 16, "Water Pulse", 19, "Mist", 22, "Brine", 25, "Rest", 29, "Amnesia", 37, "Dive", 41, "Bounce", 45, "Hydro Pump", 49, "Heavy Slam", 53 },
     abilities = { "Surf", "Dive", "Waterfall", "Strenght", "Rock Smash" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD, POKEMON_EGG_GROUP_WATER_2 },
     eggId = 28592,

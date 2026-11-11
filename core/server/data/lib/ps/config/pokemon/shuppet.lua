@@ -13,7 +13,7 @@ POKEMON["Shuppet"] = {
     catchStorage = -1,
     evolutions = { { name = "Banette", requiredLevel = 37 } },
     description = "It uses its horn to feed on envy and malice--or so it's said. It's very active at night.",
-    skills = { "Tackle", 1, "Knock Off", 5, "Night Shade", 10, "Shadow Ball", 15, "Hex", 20, "Curse", 25 },
+    skills = { "Tackle", 1, "Knock Off", 1, "Screech", 4, "Night Shade", 7, "Spite", 10, "Shadow Sneak", 13, "Will-O-Wisp", 16, "Faint Attack", 19, "Hex", 22, "Curse", 26, "Shadow Ball", 30, "Sucker Punch", 38, "Phantom Force", 54 },
     abilities = { "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_AMORPHOUS },
     eggId = 28575,

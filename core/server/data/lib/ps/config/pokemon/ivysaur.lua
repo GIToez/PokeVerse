@@ -13,7 +13,7 @@ POKEMON["Ivysaur"] = {
     catchStorage = 16002,
     evolutions = { { name = "Venusaur", requiredLevel = 32 } },
     description = "There is a plant bulb on its back. When it absorbs nutrients, the bulb is said to blossom into a large flower.",
-    skills = { "Tackle", 1, "Headbutt", 5, "Razor Leaf", 10, "Vine Whip", 15, "Leech Seed", 20, "Poison Powder", 25, "Sleep Powder", 30, "Synthesis", 40, "Solar Beam", 45, "Sludge Bomb", 50 },
+    skills = { "Tackle", 1, "Growl", 1, "Leech Seed", 1, "Vine Whip", 9, "Poison Powder", 13, "Sleep Powder", 13, "Take Down", 15, "Razor Leaf", 20, "Double-Edge", 31, "Worry Seed", 36, "Seed Bomb", 37, "Synthesis", 39, "Solar Beam", 44 },
     abilities = { POKEMON_ABILITIES.STRENGTH, "Cut", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_GRASS },
     eggId = 13978,

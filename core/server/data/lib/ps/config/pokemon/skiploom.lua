@@ -13,7 +13,7 @@ POKEMON["Skiploom"] = {
     catchStorage = 16188,
     evolutions = { { name = "Jumpluff", requiredLevel = 27 } },
     description = "It spreads its petals to absorb sunlight. It also floats in the air to get closer to the sun.",
-    skills = { "Tackle", 1, "Leech Seed", 5, "Bullet Seed", 10, "Mega Drain", 15, "Poison Powder", 20, "Fairy Wind", 25, "Synthesis", 30, "Giga Drain", 40, "Stun Spore", 45 },
+    skills = { "Tackle", 1, "Splash", 1, "Absorb", 1, "Synthesis", 1, "Fairy Wind", 10, "Poison Powder", 12, "Stun Spore", 14, "Sleep Powder", 16, "Bullet Seed", 20, "Leech Seed", 24, "Mega Drain", 28, "Acrobatics", 32, "Rage Powder", 36, "U-turn", 44, "Worry Seed", 48, "Giga Drain", 52, "Bounce", 56, "Memento", 60 },
     abilities = { "Flash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FAIRY, POKEMON_EGG_GROUP_GRASS },
     eggId = 17754,

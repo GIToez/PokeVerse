@@ -13,7 +13,7 @@ POKEMON["Finneon"] = {
     catchStorage = -1,
     evolutions = { { name = "Lumineon", requiredLevel = 31 } },
     description = "The line running down its side can store sunlight. It shines vividly at night.",
-    skills = { "Pound", 1, "Rain Dance", 5, "Whirlpool", 10, "Water Gun", 15, "Gust", 20, "Water Pulse", 25, "U-turn", 30 },
+    skills = { "Tackle", 1, "Pound", 1, "Water Gun", 6, "Rain Dance", 13, "Gust", 17, "Water Pulse", 22, "Captivate", 26, "Safeguard", 29, "Aqua Ring", 33, "Whirlpool", 38, "U-turn", 42, "Bounce", 45, "Silver Wind", 49 },
     abilities = { "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_2 },
     eggId = 30972,

@@ -13,7 +13,7 @@ POKEMON["Rattata"] = {
     catchStorage = 16019,
     evolutions = { { name = "Raticate", requiredLevel = 20 } },
     description = "Its fangs are long and very sharp. They grow continuously, so it gnaws on hard things to whittle them down.",
-    skills = { "Tackle", 1, "Quick Attack", 5, "Bite", 10, "Hyper Fang", 15 },
+    skills = { "Tackle", 1, "Quick Attack", 4, "Focus Energy", 7, "Bite", 10, "Pursuit", 13, "Hyper Fang", 16, "Assurance", 19, "Crunch", 22, "Sucker Punch", 25, "Super Fang", 28, "Double-Edge", 31, "Endeavor", 34 },
     abilities = { POKEMON_ABILITIES.DIG, "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 13984,

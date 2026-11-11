@@ -13,7 +13,7 @@ POKEMON["Magby"] = {
     catchStorage = 16240,
     evolutions = { { name = "Magmar", requiredLevel = 30 } },
     description = "It is found in volcanic craters. Its body temp. is over 1100 degrees, so don't underestimate it.",
-    skills = { "Tackle", 1, "Smog", 5, "Ember", 10, "Smoke Screen", 15, "Fire Spin", 20, "Clear Smog", 25 },
+    skills = { "Tackle", 1, "Smog", 1, "Ember", 5, "Smoke Screen", 8, "Faint Attack", 12, "Fire Spin", 15, "Clear Smog", 19, "Flame Burst", 22, "Confuse Ray", 26, "Fire Punch", 29, "Lava Plume", 33, "Sunny Day", 36, "Flamethrower", 40, "Fire Blast", 43 },
     abilities = { "Flash", "Headbutt" },
     eggGroup = {},
     eggId = 14039,

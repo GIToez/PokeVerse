@@ -13,7 +13,7 @@ POKEMON["Nidorino"] = {
     catchStorage = 16033,
     evolutions = { { name = "Nidoking", requiredLevel = 55, requiredItems = { ITEMS.MOON_STONE } } },
     description = "It is easily angered. By swinging its well-developed horn wildly, it can even punch through diamond.",
-    skills = { "Tackle", 1, "Double Kick", 5, "Poison Sting", 10, "Fury Attack", 15, "Poison Jab", 20, "Acid", 25, "Horn Attack", 35, "Thrash", 40, "Captivate", 45, "Earth Power", 50 },
+    skills = { "Tackle", 1, "Peck", 1, "Focus Energy", 7, "Double Kick", 9, "Poison Sting", 13, "Fury Attack", 20, "Horn Attack", 23, "Toxic Spikes", 35, "Flatter", 38, "Poison Jab", 43, "Captivate", 50, "Horn Drill", 58 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_FIELD },
     eggId = 13990,

@@ -13,7 +13,7 @@ POKEMON["Spheal"] = {
     catchStorage = -1,
     evolutions = { { name = "Sealeo", requiredLevel = 32 } },
     description = "They can't swim well yet, and they move much faster by rolling. When they're happy, they clap fins.",
-    skills = { "Tackle", 1, "Powder Snow", 5, "Ice Ball", 10, "Water Gun", 15, "Rollout", 20, "Defense Curl", 25 },
+    skills = { "Tackle", 1, "Defense Curl", 1, "Powder Snow", 1, "Growl", 1, "Water Gun", 1, "Rollout", 5, "Encore", 9, "Ice Ball", 13, "Brine", 17, "Aurora Beam", 21, "Body Slam", 26, "Rest", 31, "Snore", 31, "Hail", 36, "Blizzard", 41, "Sheer Cold", 46 },
     abilities = { "Strength", "Surf", "Rock Smash", "Waterfall", "Dive" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD, POKEMON_EGG_GROUP_WATER_1 },
     eggId = 28580,

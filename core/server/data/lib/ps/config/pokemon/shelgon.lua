@@ -13,7 +13,7 @@ POKEMON["Shelgon"] = {
     catchStorage = -1,
     evolutions = { { name = "Salamence", requiredLevel = 50 } },
     description = "Within its rugged shell, its cells have begun changing. The shell peels off the instant it evolves.",
-    skills = { "Tackle", 1, "Ember", 5, "Flamethrower", 10, "Rage", 15, "Headbutt", 20, "Bite", 25, "Dragon Claw", 35, "Dragon Breath", 40, "Scary Face", 45 },
+    skills = { "Tackle", 1, "Protect", 1, "Rage", 1, "Ember", 1, "Bite", 1, "Dragon Breath", 13, "Headbutt", 17, "Focus Energy", 21, "Crunch", 25, "Dragon Claw", 29, "Zen Headbutt", 35, "Scary Face", 42, "Flamethrower", 49, "Double-Edge", 56 },
     abilities = { "Cut", "Strenght", "Rock Smash", "Ride", POKEMON_ABILITIES.HEADBUTT },
     eggGroup = { POKEMON_EGG_GROUP_DRAGON },
     eggId = 28539,

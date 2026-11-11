@@ -13,7 +13,7 @@ POKEMON["Shinx"] = {
     catchStorage = -1,
     evolutions = { { name = "Luxio", requiredLevel = 15 } },
     description = "The extension and contraction of its muscles generates electricity. It glows when in trouble.",
-    skills = { "Tackle", 1, "Charge", 5, "Thunder Shock", 10, "Bite", 15, "Spark", 20, "Volt Switch", 25, "Crunch", 30 },
+    skills = { "Tackle", 1, "Charge", 9, "Spark", 13, "Bite", 17, "Roar", 21, "Thunder Fang", 29, "Crunch", 33, "Scary Face", 37, "Discharge", 41, "Wild Charge", 45 },
     abilities = { "Headbutt", "Flash", POKEMON_ABILITIES.STRENGTH },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 30944,

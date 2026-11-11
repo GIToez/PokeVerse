@@ -13,7 +13,7 @@ POKEMON["Kricketot"] = {
     catchStorage = -1,
     evolutions = { { name = "Kricketune", requiredLevel = 10 } },
     description = "Its legs are short. Whenever it stumbles, its stiff antennae clack with a xylophone-like sound.",
-    skills = { "Tackle", 1, "Growl", 5, "Bide", 10, "Struggle Bug", 15, "Bug Bite", 20, "Lunge", 25 },
+    skills = { "Tackle", 1, "Growl", 1, "Bide", 1, "Struggle Bug", 6, "Bug Bite", 16 },
     abilities = {},
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 30943,

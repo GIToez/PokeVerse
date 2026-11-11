@@ -13,7 +13,7 @@ POKEMON["Metang"] = {
     catchStorage = -1,
     evolutions = { { name = "Metagross", requiredLevel = 45 } },
     description = "It is formed by two Beldum joining together. Its steel body won't be scratched if it collides with a jet.",
-    skills = { "Tackle", 1, "Confusion", 5, "Metal Claw", 10, "Take Down", 15, "Pursuit", 20, "Iron Defense", 25, "Psychic", 35, "Zen Headbutt", 40, "Bullet Punch", 45 },
+    skills = { "Tackle", 1, "Confusion", 1, "Metal Claw", 1, "Magnet Rise", 1, "Take Down", 1, "Pursuit", 23, "Bullet Punch", 26, "Miracle Eye", 29, "Zen Headbutt", 32, "Scary Face", 35, "Psychic", 38, "Agility", 41, "Meteor Mash", 44, "Iron Defense", 47, "Hyper Beam", 50 },
     abilities = { "Cut", "Strenght", "Flash", "Rock Smash", POKEMON_ABILITIES.BLINK, POKEMON_ABILITIES.TELEPORT },
     eggGroup = { POKEMON_EGG_GROUP_MINERAL },
     eggId = 28542,

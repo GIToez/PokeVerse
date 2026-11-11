@@ -13,7 +13,7 @@ POKEMON["Chikorita"] = {
     catchStorage = 16152,
     evolutions = { { name = "Bayleef", requiredLevel = 16 } },
     description = "Its pleasantly aromatic leaves have the ability to check the humidity and temperature.",
-    skills = { "Tackle", 1, "Razor Leaf", 5, "Leech Seed", 10, "Magical Leaf", 15, "Body Slam", 20, "Poison Powder", 25, "Grass Whistle", 30 },
+    skills = { "Tackle", 1, "Growl", 1, "Razor Leaf", 6, "Poison Powder", 9, "Synthesis", 12, "Reflect", 17, "Magical Leaf", 20, "Light Screen", 31, "Body Slam", 34, "Safeguard", 39, "Aromatherapy", 42, "Solar Beam", 45 },
     abilities = { "Cut", "Flash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_GRASS },
     eggId = 17741,

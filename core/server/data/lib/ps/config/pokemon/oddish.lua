@@ -13,7 +13,7 @@ POKEMON["Oddish"] = {
     catchStorage = 16043,
     evolutions = { { name = "Gloom", requiredLevel = 21 } },
     description = "Its scientific name is 'Oddium Wanderus.' At night, it is said to walk nearly 1,000 feet on its two roots.",
-    skills = { "Tackle", 1, "Absorb", 5, "Acid", 10, "Poison Powder", 15, "Stun Spore", 20, "Mega Drain", 25 },
+    skills = { "Tackle", 1, "Absorb", 1, "Acid", 9, "Poison Powder", 13, "Stun Spore", 14, "Sleep Powder", 15, "Mega Drain", 19, "Moonlight", 27, "Giga Drain", 31, "Toxic", 35, "Moonblast", 43, "Grassy Terrain", 47, "Petal Dance", 51 },
     abilities = { "Cut" },
     eggGroup = { POKEMON_EGG_GROUP_GRASS },
     eggId = 13995,

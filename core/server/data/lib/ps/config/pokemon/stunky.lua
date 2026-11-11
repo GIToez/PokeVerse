@@ -13,7 +13,7 @@ POKEMON["Stunky"] = {
     catchStorage = -1,
     evolutions = { { name = "Skuntank", requiredLevel = 34 } },
     description = "It sprays a foul fluid from its rear. Its stench spreads over a mile radius, driving POKEMON away.",
-    skills = { "Scratch", 1, "Poison Gas", 5, "Fury Swipes", 10, "Feint", 15, "Acid Spray", 20, "Bite", 25, "Venoshock", 30 },
+    skills = { "Tackle", 1, "Scratch", 1, "Focus Energy", 1, "Poison Gas", 3, "Screech", 7, "Fury Swipes", 9, "Smoke Screen", 13, "Feint", 15, "Acid Spray", 19, "Bite", 21, "Slash", 25, "Toxic", 27, "Night Slash", 31, "Memento", 33, "Venom Drench", 37, "Sucker Punch", 39, "Belch", 43, "Explosion", 45 },
     abilities = { "Cut", "Rock Smash", "Headbutt", POKEMON_ABILITIES.DIG },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 30958,

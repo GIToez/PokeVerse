@@ -13,7 +13,7 @@ POKEMON["Starly"] = {
     catchStorage = -1,
     evolutions = { { name = "Staravia", requiredLevel = 14 } },
     description = "Because they are weak individually, they form groups. However, they bicker if the group grows too big.",
-    skills = { "Tackle", 1, "Growl", 5, "Endeavor", 10, "Quick Attack", 15, "Wing Attack", 20, "Aerial Ace", 25, "Take Down", 30 },
+    skills = { "Tackle", 1, "Growl", 1, "Quick Attack", 5, "Wing Attack", 9, "Double Team", 13, "Endeavor", 17, "Whirlwind", 21, "Aerial Ace", 25, "Take Down", 29, "Agility", 33, "Brave Bird", 37 },
     abilities = {},
     eggGroup = { POKEMON_EGG_GROUP_FLYING },
     eggId = 30941,

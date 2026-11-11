@@ -13,7 +13,7 @@ POKEMON["Spoink"] = {
     catchStorage = -1,
     evolutions = { { name = "Grumpig", requiredLevel = 32 } },
     description = "It bounces constantly, using its tail like a spring. The shock of bouncing keeps its heart beating.",
-    skills = { "Tackle", 1, "Psywave", 5, "Psybeam", 10, "Zen Headbutt", 15, "Confuse Ray", 20, "Power Gem", 25 },
+    skills = { "Tackle", 1, "Splash", 1, "Psywave", 7, "Psybeam", 14, "Confuse Ray", 18, "Magic Coat", 21, "Zen Headbutt", 26, "Power Gem", 29, "Rest", 29, "Snore", 33, "Psyshock", 38, "Payback", 40, "Psychic", 44, "Bounce", 50 },
     abilities = { "Flash", POKEMON_ABILITIES.BLINK, POKEMON_ABILITIES.TELEPORT },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 28582,

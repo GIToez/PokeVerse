@@ -13,7 +13,7 @@ POKEMON["Misdreavus"] = {
     catchStorage = 16200,
     evolutions = { { name = "Mismagius", requiredLevel = 40, requiredItems = { ITEMS.DUSK_STONE } } },
     description = "It loves to bite and yank people's hair from behind without warning, just to see their shocked reactions.",
-    skills = { "Tackle", 1, "Psywave", 5, "Astonish", 10, "Psybeam", 15, "Hex", 20, "Heal Bell", 25, "Shadow Ball", 30, "Curse", 35, "Payback", 40, "Dark Pulse", 45, "Hyper Voice", 50, "Spite", 55, "Uproar", 60, "Power Gem", 65 },
+    skills = { "Tackle", 1, "Growl", 1, "Psywave", 1, "Spite", 5, "Astonish", 10, "Confuse Ray", 14, "Hex", 23, "Psybeam", 28, "Payback", 37, "Shadow Ball", 41, "Power Gem", 55 },
     abilities = { "Flash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_AMORPHOUS },
     eggId = 17760,

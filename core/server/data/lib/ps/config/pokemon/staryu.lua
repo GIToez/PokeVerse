@@ -13,7 +13,7 @@ POKEMON["Staryu"] = {
     catchStorage = 16120,
     evolutions = { { name = "Starmie", requiredLevel = 35, requiredItems = { ITEMS.WATER_STONE } } },
     description = "It appears in large numbers by seashores. At night, its central core flashes with a red light.",
-    skills = { "Tackle", 1, "Water Gun", 5, "Swift", 10, "Bubblebeam", 15, "Harden", 20, "Recover", 25, "Power Gem", 30 },
+    skills = { "Tackle", 1, "Harden", 1, "Water Gun", 4, "Rapid Spin", 7, "Recover", 10, "Psywave", 13, "Swift", 16, "Bubblebeam", 18, "Camouflage", 22, "Gyro Ball", 24, "Brine", 28, "Reflect Type", 35, "Power Gem", 37, "Confuse Ray", 40, "Psychic", 42, "Light Screen", 46, "Cosmic Power", 49, "Hydro Pump", 53 },
     abilities = { POKEMON_ABILITIES.WATERFALL, "Surf", "Dive", "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_3 },
     eggId = 14034,

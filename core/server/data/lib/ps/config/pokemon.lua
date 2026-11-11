@@ -1791,18 +1791,29 @@ end
 
 function getPokemonSkills(pokemonName, ballUid)
     local pokemonSkills, tm1, tm2 = getPokemonDefaultSkills(pokemonName), getBallTm(ballUid, 1), getBallTm(ballUid, 2)
+    -- A TM or egg move takes the place of the move in its slot. A slot chosen before the species' list
+    -- changed can now be past its end (or 1, Tackle's): the move then goes after the last one instead of
+    -- leaving a hole in the list, so it is never lost.
+    local natural = #pokemonSkills
+    local function place(slot, move)
+        slot = tonumber(slot) or 0
+        if (slot < 2 or slot > natural) then
+            slot = #pokemonSkills + 1
+        end
+        pokemonSkills[slot] = move
+    end
     if (tm1 ~= TM_IDS.NONE) then
-        pokemonSkills[getBallTmSlot(ballUid, 1)] = getTmMove(tm1)
+        place(getBallTmSlot(ballUid, 1), getTmMove(tm1))
     end
     if (tm2 ~= TM_IDS.NONE) then
-        pokemonSkills[getBallTmSlot(ballUid, 2)] = getTmMove(tm2)
+        place(getBallTmSlot(ballUid, 2), getTmMove(tm2))
     end
 
     local eggMoveSlot = getBallEggMoveSlot(ballUid)
     if (eggMoveSlot) then
         local eggMove = getBallEggMove(ballUid)
         if (eggMove) then
-            pokemonSkills[eggMoveSlot] = eggMove
+            place(eggMoveSlot, eggMove)
         end
     end
 

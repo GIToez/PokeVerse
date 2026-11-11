@@ -13,7 +13,7 @@ POKEMON["Phanpy"] = {
     catchStorage = 16231,
     evolutions = { { name = "Donphan", requiredLevel = 25 } },
     description = "As a sign of affection, it bumps with its snout. However, it is so strong, it may send you flying.",
-    skills = { "Tackle", 1, "Rollout", 5, "Defense Curl", 10, "Slam", 15, "Body Slam", 20, "Magnitude", 25, "Fury Attack", 30 },
+    skills = { "Tackle", 1, "Growl", 1, "Defense Curl", 1, "Flail", 6, "Rollout", 10, "Endure", 19, "Slam", 24, "Take Down", 28, "Charm", 33, "Last Resort", 37, "Double-Edge", 42 },
     abilities = { POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 17780,

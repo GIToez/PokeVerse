@@ -13,7 +13,7 @@ POKEMON["Mareep"] = {
     catchStorage = 16179,
     evolutions = { { name = "Flaaffy", requiredLevel = 15 } },
     description = "Its fleece grows continually. In the summer, the fleece is fully shed, but it grows back in a week.",
-    skills = { "Tackle", 1, "Thunder Shock", 5, "Take Down", 10, "Agility", 15, "Discharge", 20, "Charge", 25, "Electro Ball", 30 },
+    skills = { "Tackle", 1, "Growl", 1, "Thunder Wave", 4, "Thunder Shock", 8, "Charge", 15, "Take Down", 18, "Electro Ball", 22, "Confuse Ray", 25, "Power Gem", 29, "Discharge", 32, "Cotton Guard", 36, "Signal Beam", 39, "Light Screen", 43, "Thunder", 46 },
     abilities = { "Flash", "Ride", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_FIELD },
     eggId = 17751,

@@ -13,7 +13,7 @@ POKEMON["Teddiursa"] = {
     catchStorage = 16216,
     evolutions = { { name = "Ursaring", requiredLevel = 30 } },
     description = "Before food becomes scarce in wintertime, its habit is to hoard food in many hidden locations.",
-    skills = { "Tackle", 1, "Scratch", 5, "Lick", 10, "Fury Swipes", 15, "Slash", 20, "Charm", 25, "Rest", 30, "Metal Claw", 35, "Thrash", 40 },
+    skills = { "Tackle", 1, "Covet", 1, "Scratch", 1, "Lick", 1, "Fake Tears", 1, "Fury Swipes", 8, "Faint Attack", 15, "Slash", 29, "Charm", 36, "Rest", 43, "Snore", 43, "Thrash", 50 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Find", "Cut", "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 17771,

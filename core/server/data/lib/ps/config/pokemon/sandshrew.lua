@@ -13,7 +13,7 @@ POKEMON["Sandshrew"] = {
     catchStorage = 16027,
     evolutions = { { name = "Sandslash", requiredLevel = 22 } },
     description = "It burrows and lives underground. If threatened, it curls itself up into a ball for protection.",
-    skills = { "Tackle", 1, "Sand-Attack", 5, "Rollout", 10, "Mud Shot", 15, "Poison Sting", 20, "Swift", 25, "Sand Tomb", 30, "Magnitude", 35 },
+    skills = { "Tackle", 1, "Scratch", 1, "Defense Curl", 1, "Sand-Attack", 3, "Poison Sting", 5, "Rollout", 7, "Rapid Spin", 9, "Fury Cutter", 11, "Magnitude", 14, "Swift", 17, "Fury Swipes", 20, "Sand Tomb", 23, "Slash", 26, "Dig", 30, "Gyro Ball", 34, "Swords Dance", 38, "Sandstorm", 42, "Earthquake", 46 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Cut", "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 13988,

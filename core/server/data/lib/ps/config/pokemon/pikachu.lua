@@ -13,7 +13,7 @@ POKEMON["Pikachu"] = {
     catchStorage = 16025,
     evolutions = { { name = "Raichu", requiredLevel = 35, requiredItems = { ITEMS.THUNDERSTONE } } },
     description = "It has small electric sacs on both its cheeks. If threatened, it looses electric charges from the sacs.",
-    skills = { "Tackle", 1, "Thunder Shock", 5, "Double Team", 10, "Quick Attack", 15, "Slam", 20, "Thunderbolt", 25, "Agility", 30 },
+    skills = { "Tackle", 1, "Thunder Shock", 1, "Charm", 1, "Growl", 5, "Quick Attack", 10, "Sweet Kiss", 10, "Electro Ball", 13, "Nasty Plot", 13, "Thunder Wave", 18, "Feint", 21, "Double Team", 23, "Spark", 26, "Nuzzle", 29, "Discharge", 34, "Slam", 37, "Thunderbolt", 42, "Agility", 45, "Wild Charge", 50, "Light Screen", 53, "Thunder", 58 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Flash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD, POKEMON_EGG_GROUP_FAIRY },
     eggId = 13987,
@@ -49,8 +49,19 @@ POKEMON["Surfing Pikachu"] = table.deepcopy(POKEMON["Pikachu"])
 POKEMON["Surfing Pikachu"].blockTransform = true
 POKEMON["Surfing Pikachu"].evolutions = {}
 POKEMON["Surfing Pikachu"].ignoreBallCounter = true
-table.insert(POKEMON["Surfing Pikachu"].skills, "Surf")
-table.insert(POKEMON["Surfing Pikachu"].skills, 35)
+-- Surf at level 35, in its place by level (the moves must stay in level order)
+do
+    local skills, at = POKEMON["Surfing Pikachu"].skills, nil
+    for i = 2, #skills, 2 do
+        if (skills[i] > 35) then
+            at = i - 1
+            break
+        end
+    end
+    at = at or #skills + 1
+    table.insert(skills, at, 35)
+    table.insert(skills, at, "Surf")
+end
 table.insert(POKEMON["Surfing Pikachu"].abilities, "Surf")
 
 POKEMON["Darkchu"] = table.deepcopy(POKEMON["Pikachu"])

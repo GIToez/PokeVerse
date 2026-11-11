@@ -29,7 +29,7 @@
 		<talkaction words="/boss" event="script" value="../../lib/ps/events/talkactions/bossRewardCheck.lua" description="Show remaining time to be able to receive another World Boss reward." />		
 		<talkaction words="/lang" event="script" value="../../lib/ps/events/talkactions/setLanguage.lua" description="Set current game language." />		
 		<!-- Skills -->
-		<talkaction words="s1;s2;s3;s4;s5;s6;s7;s8;s9;s10;s11;s12;s13;s14;s15;s16;m1;m2;m3;m4;m5;m6;m7;m8;m9;m10;m11;m12;m13;m14;m15;m16" case-sensitive="no" hidden="yes" event="script" value="../../lib/ps/events/talkactions/skill.lua" />
+		<talkaction words="s1;s2;s3;s4;s5;s6;s7;s8;s9;s10;s11;s12;s13;s14;s15;s16;s17;s18;s19;s20;s21;s22;s23;s24;m1;m2;m3;m4;m5;m6;m7;m8;m9;m10;m11;m12;m13;m14;m15;m16;m17;m18;m19;m20;m21;m22;m23;m24" case-sensitive="no" hidden="yes" event="script" value="../../lib/ps/events/talkactions/skill.lua" />
 		<!-- Abilities -->
 		<talkaction words="/teleport;/tele;/tp" event="script" value="../../lib/ps/events/talkactions/teleport.lua" description="Command for Teleport ability."/>
 		<talkaction words="/up" event="script" value="../../lib/ps/events/talkactions/flyUp.lua" description="Up a floor when flying."/>
