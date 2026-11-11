@@ -29,4 +29,4 @@
 		<voice sentence="EEVEE!"/>
 	</voices>
 	
-<loot><item id="14544" countmax="1" chance="5555"/><item id="14592" countmax="1" chance="1000"/><item id="14464" countmax="3" chance="3000"/><item id="17940" countmax="1" chance="100"/><item id="12232" countmax="1" chance="2"/><item id="18913" countmax="1" chance="5"/></loot></monster>
+<loot><item id="14544" countmax="1" chance="5555"/><item id="14592" countmax="1" chance="1000"/><item id="14464" countmax="3" chance="4500"/><item id="17940" countmax="1" chance="100"/><item id="12232" countmax="1" chance="2"/><item id="18913" countmax="1" chance="5"/></loot></monster>

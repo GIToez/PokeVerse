@@ -31,4 +31,4 @@
 		<voice sentence="VENONAT!"/>
 	</voices>
 	
-<loot><item id="14551" countmax="1" chance="3333"/><item id="14511" countmax="1" chance="40000"/><item id="14464" countmax="3" chance="3000"/><item id="17862" countmax="1" chance="100"/><item id="12241" countmax="1" chance="2"/><item id="12235" countmax="1" chance="2"/></loot></monster>
+<loot><item id="14551" countmax="1" chance="3333"/><item id="14511" countmax="1" chance="40000"/><item id="14464" countmax="3" chance="4500"/><item id="17862" countmax="1" chance="100"/><item id="12241" countmax="1" chance="2"/><item id="12235" countmax="1" chance="2"/></loot></monster>

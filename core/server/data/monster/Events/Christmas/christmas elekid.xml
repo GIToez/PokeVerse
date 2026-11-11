@@ -31,4 +31,4 @@
 		<voice sentence="KIDD!"/>
 	</voices>
 	
-<loot><item id="12118" countmax="1" chance="44444"/><item id="14464" countmax="5" chance="5000"/><item id="18038" countmax="1" chance="100"/><item id="17372" countmax="1" chance="1"/><item id="17378" countmax="1" chance="1"/></loot></monster>
+<loot><item id="12118" countmax="1" chance="44444"/><item id="14464" countmax="5" chance="7500"/><item id="18038" countmax="1" chance="100"/><item id="17372" countmax="1" chance="1"/><item id="17378" countmax="1" chance="1"/></loot></monster>

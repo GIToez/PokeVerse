@@ -29,4 +29,4 @@
 		<voice sentence="KANGASKHAN!"/>
 	</voices>
 	
-<loot><item id="14584" countmax="3" chance="75000"/><item id="14583" countmax="1" chance="60000"/><item id="14581" countmax="1" chance="60000"/><item id="14592" countmax="1" chance="6000"/><item id="14547" countmax="1" chance="20000"/><item id="14464" countmax="3" chance="3000"/><item id="2682" countmax="3" chance="3000"/><item id="2675" countmax="3" chance="3000"/><item id="12232" countmax="1" chance="100"/><item id="17923" countmax="1" chance="100"/><item id="17355" countmax="1" chance="10"/><item id="23527" countmax="1" chance="10"/></loot></monster>
+<loot><item id="14584" countmax="3" chance="75000"/><item id="14583" countmax="1" chance="60000"/><item id="14581" countmax="1" chance="60000"/><item id="14592" countmax="1" chance="6000"/><item id="14547" countmax="1" chance="20000"/><item id="14464" countmax="3" chance="4500"/><item id="2682" countmax="3" chance="3000"/><item id="2675" countmax="3" chance="3000"/><item id="12232" countmax="1" chance="100"/><item id="17923" countmax="1" chance="100"/><item id="17355" countmax="1" chance="10"/><item id="23527" countmax="1" chance="10"/></loot></monster>

@@ -29,4 +29,4 @@
 		<voice sentence="PRIMEAPEE!"/>
 	</voices>
 	
-<loot><item id="14549" countmax="1" chance="18229"/><item id="14581" countmax="1" chance="43750"/><item id="14583" countmax="1" chance="43750"/><item id="14580" countmax="1" chance="2734"/><item id="2687" countmax="3" chance="3000"/><item id="14464" countmax="3" chance="3000"/><item id="12243" countmax="1" chance="100"/><item id="17870" countmax="1" chance="100"/><item id="17355" countmax="1" chance="10"/><item id="23513" countmax="1" chance="20"/></loot></monster>
+<loot><item id="14549" countmax="1" chance="18229"/><item id="14581" countmax="1" chance="43750"/><item id="14583" countmax="1" chance="43750"/><item id="14580" countmax="1" chance="2734"/><item id="2687" countmax="3" chance="3000"/><item id="14464" countmax="3" chance="4500"/><item id="12243" countmax="1" chance="100"/><item id="17870" countmax="1" chance="100"/><item id="17355" countmax="1" chance="10"/><item id="23513" countmax="1" chance="20"/></loot></monster>
