@@ -31,4 +31,4 @@
 		<voice sentence="HIPPOPOTAS!"/>
 	</voices>
 	
-<loot><item id="12150" countmax="1" chance="12121"/><item id="14519" countmax="1" chance="3809"/><item id="14505" countmax="1" chance="9523"/><item id="14464" countmax="3" chance="4500"/><item id="31038" countmax="1" chance="100"/><item id="13807" countmax="1" chance="2"/></loot></monster>
+<loot><item id="12150" countmax="1" chance="12121"/><item id="14519" countmax="1" chance="3809"/><item id="14505" countmax="1" chance="9523"/><item id="14464" countmax="3" chance="6000"/><item id="31038" countmax="1" chance="100"/><item id="13807" countmax="1" chance="2"/></loot></monster>

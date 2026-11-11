@@ -37,7 +37,7 @@
 		<item id="2687" countmax="3" chance="2000"/> <!-- cookie -->
 		<item id="5097" countmax="1" chance="2000"/> <!-- mango -->
 		<item id="8841" countmax="3" chance="2000"/> <!-- lemon -->
-		<item id="14464" countmax="3" chance="3000"/> <!-- onigiri -->
+		<item id="14464" countmax="3" chance="4000"/> <!-- onigiri -->
 		<item id="12232" countmax="5" chance="100000"/> <!-- love plate -->
 		<item id="17948" countmax="1" chance="10000"/> <!-- snorlax doll -->
 		<item id="18125" countmax="1" chance="100000"/> <!-- Mr. Gormandize artifacts -->

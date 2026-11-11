@@ -31,4 +31,4 @@
 		<voice sentence="CHINGLING!"/>
 	</voices>
 	
-<loot><item id="12135" countmax="1" chance="20000"/><item id="12136" countmax="1" chance="8000"/><item id="12233" countmax="1" chance="2"/><item id="14464" countmax="5" chance="7500"/><item id="31022" countmax="1" chance="100"/></loot></monster>
+<loot><item id="12135" countmax="1" chance="20000"/><item id="12136" countmax="1" chance="8000"/><item id="12233" countmax="1" chance="2"/><item id="14464" countmax="5" chance="10000"/><item id="31022" countmax="1" chance="100"/></loot></monster>

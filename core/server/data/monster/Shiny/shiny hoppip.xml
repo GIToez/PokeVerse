@@ -33,4 +33,4 @@
 		<voice sentence="PIIIIPP!"/>
 	</voices>
 	
-<loot><item id="14525" countmax="1" chance="2222"/><item id="14531" countmax="1" chance="40000"/><item id="14602" countmax="1" chance="8000"/><item id="14510" countmax="1" chance="16000"/><item id="17802" countmax="1" chance="8000"/><item id="14464" countmax="5" chance="7500"/><item id="17987" countmax="1" chance="100"/><item id="12231" countmax="1" chance="1"/><item id="18081" countmax="1" chance="1"/><item id="17356" countmax="1" chance="1"/></loot></monster>
+<loot><item id="14525" countmax="1" chance="2222"/><item id="14531" countmax="1" chance="40000"/><item id="14602" countmax="1" chance="8000"/><item id="14510" countmax="1" chance="16000"/><item id="17802" countmax="1" chance="8000"/><item id="14464" countmax="5" chance="10000"/><item id="17987" countmax="1" chance="100"/><item id="12231" countmax="1" chance="1"/><item id="18081" countmax="1" chance="1"/><item id="17356" countmax="1" chance="1"/></loot></monster>

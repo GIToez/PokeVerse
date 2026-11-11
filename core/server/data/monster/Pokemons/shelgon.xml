@@ -31,4 +31,4 @@
 		<voice sentence="SHELGON!"/>
 	</voices>
 	
-<loot><item id="12119" countmax="1" chance="97222"/><item id="12138" countmax="1" chance="46666"/><item id="14505" countmax="1" chance="41666"/><item id="14464" countmax="5" chance="7500"/><item id="29096" countmax="1" chance="100"/><item id="12240" countmax="1" chance="25"/><item id="17355" countmax="1" chance="5"/><item id="17346" countmax="1" chance="5"/><item id="18913" countmax="1" chance="5"/><item id="18918" countmax="1" chance="5"/></loot></monster>
+<loot><item id="12119" countmax="1" chance="97222"/><item id="12138" countmax="1" chance="46666"/><item id="14505" countmax="1" chance="41666"/><item id="14464" countmax="5" chance="10000"/><item id="29096" countmax="1" chance="100"/><item id="12240" countmax="1" chance="25"/><item id="17355" countmax="1" chance="5"/><item id="17346" countmax="1" chance="5"/><item id="18913" countmax="1" chance="5"/><item id="18918" countmax="1" chance="5"/></loot></monster>

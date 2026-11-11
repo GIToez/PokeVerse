@@ -30,4 +30,4 @@
 		<voice sentence="DUGG!"/>
 	</voices>
 	
-<loot><item id="12138" countmax="1" chance="33333"/><item id="14519" countmax="1" chance="11904"/><item id="14505" countmax="1" chance="29761"/><item id="14464" countmax="3" chance="4500"/><item id="14629" countmax="1" chance="83333"/><item id="13807" countmax="1" chance="50"/><item id="17865" countmax="1" chance="100"/><item id="17362" countmax="1" chance="10"/><item id="17382" countmax="1" chance="10"/><item id="23529" countmax="1" chance="20"/></loot></monster>
+<loot><item id="12138" countmax="1" chance="33333"/><item id="14519" countmax="1" chance="11904"/><item id="14505" countmax="1" chance="29761"/><item id="14464" countmax="3" chance="6000"/><item id="14629" countmax="1" chance="83333"/><item id="13807" countmax="1" chance="50"/><item id="17865" countmax="1" chance="100"/><item id="17362" countmax="1" chance="10"/><item id="17382" countmax="1" chance="10"/><item id="23529" countmax="1" chance="20"/></loot></monster>

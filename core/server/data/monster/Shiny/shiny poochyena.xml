@@ -32,4 +32,4 @@
 		<voice sentence="POOCHYENA!"/>
 	</voices>
 	
-<loot><item id="14477" countmax="1" chance="4000"/><item id="17803" countmax="1" chance="3333"/><item id="28885" countmax="1" chance="4000"/><item id="28888" countmax="1" chance="5000"/><item id="12242" countmax="1" chance="2"/><item id="14464" countmax="5" chance="7500"/><item id="28985" countmax="1" chance="100"/></loot></monster>
+<loot><item id="14477" countmax="1" chance="4000"/><item id="17803" countmax="1" chance="3333"/><item id="28885" countmax="1" chance="4000"/><item id="28888" countmax="1" chance="5000"/><item id="12242" countmax="1" chance="2"/><item id="14464" countmax="5" chance="10000"/><item id="28985" countmax="1" chance="100"/></loot></monster>

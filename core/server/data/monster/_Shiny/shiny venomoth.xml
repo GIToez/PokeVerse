@@ -29,4 +29,4 @@
 		<voice sentence="VENOMOTH!"/>
 	</voices>
 	
-<loot><item id="14551" countmax="1" chance="14583"/><item id="14511" countmax="3" chance="87500"/><item id="14464" countmax="3" chance="4500"/><item id="14625" countmax="1" chance="8333"/><item id="12235" countmax="1" chance="50"/><item id="12241" countmax="1" chance="50"/><item id="17863" countmax="1" chance="100"/><item id="17363" countmax="1" chance="10"/><item id="23524" countmax="1" chance="10"/><item id="23528" countmax="1" chance="10"/></loot></monster>
+<loot><item id="14551" countmax="1" chance="14583"/><item id="14511" countmax="3" chance="87500"/><item id="14464" countmax="3" chance="6000"/><item id="14625" countmax="1" chance="8333"/><item id="12235" countmax="1" chance="50"/><item id="12241" countmax="1" chance="50"/><item id="17863" countmax="1" chance="100"/><item id="17363" countmax="1" chance="10"/><item id="23524" countmax="1" chance="10"/><item id="23528" countmax="1" chance="10"/></loot></monster>
