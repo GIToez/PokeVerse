@@ -32,4 +32,4 @@
 		<voice sentence="ALAKAZAMM!"/>
 	</voices>
 	
-<loot><item id="12135" countmax="3" chance="75000"/><item id="14512" countmax="1" chance="100000"/><item id="14464" countmax="3" chance="3000"/><item id="14626" countmax="1" chance="4166"/><item id="12233" countmax="1" chance="100"/><item id="17877" countmax="1" chance="100"/><item id="17363" countmax="1" chance="10"/><item id="23531" countmax="1" chance="20"/></loot></monster>
+<loot><item id="12135" countmax="3" chance="75000"/><item id="14512" countmax="1" chance="100000"/><item id="14464" countmax="3" chance="4500"/><item id="14626" countmax="1" chance="4166"/><item id="12233" countmax="1" chance="100"/><item id="17877" countmax="1" chance="100"/><item id="17363" countmax="1" chance="10"/><item id="23531" countmax="1" chance="20"/></loot></monster>

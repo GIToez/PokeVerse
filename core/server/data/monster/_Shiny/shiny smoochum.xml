@@ -31,4 +31,4 @@
 		<voice sentence="SMOOCHUUMMM!"/>
 	</voices>
 	
-<loot><item id="12143" countmax="1" chance="6666"/><item id="14485" countmax="1" chance="10000"/><item id="14486" countmax="1" chance="8000"/><item id="14489" countmax="1" chance="4000"/><item id="14464" countmax="5" chance="5000"/><item id="18037" countmax="1" chance="100"/></loot></monster>
+<loot><item id="12143" countmax="1" chance="6666"/><item id="14485" countmax="1" chance="10000"/><item id="14486" countmax="1" chance="8000"/><item id="14489" countmax="1" chance="4000"/><item id="14464" countmax="5" chance="7500"/><item id="18037" countmax="1" chance="100"/></loot></monster>

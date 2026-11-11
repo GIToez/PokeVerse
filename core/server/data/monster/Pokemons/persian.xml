@@ -29,4 +29,4 @@
 		<voice sentence="PERSIANN!"/>
 	</voices>
 	
-<loot><item id="12096" countmax="1" chance="51020"/><item id="12129" countmax="1" chance="14285"/><item id="12121" countmax="1" chance="16233"/><item id="14474" countmax="1" chance="4464"/><item id="14507" countmax="1" chance="23809"/><item id="14483" countmax="1" chance="7142"/><item id="12128" countmax="1" chance="11904"/><item id="14464" countmax="3" chance="3000"/><item id="12232" countmax="1" chance="100"/><item id="17867" countmax="1" chance="100"/><item id="18921" countmax="1" chance="5"/><item id="23527" countmax="1" chance="10"/></loot></monster>
+<loot><item id="12096" countmax="1" chance="51020"/><item id="12129" countmax="1" chance="14285"/><item id="12121" countmax="1" chance="16233"/><item id="14474" countmax="1" chance="4464"/><item id="14507" countmax="1" chance="23809"/><item id="14483" countmax="1" chance="7142"/><item id="12128" countmax="1" chance="11904"/><item id="14464" countmax="3" chance="4500"/><item id="12232" countmax="1" chance="100"/><item id="17867" countmax="1" chance="100"/><item id="18921" countmax="1" chance="5"/><item id="23527" countmax="1" chance="10"/></loot></monster>

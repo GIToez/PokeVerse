@@ -30,4 +30,4 @@
 		<voice sentence="HYPNO!"/>
 	</voices>
 	
-<loot><item id="14533" countmax="6" chance="93750"/><item id="14511" countmax="3" chance="75000"/><item id="14573" countmax="1" chance="9375"/><item id="14596" countmax="1" chance="7500"/><item id="14464" countmax="3" chance="3000"/><item id="14626" countmax="1" chance="4166"/><item id="12233" countmax="1" chance="100"/><item id="17907" countmax="1" chance="100"/><item id="17363" countmax="1" chance="10"/><item id="17375" countmax="1" chance="10"/><item id="23531" countmax="1" chance="20"/></loot></monster>
+<loot><item id="14533" countmax="6" chance="93750"/><item id="14511" countmax="3" chance="75000"/><item id="14573" countmax="1" chance="9375"/><item id="14596" countmax="1" chance="7500"/><item id="14464" countmax="3" chance="4500"/><item id="14626" countmax="1" chance="4166"/><item id="12233" countmax="1" chance="100"/><item id="17907" countmax="1" chance="100"/><item id="17363" countmax="1" chance="10"/><item id="17375" countmax="1" chance="10"/><item id="23531" countmax="1" chance="20"/></loot></monster>

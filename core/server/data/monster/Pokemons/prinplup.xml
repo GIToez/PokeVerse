@@ -31,4 +31,4 @@
 		<voice sentence="PRINPLUP!"/>
 	</voices>
 	
-<loot><item id="12096" countmax="1" chance="71428"/><item id="12100" countmax="7" chance="100000"/><item id="14477" countmax="1" chance="10000"/><item id="14515" countmax="1" chance="20000"/><item id="12091" countmax="1" chance="27777"/><item id="12102" countmax="7" chance="100000"/><item id="14487" countmax="1" chance="100000"/><item id="12230" countmax="1" chance="25"/><item id="12231" countmax="1" chance="25"/><item id="14464" countmax="5" chance="5000"/><item id="30983" countmax="1" chance="100"/></loot></monster>
+<loot><item id="12096" countmax="1" chance="71428"/><item id="12100" countmax="7" chance="100000"/><item id="14477" countmax="1" chance="10000"/><item id="14515" countmax="1" chance="20000"/><item id="12091" countmax="1" chance="27777"/><item id="12102" countmax="7" chance="100000"/><item id="14487" countmax="1" chance="100000"/><item id="12230" countmax="1" chance="25"/><item id="12231" countmax="1" chance="25"/><item id="14464" countmax="5" chance="7500"/><item id="30983" countmax="1" chance="100"/></loot></monster>
