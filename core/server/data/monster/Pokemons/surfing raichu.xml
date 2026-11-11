@@ -29,4 +29,4 @@
 		<voice sentence="RAICHU!"/>
 	</voices>
 	
-<loot><item id="12118" countmax="3" chance="97222"/><item id="2687" countmax="5" chance="3000"/><item id="2674" countmax="5" chance="3000"/><item id="14464" countmax="3" chance="6000"/><item id="12237" countmax="1" chance="100"/><item id="12272" countmax="1" chance="100"/><item id="18087" countmax="1" chance="20"/><item id="17359" countmax="1" chance="10"/><item id="17378" countmax="1" chance="5"/><item id="23518" countmax="1" chance="20"/></loot></monster>
+<loot><item id="12118" countmax="3" chance="97222"/><item id="2687" countmax="5" chance="3000"/><item id="2674" countmax="5" chance="3000"/><item id="14464" countmax="3" chance="4500"/><item id="12237" countmax="1" chance="100"/><item id="12272" countmax="1" chance="100"/><item id="18087" countmax="1" chance="20"/><item id="17359" countmax="1" chance="10"/><item id="17378" countmax="1" chance="5"/><item id="23518" countmax="1" chance="20"/></loot></monster>

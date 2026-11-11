@@ -31,4 +31,4 @@
 		<voice sentence="KEYY!"/>
 	</voices>
 	
-<loot><item id="14549" countmax="1" chance="8333"/><item id="14581" countmax="1" chance="20000"/><item id="2687" countmax="3" chance="3000"/><item id="14464" countmax="3" chance="6000"/><item id="17869" countmax="1" chance="100"/><item id="12243" countmax="1" chance="2"/></loot></monster>
+<loot><item id="14549" countmax="1" chance="8333"/><item id="14581" countmax="1" chance="20000"/><item id="2687" countmax="3" chance="3000"/><item id="14464" countmax="3" chance="4500"/><item id="17869" countmax="1" chance="100"/><item id="12243" countmax="1" chance="2"/></loot></monster>

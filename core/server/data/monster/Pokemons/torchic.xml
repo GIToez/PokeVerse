@@ -31,4 +31,4 @@
 		<voice sentence="TORCHIC!"/>
 	</voices>
 	
-<loot><item id="12087" countmax="1" chance="11111"/><item id="12101" countmax="3" chance="100000"/><item id="14513" countmax="1" chance="20000"/><item id="17800" countmax="1" chance="20000"/><item id="14464" countmax="5" chance="10000"/><item id="28979" countmax="1" chance="100"/><item id="12229" countmax="1" chance="2"/></loot></monster>
+<loot><item id="12087" countmax="1" chance="11111"/><item id="12101" countmax="3" chance="100000"/><item id="14513" countmax="1" chance="20000"/><item id="17800" countmax="1" chance="20000"/><item id="14464" countmax="5" chance="7500"/><item id="28979" countmax="1" chance="100"/><item id="12229" countmax="1" chance="2"/></loot></monster>

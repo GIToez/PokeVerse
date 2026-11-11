@@ -31,4 +31,4 @@
 		<voice sentence="DROWZEE!"/>
 	</voices>
 	
-<loot><item id="12104" countmax="13" chance="92592"/><item id="14511" countmax="1" chance="83333"/><item id="12144" countmax="1" chance="55555"/><item id="14464" countmax="3" chance="6000"/><item id="17906" countmax="1" chance="100"/><item id="12233" countmax="1" chance="2"/><item id="18913" countmax="1" chance="5"/></loot></monster>
+<loot><item id="12104" countmax="13" chance="92592"/><item id="14511" countmax="1" chance="83333"/><item id="12144" countmax="1" chance="55555"/><item id="14464" countmax="3" chance="4500"/><item id="17906" countmax="1" chance="100"/><item id="12233" countmax="1" chance="2"/><item id="18913" countmax="1" chance="5"/></loot></monster>

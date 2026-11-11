@@ -33,4 +33,4 @@
 		<voice sentence="ABRAA!"/>
 	</voices>
 	
-<loot><item id="14560" countmax="1" chance="10000"/><item id="14464" countmax="3" chance="6000"/><item id="17875" countmax="1" chance="100"/><item id="12233" countmax="1" chance="2"/></loot></monster>
+<loot><item id="14560" countmax="1" chance="10000"/><item id="14464" countmax="3" chance="4500"/><item id="17875" countmax="1" chance="100"/><item id="12233" countmax="1" chance="2"/></loot></monster>

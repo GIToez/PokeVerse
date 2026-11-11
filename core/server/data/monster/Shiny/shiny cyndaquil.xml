@@ -35,4 +35,4 @@
 	<script>
         <event name="onPokemonCombat"/>	    
 	</script>
-<loot><item id="14523" countmax="1" chance="11111"/><item id="14530" countmax="1" chance="50000"/><item id="14513" countmax="1" chance="20000"/><item id="17800" countmax="1" chance="20000"/><item id="14464" countmax="5" chance="10000"/><item id="17955" countmax="1" chance="100"/><item id="12229" countmax="1" chance="2"/><item id="17372" countmax="1" chance="1"/></loot></monster>
+<loot><item id="14523" countmax="1" chance="11111"/><item id="14530" countmax="1" chance="50000"/><item id="14513" countmax="1" chance="20000"/><item id="17800" countmax="1" chance="20000"/><item id="14464" countmax="5" chance="7500"/><item id="17955" countmax="1" chance="100"/><item id="12229" countmax="1" chance="2"/><item id="17372" countmax="1" chance="1"/></loot></monster>

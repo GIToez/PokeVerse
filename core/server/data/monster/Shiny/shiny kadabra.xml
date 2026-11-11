@@ -33,4 +33,4 @@
 		<voice sentence="KADABRA!"/>
 	</voices>
 	
-<loot><item id="14560" countmax="1" chance="21875"/><item id="14512" countmax="1" chance="58333"/><item id="14464" countmax="3" chance="6000"/><item id="12233" countmax="1" chance="50"/><item id="17876" countmax="1" chance="100"/><item id="17363" countmax="1" chance="5"/></loot></monster>
+<loot><item id="14560" countmax="1" chance="21875"/><item id="14512" countmax="1" chance="58333"/><item id="14464" countmax="3" chance="4500"/><item id="12233" countmax="1" chance="50"/><item id="17876" countmax="1" chance="100"/><item id="17363" countmax="1" chance="5"/></loot></monster>

@@ -30,4 +30,4 @@
 		<voice sentence="DIGLETT!"/>
 	</voices>
 	
-<loot><item id="14563" countmax="1" chance="2000"/><item id="14546" countmax="1" chance="1428"/><item id="14464" countmax="3" chance="6000"/><item id="17864" countmax="1" chance="100"/></loot></monster>
+<loot><item id="14563" countmax="1" chance="2000"/><item id="14546" countmax="1" chance="1428"/><item id="14464" countmax="3" chance="4500"/><item id="17864" countmax="1" chance="100"/></loot></monster>

@@ -32,4 +32,4 @@
 		<voice sentence="MIGHTYENA!"/>
 	</voices>
 	
-<loot><item id="14477" countmax="1" chance="8750"/><item id="14512" countmax="1" chance="14583"/><item id="14518" countmax="1" chance="43750"/><item id="17803" countmax="1" chance="7291"/><item id="17804" countmax="1" chance="4375"/><item id="28871" countmax="1" chance="4375"/><item id="28885" countmax="1" chance="8750"/><item id="28888" countmax="1" chance="10937"/><item id="12242" countmax="1" chance="50"/><item id="14464" countmax="5" chance="10000"/><item id="28986" countmax="1" chance="100"/><item id="23514" countmax="1" chance="20"/></loot></monster>
+<loot><item id="14477" countmax="1" chance="8750"/><item id="14512" countmax="1" chance="14583"/><item id="14518" countmax="1" chance="43750"/><item id="17803" countmax="1" chance="7291"/><item id="17804" countmax="1" chance="4375"/><item id="28871" countmax="1" chance="4375"/><item id="28885" countmax="1" chance="8750"/><item id="28888" countmax="1" chance="10937"/><item id="12242" countmax="1" chance="50"/><item id="14464" countmax="5" chance="7500"/><item id="28986" countmax="1" chance="100"/><item id="23514" countmax="1" chance="20"/></loot></monster>

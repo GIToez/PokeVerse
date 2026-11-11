@@ -36,7 +36,7 @@
 		<item id="14511" countmax="1" chance="100000"/> <!-- venon pendant -->
 		<item id="12148" countmax="1" chance="25000"/> <!-- linearly guided hypnose pendant -->
 		<item id="14481" countmax="1" chance="20000"/> <!-- essence of a bad dream -->
-		<item id="14464" countmax="3" chance="6000"/> <!-- onigiri -->
+		<item id="14464" countmax="3" chance="4500"/> <!-- onigiri -->
 		<item id="14626" countmax="1" chance="4166"/> <!-- resistant fabric -->
 		<item id="12233" countmax="5" chance="100000"/> <!-- mind plate -->
 		<item id="17907" countmax="1" chance="10000"/> <!-- hypno doll -->

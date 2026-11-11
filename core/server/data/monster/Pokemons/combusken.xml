@@ -31,4 +31,4 @@
 		<voice sentence="COMBUSKEN!"/>
 	</voices>
 	
-<loot><item id="12087" countmax="1" chance="27777"/><item id="12101" countmax="7" chance="100000"/><item id="13303" countmax="1" chance="13157"/><item id="14471" countmax="1" chance="2500"/><item id="14513" countmax="1" chance="50000"/><item id="17797" countmax="1" chance="6250"/><item id="17800" countmax="1" chance="50000"/><item id="12229" countmax="1" chance="25"/><item id="12243" countmax="1" chance="25"/><item id="14464" countmax="5" chance="10000"/><item id="28980" countmax="1" chance="100"/></loot></monster>
+<loot><item id="12087" countmax="1" chance="27777"/><item id="12101" countmax="7" chance="100000"/><item id="13303" countmax="1" chance="13157"/><item id="14471" countmax="1" chance="2500"/><item id="14513" countmax="1" chance="50000"/><item id="17797" countmax="1" chance="6250"/><item id="17800" countmax="1" chance="50000"/><item id="12229" countmax="1" chance="25"/><item id="12243" countmax="1" chance="25"/><item id="14464" countmax="5" chance="7500"/><item id="28980" countmax="1" chance="100"/></loot></monster>

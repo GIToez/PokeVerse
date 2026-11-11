@@ -30,4 +30,4 @@
 		<voice sentence="PIKACHU!"/>
 	</voices>
 	
-<loot><item id="12118" countmax="1" chance="44444"/><item id="2687" countmax="5" chance="3000"/><item id="2674" countmax="3" chance="3000"/><item id="14464" countmax="3" chance="6000"/><item id="12256" countmax="1" chance="100"/><item id="12237" countmax="1" chance="2"/><item id="17359" countmax="1" chance="1"/></loot></monster>
+<loot><item id="12118" countmax="1" chance="44444"/><item id="2687" countmax="5" chance="3000"/><item id="2674" countmax="3" chance="3000"/><item id="14464" countmax="3" chance="4500"/><item id="12256" countmax="1" chance="100"/><item id="12237" countmax="1" chance="2"/><item id="17359" countmax="1" chance="1"/></loot></monster>

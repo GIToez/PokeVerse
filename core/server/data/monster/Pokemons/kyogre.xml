@@ -31,4 +31,4 @@
 		<voice sentence="KYOGRE!"/>
 	</voices>
 	
-<loot><item id="12230" countmax="1" chance="100"/><item id="14464" countmax="5" chance="10000"/><item id="29106" countmax="1" chance="100"/><item id="17346" countmax="1" chance="100"/><item id="17349" countmax="1" chance="100"/><item id="23521" countmax="1" chance="100"/></loot></monster>
+<loot><item id="12230" countmax="1" chance="100"/><item id="14464" countmax="5" chance="7500"/><item id="29106" countmax="1" chance="100"/><item id="17346" countmax="1" chance="100"/><item id="17349" countmax="1" chance="100"/><item id="23521" countmax="1" chance="100"/></loot></monster>

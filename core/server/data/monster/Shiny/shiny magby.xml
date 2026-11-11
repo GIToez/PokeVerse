@@ -32,4 +32,4 @@
 		<voice sentence="MAGGBYY!"/>
 	</voices>
 	
-<loot><item id="14530" countmax="1" chance="100000"/><item id="14513" countmax="1" chance="40000"/><item id="14464" countmax="5" chance="10000"/><item id="18039" countmax="1" chance="100"/></loot></monster>
+<loot><item id="14530" countmax="1" chance="100000"/><item id="14513" countmax="1" chance="40000"/><item id="14464" countmax="5" chance="7500"/><item id="18039" countmax="1" chance="100"/></loot></monster>

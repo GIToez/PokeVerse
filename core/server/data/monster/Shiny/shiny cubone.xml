@@ -30,4 +30,4 @@
 		<voice sentence="CUBONE!"/>
 	</voices>
 	
-<loot><item id="14575" countmax="1" chance="3030"/><item id="14546" countmax="1" chance="1904"/><item id="14620" countmax="1" chance="2380"/><item id="14464" countmax="3" chance="6000"/><item id="12269" countmax="1" chance="100"/><item id="13807" countmax="1" chance="2"/><item id="17355" countmax="1" chance="5"/><item id="18913" countmax="1" chance="5"/></loot></monster>
+<loot><item id="14575" countmax="1" chance="3030"/><item id="14546" countmax="1" chance="1904"/><item id="14620" countmax="1" chance="2380"/><item id="14464" countmax="3" chance="4500"/><item id="12269" countmax="1" chance="100"/><item id="13807" countmax="1" chance="2"/><item id="17355" countmax="1" chance="5"/><item id="18913" countmax="1" chance="5"/></loot></monster>
