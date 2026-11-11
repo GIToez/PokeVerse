@@ -602,10 +602,11 @@ local function testShinyEvent(cid)
 end
 
 -- Official level-up moves (scripts/make-pokemon-moves.py): the lists every system walks by slot
-local function testMoveLists(cid)
+-- (a global: the test list below is at Lua 5.1's limit of 60 upvalues per function)
+function testMoveLists(cid)
     local broken = {}
     for name in pairs(POKEMONS) do
-        local skills = getPokemonDefinition(name).skills or {}
+        local skills = (getPokemonDefinition(name) or {}).skills or {}
         local last, seen, problem = 0, {}, nil
         if (not getPokemonNumberByName(name)) then
             skills = { "Tackle", 1 } -- bosses and other creatures outside the Pokedex keep their own lists
