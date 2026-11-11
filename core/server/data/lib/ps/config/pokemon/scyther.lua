@@ -13,7 +13,7 @@ POKEMON["Scyther"] = {
     catchStorage = 16123,
     evolutions = { { name = "Scizor", requiredLevel = 60, requiredItems = { ITEMS.METAL_COAT } } },
     description = "It tears and shreds prey with its wickedly sharp scythes. It very rarely spreads its wings to fly.",
-    skills = { "Tackle", 1, "Quick Attack", 5, "Focus Energy", 10, "Bug Buzz", 15, "Wing Attack", 20, "Agility", 25, "Slash", 30, "Fury Attack", 35, "Night Slash", 40, "X-Scissor", 45, "Double Team", 50, "Air Slash", 55 },
+    skills = { "Tackle", 1, "Vacuum Wave", 1, "Quick Attack", 1, "Focus Energy", 5, "Pursuit", 9, "Agility", 17, "Wing Attack", 21, "Fury Cutter", 25, "Slash", 29, "Razor Wind", 33, "Double Team", 37, "X-Scissor", 41, "Night Slash", 45, "Double Hit", 49, "Air Slash", 50, "Swords Dance", 57, "Feint", 61 },
     abilities = { "Cut", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 14036,

@@ -13,7 +13,7 @@ POKEMON["Aipom"] = {
     catchStorage = 16190,
     evolutions = { { name = "Ambipom", requiredLevel = 40 } },
     description = "It lives atop tall trees. When leaping from branch to branch, it deftly uses its tail for balance.",
-    skills = { "Tackle", 1, "Scratch", 5, "Sand-Attack", 10, "Fury Swipes", 15, "Swift", 20, "Astonish", 25, "Low Sweep", 30, "Shadow Claw", 35, "Rest", 40, "Agility", 45, "Brick Break", 50, "Uproar", 55, "Iron Tail", 60, "Last Resort", 65 },
+    skills = { "Tackle", 1, "Scratch", 1, "Sand-Attack", 4, "Astonish", 8, "Tickle", 15, "Fury Swipes", 18, "Swift", 22, "Screech", 25, "Agility", 29, "Double Hit", 32, "Nasty Plot", 39, "Last Resort", 43 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Find", "Cut", "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 17755,

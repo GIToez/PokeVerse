@@ -13,7 +13,7 @@ POKEMON["Piplup"] = {
     catchStorage = -1,
     evolutions = { { name = "Prinplup", requiredLevel = 16 } },
     description = "A poor walker, it often falls down. However, its strong pride makes it puff up its chest without a care.",
-    skills = { "Pound", 1, "Growl", 5, "Fury Attack", 10, "Peck", 15, "Water Gun", 20, "Bubblebeam", 25, "Brine", 30 },
+    skills = { "Tackle", 1, "Pound", 1, "Growl", 4, "Bubble", 8, "Water Sport", 11, "Peck", 15, "Bubblebeam", 18, "Bide", 22, "Fury Attack", 25, "Brine", 29, "Whirlpool", 32, "Mist", 36, "Drill Peck", 39, "Hydro Pump", 43 },
     abilities = { "Cut", "Headbutt", POKEMON_ABILITIES.DIG },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1, POKEMON_EGG_GROUP_FIELD },
     eggId = 30940,

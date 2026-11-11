@@ -13,7 +13,7 @@ POKEMON["Gligar"] = {
     catchStorage = 16207,
     evolutions = { { name = "Gliscor", requiredLevel = 40, requiredItems = { ITEMS.RAZOR_FANG }, requiredTime = WORLD_LIGHT_STATE_NIGHT } },
     description = "It usually clings to cliffs. When it spots its prey, it spreads its wings and glides down to attack.",
-    skills = { "Tackle", 1, "Poison Sting", 5, "Quick Attack", 10, "Sand-Attack", 15, "Wing Attack", 20, "Metal Claw", 25, "Acrobatics", 30, "X-Scissor", 35, "Bulldoze", 40, "Earth Power", 45, "Harden", 50, "Guillotine", 55, "Sky Uppercut", 60, "Iron Tail", 65 },
+    skills = { "Tackle", 1, "Poison Sting", 1, "Sand-Attack", 4, "Harden", 7, "Knock Off", 10, "Quick Attack", 13, "Fury Cutter", 16, "Faint Attack", 19, "Acrobatics", 22, "Slash", 27, "U-turn", 30, "Screech", 35, "X-Scissor", 40, "Sky Uppercut", 45, "Swords Dance", 50, "Guillotine", 55 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Find", "Cut", "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 17765,

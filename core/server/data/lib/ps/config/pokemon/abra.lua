@@ -13,7 +13,7 @@ POKEMON["Abra"] = {
     catchStorage = 16063,
     evolutions = { { name = "Kadabra", requiredLevel = 16 } },
     description = "It sleeps for 18 hours a day. It uses a variety of extrasensory powers even while asleep.",
-    skills = { "Tackle", 1, "Confusion", 5, "Mist Ball", 10, "Calm Mind", 15, "Recover", 20, "Reflect", 25 },
+    skills = { "Tackle", 1 },
     abilities = { "Blink", "Flash", "Teleport", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_HUMAN_LIKE },
     eggId = 14004,

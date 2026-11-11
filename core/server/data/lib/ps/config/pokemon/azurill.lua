@@ -13,7 +13,7 @@ POKEMON["Azurill"] = {
     catchStorage = -1,
     evolutions = { { name = "Marill", requiredLevel = 25 } },
     description = "A Pokemon that lives by water. It moves quickly on land by bouncing on its big tail.",
-    skills = { "Tackle", 1, "Bubble", 5, "Water Gun", 10, "Aqua Tail", 15, "Defense Curl", 20},
+    skills = { "Tackle", 1, "Splash", 1, "Water Gun", 1, "Water Sport", 5, "Bubble", 7, "Charm", 10, "Bubblebeam", 13, "Slam", 20, "Bounce", 23 },
     abilities = { "Surf" },
     eggGroup = { POKEMON_EGG_GROUP_UNDISCOVERED },
     eggId = 17752,

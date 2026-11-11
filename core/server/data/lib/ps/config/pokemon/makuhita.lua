@@ -13,7 +13,7 @@ POKEMON["Makuhita"] = {
     catchStorage = -1,
     evolutions = { { name = "Hariyama", requiredLevel = 24 } },
     description = "It toughens up by slamming into thick trees over and over. It gains a sturdy body and dauntless spirit.",
-    skills = { "Tackle", 1, "Arm Thrust", 5, "Force Palm", 10, "Fake Out", 15, "Vital Throw", 20, "Knock Off", 25, "Smelling Salts", 30, "Sand-Attack", 35 },
+    skills = { "Tackle", 1, "Focus Energy", 1, "Sand-Attack", 4, "Arm Thrust", 7, "Fake Out", 10, "Force Palm", 13, "Whirlwind", 16, "Knock Off", 19, "Vital Throw", 22, "Belly Drum", 25, "Smelling Salts", 28, "Seismic Toss", 31, "Wake-Up Slap", 34, "Endure", 37, "Close Combat", 40, "Reversal", 43, "Heavy Slam", 46 },
     abilities = { "Surf", "Strength", "Rock Smash" },
     eggGroup = { POKEMON_EGG_GROUP_HUMAN_LIKE },
     eggId = 28558,

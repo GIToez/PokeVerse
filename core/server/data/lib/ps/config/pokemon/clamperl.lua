@@ -16,7 +16,7 @@ POKEMON["Clamperl"] = {
         { name = "Gorebyss", requiredLevel = 30, requiredItems = { ITEMS.DEEPSEASCALE }  },
     },
     description = "When it evolves, it makes a mysterious pearl that amplifies psychic powers when it's held.",
-    skills = { "Tackle", 1, "Clamp", 5, "Water Gun", 10, "Whirlpool", 15, "Rock Tomb", 20, "Iron Defense", 25 },
+    skills = { "Tackle", 1, "Clamp", 1, "Water Gun", 1, "Whirlpool", 1, "Iron Defense", 1, "Shell Smash", 50 },
     abilities = { "Surf", "Dive", "Waterfall" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1 },
     eggId = 28547,

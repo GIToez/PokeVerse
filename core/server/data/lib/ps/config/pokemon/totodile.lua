@@ -13,7 +13,7 @@ POKEMON["Totodile"] = {
     catchStorage = 16158,
     evolutions = { { name = "Croconaw", requiredLevel = 18 } },
     description = "It is small but rough and tough. It won't hesitate to take a bite out of anything that moves.",
-    skills = { "Tackle", 1, "Scratch", 5, "Water Pulse", 10, "Bite", 15, "Aqua Tail", 20, "Ice Fang", 25, "Scary Face", 30 },
+    skills = { "Tackle", 1, "Scratch", 1, "Water Gun", 6, "Rage", 8, "Bite", 13, "Scary Face", 15, "Ice Fang", 20, "Flail", 22, "Crunch", 27, "Chip Away", 29, "Slash", 34, "Screech", 36, "Thrash", 41, "Aqua Tail", 43, "Superpower", 48, "Hydro Pump", 50 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.WATERFALL, "Cut", "Surf", "Dive", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_WATER_1 },
     eggId = 17743,

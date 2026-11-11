@@ -13,7 +13,7 @@ POKEMON["Skitty"] = {
     catchStorage = -1,
     evolutions = { { name = "Delcatty", requiredLevel = 40, requiredItems = { ITEMS.MOON_STONE }  } },
     description = "It can't stop itself from chasing moving things, and it runs in a circle, chasing its own tail.",
-    skills = { "Tackle", 1, "Disarming Voice", 5, "Double Slap", 10, "Faint Attack", 15, "Foresight", 20, "Wake-Up Slap", 25, "Play Rough", 30, "Heal Bell", 35 },
+    skills = { "Tackle", 1, "Fake Out", 1, "Growl", 1, "Foresight", 4, "Sing", 7, "Disarming Voice", 13, "Double Slap", 16, "Copycat", 19, "Faint Attack", 22, "Charm", 25, "Wake-Up Slap", 28, "Covet", 34, "Heal Bell", 37, "Double-Edge", 40, "Captivate", 43, "Play Rough", 46 },
     abilities = { "Flash", POKEMON_ABILITIES.FIND },
     eggGroup = { POKEMON_EGG_GROUP_FAIRY, POKEMON_EGG_GROUP_FIELD },
     eggId = 28576,

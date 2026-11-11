@@ -13,7 +13,7 @@ POKEMON["Mime Jr."] = {
     catchStorage = -1,
     evolutions = { { name = "Mr. Mime", requiredLevel = 25 } },
     description = "It mimics the expressions and motions of those it sees to understand the feelings of others.",
-    skills = { "Pound", 1, "Copycat", 5, "Confusion", 10, "Psybeam", 15, "Sucker Punch", 20 },
+    skills = { "Tackle", 1, "Tickle", 1, "Barrier", 1, "Pound", 1, "Confusion", 1, "Copycat", 4, "Meditate", 8, "Double Slap", 11, "Mimic", 15, "Encore", 18, "Light Screen", 22, "Reflect", 22, "Psybeam", 25, "Substitute", 29, "Psychic", 39, "Role Play", 43, "Safeguard", 50 },
     abilities = { "Headbutt", "Flash" },
     eggGroup = {  },
     eggId = 30961,

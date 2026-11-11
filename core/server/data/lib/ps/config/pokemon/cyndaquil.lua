@@ -13,7 +13,7 @@ POKEMON["Cyndaquil"] = {
     catchStorage = 16155,
     evolutions = { { name = "Quilava", requiredLevel = 14 } },
     description = "It usually stays hunched over. If it is angry or surprised, it shoots flames out of its back.",
-    skills = { "Tackle", 1, "Ember", 5, "Quick Attack", 10, "Flame Wheel", 15, "Smoke Screen", 20, "Swift", 25, "Flamethrower", 30 },
+    skills = { "Tackle", 1, "Smoke Screen", 6, "Ember", 10, "Quick Attack", 13, "Flame Wheel", 19, "Defense Curl", 22, "Flame Charge", 28, "Swift", 31, "Lava Plume", 37, "Flamethrower", 40, "Inferno", 46, "Rollout", 49, "Double-Edge", 55, "Eruption", 64 },
     abilities = { POKEMON_ABILITIES.DIG, "Cut", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 17742,

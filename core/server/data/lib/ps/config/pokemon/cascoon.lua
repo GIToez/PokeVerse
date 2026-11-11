@@ -13,7 +13,7 @@ POKEMON["Cascoon"] = {
     catchStorage = -1,
     evolutions = { { name = "Dustox", requiredLevel = 10 } },
     description = "Its body, which is made of soft silk, hardens over time. When cracks appear, evolution is near.",
-    skills = { "Tackle", 1, "Poison Sting", 5, "String Shot", 7, "Bug Bite", 10, "Harden", 20 },
+    skills = { "Tackle", 1, "Harden", 1 },
     abilities = {  },
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 28595,

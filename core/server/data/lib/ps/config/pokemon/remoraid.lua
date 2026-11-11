@@ -13,7 +13,7 @@ POKEMON["Remoraid"] = {
     catchStorage = 16223,
     evolutions = { { name = "Octillery", requiredLevel = 25 } },
     description = "Using its dorsal fin as a suction pad, it clings to a MANTINE's underside to scavenge for leftovers.",
-    skills = { "Tackle", 1, "Water Gun", 5, "Psybeam", 10, "Aurora Beam", 15, "Bubblebeam", 20, "Gunk Shot", 25, "Rock Blast", 30, "Hydro Pump", 35 },
+    skills = { "Tackle", 1, "Water Gun", 1, "Psybeam", 10, "Aurora Beam", 14, "Bubblebeam", 18, "Focus Energy", 22, "Water Pulse", 26, "Signal Beam", 30, "Ice Beam", 34, "Bullet Seed", 38, "Hydro Pump", 42, "Hyper Beam", 46 },
     abilities = { POKEMON_ABILITIES.WATERFALL },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1, POKEMON_EGG_GROUP_WATER_2 },
     eggId = 17775,

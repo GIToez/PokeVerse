@@ -13,7 +13,7 @@ POKEMON["Combee"] = {
     catchStorage = -1,
     evolutions = { { name = "Vespiquen", requiredLevel = 21 } },
     description = "The trio is together from birth. It constantly gathers honey from flowers to please VESPIQUEN.",
-    skills = { "Gust", 1, "Struggle Bug", 5, "Bug Bite", 10, "Air Cutter", 15, "Lunge", 20, "Bug Buzz", 25 },
+    skills = { "Tackle", 1, "Gust", 1, "Bug Bite", 13, "Bug Buzz", 29 },
     abilities = {},
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 30949,

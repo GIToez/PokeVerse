@@ -13,7 +13,7 @@ POKEMON["Elekid"] = {
     catchStorage = 16239,
     evolutions = { { name = "Electabuzz", requiredLevel = 30 } },
     description = "Even in the most vicious storm, this POKEMON plays happily if thunder rumbles in the sky.",
-    skills = { "Tackle", 1, "Quick Attack", 5, "Thunder Shock", 10, "Low Kick", 15, "Swift", 20, "Shock Wave", 25 },
+    skills = { "Tackle", 1, "Quick Attack", 1, "Thunder Shock", 5, "Low Kick", 8, "Swift", 12, "Shock Wave", 15, "Thunder Wave", 19, "Electro Ball", 22, "Light Screen", 26, "Thunder Punch", 29, "Discharge", 33, "Screech", 36, "Thunderbolt", 40, "Thunder", 43 },
     abilities = { "Flash", "Headbutt" },
     eggGroup = {},
     eggId = 14038,

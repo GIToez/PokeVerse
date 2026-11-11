@@ -13,7 +13,7 @@ POKEMON["Goldeen"] = {
     catchStorage = 16118,
     evolutions = { { name = "Seaking", requiredLevel = 33 } },
     description = "Its dorsal and pectoral fins are strongly developed like muscles. It can swim at a speed of five knots.",
-    skills = { "Tackle", 1, "Peck", 5, "Bubble", 10, "Horn Attack", 15, "Water Pulse", 20, "Water Gun", 25, "Aqua Ring", 30 },
+    skills = { "Tackle", 1, "Peck", 1, "Water Sport", 1, "Supersonic", 5, "Horn Attack", 8, "Flail", 13, "Water Pulse", 16, "Aqua Ring", 21, "Fury Attack", 24, "Agility", 29, "Waterfall", 32, "Horn Drill", 37, "Megahorn", 45 },
     abilities = { POKEMON_ABILITIES.WATERFALL, "Surf", "Dive" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_2 },
     eggId = 14033,

@@ -13,7 +13,7 @@ POKEMON["Cacnea"] = {
     catchStorage = -1,
     evolutions = { { name = "Cacturne", requiredLevel = 32 } },
     description = "It lives in arid locations. Its yellow flowers bloom once a year.",
-    skills = { "Tackle", 1, "Absorb", 5, "Poison Sting", 10, "Poison Jab", 15, "Needle Arm", 20, "Ingrain", 25 },
+    skills = { "Tackle", 1, "Poison Sting", 1, "Absorb", 4, "Leech Seed", 10, "Sand-Attack", 13, "Needle Arm", 16, "Faint Attack", 19, "Ingrain", 22, "Payback", 26, "Spikes", 30, "Sucker Punch", 34, "Pin Missile", 38, "Energy Ball", 42, "Sandstorm", 50, "Destiny Bond", 54 },
     abilities = { "Flash", "Cut" },
     eggGroup = { POKEMON_EGG_GROUP_GRASS, POKEMON_EGG_GROUP_HUMAN_LIKE },
     eggId = 28543,

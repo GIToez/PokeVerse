@@ -13,7 +13,7 @@ POKEMON["Bidoof"] = {
     catchStorage = -1,
     evolutions = { { name = "Bibarel", requiredLevel = 15 } },
     description = "A comparison revealed that BIDOOF’s front teeth grow at the same rate as RATTATA’s.",
-    skills = { "Tackle", 1, "Growl", 5, "Rollout", 10, "Headbutt", 15, "Hyper Fang", 20, "Crunch", 25 },
+    skills = { "Tackle", 1, "Growl", 1, "Defense Curl", 5, "Rollout", 9, "Headbutt", 13, "Hyper Fang", 17, "Yawn", 21, "Crunch", 25, "Take Down", 29, "Super Fang", 33, "Swords Dance", 37, "Amnesia", 41, "Superpower", 45, "Curse", 49 },
     abilities = { "Cut", "Rock Smash", "Headbutt", POKEMON_ABILITIES.DIG },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1, POKEMON_EGG_GROUP_FIELD },
     eggId = 30942,

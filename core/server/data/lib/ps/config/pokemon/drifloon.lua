@@ -13,7 +13,7 @@ POKEMON["Drifloon"] = {
     catchStorage = -1,
     evolutions = { { name = "Drifblim", requiredLevel = 28 } },
     description = "Because of the way it floats aimlessly, an old folktale calls it a “Signpost for Wandering Spirits.”",
-    skills = { "Astonish", 1, "Focus Energy", 5, "Spit Up", 10, "Gust", 15, "Payback", 20, "Hex", 25, "Shadow Ball", 30 },
+    skills = { "Tackle", 1, "Constrict", 1, "Astonish", 4, "Gust", 8, "Focus Energy", 13, "Payback", 16, "Ominous Wind", 20, "Stockpile", 25, "Hex", 27, "Swallow", 32, "Spit Up", 32, "Shadow Ball", 36, "Amnesia", 40, "Explosion", 50 },
     abilities = { "Cut", "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_AMORPHOUS },
     eggId = 30954,

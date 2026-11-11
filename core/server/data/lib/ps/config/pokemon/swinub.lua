@@ -13,7 +13,7 @@ POKEMON["Swinub"] = {
     catchStorage = 16220,
     evolutions = { { name = "Piloswine", requiredLevel = 33 } },
     description = "If it smells something enticing, it dashes headlong off to find the source of the aroma.",
-    skills = { "Tackle", 1, "Mud-Slap", 5, "Ice Shard", 10, "Powder Snow", 15, "Mud Bomb", 20, "Icy Wind", 25, "Take Down", 30, "Earthquake", 35 },
+    skills = { "Tackle", 1, "Mud Sport", 5, "Powder Snow", 8, "Mud-Slap", 11, "Endure", 14, "Mud Bomb", 18, "Icy Wind", 21, "Ice Shard", 24, "Take Down", 28, "Mist", 35, "Earthquake", 37, "Flail", 40, "Blizzard", 44, "Amnesia", 48 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 17773,

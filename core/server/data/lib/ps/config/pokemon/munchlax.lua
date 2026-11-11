@@ -13,7 +13,7 @@ POKEMON["Munchlax"] = {
     catchStorage = -1,
     evolutions = { { name = "Snorlax", requiredLevel = 25 } },
     description = "In its desperation to gulp down food, it forgets about the food it has hidden under its fur.",
-    skills = { "Tackle", 1, "Defense Curl", 5, "Lick", 10, "Covet", 15, "Bite", 20 },
+    skills = { "Tackle", 1, "Last Resort", 1, "Lick", 1, "Metronome", 1, "Defense Curl", 4, "Amnesia", 9, "Chip Away", 17, "Screech", 20, "Body Slam", 25, "Stockpile", 28, "Swallow", 33, "Rollout", 36, "Belly Drum", 44 },
     abilities = { "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },
     eggGroup = {  },
     eggId = 30966,

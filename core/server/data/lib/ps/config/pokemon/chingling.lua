@@ -13,7 +13,7 @@ POKEMON["Chingling"] = {
     catchStorage = -1,
     evolutions = { { name = "Chimecho", requiredLevel = 25 } },
     description = "There is an orb inside its mouth. When it hops, the orb bounces all over and makes a ringing sound.",
-    skills = { "Wrap", 1, "Growl", 5, "Astonish", 10, "Confusion", 15, "Last Resort", 20 },
+    skills = { "Tackle", 1, "Wrap", 1, "Growl", 4, "Astonish", 7, "Confusion", 10, "Yawn", 13, "Last Resort", 16, "Uproar", 32 },
     abilities = { "Flash" },
     eggGroup = {  },
     eggId = 30957,

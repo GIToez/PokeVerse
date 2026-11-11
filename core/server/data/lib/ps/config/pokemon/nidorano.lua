@@ -13,7 +13,7 @@ POKEMON["Nidorano"] = {
     catchStorage = 16032,
     evolutions = { { name = "Nidorino", requiredLevel = 16 } },
     description = "Its large ears are flapped like wings when it is listening to distant sounds. It extends toxic barbs when angered.",
-    skills = { "Tackle", 1, "Double Kick", 5, "Poison Sting", 10, "Fury Attack", 15, "Poison Jab", 20, "Acid", 25 },
+    skills = { "Tackle", 1, "Peck", 1, "Focus Energy", 7, "Double Kick", 9, "Poison Sting", 13, "Fury Attack", 19, "Horn Attack", 21, "Toxic Spikes", 31, "Flatter", 33, "Poison Jab", 37, "Captivate", 43, "Horn Drill", 45 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_FIELD },
     eggId = 13990,

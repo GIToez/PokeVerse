@@ -13,7 +13,7 @@ POKEMON["Magikarp"] = {
     catchStorage = 16129,
     evolutions = { { name = "Gyarados", requiredLevel = 20 } },
     description = "It is virtually worthless in terms of both power and speed. It is the most weak and pathetic POKEMON in the world.",
-    skills = { "Tackle", 1, "Splash", 5 },
+    skills = { "Tackle", 1, "Splash", 1, "Flail", 30 },
     abilities = {},
     eggGroup = { POKEMON_EGG_GROUP_WATER_2, POKEMON_EGG_GROUP_DRAGON },
     eggId = 14042,

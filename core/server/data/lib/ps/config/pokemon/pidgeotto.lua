@@ -13,7 +13,7 @@ POKEMON["Pidgeotto"] = {
     catchStorage = 16017,
     evolutions = { { name = "Pidgeot", requiredLevel = 36 } },
     description = "The claws on its feet are well developed. It can carry prey such as an EXEGGCUTE to its nest over 60 miles away.",
-    skills = { "Tackle", 1, "Gust", 5, "Quick Attack", 10, "Sand-Attack", 15, "Drill Peck", 20, "Wing Attack", 25, "Roost", 35, "Air Slash", 40, "Agility", 45, "Air Cutter", 50 },
+    skills = { "Tackle", 1, "Sand-Attack", 1, "Gust", 1, "Quick Attack", 13, "Whirlwind", 17, "Twister", 22, "Feather Dance", 27, "Agility", 32, "Wing Attack", 37, "Roost", 42, "Tailwind", 47, "Mirror Move", 52, "Air Slash", 57, "Hurricane", 62 },
     abilities = { "Find" },
     eggGroup = { POKEMON_EGG_GROUP_FLYING },
     eggId = 13983,

@@ -13,7 +13,7 @@ POKEMON["Chimchar"] = {
     catchStorage = -1,
     evolutions = { { name = "Monferno", requiredLevel = 14 } },
     description = "It is very agile. Before going to sleep, it extinguishes the flame on its tail to prevent fires.",
-    skills = { "Scratch", 1, "Fury Swipes", 5, "Nasty Plot", 10, "Fire Spin", 15, "Ember", 20, "Flame Wheel", 25, "Facade", 30 },
+    skills = { "Tackle", 1, "Scratch", 1, "Ember", 7, "Fury Swipes", 15, "Flame Wheel", 17, "Nasty Plot", 23, "Facade", 31, "Fire Spin", 33, "Acrobatics", 39, "Flamethrower", 47 },
     abilities = { "Cut", "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },
     eggGroup = { POKEMON_EGG_GROUP_FIELD, POKEMON_EGG_GROUP_HUMAN_LIKE },
     eggId = 30939,

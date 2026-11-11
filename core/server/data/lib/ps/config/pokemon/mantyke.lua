@@ -13,7 +13,7 @@ POKEMON["Mantyke"] = {
     catchStorage = -1,
     evolutions = { { name = "Mantine", requiredLevel = 25 } },
     description = "People organize tours to see this POKEMON frolic and skim the tops of waves with REMORAID.",
-    skills = { "Tackle", 1, "Supersonic", 5, "Water Gun", 10, "Wing Attack", 15, "Water Pulse", 20 },
+    skills = { "Tackle", 1, "Bubble", 1, "Supersonic", 3, "Bubblebeam", 7, "Confuse Ray", 11, "Wing Attack", 14, "Headbutt", 16, "Water Pulse", 19, "Take Down", 27, "Agility", 32, "Air Slash", 36, "Aqua Ring", 39, "Bounce", 46, "Hydro Pump", 49 },
     abilities = { "Headbutt" },
     eggGroup = {  },
     eggId = 30973,

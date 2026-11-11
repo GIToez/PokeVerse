@@ -13,7 +13,7 @@ POKEMON["Staravia"] = {
     catchStorage = -1,
     evolutions = { { name = "Staraptor", requiredLevel = 34 } },
     description = "Recognizing their own weakness, they always live in a group. When alone, a STARAVIA cries noisily.",
-    skills = { "Tackle", 1, "Growl", 5, "Endeavor", 10, "Quick Attack", 15, "Wing Attack", 20, "Aerial Ace", 25, "Take Down", 30, "Brave Bird", 40, "Agility", 45 },
+    skills = { "Tackle", 1, "Growl", 1, "Quick Attack", 1, "Wing Attack", 9, "Double Team", 13, "Endeavor", 18, "Whirlwind", 23, "Aerial Ace", 28, "Take Down", 33, "Agility", 38, "Brave Bird", 43 },
     abilities = {},
     eggGroup = { POKEMON_EGG_GROUP_FLYING },
     eggId = 30941,

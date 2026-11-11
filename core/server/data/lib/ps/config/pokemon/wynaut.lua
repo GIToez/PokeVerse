@@ -13,7 +13,7 @@ POKEMON["Wynaut"] = {
     catchStorage = -1,
     evolutions = { { name = "Wobbuffet", requiredLevel = 15 } },
     description = "It tends to move in a pack with others. They cluster in a tight group to sleep in a cave.",
-    skills = { "Tackle", 1, "Splash", 5, "Encore", 10, "Mirror Coat", 15, "Counter", 20, },
+    skills = { "Tackle", 1, "Splash", 1, "Charm", 1, "Encore", 1, "Counter", 15, "Mirror Coat", 15, "Safeguard", 15, "Destiny Bond", 15 },
     abilities = { POKEMON_ABILITIES.BLINK, POKEMON_ABILITIES.TELEPORT },
     eggGroup = { POKEMON_EGG_GROUP_UNDISCOVERED },
     eggId = 17761,

@@ -13,7 +13,7 @@ POKEMON["Feebas"] = {
     catchStorage = -1,
     evolutions = { { name = "Milotic", requiredLevel = 30, requiredItems = { ITEMS.PRISM_SCALE } } },
     description = "It eats anything, so it can even live in polluted streams and lakes. No one pays any attention to it.",
-    skills = { "Tackle", 1, "Bubble", 5, "Water Gun", 10, "Bubblebeam", 15, "Ice Beam", 20, "Rest", 25 },
+    skills = { "Tackle", 1, "Splash", 1, "Flail", 30 },
     abilities = { "Surf", "Waterfall", "Dive" },
     eggGroup = { POKEMON_EGG_GROUP_DRAGON, POKEMON_EGG_GROUP_WATER_1 },
     eggId = 28551,

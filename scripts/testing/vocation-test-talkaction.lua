@@ -601,6 +601,46 @@ local function testShinyEvent(cid)
     check("shiny event: off cancels it", ShinyEvent.stop() and getShinyEventMultiplier() == 1 and not ShinyEvent.get())
 end
 
+-- Official level-up moves (scripts/make-pokemon-moves.py): the lists every system walks by slot
+local function testMoveLists(cid)
+    local broken = {}
+    for name in pairs(POKEMONS) do
+        local skills = getPokemonDefinition(name).skills or {}
+        local last, seen, problem = 0, {}, nil
+        if (not getPokemonNumberByName(name)) then
+            skills = { "Tackle", 1 } -- bosses and other creatures outside the Pokedex keep their own lists
+        end
+        if (#skills % 2 ~= 0) then
+            problem = "a move without a level"
+        elseif (#skills > 48 and name ~= "Smeargle") then
+            problem = "more than 24 moves"
+        elseif (skills[1] ~= "Tackle" or skills[2] ~= 1) then
+            problem = "Tackle is not first at level 1"
+        else
+            for i = 1, #skills, 2 do
+                local move, level = skills[i], skills[i + 1]
+                if (not getPokemonSkillExists(move)) then
+                    problem = "unknown move " .. tostring(move)
+                elseif (type(level) ~= "number" or level < last) then
+                    problem = tostring(move) .. " out of level order" -- the moves bar hides the unlearned tail
+                elseif (seen[move] and move ~= "Sketch") then
+                    problem = tostring(move) .. " twice"
+                end
+                last, seen[move] = type(level) == "number" and level or last, true
+            end
+        end
+        if (problem) then
+            broken[#broken + 1] = name .. ": " .. problem
+        end
+    end
+    check("moves: every Pokemon's list starts with Tackle, is in level order, has known moves once, and fits 24 slots",
+        #broken == 0, table.concat(broken, "; ", 1, math.min(#broken, 8)))
+    local charmander = getPokemonDefinition("Charmander").skills
+    check("moves: Charmander learns Ember at 7 and Flamethrower at 37, as in the official games",
+        getPokemonSkillRequiredLevel("Charmander", "Ember") == 7
+        and getPokemonSkillRequiredLevel("Charmander", "Flamethrower") == 37, table.concat(charmander, ","))
+end
+
 local function testAdmin(cid)
     local sent, broadcasts = {}, {}
     local opcode, access, broadcast = doSendPlayerExtendedOpcode, getPlayerAccess, doBroadcastMessage
@@ -5812,7 +5852,7 @@ function onSay(cid, words, param, channel)
     local tests = {
         { "ranks", testRanks }, { "trials", testTrials },
         { "trainer card", function() testTrainerCard(cid, friend) end }, { "outfits", function() quietly(function() testOutfits(cid) end) end }, { "ace", testAce }, { "catcher odds", testCatcherOdds },
-        { "incubator", withoutCalendarBonuses(testBreederIncubator) }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "pokemon outfit", testPokemonOutfit }, { "tmnt blastoise", testTurtleBlastoise }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "bag", testBag }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "baby call", function() testBabyCall(cid, arena) end }, { "poketrader", function() testPokeTrader(cid, friend) end }, { "ranger", function() testRanger(cid, arena) end },
+        { "incubator", withoutCalendarBonuses(testBreederIncubator) }, { "daycare", testDaycare }, { "pokemon shop", testPokemonShop }, { "move lists", testMoveLists }, { "held items", testHeldItems }, { "shiny event", withoutCalendarBonuses(testShinyEvent) }, { "admin", withoutCalendarBonuses(testAdmin) }, { "quests", testQuests }, { "calendar", testCalendar }, { "halloween", testHalloween }, { "world boss", testWorldBoss }, { "summer chests", testSummerChests }, { "anniversary boss", testAnniversaryBoss }, { "anniversary npcs", testAnniversaryNpcs }, { "event shop", testEventShop }, { "server restart", testServerRestart }, { "decoration items", testDecorationItems }, { "seasons", testSeasons }, { "hints", testHints }, { "weather", function() testWeather(cid, arena) end }, { "decorations", testDecorations }, { "hand decorations", testHandDecorations }, { "ball slot", testBallSlotUse }, { "pokemon outfit", testPokemonOutfit }, { "tmnt blastoise", testTurtleBlastoise }, { "habitat", testPokemonHabitat }, { "analyser", testAnalyser }, { "mega items", testMegaItems }, { "bag", testBag }, { "mega forms", withoutMegaBurst(testMegaForms) }, { "more megas", withoutMegaBurst(testMoreMegas) }, { "mega drops", testMegaDrops }, { "mega quest", testMegaQuest }, { "mega gauge", withoutMegaBurst(testMegaGauge) }, { "running shoes", testRunningShoes }, { "legendaries", function() testLegendaries(cid, friend, arena) end }, { "move info", function() testMoveInfo(cid, arena) end }, { "duel wilds", function() testDuelWilds(cid, arena) end }, { "baby call", function() testBabyCall(cid, arena) end }, { "poketrader", function() testPokeTrader(cid, friend) end }, { "ranger", function() testRanger(cid, arena) end },
         { "angler", testAngler }, { "angler spot", function() testAnglerSpot(cid, arena) end },
         { "medic", function()
             if (isPlayer(friend)) then

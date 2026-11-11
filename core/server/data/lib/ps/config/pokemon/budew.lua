@@ -13,7 +13,7 @@ POKEMON["Budew"] = {
     catchStorage = -1,
     evolutions = { { name = "Roselia", requiredLevel = 25 } },
     description = "Sensitive to changing temperature, the bud is said to bloom when it feels the sun’s warm touch.",
-    skills = { "Absorb", 1, "Stun Spore", 5, "Grass Knot", 10, "Poison Sting", 15, "Bullet Seed", 20 },
+    skills = { "Tackle", 1, "Absorb", 1, "Water Sport", 7, "Stun Spore", 10, "Mega Drain", 13, "Worry Seed", 16 },
     abilities = { "Cut", "Flash" },
     eggGroup = {  },
     eggId = 30945,

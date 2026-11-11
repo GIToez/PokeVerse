@@ -13,7 +13,7 @@ POKEMON["Horsea"] = {
     catchStorage = 16116,
     evolutions = { { name = "Seadra", requiredLevel = 32 } },
     description = "It maintains balance using its tail, which is wound up like a coil. It may spray ink from its mouth.",
-    skills = { "Tackle", 1, "Bubble", 5, "Water Gun", 10, "Bubblebeam", 15, "Smoke Screen", 20, "Twister", 25, "Agility", 30 },
+    skills = { "Tackle", 1, "Bubble", 1, "Smoke Screen", 5, "Water Gun", 13, "Twister", 17, "Bubblebeam", 21, "Focus Energy", 26, "Brine", 31, "Agility", 36, "Dragon Pulse", 41, "Dragon Dance", 46, "Hydro Pump", 52 },
     abilities = { POKEMON_ABILITIES.WATERFALL, "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1, POKEMON_EGG_GROUP_DRAGON },
     eggId = 14032,

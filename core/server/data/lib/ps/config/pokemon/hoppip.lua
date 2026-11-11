@@ -13,7 +13,7 @@ POKEMON["Hoppip"] = {
     catchStorage = 16187,
     evolutions = { { name = "Skiploom", requiredLevel = 18 } },
     description = "Its body is so light, it must grip the ground firmly with its feet to keep from being blown away.",
-    skills = { "Tackle", 1, "Leech Seed", 5, "Bullet Seed", 10, "Mega Drain", 15, "Poison Powder", 20, "Fairy Wind", 25, "Synthesis", 30 },
+    skills = { "Tackle", 1, "Splash", 1, "Absorb", 1, "Synthesis", 4, "Fairy Wind", 10, "Poison Powder", 12, "Stun Spore", 14, "Sleep Powder", 16, "Bullet Seed", 19, "Leech Seed", 22, "Mega Drain", 25, "Acrobatics", 28, "Rage Powder", 31, "U-turn", 37, "Worry Seed", 40, "Giga Drain", 43, "Bounce", 46, "Memento", 49 },
     abilities = { "Flash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FAIRY, POKEMON_EGG_GROUP_GRASS },
     eggId = 17754,

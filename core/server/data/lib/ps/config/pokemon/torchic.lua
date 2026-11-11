@@ -13,7 +13,7 @@ POKEMON["Torchic"] = {
     catchStorage = 16255,
     evolutions = { { name = "Combusken", requiredLevel = 16 } },
     description = "It has a flame sac inside its belly that perpetually burns. It feels warm if it is hugged.",
-    skills = { "Tackle", 1, "Ember", 5, "Slash", 10, "Peck", 15, "Sand-Attack", 20, "Flame Burst", 25, "Flamethrower", 30 },
+    skills = { "Tackle", 1, "Scratch", 1, "Growl", 1, "Ember", 5, "Sand-Attack", 10, "Peck", 14, "Fire Spin", 19, "Quick Attack", 23, "Flame Burst", 28, "Focus Energy", 32, "Slash", 37, "Mirror Move", 41, "Flamethrower", 46 },
     abilities = { "Cut", "Strenght", "Rock Smash" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 28586,

@@ -13,7 +13,7 @@ POKEMON["Ledyba"] = {
     catchStorage = 16165,
     evolutions = { { name = "Ledian", requiredLevel = 18 } },
     description = "When the weather turns cold, lots of LEDYBA gather from everywhere to cluster and keep each other warm.",
-    skills = { "Tackle", 1, "Comet Punch", 5, "Swift", 10, "Mach Punch", 15, "Silver Wind", 20, "Roost", 25, "Bug Buzz", 30, "Supersonic", 35 },
+    skills = { "Tackle", 1, "Supersonic", 5, "Swift", 8, "Light Screen", 12, "Reflect", 12, "Safeguard", 12, "Mach Punch", 15, "Silver Wind", 19, "Comet Punch", 22, "Agility", 29, "Bug Buzz", 33, "Air Slash", 36, "Double-Edge", 40 },
     abilities = { POKEMON_ABILITIES.DIG, "Find", "Flash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 17746,

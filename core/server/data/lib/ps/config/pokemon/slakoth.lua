@@ -13,7 +13,7 @@ POKEMON["Slakoth"] = {
     catchStorage = -1,
     evolutions = { { name = "Vigoroth", requiredLevel = 18 } },
     description = "The way Slakoth lolls around makes anyone who watches it feel like doing the same.",
-    skills = { "Tackle", 1, "Scratch", 5, "Faint Attack", 10, "Covet", 15, "Chip Away", 20, "Yawn", 25 },
+    skills = { "Tackle", 1, "Scratch", 1, "Yawn", 1, "Encore", 6, "Faint Attack", 14, "Amnesia", 17, "Covet", 22, "Chip Away", 25, "Counter", 30, "Flail", 33, "Play Rough", 38 },
     abilities = { "Cut", "Strenght", "Rock Smash" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 28577,

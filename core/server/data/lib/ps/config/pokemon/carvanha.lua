@@ -13,7 +13,7 @@ POKEMON["Carvanha"] = {
     catchStorage = -1,
     evolutions = { { name = "Sharpedo", requiredLevel = 30 } },
     description = "They form packs to attack boats and rip out their hulls to sink them. They live in rivers in the jungle.",
-    skills = { "Tackle", 1, "Bite", 5, "Aqua Jet", 10, "Assurance", 15, "Rage", 20, "Focus Energy", 25 },
+    skills = { "Tackle", 1, "Bite", 1, "Rage", 4, "Focus Energy", 8, "Aqua Jet", 11, "Assurance", 15, "Screech", 18, "Ice Fang", 25, "Scary Face", 29, "Poison Fang", 32, "Crunch", 36, "Agility", 39, "Take Down", 43 },
     abilities = { "Surf", "Dive", "Waterfall" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_2 },
     eggId = 28544,

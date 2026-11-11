@@ -13,7 +13,7 @@ POKEMON["Croconaw"] = {
     catchStorage = 16159,
     evolutions = { { name = "Feraligatr", requiredLevel = 30 } },
     description = "It opens its huge jaws wide when attacking. If it loses any fangs while biting, they grow back in.",
-    skills = { "Tackle", 1, "Scratch", 5, "Water Pulse", 10, "Bite", 15, "Aqua Tail", 20, "Ice Fang", 25, "Scary Face", 30, "Rage", 40, "Crunch", 45, "Thrash", 50 },
+    skills = { "Tackle", 1, "Scratch", 1, "Water Gun", 1, "Rage", 8, "Bite", 13, "Scary Face", 15, "Ice Fang", 21, "Flail", 24, "Crunch", 30, "Chip Away", 33, "Slash", 39, "Screech", 42, "Thrash", 48, "Aqua Tail", 51, "Superpower", 57, "Hydro Pump", 60 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.WATERFALL, "Cut", "Rock Smash", "Surf", "Dive", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_WATER_1 },
     eggId = 17743,

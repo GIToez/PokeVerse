@@ -13,7 +13,7 @@ POKEMON["Rhyhorn"] = {
     catchStorage = 16111,
     evolutions = { { name = "Rhydon", requiredLevel = 42 } },
     description = "Strong, but not too bright, this POKEMON can shatter even a skyscraper with its charging TACKLES.",
-    skills = { "Tackle", 1, "Horn Attack", 5, "Stomp", 10, "Rock Throw", 15, "Take Down", 20, "Rock Blast", 25, "Scary Face", 30, "Drill Run", 35 },
+    skills = { "Tackle", 1, "Horn Attack", 1, "Fury Attack", 5, "Scary Face", 9, "Smack Down", 13, "Stomp", 17, "Bulldoze", 21, "Chip Away", 25, "Rock Blast", 29, "Drill Run", 33, "Take Down", 37, "Stone Edge", 41, "Earthquake", 45, "Megahorn", 49, "Horn Drill", 53 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Ride", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_FIELD },
     eggId = 14028,

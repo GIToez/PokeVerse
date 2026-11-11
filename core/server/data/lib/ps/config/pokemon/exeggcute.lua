@@ -13,7 +13,7 @@ POKEMON["Exeggcute"] = {
     catchStorage = 16102,
     evolutions = { { name = "Exeggutor", requiredLevel = 35, requiredItems = { ITEMS.LEAF_STONE } } },
     description = "Even though it appears to be eggs of some sort, it was discovered to be a life-form more like plant seeds.",
-    skills = { "Tackle", 1, "Leech Seed", 5, "Confusion", 10, "Bullet Seed", 15, "Poison Powder", 20, "Egg Bomb", 25, "Hypnosis", 30 },
+    skills = { "Tackle", 1, "Uproar", 1, "Hypnosis", 1, "Reflect", 7, "Leech Seed", 11, "Bullet Seed", 17, "Stun Spore", 19, "Poison Powder", 21, "Sleep Powder", 23, "Confusion", 27, "Worry Seed", 33, "Solar Beam", 43, "Extrasensory", 47 },
     abilities = { POKEMON_ABILITIES.STRENGTH, "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_GRASS },
     eggId = 14022,

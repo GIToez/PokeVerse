@@ -13,7 +13,7 @@ POKEMON["Surskit"] = {
     catchStorage = -1,
     evolutions = { { name = "Masquerain", requiredLevel = 22 } },
     description = "They usually live on ponds, but after an evening shower, they may appear on puddles in towns.",
-    skills = { "Tackle", 1, "Bubble", 5, "Quick Attack", 10, "Bubblebeam", 15, "Aqua Jet", 20, "Gust", 25, "Agility", 30 },
+    skills = { "Tackle", 1, "Bubble", 1, "Quick Attack", 6, "Water Sport", 14, "Bubblebeam", 17, "Agility", 22, "Mist", 25, "Haze", 25, "Aqua Jet", 30 },
     abilities = { "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_BUG, POKEMON_EGG_GROUP_WATER_1 },
     eggId = 28583,

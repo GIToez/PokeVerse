@@ -13,7 +13,7 @@ POKEMON["Ponyta"] = {
     catchStorage = 16077,
     evolutions = { { name = "Rapidash", requiredLevel = 40 } },
     description = "Its body is light, and its legs are incredibly powerful. It can clear Ayers Rock in one leap.",
-    skills = { "Tackle", 1, "Ember", 5, "Flame Wheel", 10, "Stomp", 15, "Fire Spin", 20, "Take Down", 25, "Agility", 30 },
+    skills = { "Tackle", 1, "Growl", 1, "Ember", 9, "Flame Wheel", 13, "Stomp", 17, "Flame Charge", 21, "Fire Spin", 25, "Take Down", 29, "Inferno", 33, "Agility", 37, "Fire Blast", 41, "Bounce", 45, "Flare Blitz", 49 },
     abilities = { POKEMON_ABILITIES.STRENGTH, "Ride", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 14009,

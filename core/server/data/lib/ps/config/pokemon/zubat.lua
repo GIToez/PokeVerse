@@ -13,7 +13,7 @@ POKEMON["Zubat"] = {
     catchStorage = 16041,
     evolutions = { { name = "Golbat", requiredLevel = 22 } },
     description = "It has no eyes. Instead, it relies on its ultrasonic cries for echo location to flit about in darkness.",
-    skills = { "Tackle", 1, "Leech Life", 5, "Bite", 10, "Swift", 15, "Wing Attack", 20, "Supersonic", 25, "Poison Fang", 30 },
+    skills = { "Tackle", 1, "Absorb", 1, "Supersonic", 5, "Astonish", 7, "Bite", 11, "Wing Attack", 13, "Confuse Ray", 17, "Air Cutter", 19, "Swift", 23, "Poison Fang", 25, "Leech Life", 31, "Haze", 35, "Venoshock", 37, "Air Slash", 41, "Quick Guard", 43 },
     abilities = { "Find" },
     eggGroup = { POKEMON_EGG_GROUP_FLYING },
     eggId = 13994,

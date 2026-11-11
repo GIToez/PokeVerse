@@ -13,7 +13,7 @@ POKEMON["Wingull"] = {
     catchStorage = -1,
     evolutions = { { name = "Pelipper", requiredLevel = 25 } },
     description = "Catching sea winds with its long wings, it soars as if it were a glider. It folds its wings to rest.",
-    skills = { "Tackle", 1, "Water Gun", 5, "Water Pulse", 10, "Wing Attack", 15, "Air Cutter", 20, "Supersonic", 25, "Aerial Ace", 30 },
+    skills = { "Tackle", 1, "Growl", 1, "Water Gun", 1, "Supersonic", 5, "Wing Attack", 8, "Mist", 12, "Water Pulse", 15, "Quick Attack", 19, "Air Cutter", 22, "Pursuit", 26, "Aerial Ace", 29, "Roost", 33, "Agility", 36, "Air Slash", 40, "Hurricane", 43 },
     abilities = { "Fly", POKEMON_ABILITIES.FIND },
     eggGroup = { POKEMON_EGG_GROUP_FLYING, POKEMON_EGG_GROUP_WATER_1 },
     eggId = 28594,

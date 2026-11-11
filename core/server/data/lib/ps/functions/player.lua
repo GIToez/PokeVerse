@@ -459,9 +459,17 @@ local function doPlayerSendPokemonSkillWindowData(cid, ballUid, moves, pokemonNa
 
     if (not showAllMoves) then -- Eg.: When use Transform ability
         local pokemonLevel = getBallPokemonLevel(ballUid)
-        local eggMoveSlot = getBallEggMoveSlot(ballUid)
-        local tm1Slot = getBallTmSlot(ballUid, 1)
-        local tm2Slot = getBallTmSlot(ballUid, 2)
+        -- a TM or egg move whose slot is past the species' list sits after its last move (getPokemonSkills)
+        local natural = #getPokemonDefaultSkills(pokemonName)
+        local function slotOf(slot)
+            if (slot and slot > natural) then
+                return natural + 1
+            end
+            return slot
+        end
+        local eggMoveSlot = slotOf(getBallEggMoveSlot(ballUid))
+        local tm1Slot = slotOf(getBallTmSlot(ballUid, 1))
+        local tm2Slot = slotOf(getBallTmSlot(ballUid, 2))
         for k, move in ipairs(moves) do
             if (getPokemonSkillRequiredLevel(pokemonName, move) > pokemonLevel and
                     ((not eggMoveSlot or k > eggMoveSlot) and

@@ -13,7 +13,7 @@ POKEMON["Trapinch"] = {
     catchStorage = -1,
     evolutions = { { name = "Vibrava", requiredLevel = 35 } },
     description = "It lives in arid deserts. It makes a sloping pit trap in sand where it patiently awaits prey.",
-    skills = { "Tackle", 1, "Bite", 5, "Faint Attack", 10, "Rock Slide", 15, "Sand-Attack", 20, "Earth Power", 25 },
+    skills = { "Tackle", 1, "Sand-Attack", 1, "Bite", 1, "Faint Attack", 1, "Bide", 1, "Mud-Slap", 5, "Bulldoze", 8, "Sand Tomb", 12, "Rock Slide", 15, "Dig", 19, "Crunch", 22, "Earth Power", 26, "Feint", 29, "Earthquake", 33, "Sandstorm", 36, "Superpower", 40, "Hyper Beam", 43, "Fissure", 47 },
     abilities = { "Strenght", "Rock Slide" },
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 28588,

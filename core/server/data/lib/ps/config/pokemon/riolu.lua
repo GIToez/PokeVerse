@@ -13,7 +13,7 @@ POKEMON["Riolu"] = {
     catchStorage = -1,
     evolutions = { { name = "Lucario", requiredLevel = 35 } },
     description = "It has the peculiar power of being able to see emotions such as joy and rage in the form of waves.",
-    skills = { "Quick Attack", 1, "Endure", 5, "Counter", 10, "Feint", 15, "Vacuum Wave", 20, "Metal Claw", 25, "Force Palm", 30 },
+    skills = { "Tackle", 1, "Foresight", 1, "Quick Attack", 1, "Endure", 1, "Counter", 6, "Feint", 11, "Force Palm", 15, "Copycat", 19, "Screech", 24, "Reversal", 29, "Nasty Plot", 47 },
     abilities = { "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },
     eggGroup = {  },
     eggId = 30967,

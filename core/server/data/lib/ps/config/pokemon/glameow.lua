@@ -13,7 +13,7 @@ POKEMON["Glameow"] = {
     catchStorage = -1,
     evolutions = { { name = "Purugly", requiredLevel = 38 } },
     description = "It hides its spiteful tendency of hooking its claws into the nose of its Trainer if it isn’t fed.",
-    skills = { "Fake Out", 1, "Hypnosis", 5, "Growl", 10, "Fury Swipes", 15, "Scratch", 20, "Slash", 25, "Sucker Punch", 30, "Play Rough", 35 },
+    skills = { "Tackle", 1, "Fake Out", 1, "Scratch", 5, "Growl", 8, "Hypnosis", 13, "Faint Attack", 17, "Fury Swipes", 20, "Charm", 25, "Captivate", 32, "Slash", 37, "Sucker Punch", 41, "Hone Claws", 48, "Play Rough", 50 },
     abilities = { "Cut", "Headbutt", "Flash", POKEMON_ABILITIES.DIG },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 30956,

@@ -13,7 +13,7 @@ POKEMON["Electrike"] = {
     catchStorage = -1,
     evolutions = { { name = "Manectric", requiredLevel = 26 } },
     description = "Using electricity stored in its fur, it stimulates its muscles to heighten its reaction speed.",
-    skills = { "Tackle", 1, "Spark", 5, "Thunder Fang", 10, "Quick Attack", 15, "Wild Charge", 20, "Discharge", 25 },
+    skills = { "Tackle", 1, "Thunder Wave", 1, "Quick Attack", 10, "Spark", 13, "Thunder Fang", 19, "Bite", 24, "Discharge", 29, "Roar", 34, "Wild Charge", 39, "Charge", 44, "Thunder", 49 },
     abilities = { "Strenght", "Flash", POKEMON_ABILITIES.FIND, POKEMON_ABILITIES.HEADBUTT },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 28550,

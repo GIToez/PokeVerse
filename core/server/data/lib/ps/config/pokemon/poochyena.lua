@@ -13,7 +13,7 @@ POKEMON["Poochyena"] = {
     catchStorage = 16261,
     evolutions = { { name = "Mightyena", requiredLevel = 18 } },
     description = "A Pokemon with a persistent nature, it chases its chosen prey until the prey becomes exhausted.",
-    skills = { "Tackle", 1, "Bite", 5, "Assurance", 10, "Take Down", 15, "Sand-Attack", 20, "Crunch", 25, "Yawn", 30 },
+    skills = { "Tackle", 1, "Sand-Attack", 7, "Bite", 10, "Roar", 16, "Assurance", 22, "Scary Face", 25, "Crunch", 34, "Yawn", 37, "Take Down", 40, "Sucker Punch", 43, "Play Rough", 46 },
     abilities = { "Rock Smash", POKEMON_ABILITIES.FIND },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 28567,

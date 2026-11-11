@@ -13,7 +13,7 @@ POKEMON["Houndour"] = {
     catchStorage = 16228,
     evolutions = { { name = "Houndoom", requiredLevel = 24 } },
     description = "To corner prey, they check each other's location using barks that only they can understand.",
-    skills = { "Tackle", 1, "Ember", 5, "Smog", 10, "Bite", 15, "Fire Spin", 20, "Flamethrower", 25, "Crunch", 30, "Inferno", 35 },
+    skills = { "Tackle", 1, "Ember", 1, "Smog", 8, "Roar", 13, "Bite", 16, "Fire Fang", 28, "Faint Attack", 32, "Foul Play", 40, "Flamethrower", 44, "Crunch", 49, "Nasty Plot", 52, "Inferno", 56 },
     abilities = { "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 17779,

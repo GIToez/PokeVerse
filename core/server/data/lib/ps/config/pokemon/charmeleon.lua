@@ -13,7 +13,7 @@ POKEMON["Charmeleon"] = {
     catchStorage = 16005,
     evolutions = { { name = "Charizard", requiredLevel = 36 } },
     description = "It lashes about with its tail to knock down its foe. It then tears up the fallen opponent with sharp claws.",
-    skills = { "Tackle", 1, "Scratch", 5, "Ember", 10, "Slash", 15, "Fire Fang", 20, "Fire Spin", 25, "Flamethrower", 30, "Smoke Screen", 40, "Flame Burst", 45, "Scary Face", 50 },
+    skills = { "Tackle", 1, "Scratch", 1, "Growl", 1, "Ember", 1, "Smoke Screen", 10, "Dragon Rage", 17, "Scary Face", 21, "Fire Fang", 28, "Flame Burst", 32, "Slash", 39, "Flamethrower", 43, "Fire Spin", 50, "Inferno", 54 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Cut", "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_DRAGON },
     eggId = 13979,

@@ -13,7 +13,7 @@ POKEMON["Hippopotas"] = {
     catchStorage = -1,
     evolutions = { { name = "Hippowdon", requiredLevel = 34 } },
     description = "It shuts its nostrils tight then travels through sand as if walking. They form colonies of around ten.",
-    skills = { "Sand-Attack", 1, "Sand Tomb", 5, "Tackle", 10, "Bite", 15, "Dig", 20, "Crunch", 25, "Take Down", 30 },
+    skills = { "Tackle", 1, "Sand-Attack", 1, "Bite", 7, "Yawn", 13, "Take Down", 19, "Dig", 19, "Sand Tomb", 25, "Crunch", 31, "Earthquake", 37, "Double-Edge", 44, "Fissure", 50 },
     abilities = { "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 30968,

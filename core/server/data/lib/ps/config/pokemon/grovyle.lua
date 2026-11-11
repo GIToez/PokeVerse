@@ -13,7 +13,7 @@ POKEMON["Grovyle"] = {
     catchStorage = 16253,
     evolutions = { { name = "Sceptile", requiredLevel = 36 } },
     description = "Its strongly developed thigh muscles give it astounding agility and jumping performance.",
-    skills = { "Tackle", 1, "Absorb", 5, "Quick Attack", 10, "Slam", 15, "Agility", 20, "Mega Drain", 25, "Energy Ball", 30, "Leaf Blade", 40, "X-Scissor", 45, "Leaf Storm", 50 },
+    skills = { "Tackle", 1, "Fury Cutter", 1, "Pound", 1, "Absorb", 1, "Quick Attack", 1, "Mega Drain", 13, "Pursuit", 18, "Leaf Blade", 23, "Agility", 28, "Slam", 33, "Detect", 38, "X-Scissor", 43, "Quick Guard", 53, "Leaf Storm", 58, "Screech", 63 },
     abilities = { "Cut", "Strenght", "Flash", "Rock Smash" },
     eggGroup = { POKEMON_EGG_GROUP_DRAGON, POKEMON_EGG_GROUP_MONSTER },
     eggId = 28589,

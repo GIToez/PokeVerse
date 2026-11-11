@@ -13,7 +13,7 @@ POKEMON["Snorunt"] = {
     catchStorage = -1,
     evolutions = { { name = "Glalie", requiredLevel = 42 }, { name = "Froslass", requiredLevel = 30, requiredItems = { ITEMS.DAWN_STONE } } },
     description = "It is said that several Snorunt gather under giant leaves and live together in harmony.",
-    skills = { "Tackle", 1, "Powder Snow", 5, "Ice Shard", 10, "Icy Wind", 15, "Ice Fang", 20, "Protect", 25 },
+    skills = { "Tackle", 1, "Powder Snow", 1, "Double Team", 5, "Ice Shard", 10, "Icy Wind", 14, "Bite", 19, "Ice Fang", 23, "Headbutt", 28, "Protect", 32, "Frost Breath", 37, "Crunch", 41, "Blizzard", 46, "Hail", 50 },
     abilities = { "Flash", POKEMON_ABILITIES.HEADBUTT },
     eggGroup = { POKEMON_EGG_GROUP_FAIRY, POKEMON_EGG_GROUP_MINERAL },
     eggId = 28578,

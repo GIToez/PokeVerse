@@ -13,7 +13,7 @@ POKEMON["Bonsly"] = {
     catchStorage = -1,
     evolutions = { { name = "Sudowoodo", requiredLevel = 25 } },
     description = "It prefers an arid atmosphere. It leaks water that looks like tears when adjusting its moisture level.",
-    skills = { "Fake Tears", 1, "Flail", 5, "Rock Throw", 10, "Rock Tomb", 15, "Sucker Punch", 20 },
+    skills = { "Tackle", 1, "Fake Tears", 1, "Copycat", 1, "Flail", 5, "Low Kick", 8, "Rock Throw", 12, "Mimic", 15, "Faint Attack", 19, "Rock Tomb", 26, "Rock Slide", 33, "Counter", 36, "Sucker Punch", 40, "Double-Edge", 43 },
     abilities = { "Headbutt", POKEMON_ABILITIES.DIG },
     eggGroup = {  },
     eggId = 30960,

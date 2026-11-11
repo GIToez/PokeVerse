@@ -13,7 +13,7 @@ POKEMON["Poliwag"] = {
     catchStorage = 16060,
     evolutions = { { name = "Poliwhirl", requiredLevel = 25 } },
     description = "Its slick black skin is thin and damp. A part of its internal organs can be seen through the skin as a spiral pattern.",
-    skills = { "Tackle", 1, "Bubble", 5, "Water Gun", 10, "Double Slap", 15, "Bubblebeam", 20, "Hypnosis", 25 },
+    skills = { "Tackle", 1, "Water Sport", 1, "Water Gun", 5, "Hypnosis", 8, "Bubble", 11, "Double Slap", 15, "Rain Dance", 18, "Body Slam", 21, "Bubblebeam", 25, "Mud Shot", 28, "Belly Drum", 31, "Wake-Up Slap", 35, "Hydro Pump", 38, "Mud Bomb", 41 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.WATERFALL, "Surf", "Dive", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1 },
     eggId = 14003,

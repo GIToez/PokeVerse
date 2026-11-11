@@ -13,7 +13,7 @@ POKEMON["Snubbull"] = {
     catchStorage = 16209,
     evolutions = { { name = "Granbull", requiredLevel = 23 } },
     description = "It has an active, playful nature. Many women like to frolic with it because of its affectionate ways.",
-    skills = { "Tackle", 1, "Ice Fang", 5, "Fire Fang", 5, "Thunder Fang", 5, "Lick", 20, "Charm", 25, "Bite", 30, "Scary Face", 35 },
+    skills = { "Tackle", 1, "Ice Fang", 1, "Fire Fang", 1, "Thunder Fang", 1, "Scary Face", 1, "Charm", 1, "Bite", 7, "Lick", 13, "Headbutt", 19, "Roar", 25, "Rage", 31, "Play Rough", 37, "Payback", 43, "Crunch", 49 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Find", "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD, POKEMON_EGG_GROUP_FAIRY },
     eggId = 17766,

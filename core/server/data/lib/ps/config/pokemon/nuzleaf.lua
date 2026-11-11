@@ -13,7 +13,7 @@ POKEMON["Nuzleaf"] = {
     catchStorage = -1,
     evolutions = { { name = "Shiftry", requiredLevel = 35, requiredItems = { ITEMS.LEAF_STONE } } },
     description = "The sound of its grass flute makes its listeners uneasy. It lives deep in forests.",
-    skills = { "Tackle", 1, "Razor Leaf", 5, "Pound", 7, "Fake Out", 10, "Leaf Blade", 15, "Faint Attack", 25, "Synthesis", 30 },
+    skills = { "Tackle", 1, "Razor Leaf", 1, "Pound", 1, "Harden", 3, "Fake Out", 12, "Nature Power", 16, "Razor Wind", 20, "Faint Attack", 24, "Leaf Blade", 28, "Extrasensory", 36 },
     abilities = { "Flash", "Rock Smash", "Strenght", "Cut" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD, POKEMON_EGG_GROUP_GRASS },
     eggId = 28572,

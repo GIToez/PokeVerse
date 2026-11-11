@@ -13,7 +13,7 @@ POKEMON["Lileep"] = {
     catchStorage = -1,
     evolutions = { { name = "Cradily", requiredLevel = 40 } },
     description = "It disguises its tentacles as flowers to attract and catch prey. It became extinct in ancient times.",
-    skills = { "Tackle", 1, "Acid", 5, "Energy Ball", 10, "Wring Out", 15, "Brine", 20, "Ingrain", 25 },
+    skills = { "Tackle", 1, "Astonish", 1, "Constrict", 1, "Acid", 5, "Ingrain", 9, "Confuse Ray", 13, "Ancient Power", 17, "Brine", 21, "Giga Drain", 26, "Gastro Acid", 31, "Amnesia", 36, "Energy Ball", 41, "Stockpile", 46, "Spit Up", 46, "Swallow", 46, "Wring Out", 52 },
     abilities = {  },
     eggGroup = { POKEMON_EGG_GROUP_WATER_3 },
     eggId = 28554,

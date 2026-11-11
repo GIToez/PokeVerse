@@ -13,7 +13,7 @@ POKEMON["Mudkip"] = {
     catchStorage = 16258,
     evolutions = { { name = "Marshtomp", requiredLevel = 16 } },
     description = "Its large tail fin propels it through water with powerful acceleration. It is strong in spite of its size.",
-    skills = { "Tackle", 1, "Water Gun", 5, "Mud-Slap", 10, "Rock Throw", 15, "Take Down", 20, "Mud Shot", 25, "Waterfall", 30 },
+    skills = { "Tackle", 1, "Growl", 1, "Water Gun", 4, "Mud-Slap", 9, "Foresight", 12, "Bide", 17, "Mud Sport", 20, "Rock Throw", 25, "Protect", 28, "Whirlpool", 33, "Take Down", 36, "Hydro Pump", 41, "Endeavor", 44 },
     abilities = { "Surf", "Strenght", "Rock Smash", "Waterfall", "Dive" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_WATER_1 },
     eggId = 28562,

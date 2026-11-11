@@ -13,7 +13,7 @@ POKEMON["Weedle"] = {
     catchStorage = 16013,
     evolutions = { { name = "Kakuna", requiredLevel = 7 } },
     description = "Often found in forests and grasslands. It has a sharp, toxic barb of around two inches on top of its head.",
-    skills = { "Tackle", 1, "Bug Bite", 5, "String Shot", 7, "Poison Sting", 10 },
+    skills = { "Tackle", 1, "Poison Sting", 1, "String Shot", 1, "Bug Bite", 9 },
     abilities = {},
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 13982,

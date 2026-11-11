@@ -13,7 +13,7 @@ POKEMON["Cherubi"] = {
     catchStorage = -1,
     evolutions = { { name = "Cherrim", requiredLevel = 25 } },
     description = "The small ball is not only filled with nutrients, it is also tasty. STARLY try to peck it off.",
-    skills = { "Tackle", 1, "Grass Knot", 5, "Leech Seed", 10, "Magical Leaf", 15, "Take Down", 20, "Petal Blizzard", 25, "Solar Beam", 30 },
+    skills = { "Tackle", 1, "Morning Sun", 1, "Leech Seed", 10, "Magical Leaf", 19, "Sunny Day", 22, "Worry Seed", 28, "Take Down", 31, "Solar Beam", 37, "Petal Blizzard", 47 },
     abilities = { "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_FAIRY, POKEMON_EGG_GROUP_GRASS },
     eggId = 30952,

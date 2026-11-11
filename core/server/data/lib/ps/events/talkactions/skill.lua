@@ -1,7 +1,9 @@
-local WORDS = {
-	["s1"] = 1, ["s2"] = 2, ["s3"] = 3, ["s4"] = 4, ["s5"] = 5, ["s6"] = 6, ["s7"] = 7, ["s8"] = 8, ["s9"] = 9, ["s10"] = 10, ["s11"] = 11, ["s12"] = 12, ["s13"] = 13, ["s14"] = 14, ["s15"] = 15, ["s16"] = 16,
-	["m1"] = 1, ["m2"] = 2, ["m3"] = 3, ["m4"] = 4, ["m5"] = 5, ["m6"] = 6, ["m7"] = 7, ["m8"] = 8, ["m9"] = 9, ["m10"] = 10, ["m11"] = 11, ["m12"] = 12, ["m13"] = 13, ["m14"] = 14, ["m15"] = 15, ["m16"] = 16
-}
+-- s1..s24 and m1..m24: the Pokemon's move in that slot (the client's moves bar has two rows of 12)
+local WORDS = {}
+for slot = 1, 24 do
+    WORDS["s" .. slot] = slot
+    WORDS["m" .. slot] = slot
+end
 
 function onSay(cid, words, param, channel)
     words = string.lower(words)

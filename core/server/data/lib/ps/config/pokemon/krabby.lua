@@ -13,7 +13,7 @@ POKEMON["Krabby"] = {
     catchStorage = 16098,
     evolutions = { { name = "Kingler", requiredLevel = 28 } },
     description = "It can be found near the sea. The large pincers grow back if they are torn out of their sockets.",
-    skills = { "Tackle", 1, "Bubble", 5, "Mud Shot", 10, "Stomp", 15, "Brine", 20, "Harden", 25, "Crabhammer", 30 },
+    skills = { "Tackle", 1, "Mud Sport", 1, "Bubble", 1, "Vice Grip", 5, "Harden", 11, "Bubblebeam", 15, "Mud Shot", 19, "Metal Claw", 21, "Stomp", 25, "Protect", 29, "Guillotine", 31, "Slam", 35, "Brine", 39, "Crabhammer", 41, "Flail", 45 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt", "Cut" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_3 },
     eggId = 14020,

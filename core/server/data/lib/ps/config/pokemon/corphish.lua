@@ -13,7 +13,7 @@ POKEMON["Corphish"] = {
     catchStorage = -1,
     evolutions = { { name = "Crawdaunt", requiredLevel = 30 } },
     description = "No matter how dirty the water in the river, it will adapt and thrive. It has a strong will to survive.",
-    skills = { "Tackle", 1, "Bubble", 5, "Bubblebeam", 10, "Razor Shell", 15, "Harden", 20, "Crabhammer", 25 },
+    skills = { "Tackle", 1, "Bubble", 1, "Harden", 5, "Vice Grip", 7, "Bubblebeam", 14, "Protect", 17, "Double Hit", 20, "Knock Off", 23, "Night Slash", 26, "Razor Shell", 31, "Swords Dance", 37, "Crunch", 39, "Crabhammer", 43, "Guillotine", 48 },
     abilities = { "Cut", "Surf", "Strenght", "Rock Smash", "Waterfall" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1, POKEMON_EGG_GROUP_WATER_3 },
     eggId = 28548,

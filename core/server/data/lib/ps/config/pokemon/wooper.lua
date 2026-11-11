@@ -13,7 +13,7 @@ POKEMON["Wooper"] = {
     catchStorage = 16194,
     evolutions = { { name = "Quagsire", requiredLevel = 20 } },
     description = "When it walks around on the ground, it coats its body with a slimy, poisonous film.",
-    skills = { "Tackle", 1, "Water Gun", 5, "Mud Shot", 10, "Slam", 15, "Mud Bomb", 20, "Amnesia", 25, "Earth Power", 30 },
+    skills = { "Tackle", 1, "Water Gun", 1, "Mud Sport", 5, "Mud Shot", 9, "Slam", 15, "Mud Bomb", 19, "Amnesia", 23, "Yawn", 29, "Earthquake", 33, "Rain Dance", 37, "Mist", 43, "Haze", 43, "Muddy Water", 47 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.WATERFALL, "Flash", "Surf", "Dive", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1, POKEMON_EGG_GROUP_FIELD },
     eggId = 17758,

@@ -13,7 +13,7 @@ POKEMON["Pineco"] = {
     catchStorage = 16204,
     evolutions = { { name = "Forretress", requiredLevel = 31 } },
     description = "It hangs and waits for flying insect prey to come near. It does not move about much on its own.",
-    skills = { "Tackle", 1, "Bug Bite", 5, "Protect", 10, "Toxic Spikes", 15, "Take Down", 20, "Selfdestruct", 25, "Struggle Bug", 30 },
+    skills = { "Tackle", 1, "Protect", 1, "Selfdestruct", 6, "Bug Bite", 9, "Take Down", 12, "Rapid Spin", 17, "Bide", 20, "Spikes", 28, "Payback", 31, "Explosion", 34, "Iron Defense", 39, "Gyro Ball", 42, "Double-Edge", 45 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 17763,

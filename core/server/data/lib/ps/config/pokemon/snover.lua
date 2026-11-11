@@ -13,7 +13,7 @@ POKEMON["Snover"] = {
     catchStorage = -1,
     evolutions = { { name = "Abomasnow", requiredLevel = 40 } },
     description = "Seemingly curious about people, they gather around footsteps they find on snowy mountains.",
-    skills = { "Powder Snow", 1, "Mist", 5, "Ice Shard", 10, "Razor Leaf", 15, "Ingrain", 20, "Icy Wind", 25, "Blizzard", 30, "Wood Hammer", 35 },
+    skills = { "Tackle", 1, "Powder Snow", 1, "Razor Leaf", 5, "Icy Wind", 9, "Grass Whistle", 13, "Mist", 21, "Ice Shard", 26, "Ingrain", 31, "Wood Hammer", 36, "Blizzard", 41, "Sheer Cold", 46 },
     abilities = { "Headbutt", "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_GRASS },
     eggId = 30974,

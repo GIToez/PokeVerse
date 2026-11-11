@@ -13,7 +13,7 @@ POKEMON["Zigzagoon"] = {
     catchStorage = 16263,
     evolutions = { { name = "Linoone", requiredLevel = 20 } },
     description = "It walks in zigzag fashion. It's good at finding items in the grass and even in the ground.",
-    skills = { "Tackle", 1, "Headbutt", 5, "Fury Swipes", 10, "Covet", 15, "Facade", 20, "Rest", 25, "Take Down", 30 },
+    skills = { "Tackle", 1, "Growl", 1, "Sand-Attack", 7, "Headbutt", 11, "Mud Sport", 17, "Pin Missile", 19, "Covet", 23, "Flail", 29, "Take Down", 31, "Rest", 35, "Belly Drum", 37 },
     abilities = { "Cut", "Surf", "Rock Smash", POKEMON_ABILITIES.FIND, POKEMON_ABILITIES.HEADBUTT },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 28597,

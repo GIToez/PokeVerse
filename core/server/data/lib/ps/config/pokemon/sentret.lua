@@ -13,7 +13,7 @@ POKEMON["Sentret"] = {
     catchStorage = 16161,
     evolutions = { { name = "Furret", requiredLevel = 15 } },
     description = "It stands on its tail so it can see a long way. If it spots an enemy, it cries loudly to warn its kind.",
-    skills = { "Tackle", 1, "Scratch", 5, "Quick Attack", 10, "Fury Swipes", 15, "Slam", 20, "Defense Curl", 25 },
+    skills = { "Tackle", 1, "Scratch", 1, "Foresight", 1, "Defense Curl", 4, "Quick Attack", 7, "Fury Swipes", 13, "Slam", 25, "Rest", 28, "Sucker Punch", 31, "Amnesia", 36, "Hyper Voice", 47 },
     abilities = { POKEMON_ABILITIES.DIG, "Find", "Cut", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 17744,

@@ -13,7 +13,7 @@ POKEMON["Natu"] = {
     catchStorage = 16177,
     evolutions = { { name = "Xatu", requiredLevel = 25 } },
     description = "It usually forages for food on the ground but may, on rare occasions, hop onto branches to peck at shoots.",
-    skills = { "Tackle", 1, "Peck", 5, "Confuse Ray", 10, "Drill Peck", 15, "Ominous Wind", 20, "Psychic", 25, "Psycho Shift", 30 },
+    skills = { "Tackle", 1, "Peck", 1, "Night Shade", 6, "Stored Power", 17, "Ominous Wind", 20, "Confuse Ray", 23, "Wish", 28, "Psychic", 33, "Miracle Eye", 36, "Psycho Shift", 39, "Future Sight", 44 },
     abilities = { "Find", "Flash", "Blink", "Teleport" },
     eggGroup = { POKEMON_EGG_GROUP_FLYING },
     eggId = 17750,

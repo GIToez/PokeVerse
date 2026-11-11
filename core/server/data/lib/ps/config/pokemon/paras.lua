@@ -13,7 +13,7 @@ POKEMON["Paras"] = {
     catchStorage = 16046,
     evolutions = { { name = "Parasect", requiredLevel = 24 } },
     description = "Growing out of the bug's back are mushrooms called tochukaso. The mushrooms grow with the bug host.",
-    skills = { "Tackle", 1, "Bug Bite", 5, "Stun Spore", 10, "Leech Life", 15, "Slash", 20, "Fury Cutter", 25, "Spore", 30 },
+    skills = { "Tackle", 1, "Scratch", 1, "Stun Spore", 6, "Poison Powder", 6, "Absorb", 11, "Fury Cutter", 17, "Spore", 22, "Slash", 27, "Giga Drain", 38, "Aromatherapy", 43, "Rage Powder", 49, "X-Scissor", 54 },
     abilities = { POKEMON_ABILITIES.DIG, "Cut" },
     eggGroup = { POKEMON_EGG_GROUP_BUG, POKEMON_EGG_GROUP_GRASS },
     eggId = 13996,

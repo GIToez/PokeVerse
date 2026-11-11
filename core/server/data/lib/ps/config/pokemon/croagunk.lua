@@ -13,7 +13,7 @@ POKEMON["Croagunk"] = {
     catchStorage = -1,
     evolutions = { { name = "Toxicroak", requiredLevel = 37 } },
     description = "It rarely fights fairly, but that is strictly to ensure survival. It is popular as a mascot.",
-    skills = { "Poison Sting", 1, "Flatter", 5, "Low Kick", 10, "Mud-Slap", 15, "Astonish", 20, "Venoshock", 25, "Sucker Punch", 30, "Poison Jab", 35 },
+    skills = { "Tackle", 1, "Astonish", 1, "Mud-Slap", 3, "Poison Sting", 8, "Pursuit", 15, "Faint Attack", 17, "Revenge", 22, "Mud Bomb", 29, "Sucker Punch", 31, "Venoshock", 36, "Nasty Plot", 38, "Poison Jab", 43, "Sludge Bomb", 45, "Belch", 47, "Flatter", 50 },
     abilities = { "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },
     eggGroup = { POKEMON_EGG_GROUP_HUMAN_LIKE },
     eggId = 30970,

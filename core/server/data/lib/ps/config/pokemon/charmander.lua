@@ -13,7 +13,7 @@ POKEMON["Charmander"] = {
     catchStorage = 16004,
     evolutions = { { name = "Charmeleon", requiredLevel = 16 } },
     description = "From the time it is born, a flame burns at the tip of its tail. Its life would end if the flame were to go out.",
-    skills = { "Tackle", 1, "Scratch", 5, "Ember", 10, "Slash", 15, "Fire Fang", 20, "Fire Spin", 25, "Flamethrower", 30 },
+    skills = { "Tackle", 1, "Scratch", 1, "Growl", 1, "Ember", 7, "Smoke Screen", 10, "Dragon Rage", 16, "Scary Face", 19, "Fire Fang", 25, "Flame Burst", 28, "Slash", 34, "Flamethrower", 37, "Fire Spin", 43, "Inferno", 46 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Cut", "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_DRAGON },
     eggId = 13979,

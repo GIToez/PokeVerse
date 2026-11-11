@@ -13,7 +13,7 @@ POKEMON["Seel"] = {
     catchStorage = 16086,
     evolutions = { { name = "Dewgong", requiredLevel = 34 } },
     description = "Covered with light blue fur, its hide is thick and tough. It is active in bitter cold of minus 40 degrees Fahrenheit.",
-    skills = { "Tackle", 1, "Headbutt", 5, "Icy Wind", 10, "Water Pulse", 15, "Rest", 20, "Aurora Beam", 25, "Ice Shard", 30, "Aqua Tail", 35 },
+    skills = { "Tackle", 1, "Headbutt", 1, "Growl", 3, "Water Sport", 7, "Icy Wind", 11, "Encore", 13, "Ice Shard", 17, "Rest", 21, "Aqua Ring", 23, "Aurora Beam", 27, "Aqua Jet", 31, "Brine", 33, "Take Down", 37, "Dive", 41, "Aqua Tail", 43, "Ice Beam", 47, "Safeguard", 51, "Hail", 53 },
     abilities = { POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.WATERFALL, "Headbutt", "Rock Smash" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1, POKEMON_EGG_GROUP_FIELD },
     eggId = 14014,

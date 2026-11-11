@@ -13,7 +13,7 @@ POKEMON["Omanyte"] = {
     catchStorage = 16138,
     evolutions = { { name = "Omastar", requiredLevel = 40 } },
     description = "A prehistoric POKEMON that lived in the primordial sea, it swims by twisting its 10 tentacles about.",
-    skills = { "Tackle", 1, "Bite", 5, "Water Gun", 10, "Mud Shot", 15, "Protect", 20, "Ancient Power", 25, "Scald", 30 },
+    skills = { "Tackle", 1, "Constrict", 1, "Bite", 7, "Water Gun", 10, "Rollout", 16, "Mud Shot", 25, "Brine", 28, "Protect", 34, "Ancient Power", 37, "Tickle", 43, "Rock Blast", 46, "Shell Smash", 50, "Hydro Pump", 55 },
     abilities = { POKEMON_ABILITIES.WATERFALL, "Headbutt" },
     eggGroup = {--[[POKEMON_EGG_GROUP_WATER_1, POKEMON_EGG_GROUP_WATER_3]] },
     eggId = 14364,

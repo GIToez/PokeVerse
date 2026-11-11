@@ -13,7 +13,7 @@ POKEMON["Koffing"] = {
     catchStorage = 16109,
     evolutions = { { name = "Weezing", requiredLevel = 35 } },
     description = "Its thin, balloon-like body is inflated by horribly toxic gases. It reeks when it is nearby.",
-    skills = { "Tackle", 1, "Smog", 5, "Poison Gas", 10, "Clear Smog", 15, "Sludge", 20, "Smoke Screen", 25, "Selfdestruct", 30 },
+    skills = { "Tackle", 1, "Poison Gas", 1, "Smog", 4, "Smoke Screen", 7, "Assurance", 12, "Clear Smog", 15, "Sludge", 18, "Selfdestruct", 23, "Haze", 26, "Gyro Ball", 29, "Sludge Bomb", 34, "Explosion", 37, "Destiny Bond", 40, "Belch", 42, "Memento", 45 },
     abilities = {},
     eggGroup = { POKEMON_EGG_GROUP_AMORPHOUS },
     eggId = 14027,

@@ -13,7 +13,7 @@ POKEMON["Dratini"] = {
     catchStorage = 16147,
     evolutions = { { name = "Dragonair", requiredLevel = 30 } },
     description = "Even the young can exceed 6.5 feet in length. It grows larger by repeatedly shedding skin.",
-    skills = { "Tackle", 1, "Slam", 5, "Twister", 10, "Aqua Tail", 15, "Thunder Wave", 20, "Dragon Tail", 25, "Agility", 30 },
+    skills = { "Tackle", 1, "Wrap", 1, "Thunder Wave", 5, "Twister", 11, "Dragon Rage", 15, "Slam", 21, "Agility", 25, "Dragon Tail", 31, "Aqua Tail", 35, "Dragon Rush", 41, "Safeguard", 45, "Dragon Dance", 51, "Outrage", 55, "Hyper Beam", 61 },
     abilities = { POKEMON_ABILITIES.WATERFALL, "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1, POKEMON_EGG_GROUP_DRAGON },
     eggId = 14047,

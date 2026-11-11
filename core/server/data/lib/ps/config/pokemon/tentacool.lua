@@ -13,7 +13,7 @@ POKEMON["Tentacool"] = {
     catchStorage = 16072,
     evolutions = { { name = "Tentacruel", requiredLevel = 30 } },
     description = "Its eyes are as transparent as crystals. From them, it shoots mysterious beams of light.",
-    skills = { "Tackle", 1, "Poison Sting", 5, "Acid", 10, "Supersonic", 15, "Bubblebeam", 20, "Water Pulse", 25, "Wrap", 30 },
+    skills = { "Tackle", 1, "Poison Sting", 1, "Supersonic", 4, "Constrict", 7, "Acid", 10, "Toxic Spikes", 13, "Water Pulse", 16, "Wrap", 19, "Acid Spray", 22, "Bubblebeam", 25, "Barrier", 28, "Poison Jab", 31, "Brine", 34, "Screech", 37, "Hex", 40, "Sludge Wave", 43, "Hydro Pump", 46, "Wring Out", 49 },
     abilities = { POKEMON_ABILITIES.WATERFALL, "Surf", "Dive", "Cut" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_3 },
     eggId = 14007,

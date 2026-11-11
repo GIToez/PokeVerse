@@ -13,7 +13,7 @@ POKEMON["Caterpie"] = {
     catchStorage = 16010,
     evolutions = { { name = "Metapod", requiredLevel = 7 } },
     description = "It is covered with a green skin. When it grows, it sheds the skin, covers itself with silk, and becomes a cocoon.",
-    skills = { "Tackle", 1, "Bug Bite", 5, "String Shot", 7, "Headbutt", 10 },
+    skills = { "Tackle", 1, "String Shot", 1, "Bug Bite", 9 },
     abilities = { "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 13981,

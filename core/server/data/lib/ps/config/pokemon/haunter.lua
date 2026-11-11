@@ -13,7 +13,7 @@ POKEMON["Haunter"] = {
     catchStorage = 16093,
     evolutions = { { name = "Gengar", requiredLevel = 55 } },
     description = "If you get the feeling of being watched in darkness when nobody is around, HAUNTER is there.",
-    skills = { "Tackle", 1, "Lick", 5, "Night Shade", 10, "Hypnosis", 15, "Dream Eater", 20, "Curse", 25, "Spite", 30, "Confuse Ray", 40, "Sucker Punch", 45, "Dark Pulse", 50 },
+    skills = { "Tackle", 1, "Shadow Punch", 1, "Hypnosis", 1, "Lick", 1, "Spite", 1, "Curse", 12, "Night Shade", 15, "Confuse Ray", 19, "Sucker Punch", 22, "Payback", 28, "Shadow Ball", 33, "Dream Eater", 39, "Dark Pulse", 44, "Destiny Bond", 50, "Hex", 55, "Nightmare", 61 },
     abilities = {},
     eggGroup = { POKEMON_EGG_GROUP_AMORPHOUS },
     eggId = 14017,

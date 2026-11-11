@@ -13,7 +13,7 @@ POKEMON["Pupitar"] = {
     catchStorage = 16247,
     evolutions = { { name = "Tyranitar", requiredLevel = 55 } },
     description = "Even sealed in its shell, it can move freely. Hard and fast, it has outstanding destructive power.",
-    skills = { "Tackle", 1, "Bite", 5, "Rock Slide", 10, "Scary Face", 15, "Thrash", 20, "Dark Pulse", 25, "Payback", 30, "Crunch", 35, "Earthquake", 45, "Stone Edge", 50, "Hyper Beam", 55 },
+    skills = { "Tackle", 1, "Bite", 1, "Sandstorm", 1, "Screech", 1, "Chip Away", 14, "Rock Slide", 19, "Scary Face", 23, "Thrash", 28, "Dark Pulse", 34, "Payback", 41, "Crunch", 47, "Earthquake", 54, "Stone Edge", 60, "Hyper Beam", 67 },
     abilities = { POKEMON_ABILITIES.DIG, "Find", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER },
     eggId = 17785,

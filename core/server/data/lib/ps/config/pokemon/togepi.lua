@@ -13,7 +13,7 @@ POKEMON["Togepi"] = {
     catchStorage = 16175,
     evolutions = { { name = "Togetic", requiredLevel = 30, requiredItems = { ITEMS.SOOTHE_BELL } } },
     description = "A proverb claims that happiness will come to anyone who can make a sleeping TOGEPI stand up.",
-    skills = { "Tackle", 1, "Fairy Wind", 5, "Ancient Power", 10, "Metronome", 15, "Covet", 20, "Wish", 25 },
+    skills = { "Tackle", 1, "Growl", 1, "Charm", 1, "Metronome", 5, "Sweet Kiss", 9, "Yawn", 13, "Encore", 17, "Wish", 29, "Ancient Power", 33, "Safeguard", 37, "Double-Edge", 45, "Last Resort", 49 },
     abilities = { "Flash", "Headbutt" },
     eggGroup = {},
     eggId = 17749,

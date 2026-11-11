@@ -13,7 +13,7 @@ POKEMON["Nidorana"] = {
     catchStorage = 16029,
     evolutions = { { name = "Nidorina", requiredLevel = 16 } },
     description = "Though small, it must be treated with caution because of its powerfully toxic barbs. The female has smaller horns.",
-    skills = { "Tackle", 1, "Scratch", 5, "Double Kick", 10, "Poison Sting", 15, "Bite", 20, "Poison Fang", 25 },
+    skills = { "Tackle", 1, "Growl", 1, "Scratch", 1, "Double Kick", 9, "Poison Sting", 13, "Fury Swipes", 19, "Bite", 21, "Toxic Spikes", 31, "Flatter", 33, "Crunch", 37, "Captivate", 43, "Poison Fang", 45 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_FIELD },
     eggId = 13989,

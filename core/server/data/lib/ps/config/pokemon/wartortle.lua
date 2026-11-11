@@ -13,7 +13,7 @@ POKEMON["Wartortle"] = {
     catchStorage = 16008,
     evolutions = { { name = "Blastoise", requiredLevel = 36 } },
     description = "This POKEMON is very popular as a pet. Its fur-covered tail is a symbol of its longevity.",
-    skills = { "Tackle", 1, "Bite", 5, "Bubble", 10, "Water Gun", 15, "Protect", 20, "Bubblebeam", 25, "Water Pulse", 30, "Rapid Spin", 40, "Aqua Tail", 45, "Hydro Pump", 50 },
+    skills = { "Tackle", 1, "Water Gun", 1, "Bubble", 13, "Bite", 17, "Rapid Spin", 21, "Protect", 25, "Water Pulse", 29, "Aqua Tail", 33, "Skull Bash", 37, "Iron Defense", 41, "Rain Dance", 45, "Hydro Pump", 49 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.WATERFALL, "Surf", "Dive", "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_WATER_1 },
     eggId = 13980,

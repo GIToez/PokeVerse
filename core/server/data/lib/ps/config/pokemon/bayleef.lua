@@ -13,7 +13,7 @@ POKEMON["Bayleef"] = {
     catchStorage = 16153,
     evolutions = { { name = "Meganium", requiredLevel = 32 } },
     description = "A spicy aroma emanates from around its neck. The aroma acts as a stimulant to restore health.",
-    skills = { "Tackle", 1, "Razor Leaf", 5, "Leech Seed", 10, "Magical Leaf", 15, "Body Slam", 20, "Poison Powder", 25, "Grass Whistle", 30, "Synthesis", 40, "Leaf Storm", 45, "Reflect", 50 },
+    skills = { "Tackle", 1, "Growl", 1, "Razor Leaf", 1, "Poison Powder", 1, "Synthesis", 12, "Reflect", 18, "Magical Leaf", 22, "Light Screen", 36, "Body Slam", 40, "Safeguard", 46, "Aromatherapy", 50, "Solar Beam", 54 },
     abilities = { POKEMON_ABILITIES.STRENGTH, "Cut", "Flash", "Rock Smash", "Ride", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_GRASS },
     eggId = 17741,

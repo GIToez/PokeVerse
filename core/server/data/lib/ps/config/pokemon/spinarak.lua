@@ -13,7 +13,7 @@ POKEMON["Spinarak"] = {
     catchStorage = 16167,
     evolutions = { { name = "Ariados", requiredLevel = 22 } },
     description = "It spins a web using fine--but durable--thread. It then waits patiently for prey to be trapped.",
-    skills = { "Tackle", 1, "Poison Sting", 5, "Bug Bite", 10, "Leech Life", 15, "Shadow Sneak", 20, "Psychic", 25, "Fury Swipes", 30, "Spider Web", 35 },
+    skills = { "Tackle", 1, "Poison Sting", 1, "String Shot", 1, "Constrict", 1, "Absorb", 5, "Scary Face", 12, "Night Shade", 15, "Shadow Sneak", 19, "Fury Swipes", 22, "Sucker Punch", 26, "Spider Web", 29, "Agility", 33, "Pin Missile", 36, "Psychic", 40, "Poison Jab", 43, "Cross Poison", 47 },
     abilities = { POKEMON_ABILITIES.DIG, "Find", "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_BUG },
     eggId = 17747,

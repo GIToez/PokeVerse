@@ -13,7 +13,7 @@ POKEMON["Bronzor"] = {
     catchStorage = -1,
     evolutions = { { name = "Bronzong", requiredLevel = 33 } },
     description = "There are researchers who believe this POKEMON reflected like a mirror in the distant past.",
-    skills = { "Tackle", 1, "Confuse Ray", 5, "Gyro Ball", 10, "Heavy Slam", 15, "Confusion", 20, "Payback", 25, "Extrasensory", 30 },
+    skills = { "Tackle", 1, "Confusion", 1, "Hypnosis", 5, "Confuse Ray", 11, "Psywave", 15, "Iron Defense", 19, "Faint Attack", 21, "Safeguard", 25, "Future Sight", 29, "Metal Sound", 31, "Gyro Ball", 35, "Extrasensory", 39, "Payback", 41, "Heal Block", 45, "Heavy Slam", 49 },
     abilities = { "Flash" },
     eggGroup = { POKEMON_EGG_GROUP_MINERAL },
     eggId = 30959,

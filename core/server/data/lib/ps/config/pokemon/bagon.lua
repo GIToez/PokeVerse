@@ -13,7 +13,7 @@ POKEMON["Bagon"] = {
     catchStorage = -1,
     evolutions = { { name = "Shelgon", requiredLevel = 30 } },
     description = "Its well-developed neck muscles and iron-like head can smash boulders into pieces.",
-    skills = { "Tackle", 1, "Ember", 5, "Flamethrower", 10, "Rage", 15, "Headbutt", 20, "Bite", 25 },
+    skills = { "Tackle", 1, "Rage", 1, "Ember", 4, "Bite", 10, "Dragon Breath", 13, "Headbutt", 17, "Focus Energy", 21, "Crunch", 25, "Dragon Claw", 29, "Zen Headbutt", 34, "Scary Face", 39, "Flamethrower", 44, "Double-Edge", 49 },
     abilities = { "Cut", "Strenght", "Rock Smash", POKEMON_ABILITIES.HEADBUTT },
     eggGroup = { POKEMON_EGG_GROUP_DRAGON },
     eggId = 28539,

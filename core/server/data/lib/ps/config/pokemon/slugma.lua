@@ -13,7 +13,7 @@ POKEMON["Slugma"] = {
     catchStorage = 16218,
     evolutions = { { name = "Magcargo", requiredLevel = 38 } },
     description = "A common sight in volcanic areas, it slowly slithers around in a constant search for warm places.",
-    skills = { "Tackle", 1, "Ember", 5, "Rock Throw", 10, "Harden", 15, "Recover", 20, "Flame Burst", 25, "Ancient Power", 30, "Flamethrower", 35 },
+    skills = { "Tackle", 1, "Yawn", 1, "Smog", 1, "Ember", 6, "Rock Throw", 8, "Harden", 13, "Incinerate", 15, "Clear Smog", 20, "Ancient Power", 22, "Flame Burst", 27, "Rock Slide", 29, "Lava Plume", 34, "Amnesia", 36, "Body Slam", 41, "Recover", 43, "Flamethrower", 48, "Earth Power", 50 },
     abilities = {},
     eggGroup = { POKEMON_EGG_GROUP_AMORPHOUS },
     eggId = 17772,

@@ -13,7 +13,7 @@ POKEMON["Seadra"] = {
     catchStorage = 16117,
     evolutions = { { name = "Kingdra", requiredLevel = 60, requiredItems = { ITEMS.DRAGON_SCALE } } },
     description = "Its body bristles with sharp spikes. Carelessly trying to touch it could cause fainting from the spikes.",
-    skills = { "Tackle", 1, "Bubble", 5, "Water Gun", 10, "Bubblebeam", 15, "Smoke Screen", 20, "Twister", 25, "Agility", 30, "Water Pulse", 40, "Focus Energy", 45, "Brine", 50, "Dragon Pulse", 55 },
+    skills = { "Tackle", 1, "Hydro Pump", 1, "Bubble", 1, "Smoke Screen", 1, "Water Gun", 1, "Twister", 17, "Bubblebeam", 21, "Focus Energy", 26, "Brine", 31, "Agility", 38, "Dragon Pulse", 45, "Dragon Dance", 52 },
     abilities = { POKEMON_ABILITIES.WATERFALL, "Surf", "Dive", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1, POKEMON_EGG_GROUP_DRAGON },
     eggId = 14032,

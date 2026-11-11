@@ -13,7 +13,7 @@ POKEMON["Mankey"] = {
     catchStorage = 16056,
     evolutions = { { name = "Primeape", requiredLevel = 28 } },
     description = "Light and agile on its feet, and ferocious in temperament. When angered, it flies into an uncontrollable frenzy.",
-    skills = { "Tackle", 1, "Scratch", 5, "Low Kick", 10, "Focus Energy", 15, "Fury Swipes", 20, "Karate Chop", 25, "Seismic Toss", 30 },
+    skills = { "Tackle", 1, "Covet", 1, "Scratch", 1, "Low Kick", 1, "Focus Energy", 1, "Fury Swipes", 5, "Karate Chop", 8, "Pursuit", 12, "Seismic Toss", 15, "Cross Chop", 22, "Assurance", 26, "Punishment", 29, "Thrash", 33, "Close Combat", 36, "Screech", 40, "Outrage", 47 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_FIELD },
     eggId = 14001,

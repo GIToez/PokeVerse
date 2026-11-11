@@ -13,7 +13,7 @@ POKEMON["Kirlia"] = {
     catchStorage = -1,
     evolutions = { { name = "Gardevoir", requiredLevel = 30 }, { name = "Gallade", requiredLevel = 50, requiredItems = { ITEMS.DAWN_STONE } } },
     description = "The cheerful spirit of its Trainer gives it energy for its psychokinetic power. It spins and dances when happy.",
-    skills = { "Tackle", 1, "Confusion", 5, "Magical Leaf", 10, "Draining Kiss", 15, "Disarming Voice", 20, "Hypnosis", 25, "Psychic", 35, "Heal Pulse", 40, "Stored Power", 45 },
+    skills = { "Tackle", 1, "Growl", 1, "Confusion", 1, "Double Team", 1, "Disarming Voice", 11, "Magical Leaf", 17, "Heal Pulse", 19, "Draining Kiss", 23, "Calm Mind", 26, "Psychic", 30, "Future Sight", 37, "Charm", 40, "Hypnosis", 44, "Dream Eater", 47, "Stored Power", 51 },
     abilities = {POKEMON_ABILITIES.BLINK, POKEMON_ABILITIES.TELEPORT, POKEMON_ABILITIES.FIND},
     eggGroup = { POKEMON_EGG_GROUP_AMORPHOUS },
     eggId = 28568,
