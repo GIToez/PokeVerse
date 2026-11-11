@@ -792,7 +792,7 @@ Pokepedia.sendDex = function(cid, name)
             local info = loot.id and getItemInfo(loot.id)
             if (info and #drops < 12) then
                 drops[#drops + 1] = { client = info.clientId, name = string.capitalise(info.name),
-                    chance = math.max(0.01, math.floor((loot.chance or 0) / 1000 + 0.5) / 100) }
+                    chance = math.max(0.01, math.floor((loot.chance or 0) / 10 + 0.5) / 100) } -- percent, 2 decimals (100000 = 100%)
             end
         end
         local stones = MegaEvolution.getDrops(knowledge.species) or {}

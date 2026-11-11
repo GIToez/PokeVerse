@@ -31,4 +31,4 @@
 		<voice sentence="CROCONAWW!"/>
 	</voices>
 	
-<loot><item id="14526" countmax="1" chance="31250"/><item id="14529" countmax="4" chance="72916"/><item id="14592" countmax="1" chance="4375"/><item id="14515" countmax="1" chance="35000"/><item id="12230" countmax="1" chance="50"/><item id="14464" countmax="5" chance="5000"/><item id="17959" countmax="1" chance="100"/><item id="17348" countmax="1" chance="5"/><item id="17355" countmax="1" chance="5"/></loot></monster>
+<loot><item id="14526" countmax="1" chance="31250"/><item id="14529" countmax="4" chance="72916"/><item id="14592" countmax="1" chance="4375"/><item id="14515" countmax="1" chance="35000"/><item id="12230" countmax="1" chance="50"/><item id="14464" countmax="5" chance="7500"/><item id="17959" countmax="1" chance="100"/><item id="17348" countmax="1" chance="5"/><item id="17355" countmax="1" chance="5"/></loot></monster>

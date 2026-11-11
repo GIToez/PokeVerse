@@ -31,4 +31,4 @@
 		<voice sentence="LATIOS!"/>
 	</voices>
 	
-<loot><item id="14464" countmax="5" chance="5000"/><item id="29105" countmax="1" chance="100"/><item id="12240" countmax="1" chance="100"/><item id="12233" countmax="1" chance="100"/><item id="23516" countmax="1" chance="100"/><item id="23531" countmax="1" chance="100"/><item id="17363" countmax="1" chance="100"/><item id="17379" countmax="1" chance="100"/><item id="18918" countmax="1" chance="100"/></loot></monster>
+<loot><item id="14464" countmax="5" chance="7500"/><item id="29105" countmax="1" chance="100"/><item id="12240" countmax="1" chance="100"/><item id="12233" countmax="1" chance="100"/><item id="23516" countmax="1" chance="100"/><item id="23531" countmax="1" chance="100"/><item id="17363" countmax="1" chance="100"/><item id="17379" countmax="1" chance="100"/><item id="18918" countmax="1" chance="100"/></loot></monster>

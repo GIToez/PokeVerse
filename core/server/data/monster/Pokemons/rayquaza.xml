@@ -31,4 +31,4 @@
 		<voice sentence="RAYQUAZA!"/>
 	</voices>
 	
-<loot><item id="14464" countmax="5" chance="5000"/><item id="29108" countmax="1" chance="100"/><item id="12240" countmax="1" chance="100"/><item id="18081" countmax="1" chance="100"/><item id="23516" countmax="1" chance="100"/><item id="23526" countmax="1" chance="100"/></loot></monster>
+<loot><item id="14464" countmax="5" chance="7500"/><item id="29108" countmax="1" chance="100"/><item id="12240" countmax="1" chance="100"/><item id="18081" countmax="1" chance="100"/><item id="23516" countmax="1" chance="100"/><item id="23526" countmax="1" chance="100"/></loot></monster>

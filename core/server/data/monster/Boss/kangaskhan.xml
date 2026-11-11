@@ -36,7 +36,7 @@
 		<item id="14466" countmax="3" chance="85714"/> <!-- bamboo leaves -->
 		<item id="14477" countmax="1" chance="17142"/> <!-- cutting fang -->
 		<item id="12120" countmax="1" chance="57142"/> <!-- horn -->
-		<item id="14464" countmax="3" chance="3000"/> <!-- onigiri -->
+		<item id="14464" countmax="3" chance="4500"/> <!-- onigiri -->
 		<item id="2682" countmax="3" chance="3000"/> <!-- melon -->
 		<item id="2675" countmax="3" chance="3000"/> <!-- orange -->
 		<item id="12232" countmax="5" chance="100000"/> <!-- love plate -->

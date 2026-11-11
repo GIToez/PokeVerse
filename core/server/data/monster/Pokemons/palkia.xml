@@ -31,4 +31,4 @@
 		<voice sentence="PALKIA!"/>
 	</voices>
 	
-<loot><item id="12230" countmax="1" chance="100"/><item id="14464" countmax="5" chance="5000"/><item id="31073" countmax="1" chance="100"/><item id="23521" countmax="1" chance="100"/></loot></monster>
+<loot><item id="12230" countmax="1" chance="100"/><item id="14464" countmax="5" chance="7500"/><item id="31073" countmax="1" chance="100"/><item id="23521" countmax="1" chance="100"/></loot></monster>
