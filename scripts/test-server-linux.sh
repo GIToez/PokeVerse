@@ -321,9 +321,9 @@ assert (p["name"], p["from"], p["to"]) == ("Bulbasaur", 12, 15), p
 assert len(p["stats"]) == 6 and all(s["new"] >= s["old"] for s in p["stats"]), p
 assert any(s["new"] > s["old"] for s in p["stats"]), p
 moves = [m["name"] for m in p["moves"]]
-assert moves == ["Vine Whip"], moves
-m = p["moves"][0]
-assert m["element"] == 11 and m["energy"] > 0 and m["cooldown"] > 0 and m["description"], m
+assert moves == ["Poison Powder", "Sleep Powder", "Take Down"], moves  # the official levels: 13, 13 and 15
+for m in p["moves"]:
+    assert "element" in m and m["energy"] > 0 and m["cooldown"] > 0 and m["description"], m
 print("Level-up banners: trainer %d -> %d, %s %d -> %d learned %s" % (t["from"], t["to"], p["name"], p["from"], p["to"], ", ".join(moves)))
 ' || { echo "$banners" | tail -30; echo "FAIL: level-up banner messages are wrong"; exit 1; }
 
