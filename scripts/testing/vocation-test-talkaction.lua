@@ -605,12 +605,13 @@ end
 -- (a global: the test list below is at Lua 5.1's limit of 60 upvalues per function)
 function testMoveLists(cid)
     local broken = {}
-    for name in pairs(POKEMONS) do
+    local names = { "Surfing Pikachu", "Surfing Raichu" } -- the two that add a move to their species' list
+    for number = 1, 493 do
+        names[#names + 1] = getPokemonNameByNumber(number)
+    end
+    for _, name in ipairs(names) do
         local skills = (getPokemonDefinition(name) or {}).skills or {}
         local last, seen, problem = 0, {}, nil
-        if (not getPokemonNumberByName(name)) then
-            skills = { "Tackle", 1 } -- bosses and other creatures outside the Pokedex keep their own lists
-        end
         if (#skills % 2 ~= 0) then
             problem = "a move without a level"
         elseif (#skills > 48 and name ~= "Smeargle") then
