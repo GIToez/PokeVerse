@@ -120,7 +120,7 @@ QUEST_STEPS = {
     [8436] = { -- Rocket Captain
         { storage = 8437, places = { { x = 5022, y = 472, z = 7, label = "Use the captain rocket broom here" } } },
         { storage = 8438, places = { { x = 5025, y = 476, z = 7, label = "Use the captain rocket broom here" } } },
-        { storage = 8483, places = { { x = 5040, y = 480, z = 7, label = "Use the captain rocket broom here" }, { x = 3283, y = 240, z = 7, label = "Use the cooked onigiri on Brockling Forrest" } } },
+        { storage = 8483, places = { { x = 5040, y = 480, z = 7, label = "Use the captain rocket broom here" } } },
         { storage = 8484, places = { { x = 5039, y = 481, z = 7, label = "Use the captain rocket broom here" } } },
         { storage = 8485, places = { { x = 5038, y = 494, z = 7, label = "Use the captain rocket broom here" } } },
         { storage = 8486, places = { { x = 5022, y = 498, z = 7, label = "Use the captain rocket broom here" } } },
@@ -156,16 +156,6 @@ QUEST_STEPS = {
         { storage = 8459, places = { { x = 3274, y = 245, z = 7, label = "Talk to Brockling Salvadore" } } },
         { storage = 8460, places = { { x = 3267, y = 250, z = 7, label = "Talk to Brockling Yolanda" } } },
         { storage = 8461, places = { { x = 3263, y = 244, z = 7, label = "Talk to Brockling Timmy" } } },
-    },
-    [8459] = { -- Brockling Salvadore
-        { storage = 8476, places = { { x = 3267, y = 250, z = 7, label = "Use the cooked onigiri on Brockling Yolanda" } } },
-        { storage = 8477, places = { { x = 3705, y = 488, z = 7, label = "Go here" }, { x = 3277, y = 241, z = 5, label = "Use the cooked onigiri on Brockling Suzie" } } },
-        { storage = 8478, places = { { x = 3719, y = 477, z = 7, label = "Go here" }, { x = 3263, y = 244, z = 7, label = "Use the cooked onigiri on Brockling Timmy" } } },
-        { storage = 8479, places = { { x = 3705, y = 482, z = 7, label = "Go here" }, { x = 3291, y = 238, z = 7, label = "Use the cooked onigiri on Brockling Billy" } } },
-        { storage = 8480, places = { { x = 3715, y = 484, z = 7, label = "Go here" }, { x = 3282, y = 239, z = 6, label = "Use the cooked onigiri on Brockling Tilly" } } },
-        { storage = 8481, places = { { x = 3717, y = 479, z = 7, label = "Go here" }, { x = 3274, y = 244, z = 6, label = "Use the cooked onigiri on Brockling Cindy" } } },
-        { storage = 8482, places = { { x = 3280, y = 252, z = 7, label = "Use the cooked onigiri on Brockling Tommy" } } },
-        { storage = 8483, places = { { x = 5040, y = 480, z = 7, label = "Use the captain rocket broom here" }, { x = 3283, y = 240, z = 7, label = "Use the cooked onigiri on Brockling Forrest" } } },
     },
     [8460] = { -- Brockling Yolanda
         { storage = 8462, places = { { x = 3268, y = 239, z = 7, label = "Use the esmeril on Flint's Golem" } } },
