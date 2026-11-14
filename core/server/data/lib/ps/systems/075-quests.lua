@@ -263,7 +263,8 @@ Quests.progress = function(cid, quest)
     elseif (quest.steps) then -- the quest's own steps (not the found ones: those only lead the way)
         local done = 0
         for _, step in ipairs(quest.steps) do
-            if (tonumber(getCreatureStorage(cid, step.storage)) == QUEST_STATUS.FINISHED) then
+            local value = tonumber(getCreatureStorage(cid, step.storage)) or -1
+            if ((step.atLeast and value >= step.atLeast) or (not step.atLeast and value == QUEST_STATUS.FINISHED)) then
                 done = done + 1
             end
         end

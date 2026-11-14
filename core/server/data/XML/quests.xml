@@ -1308,7 +1308,7 @@
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
 		<mission name="Brockling Salvadore #02" storageid="8459" startvalue="0" endvalue="1">
-			<missionstate id="0" description="Now take to the stove and serve two for each brother."/>
+			<missionstate id="0" description="Give two cooked onigiri to each of Salvadore's brothers and sisters: Yolanda, Suzie, Timmy, Billy, Tilly, Cindy, Tommy and Forrest. Billy is playing outside, east of the house. Brock and Salvadore don't need any. Then go back to Salvadore."/>
 			<missionstate id="1" description="This mission is done."/>
 		</mission>
 		<mission name="Brockling Yolanda" storageid="8460" startvalue="0" endvalue="1">

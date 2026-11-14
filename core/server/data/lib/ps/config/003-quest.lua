@@ -6386,9 +6386,7 @@ QUESTS_CONFIG = {
             questStartItems = { 23572, 1 }, -- onigiri sauce
             onEnd = function(cid)
                 doCreatureSetStorage(cid, 8459, QUEST_STATUS.STARTED) -- Autostart 8459
-                for storage = 8476, 8483 do
-                    doCreatureSetStorage(cid, storage, 0) -- reset counter storage
-                end
+                Brocklings.reset(cid) -- systems/108-brocklings.lua: every Brockling's food counter at 0
             end
         },
         {
@@ -6405,14 +6403,20 @@ QUESTS_CONFIG = {
             requiredLevel = 20,
             questType = QUEST_TYPE.CUSTOM,
             questRequest = function(cid)
-                for storage = 8476, 8483 do
-                    if (getCreatureStorage(cid, storage) < 2) then
-                        return false
-                    end
-                end
-
-                return true
+                return Brocklings.allFed(cid) -- systems/108-brocklings.lua
             end,
+            -- two cooked onigiri for each of them (events/actions/quests/cookedOnigiri.lua); the quest log
+            -- shows 0/8 to 8/8 and Go there leads to the next one still hungry
+            steps = {
+                { storage = 8764, atLeast = 2, pos = { x = 3267, y = 250, z = 7 }, label = "Give Brockling Yolanda two cooked onigiri" },
+                { storage = 8765, atLeast = 2, pos = { x = 3277, y = 241, z = 5 }, label = "Give Brockling Suzie two cooked onigiri" },
+                { storage = 8766, atLeast = 2, pos = { x = 3263, y = 244, z = 7 }, label = "Give Brockling Timmy two cooked onigiri" },
+                { storage = 8767, atLeast = 2, pos = { x = 3291, y = 238, z = 7 }, label = "Give Brockling Billy two cooked onigiri (outside, east of the house)" },
+                { storage = 8768, atLeast = 2, pos = { x = 3282, y = 239, z = 6 }, label = "Give Brockling Tilly two cooked onigiri" },
+                { storage = 8769, atLeast = 2, pos = { x = 3274, y = 244, z = 6 }, label = "Give Brockling Cindy two cooked onigiri" },
+                { storage = 8770, atLeast = 2, pos = { x = 3280, y = 252, z = 7 }, label = "Give Brockling Tommy two cooked onigiri" },
+                { storage = 8771, atLeast = 2, pos = { x = 3283, y = 240, z = 7 }, label = "Give Brockling Forrest two cooked onigiri" },
+            },
             blockStart = true, -- Auto started
         },
         {
