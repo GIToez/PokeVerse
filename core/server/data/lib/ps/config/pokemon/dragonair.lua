@@ -13,7 +13,7 @@ POKEMON["Dragonair"] = {
     catchStorage = 16148,
     evolutions = { { name = "Dragonite", requiredLevel = 55 } },
     description = "It is said to live in seas and lakes. Even though it has no wings, it has been seen flying occasionally.",
-    skills = { "Tackle", 1, "Wrap", 1, "Thunder Wave", 1, "Twister", 1, "Dragon Rage", 15, "Slam", 21, "Agility", 25, "Dragon Tail", 33, "Aqua Tail", 39, "Dragon Rush", 47, "Safeguard", 53, "Dragon Dance", 61, "Outrage", 67, "Hyper Beam", 75 },
+    skills = { "Tackle", 1, "Wrap", 1, "Thunder Wave", 1, "Twister", 1, "Dragon Rage", 15, "Slam", 21, "Agility", 25, "Dragon Tail", 31, "Aqua Tail", 35, "Dragon Rush", 41, "Safeguard", 45, "Dragon Dance", 51, "Outrage", 55, "Hyper Beam", 61 },
     abilities = { POKEMON_ABILITIES.WATERFALL, "Fly", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_WATER_1, POKEMON_EGG_GROUP_DRAGON },
     eggId = 14047,

@@ -13,7 +13,7 @@ POKEMON["Nidorina"] = {
     catchStorage = 16030,
     evolutions = { { name = "Nidoqueen", requiredLevel = 55, requiredItems = { ITEMS.MOON_STONE } } },
     description = "The female has a gentle temperament. It emits ultrasonic cries that have the power to befuddle foes.",
-    skills = { "Tackle", 1, "Growl", 1, "Scratch", 1, "Double Kick", 9, "Poison Sting", 13, "Fury Swipes", 20, "Bite", 23, "Toxic Spikes", 35, "Flatter", 38, "Crunch", 43, "Captivate", 50, "Poison Fang", 58 },
+    skills = { "Tackle", 1, "Growl", 1, "Scratch", 1, "Double Kick", 9, "Poison Sting", 13, "Fury Swipes", 19, "Bite", 21, "Toxic Spikes", 31, "Flatter", 33, "Crunch", 37, "Captivate", 43, "Poison Fang", 45 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.STRENGTH, "Headbutt" },
     eggGroup = {},
     eggId = 0,

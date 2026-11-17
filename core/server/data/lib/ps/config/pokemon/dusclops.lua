@@ -13,7 +13,7 @@ POKEMON["Dusclops"] = {
     catchStorage = -1,
     evolutions = { { name = "Dusknoir", requiredLevel = 60, requiredItems = { ITEMS.REAPER_CLOTH } } },
     description = "Anyone who dares peer into its body to see its spectral ball of fire will have their spirit stolen away.",
-    skills = { "Tackle", 1, "Shadow Punch", 1, "Future Sight", 1, "Fire Punch", 1, "Ice Punch", 1, "Thunder Punch", 1, "Night Shade", 1, "Disable", 1, "Astonish", 1, "Foresight", 14, "Shadow Sneak", 17, "Pursuit", 22, "Will-O-Wisp", 25, "Confuse Ray", 30, "Curse", 33, "Hex", 40, "Shadow Ball", 45, "Payback", 57 },
+    skills = { "Tackle", 1, "Shadow Punch", 1, "Future Sight", 1, "Fire Punch", 1, "Ice Punch", 1, "Thunder Punch", 1, "Night Shade", 1, "Disable", 1, "Astonish", 1, "Foresight", 14, "Shadow Sneak", 17, "Pursuit", 22, "Will-O-Wisp", 25, "Confuse Ray", 30, "Curse", 33, "Hex", 38, "Shadow Ball", 41, "Payback", 49 },
     abilities = { "Flash", "Strength", "Rock Smash" },
     eggGroup = { POKEMON_EGG_GROUP_AMORPHOUS },
     eggId = 28549,

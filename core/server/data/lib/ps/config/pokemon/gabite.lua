@@ -13,7 +13,7 @@ POKEMON["Gabite"] = {
     catchStorage = -1,
     evolutions = { { name = "Garchomp", requiredLevel = 48 } },
     description = "It loves sparkly things. It seeks treasures in caves and hoards the loot in its nest.",
-    skills = { "Tackle", 1, "Sand-Attack", 1, "Dragon Rage", 1, "Sandstorm", 13, "Take Down", 15, "Sand Tomb", 19, "Slash", 28, "Dragon Claw", 33, "Dig", 40, "Dragon Rush", 49 },
+    skills = { "Tackle", 1, "Sand-Attack", 1, "Dragon Rage", 1, "Sandstorm", 13, "Take Down", 15, "Sand Tomb", 19, "Slash", 25, "Dragon Claw", 27, "Dig", 31, "Dragon Rush", 37 },
     abilities = { "Cut", "Rock Smash", "Headbutt", POKEMON_ABILITIES.STRENGTH, POKEMON_ABILITIES.DIG },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_DRAGON },
     eggId = 30965,

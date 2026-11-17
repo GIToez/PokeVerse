@@ -14,6 +14,9 @@ official ones: the Ultra Sun / Ultra Moon level-up list from PokeAPI, at the off
   learns them. (Officially Raichu learns four moves, because it kept Pikachu's; here a Pokemon's
   moves are its species' list, so the list has to hold them.) The moves bar has 24 slots: a list
   longer than that (Flygon, Gallade, Vibrava) drops the earliest kept moves until it fits.
+  A move that the species and an earlier stage both learn is learned at the earlier of the two
+  levels, so evolving never takes a move away (Poliwag learns Bubble Beam at 25, Poliwhirl at 27:
+  Poliwhirl has it from 25).
 - Species 1-493 only, by their own name; Smeargle (Sketch slots) and Ditto (Transform) keep their
   special lists, and custom Pokemon (Chartle, Mega and Boss forms...) are not touched. Shiny and
   event versions copy their species.
@@ -71,7 +74,8 @@ def main():
         if move not in learn[number] or key < learn[number][move]:
             learn[number][move] = key
 
-    # earlier stages' moves the species doesn't learn itself, at their level
+    # earlier stages' moves, at their level: the ones the species doesn't learn itself, and the ones it
+    # learns later than they did
     parent = {int(r["id"]): int(r["evolves_from_species_id"]) for r in rows("pokemon_species.csv")
               if r["evolves_from_species_id"] and int(r["id"]) <= 493}
     own = {number: dict(moves) for number, moves in learn.items()}
@@ -80,9 +84,12 @@ def main():
         stage = parent.get(number)
         while stage:
             for move, key in own.get(stage, {}).items():
-                if move not in own.get(number, {}) and (move not in learn[number] or key < learn[number][move]):
-                    learn[number][move] = key
-                    kept[number].add(move)
+                if move not in own.get(number, {}):
+                    if move not in learn[number] or key < learn[number][move]:
+                        learn[number][move] = key
+                        kept[number].add(move)
+                elif key[0] < learn[number][move][0]:
+                    learn[number][move] = (key[0], learn[number][move][1])
             stage = parent.get(stage)
 
     files = {}

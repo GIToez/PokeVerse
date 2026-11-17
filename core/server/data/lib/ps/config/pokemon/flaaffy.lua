@@ -13,7 +13,7 @@ POKEMON["Flaaffy"] = {
     catchStorage = 16180,
     evolutions = { { name = "Ampharos", requiredLevel = 30 } },
     description = "Its fluffy fleece easily stores electricity. Its rubbery hide keeps it from being electrocuted.",
-    skills = { "Tackle", 1, "Growl", 1, "Thunder Wave", 1, "Thunder Shock", 1, "Charge", 16, "Take Down", 20, "Electro Ball", 25, "Confuse Ray", 29, "Power Gem", 34, "Discharge", 38, "Cotton Guard", 43, "Signal Beam", 47, "Light Screen", 52, "Thunder", 56 },
+    skills = { "Tackle", 1, "Growl", 1, "Thunder Wave", 1, "Thunder Shock", 1, "Charge", 15, "Take Down", 18, "Electro Ball", 22, "Confuse Ray", 25, "Power Gem", 29, "Discharge", 32, "Cotton Guard", 36, "Signal Beam", 39, "Light Screen", 43, "Thunder", 46 },
     abilities = { POKEMON_ABILITIES.STRENGTH, "Flash", "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_FIELD },
     eggId = 17751,
