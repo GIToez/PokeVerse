@@ -13,7 +13,7 @@ POKEMON["Lairon"] = {
     catchStorage = -1,
     evolutions = { { name = "Aggron", requiredLevel = 42 } },
     description = "It loves iron ore. Groups of them fight for territory by bashing one another with their steel bodies.",
-    skills = { "Tackle", 1, "Harden", 1, "Mud-Slap", 1, "Headbutt", 1, "Metal Claw", 10, "Rock Tomb", 13, "Protect", 16, "Roar", 19, "Iron Head", 22, "Rock Slide", 25, "Take Down", 28, "Metal Sound", 31, "Iron Tail", 35, "Iron Defense", 39, "Double-Edge", 43, "Heavy Slam", 51, "Metal Burst", 55 },
+    skills = { "Tackle", 1, "Harden", 1, "Mud-Slap", 1, "Headbutt", 1, "Metal Claw", 10, "Rock Tomb", 13, "Protect", 16, "Roar", 19, "Iron Head", 22, "Rock Slide", 25, "Take Down", 28, "Metal Sound", 31, "Iron Tail", 34, "Iron Defense", 37, "Double-Edge", 40, "Heavy Slam", 46, "Metal Burst", 49 },
     abilities = { "Cut", "Strenght", "Rock Smash", "Ride", POKEMON_ABILITIES.HEADBUTT },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER },
     eggId = 28538,

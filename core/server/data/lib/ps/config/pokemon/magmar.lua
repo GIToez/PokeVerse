@@ -13,7 +13,7 @@ POKEMON["Magmar"] = {
     catchStorage = 16126,
     evolutions = { { name = "Magmortar", requiredLevel = 60, requiredItems = { ITEMS.MAGMARIZER } } },
     description = "Found near the mouth of a volcano. This fire-breather's body temperature is nearly 2,200 degrees Fahrenheit.",
-    skills = { "Tackle", 1, "Smog", 1, "Ember", 1, "Smoke Screen", 8, "Faint Attack", 12, "Fire Spin", 15, "Clear Smog", 19, "Flame Burst", 22, "Confuse Ray", 26, "Fire Punch", 29, "Lava Plume", 36, "Sunny Day", 42, "Flamethrower", 49, "Fire Blast", 55 },
+    skills = { "Tackle", 1, "Smog", 1, "Ember", 1, "Smoke Screen", 8, "Faint Attack", 12, "Fire Spin", 15, "Clear Smog", 19, "Flame Burst", 22, "Confuse Ray", 26, "Fire Punch", 29, "Lava Plume", 33, "Sunny Day", 36, "Flamethrower", 40, "Fire Blast", 43 },
     abilities = { POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_HUMAN_LIKE },
     eggId = 14039,

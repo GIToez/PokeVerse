@@ -13,7 +13,7 @@ POKEMON["Rhydon"] = {
     catchStorage = 16112,
     evolutions = { { name = "Rhyperior", requiredLevel = 60, requiredItems = { ITEMS.PROTECTOR } } },
     description = "It begins walking on its hind legs after evolution. It can punch holes through boulders with its horn.",
-    skills = { "Tackle", 1, "Hammer Arm", 1, "Horn Drill", 1, "Horn Attack", 1, "Fury Attack", 1, "Scary Face", 1, "Smack Down", 13, "Stomp", 17, "Bulldoze", 21, "Chip Away", 25, "Rock Blast", 29, "Drill Run", 33, "Take Down", 37, "Stone Edge", 41, "Earthquake", 48, "Megahorn", 55 },
+    skills = { "Tackle", 1, "Hammer Arm", 1, "Horn Drill", 1, "Horn Attack", 1, "Fury Attack", 1, "Scary Face", 1, "Smack Down", 13, "Stomp", 17, "Bulldoze", 21, "Chip Away", 25, "Rock Blast", 29, "Drill Run", 33, "Take Down", 37, "Stone Edge", 41, "Earthquake", 45, "Megahorn", 49 },
     abilities = { POKEMON_ABILITIES.DIG, POKEMON_ABILITIES.ROCK_CLIMB, POKEMON_ABILITIES.STRENGTH, "Rock Smash", "Headbutt" },
     eggGroup = { POKEMON_EGG_GROUP_MONSTER, POKEMON_EGG_GROUP_FIELD },
     eggId = 14028,

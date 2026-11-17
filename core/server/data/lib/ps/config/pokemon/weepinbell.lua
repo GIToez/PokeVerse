@@ -13,7 +13,7 @@ POKEMON["Weepinbell"] = {
     catchStorage = 16070,
     evolutions = { { name = "Victreebel", requiredLevel = 50, requiredItems = { ITEMS.LEAF_STONE } } },
     description = "The leafy parts act as cutters for slashing foes. It spits a fluid that dissolves everything.",
-    skills = { "Tackle", 1, "Vine Whip", 1, "Wrap", 1, "Sleep Powder", 13, "Poison Powder", 15, "Stun Spore", 17, "Acid", 24, "Knock Off", 29, "Gastro Acid", 39, "Razor Leaf", 44, "Poison Jab", 47, "Slam", 54, "Wring Out", 58 },
+    skills = { "Tackle", 1, "Vine Whip", 1, "Wrap", 1, "Sleep Powder", 13, "Poison Powder", 15, "Stun Spore", 17, "Acid", 23, "Knock Off", 27, "Gastro Acid", 35, "Razor Leaf", 39, "Poison Jab", 41, "Slam", 47, "Wring Out", 50 },
     abilities = { "Cut" },
     eggGroup = { POKEMON_EGG_GROUP_GRASS },
     eggId = 14006,
